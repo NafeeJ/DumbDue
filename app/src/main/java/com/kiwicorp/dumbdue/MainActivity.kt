@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import java.util.GregorianCalendar
 
 class MainActivity : AppCompatActivity() {
     private lateinit var notificationManger: NotificationManagerCompat
@@ -30,4 +31,10 @@ class MainActivity : AppCompatActivity() {
 
         notificationManger.notify(1, notification1)
     }
+
+    fun alertNotification(view: View) {
+        var alertTime: Long = GregorianCalendar().getTimeInMillis() + 5 * 1000
+
+    }
 }
+
