@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -36,9 +37,9 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener(object: View.OnClickListener{//set repeating alarm
             override fun onClick(v: View) {
 
-                time += userTime.text.toString().toLong() //sets calendar time to be minute from time of button press
+                //time += userTime.text.toString().toLong() //sets calendar time to be minute from time of button press
 
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time,60000,pendingIntent) //sets a repeating alarm that repeats every minute
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 20000,60000,pendingIntent) //sets a repeating alarm that repeats every minute
             }
         })
 
@@ -47,8 +48,9 @@ class MainActivity : AppCompatActivity() {
                 alarmManager.cancel(pendingIntent)
             }
         })
-
-
+    }
+    fun displayTime(v: View) {
+        Toast.makeText(this, calendar.time.toString(),Toast.LENGTH_LONG).show()
     }
 }
 
