@@ -9,12 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     companion object {
         var notificationID = 0 //used to keep notifications unique thus allowing notifications to stack
         val calendar: Calendar = Calendar.getInstance()
+        var time: Long = 0
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +25,7 @@ class MainActivity : AppCompatActivity() {
 
         val button: Button = findViewById(R.id.button)
         val button2: Button = findViewById(R.id.button2)
+        val userTime: EditText = findViewById(R.id.userTime)
 
         val alarmManager: AlarmManager =  getSystemService(Context.ALARM_SERVICE) as AlarmManager //creates AlarmManager object
 
@@ -33,9 +36,9 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener(object: View.OnClickListener{//set repeating alarm
             override fun onClick(v: View) {
 
-                calendar.timeInMillis += 60000 //sets calendar time to be minute from time of button press
+                time += userTime.text.toString().toLong() //sets calendar time to be minute from time of button press
 
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.timeInMillis,60000,pendingIntent) //sets a repeating alarm that repeats every minute
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time,60000,pendingIntent) //sets a repeating alarm that repeats every minute
             }
         })
 
@@ -44,6 +47,8 @@ class MainActivity : AppCompatActivity() {
                 alarmManager.cancel(pendingIntent)
             }
         })
+
+
     }
 }
 
