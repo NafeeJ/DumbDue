@@ -23,6 +23,7 @@ class NotificationReceiver : BroadcastReceiver() {
             .setContentText("Time:" + MainActivity.calendar.timeInMillis)
             .setAutoCancel(true)//makes notification dismissible when the user swipes it away
 
+
         notificationManager.notify(MainActivity.notificationID++,builder.build())
     }
 }
