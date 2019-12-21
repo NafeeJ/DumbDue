@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     companion object {
         var notificationID = 0 //used to keep notifications unique thus allowing notifications to stack
-        val calendar: Calendar = Calendar.getInstance()
         var time: Long = 0
     }
 
@@ -48,9 +47,6 @@ class MainActivity : AppCompatActivity() {
                 alarmManager.cancel(pendingIntent)
             }
         })
-    }
-    fun displayTime(v: View) {
-        Toast.makeText(this, calendar.time.toString(),Toast.LENGTH_LONG).show()
     }
 }
 

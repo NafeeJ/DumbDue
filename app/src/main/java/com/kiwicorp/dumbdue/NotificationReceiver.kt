@@ -6,7 +6,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import java.util.*
+import android.icu.util.Calendar
 
 class NotificationReceiver : BroadcastReceiver() {
 
@@ -22,7 +22,7 @@ class NotificationReceiver : BroadcastReceiver() {
             .setContentIntent(pendingIntent)
             .setSmallIcon(R.drawable.ic_android_black_24dp)
             .setContentTitle("Notification #" + MainActivity.notificationID)
-            .setContentText("Time:" + MainActivity.calendar.timeInMillis)
+            .setContentText("Time:" + Calendar.getInstance().timeInMillis)
             .setAutoCancel(true)//makes notification dismissible when the user swipes it away
 
 
