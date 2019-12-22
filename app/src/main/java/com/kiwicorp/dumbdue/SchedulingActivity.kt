@@ -20,7 +20,7 @@ class SchedulingActivity : Activity() {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 
-        val width: Int = displayMetrics.widthPixels
+        val width: Int = (displayMetrics.widthPixels * 0.9).toInt()
         val height: Int = displayMetrics.heightPixels / 3
 
         window.setLayout(width,height)
