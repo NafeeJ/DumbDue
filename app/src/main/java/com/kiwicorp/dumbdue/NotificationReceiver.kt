@@ -13,7 +13,7 @@ class NotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val repeatingIntent= Intent(context, RepeatingActivity::class.java)
+        val repeatingIntent= Intent(context, MainActivity::class.java)
         repeatingIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context,MainActivity.notificationID,repeatingIntent,PendingIntent.FLAG_UPDATE_CURRENT)
