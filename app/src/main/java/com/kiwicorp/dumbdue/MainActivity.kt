@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
                 //time += userTime.text.toString().toLong() //sets calendar time to be minute from time of button press
 
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 20000,60000,pendingIntent) //sets a repeating alarm that repeats every minute
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis + 10000,60000,pendingIntent) //sets a repeating alarm that repeats every minute
             }
         })
 
