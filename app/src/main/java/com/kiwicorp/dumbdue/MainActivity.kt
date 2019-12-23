@@ -33,24 +33,17 @@ class MainActivity : AppCompatActivity() {
         val notificationReceiverIntent = Intent(applicationContext,NotificationReceiver::class.java) //initializes the intent to run NotificationReceiver
         val pendingIntent = PendingIntent.getBroadcast(applicationContext,notificationID,notificationReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT) //initializes the pending intent to be notification receiver
 
-        startButton.setOnClickListener(object: View.OnClickListener{//set repeating alarm
-            override fun onClick(v: View) {
-
+        startButton.setOnClickListener{//sets repeating alarm
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis + 10000,60000,pendingIntent) //sets a repeating alarm that repeats every minute
-            }
-        })
+        }
 
-        stopButton.setOnClickListener(object: View.OnClickListener{//stops notifications by canceling pending intents
-            override fun onClick(v: View) {
+        stopButton.setOnClickListener{//stops notifications by canceling pending intents
                 alarmManager.cancel(pendingIntent)
-            }
-        })
+        }
 
-        scheduleButton.setOnClickListener(object: View.OnClickListener{
-            override fun onClick(v: View?) {
+        scheduleButton.setOnClickListener{
                 startActivity(Intent(applicationContext,SchedulingActivity::class.java))
-            }
-        })
+        }
     }
 }
 
