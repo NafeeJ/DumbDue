@@ -18,7 +18,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(context,MainActivity.notificationID,repeatingIntent,PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val builder: Notification.Builder = Notification.Builder(context,NotificationTest.CHANNEL_1_ID)
+        val builder: Notification.Builder = Notification.Builder(context,NotificationChannel.CHANNEL_1_ID)
             .setContentIntent(pendingIntent)
             .setSmallIcon(R.drawable.ic_android_black_24dp)
             .setContentTitle("Notification #" + MainActivity.notificationID)

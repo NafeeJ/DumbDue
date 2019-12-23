@@ -7,7 +7,7 @@ import android.app.NotificationChannel
 import android.content.Context
 
 
-class NotificationTest : android.app.Application() {
+class NotificationChannel : android.app.Application() {
 
     companion object {//equivalent as public static
         const val CHANNEL_1_ID = "Channel1"//constant string for channel ID

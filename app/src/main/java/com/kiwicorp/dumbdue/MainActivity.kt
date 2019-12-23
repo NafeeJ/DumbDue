@@ -22,9 +22,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val button: Button = findViewById(R.id.button)
-        val button2: Button = findViewById(R.id.button2)
-        val scheduleButton: Button = findViewById(R.id.button3)
+        val startButton: Button = findViewById(R.id.startNotificationsButton)
+        val stopButton: Button = findViewById(R.id.stopNotificationsButton)
+        val scheduleButton: Button = findViewById(R.id.scheduleNotificationButton)
 
         val dateText: TextView = findViewById(R.id.textView)
         dateText.text = dateString
@@ -33,14 +33,14 @@ class MainActivity : AppCompatActivity() {
         val notificationReceiverIntent = Intent(applicationContext,NotificationReceiver::class.java) //initializes the intent to run NotificationReceiver
         val pendingIntent = PendingIntent.getBroadcast(applicationContext,notificationID,notificationReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT) //initializes the pending intent to be notification receiver
 
-        button.setOnClickListener(object: View.OnClickListener{//set repeating alarm
+        startButton.setOnClickListener(object: View.OnClickListener{//set repeating alarm
             override fun onClick(v: View) {
 
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis + 10000,60000,pendingIntent) //sets a repeating alarm that repeats every minute
             }
         })
 
-        button2.setOnClickListener(object: View.OnClickListener{//stops notifications by canceling pending intents
+        stopButton.setOnClickListener(object: View.OnClickListener{//stops notifications by canceling pending intents
             override fun onClick(v: View) {
                 alarmManager.cancel(pendingIntent)
             }

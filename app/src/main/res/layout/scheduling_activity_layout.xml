@@ -3,97 +3,77 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_centerInParent="true"
-    android:background="#000000"
-    android:gravity="end">
+    android:background="#000000">
 
-    <Button
-        android:id="@+id/plus1hrbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="106dp"
-        android:layout_marginTop="34dp"
-        android:text="+1 hr" />
-
-    <Button
-        android:id="@+id/plus1daybutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="281dp"
-        android:layout_marginTop="81dp"
-        android:text="+1 day" />
-
-    <Button
-        android:id="@+id/plus3hrbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="194dp"
-        android:layout_marginTop="34dp"
-        android:text="+3 hrs" />
-
-    <Button
-        android:id="@+id/minus1daybutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="34dp"
-        android:layout_marginEnd="40dp"
-        android:text="-1 day" />
-
-    <Button
-        android:id="@+id/minus1hrbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="105dp"
-        android:layout_marginTop="81dp"
-        android:text="-1 hr" />
-
-    <Button
-        android:id="@+id/minus10minbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="81dp"
-        android:text="-10 min" />
+    <View
+        android:id="@+id/view"
+        android:layout_width="0dp"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/plus10minbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="34dp"
+        android:layout_toStartOf="@id/plus1hrbutton"
+        android:layout_below="@id/dateTextView"
         android:text="+10 min" />
+
+    <Button
+        android:id="@+id/minus10minbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/plus1hrbutton"
+        android:layout_below="@id/plus10minbutton"
+        android:text="-10 min" />
+
+    <Button
+        android:id="@+id/plus1hrbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/view"
+        android:layout_below="@id/dateTextView"
+        android:text="+1 hr" />
+
+    <Button
+        android:id="@+id/minus1hrbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/view"
+        android:layout_below="@id/plus1hrbutton"
+        android:text="-1 hr" />
+
+    <Button
+        android:id="@+id/plus3hrbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/view"
+        android:layout_below="@id/dateTextView"
+        android:text="+3 hrs" />
 
     <Button
         android:id="@+id/minus3hrbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="194dp"
-        android:layout_marginTop="81dp"
+        android:layout_toEndOf="@id/view"
+        android:layout_below="@id/plus3hrbutton"
         android:text="-3 hrs" />
+
+    <Button
+        android:id="@+id/plus1daybutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/plus3hrbutton"
+        android:layout_below="@id/dateTextView"
+        android:text="+1 day" />
+
+    <Button
+        android:id="@+id/minus1daybutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/minus3hrbutton"
+        android:layout_below="@id/plus1daybutton"
+        android:text="-1 day" />
 
     <TextView
         android:id="@+id/dateTextView"
@@ -101,8 +81,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="4dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#D5CCCC" />
 
