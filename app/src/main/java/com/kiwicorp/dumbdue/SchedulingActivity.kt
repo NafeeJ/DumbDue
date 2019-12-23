@@ -7,17 +7,20 @@ import android.view.Gravity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import kotlinx.android.synthetic.main.scheduling_activity_layout.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.absoluteValue
+import android.graphics.Color;
 
 class SchedulingActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.scheduling_activity_layout)
 
-        val scheduleDateCalendar: Calendar = Calendar.getInstance() //Calendar with the intended date of notification
+        val dueDateCalendar: Calendar = Calendar.getInstance() //Calendar with the intended date of notification
 
-        //get display metrics of phone screen
+        //gets display metrics of phone screen
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         //sets popup window dimensions based off of display metrics
@@ -41,10 +44,8 @@ class SchedulingActivity : Activity() {
         val buttonPreset3: Button = findViewById(R.id.presetButton3); val preset3HourOfDay = 18; val preset3Min = 30
         val buttonPreset4: Button = findViewById(R.id.presetButton4); val preset4HourOfDay = 22; val preset4Min = 0
 
-        val dateFormat = SimpleDateFormat("EEE, d MMM, h:mm a")//initializes the date format
-
         val dateTextView: TextView = findViewById(R.id.dateTextView)
-        dateTextView.text = dateFormat.format(scheduleDateCalendar.time) //sets text to be the formatted intended schedule date
+        updateDateTextView(dueDateCalendar) //sets text to be the formatted intended schedule date
         dateTextView.gravity = Gravity.CENTER_VERTICAL //sets text to be in the middle of text view
         dateTextView.height = height / 5
 
@@ -58,55 +59,92 @@ class SchedulingActivity : Activity() {
             button.height = height / 5
         }
 
-        //sets all plus minus button functionality
+        //adds or subtracts intended unit to intended due date
         buttonPlus10min.setOnClickListener{
-            scheduleDateCalendar.set(Calendar.MINUTE, scheduleDateCalendar.get(Calendar.MINUTE) + 10)
-            dateTextView.text = dateFormat.format(scheduleDateCalendar.time)
+            dueDateCalendar.set(Calendar.MINUTE, dueDateCalendar.get(Calendar.MINUTE) + 10)
+            updateDateTextView(dueDateCalendar)
         }
         buttonMinus10min.setOnClickListener{
-            scheduleDateCalendar.set(Calendar.MINUTE, scheduleDateCalendar.get(Calendar.MINUTE) - 10)
-            dateTextView.text = dateFormat.format(scheduleDateCalendar.time)
+            dueDateCalendar.set(Calendar.MINUTE, dueDateCalendar.get(Calendar.MINUTE) - 10)
+            updateDateTextView(dueDateCalendar)
         }
         buttonPlus1hr.setOnClickListener{
-            scheduleDateCalendar.set(Calendar.HOUR, scheduleDateCalendar.get(Calendar.HOUR) + 1)
-            dateTextView.text = dateFormat.format(scheduleDateCalendar.time)
+            dueDateCalendar.set(Calendar.HOUR, dueDateCalendar.get(Calendar.HOUR) + 1)
+            updateDateTextView(dueDateCalendar)
         }
         buttonMinus1hr.setOnClickListener{
-            scheduleDateCalendar.set(Calendar.HOUR, scheduleDateCalendar.get(Calendar.HOUR) - 1)
-            dateTextView.text = dateFormat.format(scheduleDateCalendar.time)
+            dueDateCalendar.set(Calendar.HOUR, dueDateCalendar.get(Calendar.HOUR) - 1)
+            updateDateTextView(dueDateCalendar)
         }
         buttonPlus3hr.setOnClickListener{
-            scheduleDateCalendar.set(Calendar.HOUR, scheduleDateCalendar.get(Calendar.HOUR) + 3)
-            dateTextView.text = dateFormat.format(scheduleDateCalendar.time)
+            dueDateCalendar.set(Calendar.HOUR, dueDateCalendar.get(Calendar.HOUR) + 3)
+            updateDateTextView(dueDateCalendar)
         }
         buttonMinus3hr.setOnClickListener{
-            scheduleDateCalendar.set(Calendar.HOUR, scheduleDateCalendar.get(Calendar.HOUR) - 3)
-            dateTextView.text = dateFormat.format(scheduleDateCalendar.time)
+            dueDateCalendar.set(Calendar.HOUR, dueDateCalendar.get(Calendar.HOUR) - 3)
+            updateDateTextView(dueDateCalendar)
         }
         buttonPlus1day.setOnClickListener{
-            scheduleDateCalendar.set(Calendar.DAY_OF_YEAR, scheduleDateCalendar.get(Calendar.DAY_OF_YEAR) + 1)
-            dateTextView.text = dateFormat.format(scheduleDateCalendar.time)
+            dueDateCalendar.set(Calendar.DAY_OF_YEAR, dueDateCalendar.get(Calendar.DAY_OF_YEAR) + 1)
+            updateDateTextView(dueDateCalendar)
         }
         buttonMinus1day.setOnClickListener{
-            scheduleDateCalendar.set(Calendar.DAY_OF_YEAR, scheduleDateCalendar.get(Calendar.DAY_OF_YEAR) - 1)
-            dateTextView.text = dateFormat.format(scheduleDateCalendar.time)
+            dueDateCalendar.set(Calendar.DAY_OF_YEAR, dueDateCalendar.get(Calendar.DAY_OF_YEAR) - 1)
+            updateDateTextView(dueDateCalendar)
         }
         //sets all preset button functionality
         buttonPreset1.setOnClickListener {
-            scheduleDateCalendar.set(scheduleDateCalendar.get(Calendar.YEAR),scheduleDateCalendar.get(Calendar.MONTH),scheduleDateCalendar.get(Calendar.DATE),preset1HourOfDay,preset1Min)
-            dateTextView.text = dateFormat.format(scheduleDateCalendar.time)
+            dueDateCalendar.set(dueDateCalendar.get(Calendar.YEAR),dueDateCalendar.get(Calendar.MONTH),dueDateCalendar.get(Calendar.DATE),preset1HourOfDay,preset1Min)
+            updateDateTextView(dueDateCalendar)
         }
         buttonPreset2.setOnClickListener {
-            scheduleDateCalendar.set(scheduleDateCalendar.get(Calendar.YEAR),scheduleDateCalendar.get(Calendar.MONTH),scheduleDateCalendar.get(Calendar.DATE),preset2HourOfDay,preset2Min)
-            dateTextView.text = dateFormat.format(scheduleDateCalendar.time)
+            dueDateCalendar.set(dueDateCalendar.get(Calendar.YEAR),dueDateCalendar.get(Calendar.MONTH),dueDateCalendar.get(Calendar.DATE),preset2HourOfDay,preset2Min)
+            updateDateTextView(dueDateCalendar)
         }
         buttonPreset3.setOnClickListener {
-            scheduleDateCalendar.set(scheduleDateCalendar.get(Calendar.YEAR),scheduleDateCalendar.get(Calendar.MONTH),scheduleDateCalendar.get(Calendar.DATE),preset3HourOfDay,preset3Min)
-            dateTextView.text = dateFormat.format(scheduleDateCalendar.time)
+            dueDateCalendar.set(dueDateCalendar.get(Calendar.YEAR),dueDateCalendar.get(Calendar.MONTH),dueDateCalendar.get(Calendar.DATE),preset3HourOfDay,preset3Min)
+            updateDateTextView(dueDateCalendar)
         }
         buttonPreset4.setOnClickListener {
-            scheduleDateCalendar.set(scheduleDateCalendar.get(Calendar.YEAR),scheduleDateCalendar.get(Calendar.MONTH),scheduleDateCalendar.get(Calendar.DATE),preset4HourOfDay,preset4Min)
-            dateTextView.text = dateFormat.format(scheduleDateCalendar.time)
+            dueDateCalendar.set(dueDateCalendar.get(Calendar.YEAR),dueDateCalendar.get(Calendar.MONTH),dueDateCalendar.get(Calendar.DATE),preset4HourOfDay,preset4Min)
+            updateDateTextView(dueDateCalendar)
+        }
+    }
+
+    private fun findTimeFromNowString(timeInMillis: Long): String {//returns a string with absolute value of time from now and its correct unit
+        if (timeInMillis.absoluteValue < 60000) {//less than 1 minute
+            return "0 Minutes"
+        } else if (timeInMillis.absoluteValue < 3600000) {//less than 1 hour
+            return (timeInMillis.absoluteValue / 60000).toInt().toString().plus(" Minutes")
+
+        } else if (timeInMillis.absoluteValue < 86400000) {//less than 1 day
+            return (timeInMillis.absoluteValue / 3600000).toInt().toString().plus(" Hours")
+
+        } else if (timeInMillis.absoluteValue < 604800000) {//less than 1 week
+            return (timeInMillis.absoluteValue / 86400000).toInt().toString().plus(" Days")
+
+        } else if (timeInMillis.absoluteValue < 2592000000) {//less than 1 month
+            return (timeInMillis.absoluteValue / 604800000).toInt().toString().plus(" Weeks")
+
+        } else if (timeInMillis.absoluteValue < 31556952000) {//less than one year
+            return (timeInMillis.absoluteValue / 2592000000).toInt().toString().plus(" Months")
+
+        } else {
+            return (timeInMillis.absoluteValue / 31556952000).toInt().toString().plus(" Years")
+        }
+    }
+
+    private fun updateDateTextView(dueDateCalendar: Calendar) {//updates text view
+        val timeFromNow: Long = dueDateCalendar.timeInMillis - Calendar.getInstance().timeInMillis
+
+        val dateFormat = SimpleDateFormat("EEE, d MMM, h:mm a") //creates a date format
+
+        if (timeFromNow > 0 || timeFromNow.absoluteValue < 60000) {//if time from now is positive, updates text to be in format: "Date in timeFromNow units" and sets grey background color
+            dateTextView.text = dateFormat.format(dueDateCalendar.time).plus(" in ").plus(findTimeFromNowString(timeFromNow))
+            dateTextView.setBackgroundColor(Color.parseColor("#383838"))
+        } else {//if time from now is negative, updates text to be in format: "Date timeFromNow units ago" and sets red background color
+            dateTextView.text = dateFormat.format(dueDateCalendar.time).plus(" ").plus(findTimeFromNowString(timeFromNow)).plus(" ago")
+            dateTextView.setBackgroundColor(Color.parseColor("#ad0000"))
         }
     }
 }
