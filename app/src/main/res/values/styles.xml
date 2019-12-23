@@ -11,6 +11,7 @@
     <style name="SchedulingTheme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowBackground">@drawable/corners</item>
     </style>
 
 </resources>
