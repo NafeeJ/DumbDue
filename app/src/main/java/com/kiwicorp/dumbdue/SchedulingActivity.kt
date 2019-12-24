@@ -39,6 +39,7 @@ class SchedulingActivity : Activity() {
         val buttonMinus1day: Button = findViewById(R.id.minus1daybutton)
 
         //initialize preset buttons and their intended hour and minutes
+        //Later allow user to change time presets
         val buttonPreset1: Button = findViewById(R.id.presetButton1); val preset1HourOfDay = 9; val preset1Min = 30
         val buttonPreset2: Button = findViewById(R.id.presetButton2); val preset2HourOfDay = 12; val preset2Min = 0
         val buttonPreset3: Button = findViewById(R.id.presetButton3); val preset3HourOfDay = 18; val preset3Min = 30
@@ -111,40 +112,38 @@ class SchedulingActivity : Activity() {
         }
     }
 
-    private fun findTimeFromNowString(timeInMillis: Long): String {//returns a string with absolute value of time from now and its correct unit
-        if (timeInMillis.absoluteValue < 60000) {//less than 1 minute
-            return "0 Minutes"
-        } else if (timeInMillis.absoluteValue < 3600000) {//less than 1 hour
-            return (timeInMillis.absoluteValue / 60000).toInt().toString().plus(" Minutes")
-
-        } else if (timeInMillis.absoluteValue < 86400000) {//less than 1 day
-            return (timeInMillis.absoluteValue / 3600000).toInt().toString().plus(" Hours")
-
-        } else if (timeInMillis.absoluteValue < 604800000) {//less than 1 week
-            return (timeInMillis.absoluteValue / 86400000).toInt().toString().plus(" Days")
-
-        } else if (timeInMillis.absoluteValue < 2592000000) {//less than 1 month
-            return (timeInMillis.absoluteValue / 604800000).toInt().toString().plus(" Weeks")
-
-        } else if (timeInMillis.absoluteValue < 31556952000) {//less than one year
-            return (timeInMillis.absoluteValue / 2592000000).toInt().toString().plus(" Months")
-
-        } else {
-            return (timeInMillis.absoluteValue / 31556952000).toInt().toString().plus(" Years")
-        }
-    }
-
     private fun updateDateTextView(dueDateCalendar: Calendar) {//updates text view
-        val timeFromNow: Long = dueDateCalendar.timeInMillis - Calendar.getInstance().timeInMillis
+        var fromNowMins: Int = dueDateCalendar.get(Calendar.MINUTE) - Calendar.getInstance().get(Calendar.MINUTE)
+        val fromNowHours: Int = dueDateCalendar.get(Calendar.HOUR_OF_DAY) - Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        val fromNowDays: Int = dueDateCalendar.get(Calendar.DAY_OF_YEAR) - Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+        val fromNowYears: Int = dueDateCalendar.get(Calendar.YEAR) - Calendar.getInstance().get(Calendar.YEAR)
+
+        fromNowMins += (fromNowHours * 60) + (fromNowDays * 24 * 60) + (fromNowYears * 525600)
 
         val dateFormat = SimpleDateFormat("EEE, d MMM, h:mm a") //creates a date format
 
-        if (timeFromNow > 0 || timeFromNow.absoluteValue < 60000) {//if time from now is positive, updates text to be in format: "Date in timeFromNow units" and sets grey background color
-            dateTextView.text = dateFormat.format(dueDateCalendar.time).plus(" in ").plus(findTimeFromNowString(timeFromNow))
+        if (fromNowMins >= 0) { //if time from now is positive, updates text to be in format: "Date in fromNowMins units" and sets grey background color
+            dateTextView.text = dateFormat.format(dueDateCalendar.time).plus(" in ").plus(findTimeFromNowString(fromNowMins))
             dateTextView.setBackgroundColor(Color.parseColor("#383838"))
-        } else {//if time from now is negative, updates text to be in format: "Date timeFromNow units ago" and sets red background color
-            dateTextView.text = dateFormat.format(dueDateCalendar.time).plus(" ").plus(findTimeFromNowString(timeFromNow)).plus(" ago")
+        } else { //if time from now is negative, updates text to be in format: "Date fromNowMins units ago" and sets red background color
+            dateTextView.text = dateFormat.format(dueDateCalendar.time).plus(" ").plus(findTimeFromNowString(fromNowMins)).plus(" ago")
             dateTextView.setBackgroundColor(Color.parseColor("#ad0000"))
         }
+    }
+
+    private fun findTimeFromNowString(timeInMins: Int): String { //returns a string with absolute value of time from now and its correct unit
+        if (timeInMins.absoluteValue == 0) { return "0 Minutes" }//less than 1 minute
+        else if (timeInMins.absoluteValue == 1) { return timeInMins.absoluteValue.toString().plus(" Minute") } //equal to 1 minute
+        else if (timeInMins.absoluteValue < 60) { return timeInMins.absoluteValue.toString().plus(" Minutes") } //less than 1 hour
+        else if ((timeInMins.absoluteValue / 60) == 1) { return (timeInMins.absoluteValue / 60).toString().plus(" Hour") } //equal to 1 hour
+        else if ((timeInMins.absoluteValue / 60) < 24 ) { return (timeInMins.absoluteValue / 60).toString().plus(" Hours") } //less than 1 day
+        else if ((timeInMins.absoluteValue / 60 / 24) == 1) { return (timeInMins.absoluteValue / 60 / 24).toString().plus(" Day") } //equal to 1 day
+        else if ((timeInMins.absoluteValue / 60 / 24) < 7) { return (timeInMins.absoluteValue / 60 / 24).toString().plus(" Days") } //less than 1 week
+        else if ((timeInMins.absoluteValue / 60 / 24 / 7) == 1) { return (timeInMins.absoluteValue / 60 / 24 / 7).toString().plus(" Week") } //equal to 1 week
+        else if ((timeInMins.absoluteValue / 60 / 24 / 7) < 4) { return (timeInMins.absoluteValue / 60 / 24 / 7).toString().plus(" Weeks") } //less than 1 month
+        else if ((timeInMins.absoluteValue / 60 / 24 / 7 / 4) == 1) { return (timeInMins.absoluteValue / 60 / 24 / 7 / 4).toString().plus(" Month") } //equal to 1 month
+        else if ((timeInMins.absoluteValue / 60 / 24 / 7 / 4) < 12) { return (timeInMins.absoluteValue / 60 / 24 / 7 / 4).toString().plus(" Months") } //less than one year
+        else if ((timeInMins.absoluteValue / 60 / 24 / 7 / 4 / 12) == 1) { return (timeInMins.absoluteValue / 60 / 24 / 7 / 4 / 12).toString().plus(" Year") } //equal to 1 year
+        else return (timeInMins.absoluteValue / 60 / 24 / 7 / 4 / 12).toString().plus(" Years")
     }
 }

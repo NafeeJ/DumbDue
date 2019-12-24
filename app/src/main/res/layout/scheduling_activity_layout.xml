@@ -31,9 +31,9 @@
         android:layout_below="@id/taskEditText"
         android:layout_alignParentEnd="true"
         android:background="#383838"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#FFFFFF"
-        android:paddingLeft="10dp"/>
+        android:paddingLeft="10dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#FFFFFF" />
 
     <Button
         android:id="@+id/presetButton1"
