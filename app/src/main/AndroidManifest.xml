@@ -22,7 +22,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SchedulingActivity"
-            android:theme="@style/SchedulingTheme" />
+            android:theme="@style/SchedulingTheme"
+            android:windowSoftInputMode="stateVisible"/>
         <receiver android:name=".NotificationReceiver"/>
     </application>
 

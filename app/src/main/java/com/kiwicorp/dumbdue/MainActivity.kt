@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,6 +27,8 @@ class MainActivity : AppCompatActivity() {
         val stopButton: Button = findViewById(R.id.stopNotificationsButton)
         val scheduleButton: Button = findViewById(R.id.scheduleNotificationButton)
 
+        val scheduleFAB:FloatingActionButton = findViewById(R.id.scheduleFAB)
+
         val dateText: TextView = findViewById(R.id.textView)
         dateText.text = dateString
 
@@ -34,15 +37,15 @@ class MainActivity : AppCompatActivity() {
         val pendingIntent = PendingIntent.getBroadcast(applicationContext,notificationID,notificationReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT) //initializes the pending intent to be notification receiver
 
         startButton.setOnClickListener{//sets repeating alarm
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis + 10000,60000,pendingIntent) //sets a repeating alarm that repeats every minute
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis + 10000,60000,pendingIntent) //sets a repeating alarm that repeats every minute
         }
 
         stopButton.setOnClickListener{//stops notifications by canceling pending intents
-                alarmManager.cancel(pendingIntent)
+            alarmManager.cancel(pendingIntent)
         }
 
-        scheduleButton.setOnClickListener{
-                startActivity(Intent(applicationContext,SchedulingActivity::class.java))
+        scheduleFAB.setOnClickListener{
+            startActivity(Intent(applicationContext,SchedulingActivity::class.java))
         }
     }
 }
