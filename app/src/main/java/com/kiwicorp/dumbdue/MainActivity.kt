@@ -25,8 +25,6 @@ class MainActivity : AppCompatActivity() {
 
         val startButton: Button = findViewById(R.id.startNotificationsButton)
         val stopButton: Button = findViewById(R.id.stopNotificationsButton)
-        val scheduleButton: Button = findViewById(R.id.scheduleNotificationButton)
-
         val scheduleFAB:FloatingActionButton = findViewById(R.id.scheduleFAB)
 
         val dateText: TextView = findViewById(R.id.textView)
