@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue
 import android.graphics.Color
-import android.view.View
 import android.widget.*
 
 class SchedulingActivity : Activity() {
@@ -66,35 +65,35 @@ class SchedulingActivity : Activity() {
 
         //adds or subtracts intended unit to intended due date
         buttonPlus10min.setOnClickListener{
-            dueDateCalendar.set(Calendar.MINUTE, dueDateCalendar.get(Calendar.MINUTE) + 10)
+            dueDateCalendar.add(Calendar.MINUTE, 10)
             updateDateTextView(dueDateCalendar)
         }
         buttonMinus10min.setOnClickListener{
-            dueDateCalendar.set(Calendar.MINUTE, dueDateCalendar.get(Calendar.MINUTE) - 10)
+            dueDateCalendar.add(Calendar.MINUTE,  -10)
             updateDateTextView(dueDateCalendar)
         }
         buttonPlus1hr.setOnClickListener{
-            dueDateCalendar.set(Calendar.HOUR, dueDateCalendar.get(Calendar.HOUR) + 1)
+            dueDateCalendar.add(Calendar.HOUR, 1)
             updateDateTextView(dueDateCalendar)
         }
         buttonMinus1hr.setOnClickListener{
-            dueDateCalendar.set(Calendar.HOUR, dueDateCalendar.get(Calendar.HOUR) - 1)
+            dueDateCalendar.add(Calendar.HOUR,  -1)
             updateDateTextView(dueDateCalendar)
         }
         buttonPlus3hr.setOnClickListener{
-            dueDateCalendar.set(Calendar.HOUR, dueDateCalendar.get(Calendar.HOUR) + 3)
+            dueDateCalendar.add(Calendar.HOUR, 3)
             updateDateTextView(dueDateCalendar)
         }
         buttonMinus3hr.setOnClickListener{
-            dueDateCalendar.set(Calendar.HOUR, dueDateCalendar.get(Calendar.HOUR) - 3)
+            dueDateCalendar.add(Calendar.HOUR, - 3)
             updateDateTextView(dueDateCalendar)
         }
         buttonPlus1day.setOnClickListener{
-            dueDateCalendar.set(Calendar.DAY_OF_YEAR, dueDateCalendar.get(Calendar.DAY_OF_YEAR) + 1)
+            dueDateCalendar.add(Calendar.DAY_OF_YEAR, 1)
             updateDateTextView(dueDateCalendar)
         }
         buttonMinus1day.setOnClickListener{
-            dueDateCalendar.set(Calendar.DAY_OF_YEAR, dueDateCalendar.get(Calendar.DAY_OF_YEAR) - 1)
+            dueDateCalendar.add(Calendar.DAY_OF_YEAR,  -1)
             updateDateTextView(dueDateCalendar)
         }
         //sets all preset button functionality

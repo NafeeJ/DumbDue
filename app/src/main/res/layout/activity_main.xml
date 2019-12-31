@@ -22,21 +22,6 @@
         android:layout_centerVertical="true"
         android:text="Press To Stop Notifications" />
 
-    <Button
-        android:id="@+id/scheduleNotificationButton"
-        android:layout_width="335dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/stopNotificationsButton"
-        android:layout_centerHorizontal="true"
-        android:text="Press To Schedule Notification" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@id/startNotificationsButton"
-        android:layout_above="@id/startNotificationsButton" />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/scheduleFAB"
         android:layout_width="wrap_content"
