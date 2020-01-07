@@ -2,6 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#000000">
@@ -34,6 +35,18 @@
         android:paddingLeft="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#FFFFFF" />
+
+    <TextView
+        android:id="@+id/repeatTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dateTextView"
+        android:background="#383838"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:paddingLeft="10dp"
+        android:paddingBottom="5dp"
+        android:textColor="#FFFFFF"
+        tools:visibility="gone" />
 
     <ImageButton
         android:id="@+id/cancelButton"
@@ -69,7 +82,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dateTextView"
+        android:layout_below="@id/repeatTextView"
         android:layout_toStartOf="@id/presetButton2"
         android:background="#252525"
         android:text="9:30 AM"
@@ -80,7 +93,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dateTextView"
+        android:layout_below="@id/repeatTextView"
         android:layout_toStartOf="@id/centerLine"
         android:background="#252525"
         android:text="12:00 PM"
@@ -91,7 +104,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dateTextView"
+        android:layout_below="@id/repeatTextView"
         android:layout_toEndOf="@id/centerLine"
         android:background="#252525"
         android:text="6:30 PM"
@@ -102,7 +115,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dateTextView"
+        android:layout_below="@id/repeatTextView"
         android:layout_toEndOf="@id/presetButton3"
         android:background="#252525"
         android:text="10:00 PM"

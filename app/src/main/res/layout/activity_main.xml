@@ -6,22 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/startNotificationsButton"
-        android:layout_width="335dp"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/stopNotificationsButton"
-        android:layout_centerHorizontal="true"
-        android:text="Press for Notifications" />
-
-    <Button
-        android:id="@+id/stopNotificationsButton"
-        android:layout_width="335dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Press To Stop Notifications" />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/scheduleFAB"
         android:layout_width="wrap_content"
@@ -33,5 +17,9 @@
         android:visibility="visible"
         app:backgroundTint="#000000"
         app:srcCompat="@drawable/add_white" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

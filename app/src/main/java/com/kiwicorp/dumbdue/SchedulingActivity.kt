@@ -4,17 +4,24 @@ import android.os.Bundle
 import android.app.Activity
 import android.util.DisplayMetrics
 import android.view.Gravity
-import kotlinx.android.synthetic.main.scheduling_activity_layout.*
+import kotlinx.android.synthetic.main.layout_scheduling_activity.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue
 import android.graphics.Color
+import android.view.View
 import android.widget.*
 
 class SchedulingActivity : Activity() {
+    private var repeatVal: Int = Reminder.REPEAT_NONE
+
+    private val dateFormatter = SimpleDateFormat("EEE, d MMM, h:mm a") //creates a date format
+    private val timeFormatter = SimpleDateFormat("h:mm a")
+    private val dayOfWeekFormatter = SimpleDateFormat("EEEE")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.scheduling_activity_layout)
+        setContentView(R.layout.layout_scheduling_activity)
 
         val dueDateCalendar: Calendar = Calendar.getInstance() //Calendar with the intended date of notification
 
@@ -25,6 +32,9 @@ class SchedulingActivity : Activity() {
         val width: Int = (displayMetrics.widthPixels * 0.95).toInt()
         val height: Int = displayMetrics.heightPixels / 3
         window.setLayout(width,RelativeLayout.LayoutParams.WRAP_CONTENT)
+
+        val repeatTextView: TextView = findViewById(R.id.repeatTextView)
+        repeatTextView.visibility = View.GONE
 
         //initialize all buttons
         val buttonPlus10min: Button = findViewById(R.id.plus10minbutton)
@@ -115,19 +125,50 @@ class SchedulingActivity : Activity() {
         }
 
         cancelButton.setOnClickListener{ finish() }
-        addButton.setOnClickListener { finish() }
+        addButton.setOnClickListener {
+            Reminder(taskEditText.text.toString(),dueDateCalendar,repeatVal,applicationContext)
+            finish()
+        }
         repeatButton.setOnClickListener {
             //create and show popup menu
             val popup = PopupMenu(this,findViewById(R.id.repeatButton))
             popup.inflate(R.menu.repeat_popup_menu)
             popup.show()
 
-            val timeFormatter = SimpleDateFormat("h:mm a")
-            val dayOfWeekFomatter = SimpleDateFormat("EEEE")
             //sets item text
-            popup.menu.getItem(0).title = "Daily ".plus(timeFormatter.format(dueDateCalendar.time))
-            popup.menu.getItem(1).title = dayOfWeekFomatter.format(dueDateCalendar.get(Calendar.DAY_OF_WEEK)).plus("s ").plus(timeFormatter.format(dueDateCalendar.time))
-            popup.menu.getItem(2).title = dueDateCalendar.get(Calendar.DAY_OF_MONTH).toString().plus(daySuffixFinder(dueDateCalendar)).plus(" each month at ").plus(timeFormatter.format(dueDateCalendar.time))
+            popup.menu.getItem(1).title = "Daily ".plus(timeFormatter.format(dueDateCalendar.time))
+            popup.menu.getItem(2).title = dayOfWeekFormatter.format(dueDateCalendar.get(Calendar.DAY_OF_WEEK)).plus("s ").plus(timeFormatter.format(dueDateCalendar.time))
+            popup.menu.getItem(3).title = dueDateCalendar.get(Calendar.DAY_OF_MONTH).toString().plus(daySuffixFinder(dueDateCalendar)).plus(" each month at ").plus(timeFormatter.format(dueDateCalendar.time))
+            //changes repeatVal based off of which menu item clicked
+            popup.setOnMenuItemClickListener {
+                when(it.itemId) {
+                    R.id.menu_none -> {
+                        repeatVal = Reminder.REPEAT_NONE
+                        repeatTextView.visibility = View.GONE
+                        true
+                    }
+                    R.id.menu_daily -> {
+                        repeatVal = Reminder.REPEAT_DAILY
+                        repeatTextView.text =  "Daily ".plus(timeFormatter.format(dueDateCalendar.time))
+                        repeatTextView.visibility = View.VISIBLE
+                        true
+                    }
+                    R.id.menu_weekly -> {
+                        repeatVal = Reminder.REPEAT_WEEKLY
+                        repeatTextView.text = dayOfWeekFormatter.format(dueDateCalendar.get(Calendar.DAY_OF_WEEK)).plus("s ").plus(timeFormatter.format(dueDateCalendar.time))
+                        repeatTextView.visibility = View.VISIBLE
+                        true
+                    }
+                    R.id.menu_monthly -> {
+                        repeatVal = Reminder.REPEAT_MONTHLY
+                        repeatTextView.text = dueDateCalendar.get(Calendar.DAY_OF_MONTH).toString().plus(daySuffixFinder(dueDateCalendar)).plus(" each month at ").plus(timeFormatter.format(dueDateCalendar.time))
+                        repeatTextView.visibility = View.VISIBLE
+                        true
+                    }
+
+                    else -> false
+                }
+            }
         }
 
     }
@@ -141,15 +182,24 @@ class SchedulingActivity : Activity() {
 
         fromNowMins += (fromNowHours * 60) + (fromNowDays * 24 * 60) + (fromNowYears * 525600) //Add the other time unit differences, in minutes, to fromNowMins
 
-        val dateFormatter = SimpleDateFormat("EEE, d MMM, h:mm a") //creates a date format
+        //updates repeatTextView's text
+        if (repeatVal == Reminder.REPEAT_DAILY) {
+            repeatTextView.text =  "Daily ".plus(timeFormatter.format(dueDateCalendar.time))
+        } else if (repeatVal == Reminder.REPEAT_WEEKLY) {
+            repeatTextView.text = dayOfWeekFormatter.format(dueDateCalendar.get(Calendar.DAY_OF_WEEK)).plus("s ").plus(timeFormatter.format(dueDateCalendar.time))
+        } else if (repeatVal == Reminder.REPEAT_MONTHLY) {
+            repeatTextView.text = dueDateCalendar.get(Calendar.DAY_OF_MONTH).toString().plus(daySuffixFinder(dueDateCalendar)).plus(" each month at ").plus(timeFormatter.format(dueDateCalendar.time))
+        }
 
         if (fromNowMins >= 0) { //if time from now is positive or the same, updates text to be in format: "Date in fromNowMins (units)" and sets grey background color
             dateTextView.text = dateFormatter.format(dueDateCalendar.time).plus(" in ").plus(findTimeFromNowString(fromNowMins))
             dateTextView.setBackgroundColor(Color.parseColor("#383838"))
+            repeatTextView.setBackgroundColor(Color.parseColor("#383838"))
         }
         else { //if time from now is negative, updates text to be in format: "Date fromNowMins (units) ago" and sets red background color
             dateTextView.text = dateFormatter.format(dueDateCalendar.time).plus(" ").plus(findTimeFromNowString(fromNowMins)).plus(" ago")
             dateTextView.setBackgroundColor(Color.parseColor("#ad0000"))
+            repeatTextView.setBackgroundColor(Color.parseColor("#ad0000"))
         }
     }
 
