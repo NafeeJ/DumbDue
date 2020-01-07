@@ -27,22 +27,28 @@ class Reminder(text: String,remindCalendar: Calendar,repeatVal: Int,context: Con
     private var context: Context
     private var requestCode: Int = 0 //reminder's unique requestCode for pending intent
 
+    private val alarmManager: AlarmManager
+    private val interMediateReceiverIntent: Intent
+    private val intermediateReceiverPendingIntent: PendingIntent
+    private val intermediateReceiver: IntermediateReceiver
+
     init {
         this.text = text
         this.remindCalendar = remindCalendar
         this.repeatVal = repeatVal
         this.context = context
         this.requestCode = ++globalRequestCode
+        this.alarmManager = this.context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        this.interMediateReceiverIntent = Intent(this.context,IntermediateReceiver::class.java)
+        this.intermediateReceiverPendingIntent = PendingIntent.getBroadcast(this.context,this.requestCode,interMediateReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT)
+        this.intermediateReceiver = IntermediateReceiver(requestCode)
 
         reminderList.add(this)
         setAlarm(this.remindCalendar)
     }
 
-    private val alarmManager: AlarmManager =  this.context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    private val interMediateReceiverIntent = Intent(this.context,IntermediateReceiver::class.java)
-    private val intermediateReceiverPendingIntent = PendingIntent.getBroadcast(this.context,this.requestCode,interMediateReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT)
 
-    private val intermediateReceiver = IntermediateReceiver(requestCode)
+
 
     fun getText(): String {
         return this.text
@@ -69,7 +75,7 @@ class Reminder(text: String,remindCalendar: Calendar,repeatVal: Int,context: Con
     }
 
     private fun setAlarm(remindCalendar: Calendar) {
-        this.alarmManager.setExact(AlarmManager.RTC_WAKEUP,remindCalendar.timeInMillis,this.intermediateReceiverPendingIntent)
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP,remindCalendar.timeInMillis,this.intermediateReceiverPendingIntent)
     }
 
     fun complete() {

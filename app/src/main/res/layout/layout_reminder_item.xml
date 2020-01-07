@@ -18,7 +18,7 @@
         android:textSize="20sp" />
 
     <TextView
-        android:id="@+id/timeFromNowTextView"
+        android:id="@+id/dateOrRepeatTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/reminderTextView"
@@ -32,7 +32,7 @@
         android:textColor="#525252" />
 
     <TextView
-        android:id="@+id/dateOrRepeatTextView"
+        android:id="@+id/timeFromNowTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -48,7 +48,7 @@
     <View
         android:id="@+id/colorBar"
         android:layout_width="5dp"
-        android:layout_height="match_parent"
+        android:layout_height="60dp"
         android:background="#ff0000"/>
 
 </RelativeLayout>
