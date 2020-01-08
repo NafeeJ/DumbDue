@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var items: List<Reminder> = LinkedList()
+    private lateinit var items: List<Reminder>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ReminderViewHolder(

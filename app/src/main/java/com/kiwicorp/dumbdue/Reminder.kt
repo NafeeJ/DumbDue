@@ -18,7 +18,6 @@ class Reminder(text: String,remindCalendar: Calendar,repeatVal: Int,context: Con
         //request code used to keep track and make sure all pending intents are unique
         var globalRequestCode: Int = 0
 
-        val reminderList: LinkedList<Reminder> = LinkedList()
     }
 
     private var text: String
@@ -43,12 +42,9 @@ class Reminder(text: String,remindCalendar: Calendar,repeatVal: Int,context: Con
         this.intermediateReceiverPendingIntent = PendingIntent.getBroadcast(this.context,this.requestCode,interMediateReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT)
         this.intermediateReceiver = IntermediateReceiver(requestCode)
 
-        reminderList.add(this)
+        MainActivity.reminderList.add(this)
         setAlarm(this.remindCalendar)
     }
-
-
-
 
     fun getText(): String {
         return this.text
@@ -81,7 +77,7 @@ class Reminder(text: String,remindCalendar: Calendar,repeatVal: Int,context: Con
     fun complete() {
         this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
         intermediateReceiver.cancelAlarm()//cancels the repeating alarms
-        reminderList.remove(this)
+        MainActivity.reminderList.remove(this)
 
         if (repeatVal != 0) {
             if (repeatVal == 1) {//repeat daily
@@ -103,7 +99,7 @@ class Reminder(text: String,remindCalendar: Calendar,repeatVal: Int,context: Con
     fun cancel() {
         this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
         intermediateReceiver.cancelAlarm()//cancels the repeating alarms
-        reminderList.remove(this)
+        MainActivity.reminderList.remove(this)
     }
 
 }
