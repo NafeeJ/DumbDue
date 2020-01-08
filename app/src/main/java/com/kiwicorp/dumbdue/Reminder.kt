@@ -7,7 +7,7 @@ import android.content.Intent
 import java.util.*
 
 
-class Reminder(text: String,remindCalendar: Calendar,repeatVal: Int,context: Context) {
+class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: Context) {
 
     companion object {
         //const vals used to determine the user's desired repeat frequency
@@ -43,39 +43,39 @@ class Reminder(text: String,remindCalendar: Calendar,repeatVal: Int,context: Con
         this.intermediateReceiverPendingIntent = PendingIntent.getBroadcast(this.context,this.requestCode,interMediateReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT)
         this.intermediateReceiver = IntermediateReceiver(requestCode)
 
-        reminderList.add(this)
+        addInSort(reminderList, this)
         setAlarm(this.remindCalendar)
     }
 
+    fun getText(): String { return this.text }
 
+    fun setText(text: String) { this.text = text }
 
+    fun getRemindCalendar(): Calendar { return this.remindCalendar }
 
-    fun getText(): String {
-        return this.text
-    }
+    fun setRemindCalendar(remindCalendar: Calendar) { this.remindCalendar = remindCalendar }
 
-    fun setText(text: String) {
-        this.text = text
-    }
+    fun getRepeatVal(): Int { return this.repeatVal }
 
-    fun getRemindCalendar(): Calendar{
-        return this.remindCalendar
-    }
+    fun setRepeatVal(repeatVal: Int) { this.repeatVal = repeatVal }
 
-    fun setRemindCalendar(remindCalendar: Calendar) {
-        this.remindCalendar = remindCalendar
-    }
+    private fun setAlarm(remindCalendar: Calendar) { alarmManager.setExact(AlarmManager.RTC_WAKEUP,remindCalendar.timeInMillis,this.intermediateReceiverPendingIntent) }
 
-    fun getRepeatVal(): Int{
-        return this.repeatVal
-    }
+    private fun addInSort(list: LinkedList<Reminder>, reminder: Reminder) {
+        if (list.size == 0 || (list.size == 1 && list.first.getRemindCalendar().timeInMillis > reminder.getRemindCalendar().timeInMillis)) {
+            list.addFirst(reminder)
+            return
+        }
 
-    fun setRepeatVal(repeatVal: Int) {
-        this.repeatVal = repeatVal
-    }
+        val iterator = list.listIterator()
+        for (element in iterator) {
+            if (element.getRemindCalendar().timeInMillis > reminder.getRemindCalendar().timeInMillis) {
+                list.add(iterator.previousIndex(), reminder)
+                return
+            }
+        }
 
-    private fun setAlarm(remindCalendar: Calendar) {
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,remindCalendar.timeInMillis,this.intermediateReceiverPendingIntent)
+        list.add(reminder)
     }
 
     fun complete() {
@@ -88,11 +88,13 @@ class Reminder(text: String,remindCalendar: Calendar,repeatVal: Int,context: Con
                 remindCalendar.add(Calendar.DAY_OF_YEAR, 1)
                 Reminder(this.text,this.remindCalendar,this.repeatVal,this.context)
 
-            } else if (repeatVal == 2) {//repeat weekly
+            }
+            else if (repeatVal == 2) {//repeat weekly
                 remindCalendar.add(Calendar.WEEK_OF_YEAR, 1)
                 Reminder(this.text,this.remindCalendar,this.repeatVal,this.context)
 
-            } else if (repeatVal == 3) {//repeat monthly
+            }
+            else if (repeatVal == 3) {//repeat monthly
                 remindCalendar.add(Calendar.MONTH, 1)
                 Reminder(this.text,this.remindCalendar,this.repeatVal,this.context)
 

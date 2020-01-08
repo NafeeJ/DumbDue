@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private var items: List<Reminder> = LinkedList()
+    private var items: LinkedList<Reminder> = Reminder.reminderList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ReminderViewHolder(
@@ -31,9 +31,9 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         }
     }
 
-    fun submitList(reminderList: List<Reminder>) {
-        items = reminderList
-    }
+//    fun submitList(reminderList: LinkedList<Reminder>) {
+//        items = reminderList
+//    }
 
     class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val reminderTextView: TextView = itemView.reminderTextView

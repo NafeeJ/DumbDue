@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 
         val scheduleFAB:FloatingActionButton = findViewById(R.id.scheduleFAB)
         initRecyclerView()
-        addDataSet()
+//        addDataSet()
 
         scheduleFAB.setOnClickListener{
             startActivity(Intent(applicationContext,SchedulingActivity::class.java))
@@ -82,8 +82,8 @@ class MainActivity : AppCompatActivity() {
             adapter = reminderAdapter
         }
     }
-    private fun addDataSet() {
-        reminderAdapter.submitList(Reminder.reminderList)
-    }
+//    private fun addDataSet() {
+//        reminderAdapter.submitList(Reminder.reminderList)
+//    }
 }
 
