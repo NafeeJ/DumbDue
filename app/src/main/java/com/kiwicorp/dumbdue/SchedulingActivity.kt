@@ -75,35 +75,35 @@ class SchedulingActivity : Activity() {
 
         //adds or subtracts intended unit to intended due date
         buttonPlus10min.setOnClickListener{
-            dueDateCalendar.add(Calendar.MINUTE, 10)
+            dueDateCalendar.add(Calendar.MINUTE,10)
             updateDateTextView(dueDateCalendar)
         }
         buttonMinus10min.setOnClickListener{
-            dueDateCalendar.add(Calendar.MINUTE,  -10)
+            dueDateCalendar.add(Calendar.MINUTE,-10)
             updateDateTextView(dueDateCalendar)
         }
         buttonPlus1hr.setOnClickListener{
-            dueDateCalendar.add(Calendar.HOUR, 1)
+            dueDateCalendar.add(Calendar.HOUR,1)
             updateDateTextView(dueDateCalendar)
         }
         buttonMinus1hr.setOnClickListener{
-            dueDateCalendar.add(Calendar.HOUR,  -1)
+            dueDateCalendar.add(Calendar.HOUR,-1)
             updateDateTextView(dueDateCalendar)
         }
         buttonPlus3hr.setOnClickListener{
-            dueDateCalendar.add(Calendar.HOUR, 3)
+            dueDateCalendar.add(Calendar.HOUR,3)
             updateDateTextView(dueDateCalendar)
         }
         buttonMinus3hr.setOnClickListener{
-            dueDateCalendar.add(Calendar.HOUR, - 3)
+            dueDateCalendar.add(Calendar.HOUR,-3)
             updateDateTextView(dueDateCalendar)
         }
         buttonPlus1day.setOnClickListener{
-            dueDateCalendar.add(Calendar.DAY_OF_YEAR, 1)
+            dueDateCalendar.add(Calendar.DAY_OF_YEAR,1)
             updateDateTextView(dueDateCalendar)
         }
         buttonMinus1day.setOnClickListener{
-            dueDateCalendar.add(Calendar.DAY_OF_YEAR,  -1)
+            dueDateCalendar.add(Calendar.DAY_OF_YEAR,-1)
             updateDateTextView(dueDateCalendar)
         }
         //sets all preset button functionality
@@ -165,7 +165,6 @@ class SchedulingActivity : Activity() {
                         repeatTextView.visibility = View.VISIBLE
                         true
                     }
-
                     else -> false
                 }
             }
