@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         //Shared Preferences Keys
         val prefs: String = "Preferences"
         val remindersListKey: String = "RemindersListKey"
-        val globalIndexKey: String = "GlobalIndexKey"
+        val globalRequestCodeKey: String = "GlobalRequestCodeKey"
 
         var notificationID = 0 //used to keep notifications unique thus allowing notifications to stack
 
@@ -129,13 +129,13 @@ class MainActivity : AppCompatActivity() {
         val myGson = Gson()
         val myJson: String = myGson.toJson(Reminder.globalRequestCode)
         val editor: SharedPreferences.Editor = sharedPreferences.edit()
-        editor.putString(globalIndexKey, myJson)
+        editor.putString(globalRequestCodeKey, myJson)
         editor.apply()
     }
     private fun loadGlobalRequestCode() {//loads global index from shared preferences
         val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
         val gson = Gson()
-        val json = sharedPreferences.getString(globalIndexKey, gson.toJson(0))
+        val json = sharedPreferences.getString(globalRequestCodeKey, gson.toJson(0))
         val intType = object : TypeToken<Int>() {}.type
         val indexFromJson = gson.fromJson<Int>(json,intType)
         Reminder.globalRequestCode = indexFromJson
