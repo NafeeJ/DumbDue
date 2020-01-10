@@ -7,7 +7,7 @@ import android.content.Intent
 import java.util.*
 
 
-class Reminder(text: String,remindCalendar: Calendar,repeatVal: Int,context: Context) {
+class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: Context) {
 
     companion object {
         //const vals used to determine the user's desired repeat frequency
@@ -17,19 +17,18 @@ class Reminder(text: String,remindCalendar: Calendar,repeatVal: Int,context: Con
         const val REPEAT_MONTHLY: Int = 3
         //request code used to keep track and make sure all pending intents are unique
         var globalRequestCode: Int = 0
-
     }
 
     private var text: String
     private var remindCalendar: Calendar //calendar with date to remind
-    private var repeatVal: Int = 0 //val for user's desired repeat frequency
-    private var context: Context
-    private var requestCode: Int = 0 //reminder's unique requestCode for pending intent
+    @Transient private var repeatVal: Int = 0 //val for user's desired repeat frequency
+    @Transient private var context: Context
+    @Transient private var requestCode: Int = 0 //reminder's unique requestCode for pending intent
 
-    private val alarmManager: AlarmManager
-    private val interMediateReceiverIntent: Intent
-    private val intermediateReceiverPendingIntent: PendingIntent
-    private val intermediateReceiver: IntermediateReceiver
+    @Transient private val alarmManager: AlarmManager
+    @Transient private val interMediateReceiverIntent: Intent
+    @Transient private val intermediateReceiverPendingIntent: PendingIntent
+    @Transient private val intermediateReceiver: IntermediateReceiver
 
     init {
         this.text = text
@@ -46,33 +45,19 @@ class Reminder(text: String,remindCalendar: Calendar,repeatVal: Int,context: Con
         setAlarm(this.remindCalendar)
     }
 
-    fun getText(): String {
-        return this.text
-    }
+    fun getText(): String { return this.text }
 
-    fun setText(text: String) {
-        this.text = text
-    }
+    fun setText(text: String) { this.text = text }
 
-    fun getRemindCalendar(): Calendar{
-        return this.remindCalendar
-    }
+    fun getRemindCalendar(): Calendar{ return this.remindCalendar }
 
-    fun setRemindCalendar(remindCalendar: Calendar) {
-        this.remindCalendar = remindCalendar
-    }
+    fun setRemindCalendar(remindCalendar: Calendar) { this.remindCalendar = remindCalendar }
 
-    fun getRepeatVal(): Int{
-        return this.repeatVal
-    }
+    fun getRepeatVal(): Int{ return this.repeatVal }
 
-    fun setRepeatVal(repeatVal: Int) {
-        this.repeatVal = repeatVal
-    }
+    fun setRepeatVal(repeatVal: Int) { this.repeatVal = repeatVal }
 
-    private fun setAlarm(remindCalendar: Calendar) {
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,remindCalendar.timeInMillis,this.intermediateReceiverPendingIntent)
-    }
+    private fun setAlarm(remindCalendar: Calendar) { alarmManager.setExact(AlarmManager.RTC_WAKEUP,remindCalendar.timeInMillis,this.intermediateReceiverPendingIntent) }
 
     fun complete() {
         this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
@@ -91,7 +76,6 @@ class Reminder(text: String,remindCalendar: Calendar,repeatVal: Int,context: Con
             } else if (repeatVal == 3) {//repeat monthly
                 remindCalendar.add(Calendar.MONTH, 1)
                 Reminder(this.text,this.remindCalendar,this.repeatVal,this.context)
-
             }
         }
     }

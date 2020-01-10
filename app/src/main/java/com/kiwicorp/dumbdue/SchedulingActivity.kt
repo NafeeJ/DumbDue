@@ -7,7 +7,6 @@ import android.view.Gravity
 import kotlinx.android.synthetic.main.layout_scheduling_activity.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.absoluteValue
 import android.graphics.Color
 import android.view.View
 import android.widget.*

@@ -5,23 +5,23 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.recycler_view
-import kotlinx.android.synthetic.main.activity_main.view.*
-import java.lang.reflect.Type
 import java.util.*
 import kotlin.math.absoluteValue
 
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        var reminderList: LinkedList<Reminder> = LinkedList()
+        var reminderList: ArrayList<Reminder> = ArrayList()
+
+        //Shared Preferences Keys
+        val Prefs: String = "Preferences"
+        val Reminders: String = "RemindersKey"
 
         var notificationID = 0 //used to keep notifications unique thus allowing notifications to stack
 
@@ -73,13 +73,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //loads reminder list
-        val sharedPreferences = getSharedPreferences("shared preferences", Context.MODE_PRIVATE)
-        val gson = Gson()
-        val json = sharedPreferences.getString("reminder list","")
-        val reminderListType = object : TypeToken<LinkedList<Reminder>>() {}.type
-        MainActivity.reminderList = gson.fromJson<LinkedList<Reminder>>(json,reminderListType)
 
+        //Load Shared Preferences into Reminders List
+        val sharedPreferences = getSharedPreferences(Prefs, Context.MODE_PRIVATE)
+        val gson = Gson()
+        val json: String = sharedPreferences.getString(Reminders, "").toString()
+
+        if (json.isNotEmpty()) {
+            val reminderListType = object : TypeToken<ArrayList<Reminder>>() {}.type
+            val listFromJson = gson.fromJson<ArrayList<Reminder>>(json,reminderListType)
+            reminderList = listFromJson
+        }
+        
         val scheduleFAB: FloatingActionButton = findViewById(R.id.scheduleFAB)
 
         initRecyclerView()
@@ -92,17 +97,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         saveFAB.setOnClickListener{
-            //saves reminder list
-            val gson = Gson()
-            val sharedPreferences = getSharedPreferences("shared preferences",Context.MODE_PRIVATE)
+            //Save Reminder List to Shared Preferences
+            val mygson = Gson()
+            val myjson: String = mygson.toJson(reminderList)
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
-            val jsonString : String = gson.toJson(MainActivity.reminderList)
-            editor.putString("reminder list", jsonString)
+            editor.putString(Reminders, myjson)
             editor.apply()
         }
-
     }
-
 
     private fun initRecyclerView() {
         recycler_view.apply {
@@ -111,8 +113,7 @@ class MainActivity : AppCompatActivity() {
             adapter = reminderAdapter
         }
     }
-    private fun addDataSet() {
-        reminderAdapter.submitList(MainActivity.reminderList)
-    }
+
+    private fun addDataSet() { reminderAdapter.submitList(reminderList) }
 }
 
