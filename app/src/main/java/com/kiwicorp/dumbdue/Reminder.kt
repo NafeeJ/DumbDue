@@ -65,6 +65,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         }
 
         reminderList.add(reminder)
+        MainActivity.reminderAdapter.notifyDataSetChanged()
     }
 
     fun getText(): String { return this.text }
@@ -85,6 +86,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
         intermediateReceiver.cancelAlarm()//cancels the repeating alarms
         reminderList.remove(this)
+        MainActivity.saveAll(this.context)
 
         if (repeatVal != 0) {
             if (repeatVal == REPEAT_DAILY) {
@@ -106,6 +108,6 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
         intermediateReceiver.cancelAlarm()//cancels the repeating alarms
         reminderList.remove(this)
+        MainActivity.saveAll(this.context)
     }
-
 }

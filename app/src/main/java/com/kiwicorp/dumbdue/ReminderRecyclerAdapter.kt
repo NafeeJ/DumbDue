@@ -73,8 +73,6 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
             } else {//if the reminder is not repeating display the date
                dateOrRepeatTextView.text = dateFormatter.format(reminder.getRemindCalendar().time)
             }
-
         }
     }
-
 }

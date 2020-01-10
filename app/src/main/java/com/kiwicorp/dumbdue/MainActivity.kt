@@ -90,8 +90,7 @@ class MainActivity : AppCompatActivity() {
         
         val scheduleFAB: FloatingActionButton = findViewById(R.id.scheduleFAB)
 
-        loadList()
-        loadGlobalRequestCode()
+        loadAll()
         initRecyclerView()
         addDataSet()
 
@@ -109,25 +108,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun addDataSet() { reminderAdapter.submitList(Reminder.reminderList) }
 
-    private fun loadList() {//load list from shared preferences
+    private fun loadAll() {//load list from shared preferences
         val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
         val gson = Gson()
+
         val emptyListJson = gson.toJson(LinkedList<Reminder>())//creates an empty list for when the ReminderList has not been initialized yet
-        val json = sharedPreferences.getString(remindersListKey, emptyListJson)
+        val listJson = sharedPreferences.getString(remindersListKey, emptyListJson)
         val reminderListType = object : TypeToken<LinkedList<Reminder>>() {}.type
-        val listFromJson = gson.fromJson<LinkedList<Reminder>>(json,reminderListType)
+        val listFromJson = gson.fromJson<LinkedList<Reminder>>(listJson,reminderListType)
         Reminder.reminderList = listFromJson
-    }
 
-
-    private fun loadGlobalRequestCode() {//loads global index from shared preferences
-        val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
-        val gson = Gson()
-        val json = sharedPreferences.getString(globalRequestCodeKey, gson.toJson(0))
+        val requestCodeJson = sharedPreferences.getString(globalRequestCodeKey, gson.toJson(0))
         val intType = object : TypeToken<Int>() {}.type
-        val indexFromJson = gson.fromJson<Int>(json,intType)
+        val indexFromJson = gson.fromJson<Int>(requestCodeJson,intType)
         Reminder.globalRequestCode = indexFromJson
     }
-
 }
-
