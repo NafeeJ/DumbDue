@@ -12,7 +12,6 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_main.recycler_view
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
 
 
@@ -117,10 +116,10 @@ class MainActivity : AppCompatActivity() {
     private fun loadList() {//load list from shared preferences
         val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
         val gson = Gson()
-        val emptyListJson = gson.toJson(ArrayList<Reminder>())//creates an empty list for when the ReminderList has not been initialized yet
+        val emptyListJson = gson.toJson(LinkedList<Reminder>())//creates an empty list for when the ReminderList has not been initialized yet
         val json = sharedPreferences.getString(remindersListKey, emptyListJson)
-        val reminderListType = object : TypeToken<ArrayList<Reminder>>() {}.type
-        val listFromJson = gson.fromJson<ArrayList<Reminder>>(json,reminderListType)
+        val reminderListType = object : TypeToken<LinkedList<Reminder>>() {}.type
+        val listFromJson = gson.fromJson<LinkedList<Reminder>>(json,reminderListType)
         Reminder.reminderList = listFromJson
     }
 
@@ -141,5 +140,9 @@ class MainActivity : AppCompatActivity() {
         Reminder.globalRequestCode = indexFromJson
     }
 
+    fun saveAll() {
+        saveList()
+        saveGlobalRequestCode()
+    }
 }
 

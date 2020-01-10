@@ -18,7 +18,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         //request code used to keep track and make sure all pending intents are unique
         var globalRequestCode: Int = 0
 
-        var reminderList: ArrayList<Reminder> = ArrayList()
+        var reminderList: LinkedList<Reminder> = LinkedList()
     }
 
     private var text: String
@@ -31,6 +31,8 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
     private val interMediateReceiverIntent: Intent
     private val intermediateReceiverPendingIntent: PendingIntent
     private val intermediateReceiver: IntermediateReceiver
+    
+    private val mainActivity: MainActivity = MainActivity()
 
     init {
         this.text = text
@@ -43,8 +45,26 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         this.intermediateReceiverPendingIntent = PendingIntent.getBroadcast(this.context,this.requestCode,interMediateReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT)
         this.intermediateReceiver = IntermediateReceiver(requestCode)
 
-        reminderList.add(this)
+        insertInOrder(reminderList, this)
+        mainActivity.saveAll()
         setAlarm(this.remindCalendar)
+    }
+
+    fun insertInOrder(reminderList: LinkedList<Reminder>, reminder: Reminder) {
+        if (reminderList.size == 0) {
+            reminderList.add(reminder)
+            return
+        }
+
+        val iterator = reminderList.listIterator()
+        for (element in iterator) {
+            if (element.getRemindCalendar().timeInMillis > reminder.getRemindCalendar().timeInMillis) {
+                reminderList.add(iterator.previousIndex(), reminder)
+                return
+            }
+        }
+
+        reminderList.add(reminder)
     }
 
     fun getText(): String { return this.text }
