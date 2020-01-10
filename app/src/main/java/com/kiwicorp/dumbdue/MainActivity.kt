@@ -66,6 +66,20 @@ class MainActivity : AppCompatActivity() {
             fromNowMins += (fromNowHours * 60) + (fromNowDays * 24 * 60) + (fromNowYears * 525600) //Add the other time unit differences, in minutes, to fromNowMins
             return fromNowMins
         }
+        fun saveAll(context: Context) {
+
+            val sharedPreferences = context.getSharedPreferences(prefs, Context.MODE_PRIVATE)
+            val myGson = Gson()
+            val editor: SharedPreferences.Editor = sharedPreferences.edit()
+
+            val requestCodeJson: String = myGson.toJson(Reminder.globalRequestCode)
+            editor.putString(globalRequestCodeKey, requestCodeJson)
+
+            val listJson: String = myGson.toJson(Reminder.reminderList)
+            editor.putString(remindersListKey, listJson)
+
+            editor.apply()
+        }
     }
 
     private lateinit var reminderAdapter: ReminderRecyclerAdapter
@@ -86,15 +100,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {//saves global index and list before activity is destroyed
-        /* NAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        FEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-        FIX ME */
-        saveGlobalRequestCode()
-        saveList()
-        super.onDestroy()
-    }
-
     private fun initRecyclerView() {
         recycler_view.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -105,14 +110,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun addDataSet() { reminderAdapter.submitList(Reminder.reminderList) }
 
-    private fun saveList() {//save reminder list to shared preferences
-        val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
-        val myGson = Gson()
-        val myJson: String = myGson.toJson(Reminder.reminderList)
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
-        editor.putString(remindersListKey, myJson)
-        editor.apply()
-    }
     private fun loadList() {//load list from shared preferences
         val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
         val gson = Gson()
@@ -123,14 +120,7 @@ class MainActivity : AppCompatActivity() {
         Reminder.reminderList = listFromJson
     }
 
-    private fun saveGlobalRequestCode() {//saves global index to shared preferences
-        val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
-        val myGson = Gson()
-        val myJson: String = myGson.toJson(Reminder.globalRequestCode)
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
-        editor.putString(globalRequestCodeKey, myJson)
-        editor.apply()
-    }
+
     private fun loadGlobalRequestCode() {//loads global index from shared preferences
         val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
         val gson = Gson()
@@ -140,9 +130,5 @@ class MainActivity : AppCompatActivity() {
         Reminder.globalRequestCode = indexFromJson
     }
 
-    fun saveAll() {
-        saveList()
-        saveGlobalRequestCode()
-    }
 }
 

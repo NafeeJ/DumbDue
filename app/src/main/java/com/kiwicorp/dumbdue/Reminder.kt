@@ -31,8 +31,6 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
     private val interMediateReceiverIntent: Intent
     private val intermediateReceiverPendingIntent: PendingIntent
     private val intermediateReceiver: IntermediateReceiver
-    
-    private val mainActivity: MainActivity = MainActivity()
 
     init {
         this.text = text
@@ -46,7 +44,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         this.intermediateReceiver = IntermediateReceiver(requestCode)
 
         insertInOrder(reminderList, this)
-        mainActivity.saveAll()
+        MainActivity.saveAll(this.context)
         setAlarm(this.remindCalendar)
     }
 
