@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         val scheduleFAB: FloatingActionButton = findViewById(R.id.scheduleFAB)
 
         loadList()
-        loadGlobalIndex()
+        loadGlobalRequestCode()
         initRecyclerView()
         addDataSet()
 
@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
         /* NAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         FEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
         FIX ME */
-        saveGlobalIndex()
+        saveGlobalRequestCode()
         saveList()
         super.onDestroy()
     }
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun addDataSet() { reminderAdapter.submitList(Reminder.reminderList) }
 
-    fun saveList() {//save reminder list to shared preferences
+    private fun saveList() {//save reminder list to shared preferences
         val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
         val myGson = Gson()
         val myJson: String = myGson.toJson(Reminder.reminderList)
@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
         Reminder.reminderList = listFromJson
     }
 
-    fun saveGlobalIndex() {//saves global index to shared preferences
+    private fun saveGlobalRequestCode() {//saves global index to shared preferences
         val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
         val myGson = Gson()
         val myJson: String = myGson.toJson(Reminder.globalRequestCode)
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
         editor.putString(globalIndexKey, myJson)
         editor.apply()
     }
-    private fun loadGlobalIndex() {//loads global index from shared preferences
+    private fun loadGlobalRequestCode() {//loads global index from shared preferences
         val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
         val gson = Gson()
         val json = sharedPreferences.getString(globalIndexKey, gson.toJson(0))

@@ -15,7 +15,7 @@
         android:layout_margin="16dp"
         android:clickable="true"
         android:visibility="visible"
-        app:backgroundTint="#000000"
+        app:backgroundTint="#252525"
         app:srcCompat="@drawable/add_white" />
 
     <androidx.recyclerview.widget.RecyclerView
