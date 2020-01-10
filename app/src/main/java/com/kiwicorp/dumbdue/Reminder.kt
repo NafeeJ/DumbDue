@@ -48,9 +48,10 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         setAlarm(this.remindCalendar)
     }
 
-    fun insertInOrder(reminderList: LinkedList<Reminder>, reminder: Reminder) {
-        if (reminderList.size == 0) {
+    private fun insertInOrder(reminderList: LinkedList<Reminder>, reminder: Reminder) {
+        if (reminderList.isEmpty()) {
             reminderList.add(reminder)
+            MainActivity.reminderAdapter.notifyDataSetChanged()
             return
         }
 
@@ -58,6 +59,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         for (element in iterator) {
             if (element.getRemindCalendar().timeInMillis > reminder.getRemindCalendar().timeInMillis) {
                 reminderList.add(iterator.previousIndex(), reminder)
+                MainActivity.reminderAdapter.notifyDataSetChanged()
                 return
             }
         }

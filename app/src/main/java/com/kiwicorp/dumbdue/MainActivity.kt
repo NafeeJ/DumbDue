@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         val remindersListKey: String = "RemindersListKey"
         val globalRequestCodeKey: String = "GlobalRequestCodeKey"
 
+        val reminderAdapter = ReminderRecyclerAdapter()
+
         var notificationID = 0 //used to keep notifications unique thus allowing notifications to stack
 
         fun daySuffixFinder(calendar: Calendar): String {
@@ -71,18 +73,16 @@ class MainActivity : AppCompatActivity() {
             val sharedPreferences = context.getSharedPreferences(prefs, Context.MODE_PRIVATE)
             val myGson = Gson()
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
-
+            //put global request code as a json
             val requestCodeJson: String = myGson.toJson(Reminder.globalRequestCode)
             editor.putString(globalRequestCodeKey, requestCodeJson)
-
+            //puts reminder list as a json
             val listJson: String = myGson.toJson(Reminder.reminderList)
             editor.putString(remindersListKey, listJson)
 
             editor.apply()
         }
     }
-
-    private lateinit var reminderAdapter: ReminderRecyclerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +103,6 @@ class MainActivity : AppCompatActivity() {
     private fun initRecyclerView() {
         recycler_view.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            reminderAdapter = ReminderRecyclerAdapter()
             adapter = reminderAdapter
         }
     }

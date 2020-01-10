@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.layout_reminder_item.view.*
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var items: List<Reminder>
@@ -70,8 +72,7 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
                 }
             } else {//if the reminder is not repeating display the date
                dateOrRepeatTextView.text = dateFormatter.format(reminder.getRemindCalendar().time)
-             }
-
+            }
 
         }
     }
