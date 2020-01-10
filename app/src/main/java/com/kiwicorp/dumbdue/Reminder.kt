@@ -17,18 +17,20 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         const val REPEAT_MONTHLY: Int = 3
         //request code used to keep track and make sure all pending intents are unique
         var globalRequestCode: Int = 0
+
+        var reminderList: ArrayList<Reminder> = ArrayList()
     }
 
     private var text: String
     private var remindCalendar: Calendar //calendar with date to remind
-    @Transient private var repeatVal: Int = 0 //val for user's desired repeat frequency
+    private var repeatVal: Int = 0 //val for user's desired repeat frequency
     @Transient private var context: Context
-    @Transient private var requestCode: Int = 0 //reminder's unique requestCode for pending intent
+    private var requestCode: Int = 0 //reminder's unique requestCode for pending intent
 
     @Transient private val alarmManager: AlarmManager
-    @Transient private val interMediateReceiverIntent: Intent
-    @Transient private val intermediateReceiverPendingIntent: PendingIntent
-    @Transient private val intermediateReceiver: IntermediateReceiver
+    private val interMediateReceiverIntent: Intent
+    private val intermediateReceiverPendingIntent: PendingIntent
+    private val intermediateReceiver: IntermediateReceiver
 
     init {
         this.text = text
@@ -41,7 +43,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         this.intermediateReceiverPendingIntent = PendingIntent.getBroadcast(this.context,this.requestCode,interMediateReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT)
         this.intermediateReceiver = IntermediateReceiver(requestCode)
 
-        MainActivity.reminderList.add(this)
+        reminderList.add(this)
         setAlarm(this.remindCalendar)
     }
 
@@ -62,18 +64,18 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
     fun complete() {
         this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
         intermediateReceiver.cancelAlarm()//cancels the repeating alarms
-        MainActivity.reminderList.remove(this)
+        reminderList.remove(this)
 
         if (repeatVal != 0) {
-            if (repeatVal == 1) {//repeat daily
+            if (repeatVal == REPEAT_DAILY) {
                 remindCalendar.add(Calendar.DAY_OF_YEAR, 1)
                 Reminder(this.text,this.remindCalendar,this.repeatVal,this.context)
 
-            } else if (repeatVal == 2) {//repeat weekly
+            } else if (repeatVal == REPEAT_WEEKLY) {
                 remindCalendar.add(Calendar.WEEK_OF_YEAR, 1)
                 Reminder(this.text,this.remindCalendar,this.repeatVal,this.context)
 
-            } else if (repeatVal == 3) {//repeat monthly
+            } else if (repeatVal == REPEAT_MONTHLY) {
                 remindCalendar.add(Calendar.MONTH, 1)
                 Reminder(this.text,this.remindCalendar,this.repeatVal,this.context)
             }
@@ -83,7 +85,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
     fun cancel() {
         this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
         intermediateReceiver.cancelAlarm()//cancels the repeating alarms
-        MainActivity.reminderList.remove(this)
+        reminderList.remove(this)
     }
 
 }

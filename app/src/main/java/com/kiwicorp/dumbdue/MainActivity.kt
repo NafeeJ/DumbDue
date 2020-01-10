@@ -12,16 +12,17 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_main.recycler_view
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
 
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        var reminderList: ArrayList<Reminder> = ArrayList()
 
         //Shared Preferences Keys
-        val Prefs: String = "Preferences"
-        val Reminders: String = "RemindersKey"
+        val prefs: String = "Preferences"
+        val remindersListKey: String = "RemindersListKey"
+        val globalIndexKey: String = "GlobalIndexKey"
 
         var notificationID = 0 //used to keep notifications unique thus allowing notifications to stack
 
@@ -73,37 +74,26 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        //Load Shared Preferences into Reminders List
-        val sharedPreferences = getSharedPreferences(Prefs, Context.MODE_PRIVATE)
-        val gson = Gson()
-        val json: String = sharedPreferences.getString(Reminders, "").toString()
-
-        if (json.isNotEmpty()) {
-            val reminderListType = object : TypeToken<ArrayList<Reminder>>() {}.type
-            val listFromJson = gson.fromJson<ArrayList<Reminder>>(json,reminderListType)
-            reminderList = listFromJson
-        }
         
         val scheduleFAB: FloatingActionButton = findViewById(R.id.scheduleFAB)
 
+        loadList()
+        loadGlobalIndex()
         initRecyclerView()
         addDataSet()
-
-        val saveFAB: FloatingActionButton = findViewById(R.id.floatingActionButton)
 
         scheduleFAB.setOnClickListener {
             startActivity(Intent(applicationContext, SchedulingActivity::class.java))
         }
+    }
 
-        saveFAB.setOnClickListener{
-            //Save Reminder List to Shared Preferences
-            val mygson = Gson()
-            val myjson: String = mygson.toJson(reminderList)
-            val editor: SharedPreferences.Editor = sharedPreferences.edit()
-            editor.putString(Reminders, myjson)
-            editor.apply()
-        }
+    override fun onDestroy() {//saves global index and list before activity is destroyed
+        /* NAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        FEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+        FIX ME */
+        saveGlobalIndex()
+        saveList()
+        super.onDestroy()
     }
 
     private fun initRecyclerView() {
@@ -114,6 +104,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun addDataSet() { reminderAdapter.submitList(reminderList) }
+    private fun addDataSet() { reminderAdapter.submitList(Reminder.reminderList) }
+
+    fun saveList() {//save reminder list to shared preferences
+        val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
+        val myGson = Gson()
+        val myJson: String = myGson.toJson(Reminder.reminderList)
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putString(remindersListKey, myJson)
+        editor.apply()
+    }
+    private fun loadList() {//load list from shared preferences
+        val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
+        val gson = Gson()
+        val emptyListJson = gson.toJson(ArrayList<Reminder>())//creates an empty list for when the ReminderList has not been initialized yet
+        val json = sharedPreferences.getString(remindersListKey, emptyListJson)
+        val reminderListType = object : TypeToken<ArrayList<Reminder>>() {}.type
+        val listFromJson = gson.fromJson<ArrayList<Reminder>>(json,reminderListType)
+        Reminder.reminderList = listFromJson
+    }
+
+    fun saveGlobalIndex() {//saves global index to shared preferences
+        val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
+        val myGson = Gson()
+        val myJson: String = myGson.toJson(Reminder.globalRequestCode)
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putString(globalIndexKey, myJson)
+        editor.apply()
+    }
+    private fun loadGlobalIndex() {//loads global index from shared preferences
+        val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
+        val gson = Gson()
+        val json = sharedPreferences.getString(globalIndexKey, gson.toJson(0))
+        val intType = object : TypeToken<Int>() {}.type
+        val indexFromJson = gson.fromJson<Int>(json,intType)
+        Reminder.globalRequestCode = indexFromJson
+    }
+
 }
 
