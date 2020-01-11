@@ -2,6 +2,7 @@ package com.kiwicorp.dumbdue
 
 import android.os.Bundle
 import android.app.Activity
+import android.content.Intent
 import android.util.DisplayMetrics
 import android.view.Gravity
 import kotlinx.android.synthetic.main.layout_scheduling_activity.*
@@ -18,11 +19,15 @@ class SchedulingActivity : Activity() {
     private val timeFormatter = SimpleDateFormat("h:mm a")
     private val dayOfWeekFormatter = SimpleDateFormat("EEEE")
 
+    private lateinit var dueDateCalendar: Calendar //Calendar with the intended date of notification
+
+    private val DATE_PICK_REQUEST: Int = 1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_scheduling_activity)
 
-        val dueDateCalendar: Calendar = Calendar.getInstance() //Calendar with the intended date of notification
+        dueDateCalendar = Calendar.getInstance()
 
         //gets display metrics of phone screen
         val displayMetrics = DisplayMetrics()
@@ -169,28 +174,45 @@ class SchedulingActivity : Activity() {
             }
         }
 
+        dateTextView.setOnClickListener {
+
+            val datePickerIntent = Intent(applicationContext, DatePickerActivity::class.java)
+            datePickerIntent.putExtra("timeInMillis", dueDateCalendar.timeInMillis)
+            startActivityForResult(datePickerIntent, DATE_PICK_REQUEST)
+        }
+
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        // Check which request we're responding to
+        if (requestCode == DATE_PICK_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                dueDateCalendar.timeInMillis = data.getLongExtra("newTimeInMillis",dueDateCalendar.timeInMillis)
+                updateDateTextView(dueDateCalendar)
+            }
+        }
     }
 
-    private fun updateDateTextView(dueDateCalendar: Calendar) { //updates text view
+    private fun updateDateTextView(calendar: Calendar) { //updates text view
 
-        val fromNowMins = MainActivity.findTimeFromNowMins(dueDateCalendar)
+        val fromNowMins = MainActivity.findTimeFromNowMins(calendar)
 
         //updates repeatTextView's text
         if (repeatVal == Reminder.REPEAT_DAILY) {
-            repeatTextView.text =  "Daily ".plus(timeFormatter.format(dueDateCalendar.time))
+            repeatTextView.text =  "Daily ".plus(timeFormatter.format(calendar.time))
         } else if (repeatVal == Reminder.REPEAT_WEEKLY) {
-            repeatTextView.text = dayOfWeekFormatter.format(dueDateCalendar.get(Calendar.DAY_OF_WEEK)).plus("s ").plus(timeFormatter.format(dueDateCalendar.time))
+            repeatTextView.text = dayOfWeekFormatter.format(calendar.get(Calendar.DAY_OF_WEEK)).plus("s ").plus(timeFormatter.format(calendar.time))
         } else if (repeatVal == Reminder.REPEAT_MONTHLY) {
-            repeatTextView.text = dueDateCalendar.get(Calendar.DAY_OF_MONTH).toString().plus(MainActivity.daySuffixFinder(dueDateCalendar)).plus(" each month at ").plus(timeFormatter.format(dueDateCalendar.time))
+            repeatTextView.text = calendar.get(Calendar.DAY_OF_MONTH).toString().plus(MainActivity.daySuffixFinder(calendar)).plus(" each month at ").plus(timeFormatter.format(calendar.time))
         }
 
         if (fromNowMins >= 0) { //if time from now is positive or the same, updates text to be in format: "Date in fromNowMins (units)" and sets grey background color
-            dateTextView.text = dateFormatter.format(dueDateCalendar.time).plus(" in ").plus(MainActivity.findTimeFromNowString(fromNowMins))
+            dateTextView.text = dateFormatter.format(calendar.time).plus(" in ").plus(MainActivity.findTimeFromNowString(fromNowMins))
             dateTextView.setBackgroundColor(Color.parseColor("#383838"))
             repeatTextView.setBackgroundColor(Color.parseColor("#383838"))
         }
         else { //if time from now is negative, updates text to be in format: "Date fromNowMins (units) ago" and sets red background color
-            dateTextView.text = dateFormatter.format(dueDateCalendar.time).plus(" ").plus(MainActivity.findTimeFromNowString(fromNowMins)).plus(" ago")
+            dateTextView.text = dateFormatter.format(calendar.time).plus(" ").plus(MainActivity.findTimeFromNowString(fromNowMins)).plus(" ago")
             dateTextView.setBackgroundColor(Color.parseColor("#ad0000"))
             repeatTextView.setBackgroundColor(Color.parseColor("#ad0000"))
         }
