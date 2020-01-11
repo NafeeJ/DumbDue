@@ -32,12 +32,23 @@
 
     <ImageButton
         android:id="@+id/timePickerImageButton"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:src="@drawable/ic_access_time_black_24dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/time_black"
         android:background="#FFFFFF"
         android:layout_alignStart="@id/calendarView"
         android:layout_below="@id/calendarView"/>
+
+    <TextView
+        android:id="@+id/timeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/timePickerImageButton"
+        android:layout_below="@id/calendarView"
+        android:layout_marginTop="15dp"
+        android:text="TextView" />
 
 
 </RelativeLayout>

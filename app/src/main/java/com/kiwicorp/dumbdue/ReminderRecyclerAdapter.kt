@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.layout_reminder_item.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private lateinit var items: List<Reminder>
+    private lateinit var items: MutableList<Reminder>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ReminderViewHolder(
@@ -33,8 +33,39 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         }
     }
 
-    fun submitList(reminderList: List<Reminder>) {
+    fun submitList(reminderList: MutableList<Reminder>) {
         items = reminderList
+    }
+
+    fun deleteItem(viewHolder: RecyclerView.ViewHolder, view: View) {
+        val deletedPosition: Int = viewHolder.adapterPosition
+        val deletedItem: Reminder = items.get(deletedPosition)
+
+        items.removeAt(viewHolder.adapterPosition)
+        deletedItem.cancel()
+        notifyItemRemoved(viewHolder.adapterPosition)
+
+
+        Snackbar.make(view,"1 deleted", Snackbar.LENGTH_LONG).setAction("Undo") {
+            items.add(deletedPosition,deletedItem)
+            notifyItemInserted(deletedPosition)
+        }.show()
+
+    }
+
+    fun completeItem(viewHolder: RecyclerView.ViewHolder, view: View) {
+        val completedPosition: Int = viewHolder.adapterPosition
+        val completedItem: Reminder = items.get(completedPosition)
+
+        items.removeAt(viewHolder.adapterPosition)
+        completedItem.complete()
+        notifyItemRemoved(viewHolder.adapterPosition)
+
+
+        Snackbar.make(view,"1 completed", Snackbar.LENGTH_LONG).setAction("Undo") {
+            items.add(completedPosition,completedItem)
+            notifyItemInserted(completedPosition)
+        }.show()
     }
 
     class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -53,12 +84,12 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
             reminderTextView.text = reminder.getText()
 
             if (fromNowMins > 0) {
-                colorBar.setBackgroundColor(Color.parseColor("#0000ff"))//set color bar to blue
-                dateOrRepeatTextView.setTextColor(Color.parseColor("#525252"))//set text color to grey
+                colorBar.setBackgroundColor(Color.parseColor("#3371FF"))//set color bar to blue
+                dateOrRepeatTextView.setTextColor(Color.parseColor("#1F1B24"))//set text color to grey
                 timeFromNowTextView.text = "in ".plus(MainActivity.findTimeFromNowString(fromNowMins))
             } else {
-                colorBar.setBackgroundColor(Color.parseColor("#ff0000"))//set color bar to red
-                dateOrRepeatTextView.setTextColor(Color.parseColor("#ff0000"))//set text color to red
+                colorBar.setBackgroundColor(Color.parseColor("#f54242"))//set color bar to red
+                dateOrRepeatTextView.setTextColor(Color.parseColor("#f54242"))//set text color to red
                 timeFromNowTextView.text = MainActivity.findTimeFromNowString(fromNowMins).plus(" ago")
             }
             //if the reminder is repeating display its repeating interval

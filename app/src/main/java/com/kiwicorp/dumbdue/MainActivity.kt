@@ -1,12 +1,18 @@
 package com.kiwicorp.dumbdue
 
-
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -14,10 +20,13 @@ import kotlinx.android.synthetic.main.activity_main.recycler_view
 import java.util.*
 import kotlin.math.absoluteValue
 
-
 class MainActivity : AppCompatActivity() {
-    companion object {
+    private lateinit var deleteIcon: Drawable
+    private lateinit var checkIcon: Drawable
 
+    private lateinit var swipeBackground: ColorDrawable
+
+    companion object {
         //Shared Preferences Keys
         val prefs: String = "Preferences"
         val remindersListKey: String = "RemindersListKey"
@@ -77,6 +86,7 @@ class MainActivity : AppCompatActivity() {
             val requestCodeJson: String = myGson.toJson(Reminder.globalRequestCode)
             editor.putString(globalRequestCodeKey, requestCodeJson)
             //puts reminder list as a json
+
             val listJson: String = myGson.toJson(Reminder.reminderList)
             editor.putString(remindersListKey, listJson)
 
@@ -90,6 +100,9 @@ class MainActivity : AppCompatActivity() {
         
         val scheduleFAB: FloatingActionButton = findViewById(R.id.scheduleFAB)
 
+        deleteIcon = ContextCompat.getDrawable(this, R.drawable.delete_white) as Drawable
+        checkIcon = ContextCompat.getDrawable(this,R.drawable.check_white) as Drawable
+
         loadAll()
         initRecyclerView()
         addDataSet()
@@ -97,6 +110,62 @@ class MainActivity : AppCompatActivity() {
         scheduleFAB.setOnClickListener {
             startActivity(Intent(applicationContext, SchedulingActivity::class.java))
         }
+
+        val itemTouchHelperCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean { return false }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                if (direction == ItemTouchHelper.RIGHT) {//if user swipes right, delete reminder
+                    reminderAdapter.deleteItem(viewHolder,findViewById(R.id.activity_main))
+                } else if ( direction == ItemTouchHelper.LEFT) {//if user swipes left, complete reminder
+                    reminderAdapter.completeItem(viewHolder,findViewById(R.id.activity_main))
+                }
+
+            }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                val itemView = viewHolder.itemView
+                val iconMarginVertical = (viewHolder.itemView.height - deleteIcon.intrinsicHeight) / 2
+
+                if (dX > 0) {//if user swiped right
+                    swipeBackground = ColorDrawable(Color.parseColor("#ff6961"))//sets swipe background to red
+                    swipeBackground.setBounds(itemView.left, itemView.top, dX.toInt(), itemView.bottom)
+                    deleteIcon.setBounds(itemView.left + iconMarginVertical, itemView.top + iconMarginVertical,
+                        itemView.left + iconMarginVertical + deleteIcon.intrinsicWidth, itemView.bottom - iconMarginVertical)
+
+                    swipeBackground.draw(c)
+                    c.save()
+                    c.clipRect(itemView.left, itemView.top, dX.toInt(), itemView.bottom)
+                    deleteIcon.draw(c)
+                    c.restore()
+                } else {//if user swiped left
+                    swipeBackground = ColorDrawable(Color.parseColor("#77dd77"))//sets swipe background to green
+                    swipeBackground.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+                    checkIcon.setBounds(itemView.right - iconMarginVertical - deleteIcon.intrinsicWidth, itemView.top + iconMarginVertical,
+                        itemView.right - iconMarginVertical, itemView.bottom - iconMarginVertical)
+                    checkIcon.level = 0
+
+                    swipeBackground.draw(c)
+                    c.save()
+                    c.clipRect(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+                    checkIcon.draw(c)
+                    c.restore()
+                }
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(recycler_view)
     }
 
     private fun initRecyclerView() {

@@ -175,13 +175,13 @@ class SchedulingActivity : Activity() {
         }
 
         dateTextView.setOnClickListener {
-
             val datePickerIntent = Intent(applicationContext, DatePickerActivity::class.java)
             datePickerIntent.putExtra("timeInMillis", dueDateCalendar.timeInMillis)
             startActivityForResult(datePickerIntent, DATE_PICK_REQUEST)
         }
 
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         // Check which request we're responding to
         if (requestCode == DATE_PICK_REQUEST) {
@@ -192,7 +192,6 @@ class SchedulingActivity : Activity() {
             }
         }
     }
-
     private fun updateDateTextView(calendar: Calendar) { //updates text view
 
         val fromNowMins = MainActivity.findTimeFromNowMins(calendar)
@@ -208,13 +207,13 @@ class SchedulingActivity : Activity() {
 
         if (fromNowMins >= 0) { //if time from now is positive or the same, updates text to be in format: "Date in fromNowMins (units)" and sets grey background color
             dateTextView.text = dateFormatter.format(calendar.time).plus(" in ").plus(MainActivity.findTimeFromNowString(fromNowMins))
-            dateTextView.setBackgroundColor(Color.parseColor("#383838"))
-            repeatTextView.setBackgroundColor(Color.parseColor("#383838"))
+            dateTextView.setBackgroundColor(Color.parseColor("#303030"))
+            repeatTextView.setBackgroundColor(Color.parseColor("#303030"))
         }
         else { //if time from now is negative, updates text to be in format: "Date fromNowMins (units) ago" and sets red background color
             dateTextView.text = dateFormatter.format(calendar.time).plus(" ").plus(MainActivity.findTimeFromNowString(fromNowMins)).plus(" ago")
-            dateTextView.setBackgroundColor(Color.parseColor("#ad0000"))
-            repeatTextView.setBackgroundColor(Color.parseColor("#ad0000"))
+            dateTextView.setBackgroundColor(Color.parseColor("#f54242"))
+            repeatTextView.setBackgroundColor(Color.parseColor("#f54242"))
         }
     }
 

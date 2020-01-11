@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/repeatButton"
         android:autofillHints="true"
-        android:background="#252525"
+        android:background="@color/colorPrimaryDark"
         android:ems="10"
         android:inputType="textPersonName"
         android:paddingLeft="10dp"
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/taskEditText"
         android:layout_alignParentEnd="true"
-        android:background="#383838"
+        android:background="#303030"
         android:paddingLeft="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#FFFFFF" />
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/dateTextView"
-        android:background="#383838"
+        android:background="#303030"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:paddingLeft="10dp"
         android:paddingBottom="5dp"
@@ -84,7 +84,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/repeatTextView"
         android:layout_toStartOf="@id/presetButton2"
-        android:background="#252525"
+        android:background="@color/colorPrimaryDark"
         android:text="9:30 AM"
         android:textColor="#FFFFFF" />
 
@@ -95,7 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/repeatTextView"
         android:layout_toStartOf="@id/centerLine"
-        android:background="#252525"
+        android:background="@color/colorPrimaryDark"
         android:text="12:00 PM"
         android:textColor="#FFFFFF" />
 
@@ -106,7 +106,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/repeatTextView"
         android:layout_toEndOf="@id/centerLine"
-        android:background="#252525"
+        android:background="@color/colorPrimaryDark"
         android:text="6:30 PM"
         android:textColor="#FFFFFF" />
 
@@ -117,7 +117,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/repeatTextView"
         android:layout_toEndOf="@id/presetButton3"
-        android:background="#252525"
+        android:background="@color/colorPrimaryDark"
         android:text="10:00 PM"
         android:textColor="#FFFFFF" />
 
@@ -128,7 +128,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/presetButton1"
         android:layout_toStartOf="@id/plus1hrbutton"
-        android:background="#252525"
+        android:background="@color/colorPrimaryDark"
         android:text="+10 min"
         android:textColor="#FFFFFF" />
 
@@ -139,7 +139,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/plus10minbutton"
         android:layout_toStartOf="@id/plus1hrbutton"
-        android:background="#252525"
+        android:background="@color/colorPrimaryDark"
         android:text="-10 min"
         android:textColor="#FFFFFF" />
 
@@ -150,7 +150,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/presetButton2"
         android:layout_toStartOf="@id/centerLine"
-        android:background="#252525"
+        android:background="@color/colorPrimaryDark"
         android:text="+1 hr"
         android:textColor="#FFFFFF" />
 
@@ -161,7 +161,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/plus1hrbutton"
         android:layout_toStartOf="@id/centerLine"
-        android:background="#252525"
+        android:background="@color/colorPrimaryDark"
         android:text="-1 hr"
         android:textColor="#FFFFFF" />
 
@@ -172,7 +172,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/presetButton3"
         android:layout_toEndOf="@id/centerLine"
-        android:background="#252525"
+        android:background="@color/colorPrimaryDark"
         android:text="+3 hrs"
         android:textColor="#FFFFFF" />
 
@@ -183,7 +183,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/plus3hrbutton"
         android:layout_toEndOf="@id/centerLine"
-        android:background="#252525"
+        android:background="@color/colorPrimaryDark"
         android:text="-3 hrs"
         android:textColor="#FFFFFF" />
 
@@ -194,7 +194,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/presetButton4"
         android:layout_toEndOf="@id/plus3hrbutton"
-        android:background="#252525"
+        android:background="@color/colorPrimaryDark"
         android:text="+1 day"
         android:textColor="#FFFFFF" />
 
@@ -205,7 +205,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/plus1daybutton"
         android:layout_toEndOf="@id/minus3hrbutton"
-        android:background="#252525"
+        android:background="@color/colorPrimaryDark"
         android:text="-1 day"
         android:textColor="#FFFFFF" />
 

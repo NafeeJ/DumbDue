@@ -7,14 +7,19 @@ import android.view.View
 import android.widget.Button
 import android.widget.CalendarView
 import android.widget.ImageButton
+import android.widget.TextView
+import java.text.SimpleDateFormat
 import java.util.*
 
 class DatePickerActivity : Activity() {
+
+    private val timeFormatter = SimpleDateFormat("h:mm a")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_date_picker)
+
 
         val calendarView: CalendarView = findViewById(R.id.calendarView)
 
@@ -24,6 +29,9 @@ class DatePickerActivity : Activity() {
         val setButton: Button = findViewById(R.id.dateTimeSetButton)
         val cancelButton: Button = findViewById(R.id.dateTimeCancelButton)
         val timePickerButton: ImageButton = findViewById(R.id.timePickerImageButton)
+        val timeTextView: TextView = findViewById(R.id.timeTextView)
+
+        timeTextView.text = timeFormatter.format(calendar.time)
 
         setButton.setOnClickListener {
             intent.putExtra("newTimeInMillis",calendar.timeInMillis)
@@ -31,6 +39,7 @@ class DatePickerActivity : Activity() {
             finish()
         }
         cancelButton.setOnClickListener {
+            setResult(RESULT_CANCELED,intent)
             finish()
         }
 
@@ -41,15 +50,25 @@ class DatePickerActivity : Activity() {
         }
 
         timePickerButton.setOnClickListener {
-            val hour = calendar.get(Calendar.HOUR_OF_DAY)
-            val minute = calendar.get(Calendar.MINUTE)
+            showTimePicker(calendar,timeTextView)
+        }
 
-            val timePicker = TimePickerDialog(this,TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                calendar.set(Calendar.HOUR_OF_DAY,hourOfDay)
-                calendar.set(Calendar.MINUTE,minute)
-            },hour,minute,false)
-
-            timePicker.show()
+        timeTextView.setOnClickListener {
+            showTimePicker(calendar,timeTextView)
         }
     }
+
+    private fun showTimePicker(calendar: Calendar,textView: TextView) {
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+        val minute = calendar.get(Calendar.MINUTE)
+
+        val timePicker = TimePickerDialog(this,TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+            calendar.set(Calendar.HOUR_OF_DAY,hourOfDay)
+            calendar.set(Calendar.MINUTE,minute)
+            textView.text = timeFormatter.format(calendar.time)
+        },hour,minute,false)
+
+        timePicker.show()
+    }
+
 }

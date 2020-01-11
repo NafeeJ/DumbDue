@@ -51,7 +51,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
     private fun insertInOrder(reminderList: LinkedList<Reminder>, reminder: Reminder) {
         if (reminderList.isEmpty()) {
             reminderList.add(reminder)
-            MainActivity.reminderAdapter.notifyDataSetChanged()
+            MainActivity.reminderAdapter.notifyItemInserted(0)
             return
         }
 
@@ -59,7 +59,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         for (element in iterator) {
             if (element.getRemindCalendar().timeInMillis > reminder.getRemindCalendar().timeInMillis) {
                 reminderList.add(iterator.previousIndex(), reminder)
-                MainActivity.reminderAdapter.notifyDataSetChanged()
+                MainActivity.reminderAdapter.notifyItemInserted(iterator.previousIndex())
                 return
             }
         }
@@ -83,10 +83,10 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
     private fun setAlarm(remindCalendar: Calendar) { alarmManager.setExact(AlarmManager.RTC_WAKEUP,remindCalendar.timeInMillis,this.intermediateReceiverPendingIntent) }
 
     fun complete() {
-        this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
-        intermediateReceiver.cancelAlarm()//cancels the repeating alarms
+        //this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
+        //intermediateReceiver.cancelAlarm()//cancels the repeating alarms
         reminderList.remove(this)
-        MainActivity.saveAll(this.context)
+        //MainActivity.saveAll(this.context)
 
         if (repeatVal != 0) {
             if (repeatVal == REPEAT_DAILY) {
@@ -105,9 +105,9 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
     }
 
     fun cancel() {
-        this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
-        intermediateReceiver.cancelAlarm()//cancels the repeating alarms
+        //this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
+        //intermediateReceiver.cancelAlarm()//cancels the repeating alarms
         reminderList.remove(this)
-        MainActivity.saveAll(this.context)
+        //MainActivity.saveAll(this.context)
     }
 }
