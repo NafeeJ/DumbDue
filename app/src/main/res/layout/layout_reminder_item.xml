@@ -4,7 +4,7 @@
 
     <TextView
         android:id="@+id/reminderTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="295dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
@@ -28,7 +28,7 @@
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
         android:paddingLeft="10dp"
-        android:text="time from now"
+        android:text="date/repeat"
         android:textColor="#525252" />
 
     <TextView
@@ -42,7 +42,7 @@
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
         android:paddingRight="10dp"
-        android:text="date/repeat"
+        android:text="time from now"
         android:textColor="#525252" />
 
     <View

@@ -101,7 +101,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         
         val scheduleFAB: FloatingActionButton = findViewById(R.id.scheduleFAB)
-        val reminderFAB: FloatingActionButton = findViewById(R.id.reminderFAB)
 
         deleteIcon = ContextCompat.getDrawable(this, R.drawable.delete_white) as Drawable
         checkIcon = ContextCompat.getDrawable(this,R.drawable.check_white) as Drawable
@@ -112,16 +111,6 @@ class MainActivity : AppCompatActivity() {
 
         scheduleFAB.setOnClickListener {
             startActivity(Intent(applicationContext, SchedulingActivity::class.java))
-        }
-
-        reminderFAB.setOnClickListener{
-            val requestCode = Reminder.globalRequestCode++
-            val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val interMediateReceiverIntent = Intent(applicationContext,IntermediateReceiver::class.java)
-            val intermediateReceiverPendingIntent = PendingIntent.getBroadcast(applicationContext,requestCode,interMediateReceiverIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT)
-            val intermediateReceiver = IntermediateReceiver(requestCode)
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP,Calendar.getInstance().timeInMillis + 10000,intermediateReceiverPendingIntent)
         }
 
         val itemTouchHelperCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {

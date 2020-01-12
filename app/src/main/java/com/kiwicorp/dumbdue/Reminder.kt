@@ -28,20 +28,21 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
     private var requestCode: Int = 0 //reminder's unique requestCode for pending intent
 
     @Transient private val alarmManager: AlarmManager
-    private val interMediateReceiverIntent: Intent
+    private val intermediateReceiverIntent: Intent
     private val intermediateReceiverPendingIntent: PendingIntent
-    private val intermediateReceiver: IntermediateReceiver
 
     init {
         this.text = text
         this.remindCalendar = remindCalendar
         this.repeatVal = repeatVal
         this.context = context
-        this.requestCode = ++globalRequestCode
-        this.alarmManager = this.context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        this.interMediateReceiverIntent = Intent(this.context,IntermediateReceiver::class.java)
-        this.intermediateReceiverPendingIntent = PendingIntent.getBroadcast(this.context,this.requestCode,interMediateReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT)
-        this.intermediateReceiver = IntermediateReceiver(requestCode)
+        requestCode = ++globalRequestCode
+
+        alarmManager = this.context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        intermediateReceiverIntent = Intent(this.context,IntermediateReceiver::class.java)
+        intermediateReceiverIntent.putExtra("requestCode", requestCode)
+        intermediateReceiverIntent.putExtra("reminderText",this.text)
+        intermediateReceiverPendingIntent = PendingIntent.getBroadcast(this.context,this.requestCode,intermediateReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT)
 
         insertInOrder(reminderList, this)
         MainActivity.saveAll(this.context)

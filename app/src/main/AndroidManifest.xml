@@ -26,6 +26,7 @@
         <activity android:name=".DatePickerActivity"
             android:theme="@style/SchedulingTheme" />
         <receiver android:name=".NotificationReceiver"/>
+        <receiver android:name=".IntermediateReceiver"/>
     </application>
 
 </manifest>

@@ -21,7 +21,7 @@ class NotificationChannel : android.app.Application() {
 
     private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//checks if android version is greater than or equal to Android Oreo
-            val channel1 = NotificationChannel(CHANNEL_1_ID, "Notification Channel 1", NotificationManager.IMPORTANCE_HIGH )
+            val channel1 = NotificationChannel(CHANNEL_1_ID, "Reminders", NotificationManager.IMPORTANCE_HIGH )
 
             channel1.description= "Reminders Notification Channel" //sets description of notification channel
 
