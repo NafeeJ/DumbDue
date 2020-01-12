@@ -115,7 +115,7 @@ class MainActivity : AppCompatActivity() {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean { return false }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                if (direction == ItemTouchHelper.RIGHT) {//if user swipes right, delete reminder
+                if (direction == ItemTouchHelper.RIGHT) {//if user swipes right, deleteReminder reminder
                     reminderAdapter.deleteItem(viewHolder,findViewById(R.id.activity_main))
                 } else if ( direction == ItemTouchHelper.LEFT) {//if user swipes left, complete reminder
                     reminderAdapter.completeItem(viewHolder,findViewById(R.id.activity_main))

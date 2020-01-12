@@ -39,30 +39,28 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
     fun deleteItem(viewHolder: RecyclerView.ViewHolder, view: View) {
         val deletedPosition: Int = viewHolder.adapterPosition
-        val deletedItem: Reminder = items.get(deletedPosition)
+        val deletedItem: Reminder = items[deletedPosition]
 
         items.removeAt(viewHolder.adapterPosition)
-        deletedItem.cancel()
+        deletedItem.deleteReminder()
         notifyItemRemoved(viewHolder.adapterPosition)
 
-
-        Snackbar.make(view,"1 deleted", Snackbar.LENGTH_LONG).setAction("Undo") {
-            items.add(deletedPosition,deletedItem)
+        Snackbar.make(view, "Bye-Bye " + deletedItem.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
+            items.add(deletedPosition, deletedItem)
             notifyItemInserted(deletedPosition)
         }.show()
-
     }
 
     fun completeItem(viewHolder: RecyclerView.ViewHolder, view: View) {
         val completedPosition: Int = viewHolder.adapterPosition
-        val completedItem: Reminder = items.get(completedPosition)
+        val completedItem: Reminder = items[completedPosition]
 
         items.removeAt(viewHolder.adapterPosition)
         completedItem.complete()
         notifyItemRemoved(viewHolder.adapterPosition)
 
 
-        Snackbar.make(view,"1 completed", Snackbar.LENGTH_LONG).setAction("Undo") {
+        Snackbar.make(view,"Done with " + completedItem.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
             items.add(completedPosition,completedItem)
             notifyItemInserted(completedPosition)
         }.show()
