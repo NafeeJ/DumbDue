@@ -27,4 +27,11 @@
         android:layout_height="match_parent"
         android:background="#000000" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/reminderFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:src="@drawable/add_white" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

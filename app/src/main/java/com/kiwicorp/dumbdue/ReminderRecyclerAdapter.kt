@@ -42,7 +42,7 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         val deletedItem: Reminder = items.get(deletedPosition)
 
         items.removeAt(viewHolder.adapterPosition)
-        deletedItem.cancel()
+        deletedItem.delete()
         notifyItemRemoved(viewHolder.adapterPosition)
 
 
@@ -85,7 +85,7 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
             if (fromNowMins > 0) {
                 colorBar.setBackgroundColor(Color.parseColor("#3371FF"))//set color bar to blue
-                dateOrRepeatTextView.setTextColor(Color.parseColor("#1F1B24"))//set text color to grey
+                dateOrRepeatTextView.setTextColor(Color.parseColor("#525252"))//set text color to grey
                 timeFromNowTextView.text = "in ".plus(MainActivity.findTimeFromNowString(fromNowMins))
             } else {
                 colorBar.setBackgroundColor(Color.parseColor("#f54242"))//set color bar to red

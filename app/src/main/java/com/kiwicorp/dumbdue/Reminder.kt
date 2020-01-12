@@ -104,7 +104,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         }
     }
 
-    fun cancel() {
+    fun delete() {
         //this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
         //intermediateReceiver.cancelAlarm()//cancels the repeating alarms
         reminderList.remove(this)
