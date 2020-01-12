@@ -83,7 +83,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
     private fun setAlarm(remindCalendar: Calendar) { alarmManager.setExact(AlarmManager.RTC_WAKEUP,remindCalendar.timeInMillis,this.intermediateReceiverPendingIntent) }
 
     fun complete() {
-        //this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
+        //this.alarmManager.deleteReminder(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
         //intermediateReceiver.cancelAlarm()//cancels the repeating alarms
         reminderList.remove(this)
         //MainActivity.saveAll(this.context)
@@ -104,8 +104,8 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         }
     }
 
-    fun delete() {
-        //this.alarmManager.cancel(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
+    fun deleteReminder() {
+        //this.alarmManager.deleteReminder(intermediateReceiverPendingIntent)//cancels the alarm that triggers the repeating alarm
         //intermediateReceiver.cancelAlarm()//cancels the repeating alarms
         reminderList.remove(this)
         //MainActivity.saveAll(this.context)
