@@ -47,6 +47,7 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
         Snackbar.make(view, "Bye-Bye " + deletedItem.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
             items.add(deletedPosition, deletedItem)
+            deletedItem.reAddReminder()
             notifyItemInserted(deletedPosition)
         }.show()
     }
@@ -62,6 +63,7 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
         Snackbar.make(view,"Done with " + completedItem.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
             items.add(completedPosition,completedItem)
+            completedItem.reAddReminder()
             notifyItemInserted(completedPosition)
         }.show()
     }

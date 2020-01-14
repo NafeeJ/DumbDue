@@ -4,7 +4,7 @@
 
     <TextView
         android:id="@+id/reminderTextView"
-        android:layout_width="295dp"
+        android:layout_width="235dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
@@ -12,10 +12,13 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
+        android:maxLines = "1"
+        android:ellipsize="end"
         android:paddingLeft="10dp"
         android:text="reminder"
         android:textColor="#FFFFFF"
         android:textSize="20sp" />
+
 
     <TextView
         android:id="@+id/dateOrRepeatTextView"
@@ -48,7 +51,8 @@
     <View
         android:id="@+id/colorBar"
         android:layout_width="5dp"
-        android:layout_height="60dp"
+        android:layout_height="65dp"
         android:background="#ff0000"/>
+
 
 </RelativeLayout>

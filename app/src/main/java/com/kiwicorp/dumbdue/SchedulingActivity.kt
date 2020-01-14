@@ -1,16 +1,16 @@
 package com.kiwicorp.dumbdue
 
-import android.os.Bundle
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
+import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Gravity
+import android.view.View
+import android.widget.*
 import kotlinx.android.synthetic.main.layout_scheduling_activity.*
 import java.text.SimpleDateFormat
 import java.util.*
-import android.graphics.Color
-import android.view.View
-import android.widget.*
 
 class SchedulingActivity : Activity() {
     private var repeatVal: Int = Reminder.REPEAT_NONE

@@ -1,8 +1,6 @@
 package com.kiwicorp.dumbdue
 
 import android.app.AlarmManager
-import android.app.Notification
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -18,9 +16,11 @@ class IntermediateReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         requestCode = intent.getIntExtra("requestCode", 0)
         alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
         notificationReceiverIntent = Intent(context,NotificationReceiver::class.java) //initializes the intent to start NotificationReceiver activity
         notificationReceiverIntent.putExtra("reminderText",intent.getStringExtra("reminderText"))
         notificationPendingIntent = PendingIntent.getBroadcast(context,requestCode,notificationReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT) //initializes the pending intent to be notification receiver
+
         setAlarm()
     }
 
@@ -28,7 +28,7 @@ class IntermediateReceiver : BroadcastReceiver() {
         this.alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis + 10000,60000,notificationPendingIntent) //sets a repeating alarm that repeats every minute
     }
 
-    fun cancelAlarm() {
+    fun cancelRepeatingAlarms() {
         this.alarmManager.cancel(this.notificationPendingIntent)
     }
 }

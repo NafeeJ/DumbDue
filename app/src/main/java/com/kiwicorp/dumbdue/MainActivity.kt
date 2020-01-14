@@ -1,7 +1,6 @@
 package com.kiwicorp.dumbdue
 
 import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -18,8 +17,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.activity_main.recycler_view
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
+import kotlin.concurrent.timerTask
 import kotlin.math.absoluteValue
 
 class MainActivity : AppCompatActivity() {
@@ -33,6 +33,8 @@ class MainActivity : AppCompatActivity() {
         val prefs: String = "Preferences"
         val remindersListKey: String = "RemindersListKey"
         val globalRequestCodeKey: String = "GlobalRequestCodeKey"
+
+        lateinit var globalAlarmManager: AlarmManager
 
         val reminderAdapter = ReminderRecyclerAdapter()
 
@@ -82,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         fun saveAll(context: Context) {
 
             val sharedPreferences = context.getSharedPreferences(prefs, Context.MODE_PRIVATE)
+
             val myGson = Gson()
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
             //put global request code as a json
@@ -99,6 +102,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        globalAlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         
         val scheduleFAB: FloatingActionButton = findViewById(R.id.scheduleFAB)
 
@@ -189,9 +194,16 @@ class MainActivity : AppCompatActivity() {
         val listFromJson = gson.fromJson<LinkedList<Reminder>>(listJson,reminderListType)
         Reminder.reminderList = listFromJson
 
+        for (reminder in Reminder.reminderList) {
+            reminder.loadReminder(applicationContext)
+        }
+        timerTask {
+
+        }
         val requestCodeJson = sharedPreferences.getString(globalRequestCodeKey, gson.toJson(0))
         val intType = object : TypeToken<Int>() {}.type
         val indexFromJson = gson.fromJson<Int>(requestCodeJson,intType)
         Reminder.globalRequestCode = indexFromJson
     }
+
 }

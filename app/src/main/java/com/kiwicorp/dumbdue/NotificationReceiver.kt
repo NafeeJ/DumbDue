@@ -6,11 +6,15 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        val timeFormatter = SimpleDateFormat("h:mm:ss:SS a ")
 
         val notificationText: String = intent.getStringExtra("reminderText")
 
@@ -23,6 +27,7 @@ class NotificationReceiver : BroadcastReceiver() {
             .setContentIntent(pendingIntent)
             .setSmallIcon(R.drawable.ic_android_black_24dp)
             .setContentTitle(notificationText)
+            .setContentText(timeFormatter.format(Calendar.getInstance().time))
             .setAutoCancel(true)//makes notification dismissible when the user swipes it away
 
         notificationManager.notify(++MainActivity.notificationID,builder.build())
