@@ -46,9 +46,7 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         notifyItemRemoved(viewHolder.adapterPosition)
 
         Snackbar.make(view, "Bye-Bye " + deletedItem.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
-            items.add(deletedPosition, deletedItem)
-            deletedItem.reAddReminder()
-            notifyItemInserted(deletedPosition)
+            undoRemoval(deletedItem,deletedPosition)
         }.show()
     }
 
@@ -57,15 +55,60 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         val completedItem: Reminder = items[completedPosition]
 
         items.removeAt(viewHolder.adapterPosition)
-        completedItem.complete()
+        completedItem.deleteReminder()
         notifyItemRemoved(viewHolder.adapterPosition)
 
+        //if reminder is repeating, readd item with remind calendar incremented with the correct amount
+        when(completedItem.getRepeatVal()) {
+            Reminder.REPEAT_DAILY -> {
+                completedItem.getRemindCalendar().add(Calendar.DAY_OF_YEAR, 1)
+                undoRemoval(completedItem,completedPosition)
+            }
+            Reminder.REPEAT_WEEKLY -> {
+                completedItem.getRemindCalendar().add(Calendar.WEEK_OF_YEAR, 1)
+                undoRemoval(completedItem,completedPosition)
+            }
+            Reminder.REPEAT_MONTHLY -> {
+                completedItem.getRemindCalendar().add(Calendar.MONTH, 1)
+                undoRemoval(completedItem,completedPosition)
+            }
+        }
 
         Snackbar.make(view,"Done with " + completedItem.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
-            items.add(completedPosition,completedItem)
-            completedItem.reAddReminder()
-            notifyItemInserted(completedPosition)
+            //if reminder is repeating, remove item and readd with remind calendar decremented with the correct amount
+            //else readd reminder normally
+            when(completedItem.getRepeatVal()) {
+                Reminder.REPEAT_DAILY -> {
+                    val updatedCompletedPosition = items.indexOf(completedItem)
+                    items.removeAt(updatedCompletedPosition)
+                    notifyItemRemoved(updatedCompletedPosition)
+
+                    completedItem.getRemindCalendar().add(Calendar.DAY_OF_YEAR, -1)
+                    undoRemoval(completedItem,updatedCompletedPosition)
+                }
+                Reminder.REPEAT_WEEKLY -> {
+                    val updatedCompletedPosition = items.indexOf(completedItem)
+                    items.removeAt(updatedCompletedPosition)
+                    notifyItemRemoved(updatedCompletedPosition)
+
+                    completedItem.getRemindCalendar().add(Calendar.WEEK_OF_YEAR, -1)
+                    undoRemoval(completedItem,updatedCompletedPosition)
+                }
+                Reminder.REPEAT_MONTHLY -> {
+                    val updatedCompletedPosition = items.indexOf(completedItem)
+                    items.removeAt(updatedCompletedPosition)
+                    notifyItemRemoved(updatedCompletedPosition)
+
+                    completedItem.getRemindCalendar().add(Calendar.MONTH, -1)
+                    undoRemoval(completedItem,updatedCompletedPosition)
+                }
+                else -> undoRemoval(completedItem,completedPosition)
+            }
         }.show()
+    }
+
+    private fun undoRemoval(item: Reminder, position: Int) {
+        item.reAddReminder()
     }
 
     class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
