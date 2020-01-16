@@ -28,7 +28,4 @@ class IntermediateReceiver : BroadcastReceiver() {
         this.alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis,60000,notificationPendingIntent) //sets a repeating alarm that repeats every minute
     }
 
-    fun cancelRepeatingAlarms() {
-        this.alarmManager.cancel(this.notificationPendingIntent)
-    }
 }

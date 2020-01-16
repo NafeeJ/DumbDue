@@ -22,7 +22,6 @@
 
     <style name="MySnackBarStyle" parent="Widget.MaterialComponents.Snackbar">
         <item name="android:windowBackground">@drawable/corners</item>
-        <item name="android:background">#000000</item>
     </style>
 
 </resources>

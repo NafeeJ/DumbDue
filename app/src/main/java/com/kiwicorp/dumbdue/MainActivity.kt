@@ -1,5 +1,6 @@
 package com.kiwicorp.dumbdue
 
+import android.app.Activity
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
@@ -19,14 +20,15 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
-import kotlin.concurrent.timerTask
 import kotlin.math.absoluteValue
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnReminderListener {
     private lateinit var deleteIcon: Drawable
     private lateinit var checkIcon: Drawable
 
     private lateinit var swipeBackground: ColorDrawable
+
+    private val EDIT_REMINDER_REQUEST: Int = 2
 
     companion object {
         //Shared Preferences Keys
@@ -36,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         lateinit var globalAlarmManager: AlarmManager
 
-        val reminderAdapter = ReminderRecyclerAdapter()
+        val reminderRecyclerAdapter = ReminderRecyclerAdapter()
 
         var notificationID = 0 //used to keep notifications unique thus allowing notifications to stack
 
@@ -112,10 +114,11 @@ class MainActivity : AppCompatActivity() {
 
         loadAll()
         initRecyclerView()
-        addDataSet()
+        reminderRecyclerAdapter.submitList(Reminder.reminderList)
+        reminderRecyclerAdapter.submitOnReminderClickListener(this)
 
         scheduleFAB.setOnClickListener {
-            startActivity(Intent(applicationContext, SchedulingActivity::class.java))
+            startActivity(Intent(applicationContext, ScheduleReminderActivity::class.java))
         }
 
         val itemTouchHelperCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
@@ -123,9 +126,9 @@ class MainActivity : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 if (direction == ItemTouchHelper.RIGHT) {//if user swipes right, deleteReminder reminder
-                    reminderAdapter.deleteItem(viewHolder,findViewById(R.id.activity_main))
+                    reminderRecyclerAdapter.deleteItem(viewHolder,findViewById(R.id.activity_main))
                 } else if ( direction == ItemTouchHelper.LEFT) {//if user swipes left, complete reminder
-                    reminderAdapter.completeItem(viewHolder,findViewById(R.id.activity_main))
+                    reminderRecyclerAdapter.completeItem(viewHolder,findViewById(R.id.activity_main))
                 }
 
             }
@@ -178,11 +181,9 @@ class MainActivity : AppCompatActivity() {
     private fun initRecyclerView() {
         recycler_view.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = reminderAdapter
+            adapter = reminderRecyclerAdapter
         }
     }
-
-    private fun addDataSet() { reminderAdapter.submitList(Reminder.reminderList) }
 
     private fun loadAll() {//load list from shared preferences
         val sharedPreferences = getSharedPreferences(prefs, Context.MODE_PRIVATE)
@@ -195,15 +196,37 @@ class MainActivity : AppCompatActivity() {
         Reminder.reminderList = listFromJson
 
         for (reminder in Reminder.reminderList) {
-            reminder.loadReminder(applicationContext)
+            reminder.setNotifications(applicationContext)
         }
-        timerTask {
 
-        }
         val requestCodeJson = sharedPreferences.getString(globalRequestCodeKey, gson.toJson(0))
         val intType = object : TypeToken<Int>() {}.type
         val indexFromJson = gson.fromJson<Int>(requestCodeJson,intType)
         Reminder.globalRequestCode = indexFromJson
     }
+
+    override fun onReminderClick(position: Int) {
+        val reminder: Reminder = Reminder.reminderList.get(position)
+        val intent = Intent(this,EditReminderActivity::class.java)
+        intent.putExtra("ReminderData", reminder.getReminderData())
+        startActivityForResult(intent,EDIT_REMINDER_REQUEST)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        // Check which request we're responding to
+        if (requestCode == EDIT_REMINDER_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == Activity.RESULT_OK) {
+                val newData: Reminder.ReminderData? = data?.getParcelableExtra("NewReminderData")
+
+                if (newData != null) {
+                    val reminder: Reminder = Reminder.reminderList.get(newData.index)
+                    reminderRecyclerAdapter.removeItem(reminder)
+                    Reminder(newData.text,newData.remindCalendar,newData.repeatVal,applicationContext)
+                }
+            }
+        }
+    }
+
 
 }

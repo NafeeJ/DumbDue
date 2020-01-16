@@ -20,11 +20,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SchedulingActivity"
+        <activity android:name=".ScheduleReminderActivity"
             android:theme="@style/SchedulingTheme"
             android:windowSoftInputMode="stateVisible"/>
         <activity android:name=".DatePickerActivity"
             android:theme="@style/SchedulingTheme" />
+        <activity android:name=".EditReminderActivity"
+            android:theme="@style/SchedulingTheme"/>
         <receiver android:name=".NotificationReceiver"/>
         <receiver android:name=".IntermediateReceiver"/>
     </application>

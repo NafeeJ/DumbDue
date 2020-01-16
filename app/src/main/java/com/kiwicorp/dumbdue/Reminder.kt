@@ -4,6 +4,8 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 
@@ -19,6 +21,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         var globalRequestCode: Int = 0
 
         var reminderList: LinkedList<Reminder> = LinkedList()
+
     }
 
     private var text: String
@@ -52,7 +55,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
     private fun insertInOrder(reminderList: LinkedList<Reminder>, reminder: Reminder) {
         if (reminderList.isEmpty()) {
             reminderList.add(reminder)
-            MainActivity.reminderAdapter.notifyItemInserted(0)
+            MainActivity.reminderRecyclerAdapter.notifyItemInserted(0)
             return
         }
 
@@ -60,13 +63,13 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         for (element in iterator) {
             if (element.getRemindCalendar().timeInMillis > reminder.getRemindCalendar().timeInMillis) {
                 reminderList.add(iterator.previousIndex(), reminder)
-                MainActivity.reminderAdapter.notifyItemInserted(iterator.previousIndex())
+                MainActivity.reminderRecyclerAdapter.notifyItemInserted(iterator.previousIndex())
                 return
             }
         }
 
         reminderList.add(reminder)
-        MainActivity.reminderAdapter.notifyDataSetChanged()
+        MainActivity.reminderRecyclerAdapter.notifyDataSetChanged()
     }
 
     fun getText(): String { return text }
@@ -81,7 +84,12 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
 
     fun setRepeatVal(repeatVal: Int) { this.repeatVal = repeatVal }
 
-    fun loadReminder(context: Context) {//sets all the alarms lost when reminder was deleted or app was closed
+    fun getReminderData(): ReminderData {
+        val reminderData = ReminderData(this.text,this.remindCalendar,this.repeatVal, reminderList.indexOf(this))
+        return reminderData
+    }
+
+    fun setNotifications(context: Context) {//sets all the alarms lost when reminder was deleted or app was closed
         this.context = context
         intermediateReceiverIntent = Intent(this.context,IntermediateReceiver::class.java)
         intermediateReceiverIntent.putExtra("requestCode", requestCode)
@@ -100,7 +108,6 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         val notificationReceiverIntent = Intent(context,NotificationReceiver::class.java)
         val notificationPendingIntent = PendingIntent.getBroadcast(context,requestCode,notificationReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.cancel(notificationPendingIntent)
-
         //remove from list and save
         reminderList.remove(this)
         MainActivity.saveAll(context)
@@ -108,7 +115,10 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
 
     fun reAddReminder() {
         insertInOrder(reminderList,this)
-        loadReminder(context)
+        setNotifications(context)
         MainActivity.saveAll(context)
     }
+
+    @Parcelize
+    data class ReminderData(val text: String, val remindCalendar: Calendar, val repeatVal: Int, val index: Int): Parcelable
 }

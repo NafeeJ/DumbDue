@@ -8,11 +8,11 @@ import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.widget.*
-import kotlinx.android.synthetic.main.layout_scheduling_activity.*
+import kotlinx.android.synthetic.main.layout_schedule_reminder_activity.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SchedulingActivity : Activity() {
+class EditReminderActivity : Activity() {
     private var repeatVal: Int = Reminder.REPEAT_NONE
 
     private val dateFormatter = SimpleDateFormat("EEE, d MMM, h:mm a") //creates a date format
@@ -25,9 +25,14 @@ class SchedulingActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.layout_scheduling_activity)
+        setContentView(R.layout.layout_edit_reminder_activity)
 
-        dueDateCalendar = Calendar.getInstance()
+        val reminderData: Reminder.ReminderData = intent.getParcelableExtra("ReminderData") as Reminder.ReminderData
+
+        dueDateCalendar = reminderData.remindCalendar
+        repeatVal = reminderData.repeatVal
+        val reminderText: String = reminderData.text
+        val index: Int = reminderData.index
 
         //gets display metrics of phone screen
         val displayMetrics = DisplayMetrics()
@@ -60,15 +65,16 @@ class SchedulingActivity : Activity() {
         val addButton: ImageButton = findViewById(R.id.addButton)
         val cancelButton: ImageButton = findViewById(R.id.cancelButton)
         val repeatButton: ImageButton = findViewById(R.id.repeatButton)
+        val deleteButton: ImageButton = findViewById(R.id.deleteButton)
 
         val dateTextView: TextView = findViewById(R.id.dateTextView)
         updateDateTextView(dueDateCalendar) //sets text to be the formatted intended schedule date
         dateTextView.gravity = Gravity.CENTER_VERTICAL //sets text to be in the middle of text view
         dateTextView.height = height / 5
 
-        val taskEditText: EditText = findViewById(R.id.taskEditText)
-        taskEditText.height = height / 5
-        taskEditText.requestFocus() //opens keyboard when window opens
+        val reminderEditText: EditText = findViewById(R.id.taskEditText)
+        reminderEditText.height = height / 5
+        reminderEditText.setText(reminderText)
 
 
         val timeButtons = listOf(buttonPlus10min,buttonMinus10min,buttonPlus1hr,buttonMinus1hr,buttonPlus3hr,buttonMinus3hr,buttonPlus1day,buttonMinus1day,buttonPreset1,buttonPreset2,buttonPreset3,buttonPreset4) //list of all time buttons
@@ -110,7 +116,7 @@ class SchedulingActivity : Activity() {
             dueDateCalendar.add(Calendar.DAY_OF_YEAR,-1)
             updateDateTextView(dueDateCalendar)
         }
-        //sets all preset button functionality
+        //preset buttons set calendar to intended time on provided day
         buttonPreset1.setOnClickListener {
             dueDateCalendar.set(dueDateCalendar.get(Calendar.YEAR),dueDateCalendar.get(Calendar.MONTH),dueDateCalendar.get(Calendar.DATE),preset1HourOfDay,preset1Min)
             updateDateTextView(dueDateCalendar)
@@ -128,9 +134,13 @@ class SchedulingActivity : Activity() {
             updateDateTextView(dueDateCalendar)
         }
 
-        cancelButton.setOnClickListener{ finish() }
+        cancelButton.setOnClickListener{
+            setResult(RESULT_CANCELED)
+            finish()
+        }
         addButton.setOnClickListener {
-            Reminder(taskEditText.text.toString(),dueDateCalendar,repeatVal,applicationContext)
+            intent.putExtra("NewReminderData",Reminder.ReminderData(reminderEditText.text.toString(),dueDateCalendar,repeatVal,index))
+            setResult(RESULT_OK,intent)
             finish()
         }
         repeatButton.setOnClickListener {
@@ -182,7 +192,7 @@ class SchedulingActivity : Activity() {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {//receive result from date picker
         // Check which request we're responding to
         if (requestCode == DATE_PICK_REQUEST) {
             // Make sure the request was successful

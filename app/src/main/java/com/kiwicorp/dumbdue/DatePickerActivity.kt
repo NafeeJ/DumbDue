@@ -19,7 +19,6 @@ class DatePickerActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_date_picker)
 
-
         val calendarView: CalendarView = findViewById(R.id.calendarView)
 
         val calendar = Calendar.getInstance()

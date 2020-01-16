@@ -14,10 +14,11 @@ import java.util.*
 
 class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var items: MutableList<Reminder>
+    private lateinit var onReminderListener: OnReminderListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ReminderViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.layout_reminder_item,parent,false)
+            LayoutInflater.from(parent.context).inflate(R.layout.layout_reminder_item,parent,false),onReminderListener
         )
     }
 
@@ -37,6 +38,10 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         items = reminderList
     }
 
+    fun submitOnReminderClickListener(onReminderListener: OnReminderListener) {
+        this.onReminderListener = onReminderListener
+    }
+
     fun deleteItem(viewHolder: RecyclerView.ViewHolder, view: View) {
         val deletedPosition: Int = viewHolder.adapterPosition
         val deletedItem: Reminder = items[deletedPosition]
@@ -46,8 +51,15 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         notifyItemRemoved(viewHolder.adapterPosition)
 
         Snackbar.make(view, "Bye-Bye " + deletedItem.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
-            undoRemoval(deletedItem,deletedPosition)
+            undoRemoval(deletedItem)
         }.show()
+    }
+
+    fun removeItem(reminder: Reminder) {
+        val index: Int = items.indexOf(reminder)
+        items.remove(reminder)
+        reminder.deleteReminder()
+        notifyItemRemoved(index)
     }
 
     fun completeItem(viewHolder: RecyclerView.ViewHolder, view: View) {
@@ -62,15 +74,15 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         when(completedItem.getRepeatVal()) {
             Reminder.REPEAT_DAILY -> {
                 completedItem.getRemindCalendar().add(Calendar.DAY_OF_YEAR, 1)
-                undoRemoval(completedItem,completedPosition)
+                undoRemoval(completedItem)
             }
             Reminder.REPEAT_WEEKLY -> {
                 completedItem.getRemindCalendar().add(Calendar.WEEK_OF_YEAR, 1)
-                undoRemoval(completedItem,completedPosition)
+                undoRemoval(completedItem)
             }
             Reminder.REPEAT_MONTHLY -> {
                 completedItem.getRemindCalendar().add(Calendar.MONTH, 1)
-                undoRemoval(completedItem,completedPosition)
+                undoRemoval(completedItem)
             }
         }
 
@@ -84,7 +96,7 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
                     notifyItemRemoved(updatedCompletedPosition)
 
                     completedItem.getRemindCalendar().add(Calendar.DAY_OF_YEAR, -1)
-                    undoRemoval(completedItem,updatedCompletedPosition)
+                    undoRemoval(completedItem)
                 }
                 Reminder.REPEAT_WEEKLY -> {
                     val updatedCompletedPosition = items.indexOf(completedItem)
@@ -92,7 +104,7 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
                     notifyItemRemoved(updatedCompletedPosition)
 
                     completedItem.getRemindCalendar().add(Calendar.WEEK_OF_YEAR, -1)
-                    undoRemoval(completedItem,updatedCompletedPosition)
+                    undoRemoval(completedItem)
                 }
                 Reminder.REPEAT_MONTHLY -> {
                     val updatedCompletedPosition = items.indexOf(completedItem)
@@ -100,26 +112,32 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
                     notifyItemRemoved(updatedCompletedPosition)
 
                     completedItem.getRemindCalendar().add(Calendar.MONTH, -1)
-                    undoRemoval(completedItem,updatedCompletedPosition)
+                    undoRemoval(completedItem)
                 }
-                else -> undoRemoval(completedItem,completedPosition)
+                else -> undoRemoval(completedItem)
             }
         }.show()
     }
 
-    private fun undoRemoval(item: Reminder, position: Int) {
+    private fun undoRemoval(item: Reminder) {
         item.reAddReminder()
     }
 
-    class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ReminderViewHolder constructor(itemView: View, onReminderListener: OnReminderListener) : RecyclerView.ViewHolder(itemView) , View.OnClickListener {
         private val reminderTextView: TextView = itemView.reminderTextView
         private val timeFromNowTextView: TextView = itemView.timeFromNowTextView
         private val dateOrRepeatTextView: TextView = itemView.dateOrRepeatTextView
         private val colorBar: View = itemView.colorBar
+        var onReminderListener: OnReminderListener
 
         private val dateFormatter = SimpleDateFormat("EEE, d MMM, h:mm a") //creates a date format
         private val timeFormatter = SimpleDateFormat("h:mm a")
         private val dayOfWeekFormatter = SimpleDateFormat("EEEE")
+
+        init {
+            this.onReminderListener = onReminderListener
+            itemView.setOnClickListener(this)
+        }
 
         fun bind(reminder: Reminder) {
             val fromNowMins = MainActivity.findTimeFromNowMins(reminder.getRemindCalendar())
@@ -148,5 +166,14 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
                dateOrRepeatTextView.text = dateFormatter.format(reminder.getRemindCalendar().time)
             }
         }
+
+        override fun onClick(v: View?) {
+            onReminderListener.onReminderClick(adapterPosition)
+        }
+
     }
+}
+
+interface OnReminderListener {
+    fun onReminderClick(position: Int)
 }
