@@ -42,17 +42,11 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         this.onReminderListener = onReminderListener
     }
 
-    fun deleteItem(viewHolder: RecyclerView.ViewHolder, view: View) {
-        val deletedPosition: Int = viewHolder.adapterPosition
-        val deletedItem: Reminder = items[deletedPosition]
+    fun swipeDeleteItem(viewHolder: RecyclerView.ViewHolder, view: View) {
 
-        items.removeAt(viewHolder.adapterPosition)
-        deletedItem.deleteReminder()
-        notifyItemRemoved(viewHolder.adapterPosition)
+        val deletedItem: Reminder = items[viewHolder.adapterPosition]
+        deleteItem(deletedItem,view)
 
-        Snackbar.make(view, "Bye-Bye " + deletedItem.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
-            undoRemoval(deletedItem)
-        }.show()
     }
 
     fun removeItem(reminder: Reminder) {
@@ -60,6 +54,19 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         items.remove(reminder)
         reminder.deleteReminder()
         notifyItemRemoved(index)
+    }
+
+    fun deleteItem(reminder: Reminder, view: View) {
+
+        removeItem(reminder)
+        showSnackBarDelete(reminder,view)
+
+    }
+
+    private fun showSnackBarDelete(reminder: Reminder, view: View) {
+        Snackbar.make(view, "Bye-Bye " + reminder.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
+            undoRemoval(reminder)
+        }.show()
     }
 
     fun completeItem(viewHolder: RecyclerView.ViewHolder, view: View) {

@@ -74,15 +74,9 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
 
     fun getText(): String { return text }
 
-    fun setText(text: String) { this.text = text }
-
     fun getRemindCalendar(): Calendar{ return remindCalendar }
 
-    fun setRemindCalendar(remindCalendar: Calendar) { this.remindCalendar = remindCalendar }
-
     fun getRepeatVal(): Int{ return repeatVal }
-
-    fun setRepeatVal(repeatVal: Int) { this.repeatVal = repeatVal }
 
     fun getReminderData(): ReminderData {
         val reminderData = ReminderData(this.text,this.remindCalendar,this.repeatVal, reminderList.indexOf(this))

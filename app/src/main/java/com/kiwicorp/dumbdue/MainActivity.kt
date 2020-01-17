@@ -40,6 +40,8 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
 
         val reminderRecyclerAdapter = ReminderRecyclerAdapter()
 
+        val RESULT_DELETE = 6//custom result code for delete
+
         var notificationID = 0 //used to keep notifications unique thus allowing notifications to stack
 
         fun daySuffixFinder(calendar: Calendar): String {
@@ -122,11 +124,12 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
         }
 
         val itemTouchHelperCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean { return false }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 if (direction == ItemTouchHelper.RIGHT) {//if user swipes right, deleteReminder reminder
-                    reminderRecyclerAdapter.deleteItem(viewHolder,findViewById(R.id.activity_main))
+                    reminderRecyclerAdapter.swipeDeleteItem(viewHolder,findViewById(R.id.activity_main))
                 } else if ( direction == ItemTouchHelper.LEFT) {//if user swipes left, complete reminder
                     reminderRecyclerAdapter.completeItem(viewHolder,findViewById(R.id.activity_main))
                 }
@@ -211,18 +214,27 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
         intent.putExtra("ReminderData", reminder.getReminderData())
         startActivityForResult(intent,EDIT_REMINDER_REQUEST)
     }
-
+    //on activity result for edit reminder request activity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        // Check which request we're responding to
+        //check which request we're responding to
         if (requestCode == EDIT_REMINDER_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == Activity.RESULT_OK) {
-                val newData: Reminder.ReminderData? = data?.getParcelableExtra("NewReminderData")
 
+            if (resultCode == Activity.RESULT_OK) {
+                val newData: Reminder.ReminderData? = data?.getParcelableExtra("ReminderData")
+                //remove reminder and create a new reminder with desired specifications
                 if (newData != null) {
                     val reminder: Reminder = Reminder.reminderList.get(newData.index)
                     reminderRecyclerAdapter.removeItem(reminder)
                     Reminder(newData.text,newData.remindCalendar,newData.repeatVal,applicationContext)
+                }
+            }
+
+            if (resultCode == RESULT_DELETE) {
+                val deleteData: Reminder.ReminderData? = data?.getParcelableExtra("ReminderData")
+                //deletes reminder
+                if (deleteData != null) {
+                    val reminder: Reminder = Reminder.reminderList.get(deleteData.index)
+                    reminderRecyclerAdapter.deleteItem(reminder,findViewById(R.id.activity_main))
                 }
             }
         }

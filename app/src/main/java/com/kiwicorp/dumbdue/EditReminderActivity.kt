@@ -139,8 +139,13 @@ class EditReminderActivity : Activity() {
             finish()
         }
         addButton.setOnClickListener {
-            intent.putExtra("NewReminderData",Reminder.ReminderData(reminderEditText.text.toString(),dueDateCalendar,repeatVal,index))
+            intent.putExtra("ReminderData",Reminder.ReminderData(reminderEditText.text.toString(),dueDateCalendar,repeatVal,index))
             setResult(RESULT_OK,intent)
+            finish()
+        }
+        deleteButton.setOnClickListener {
+            intent.putExtra("ReminderData", reminderData)
+            setResult(MainActivity.RESULT_DELETE,intent)
             finish()
         }
         repeatButton.setOnClickListener {
