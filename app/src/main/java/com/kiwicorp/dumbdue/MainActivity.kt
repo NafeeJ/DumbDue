@@ -37,15 +37,15 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
 
     companion object {
         //Shared Preferences Keys
-        val prefs: String = "Preferences"
-        val remindersListKey: String = "RemindersListKey"
-        val globalRequestCodeKey: String = "GlobalRequestCodeKey"
+        const val prefs: String = "Preferences"
+        const val remindersListKey: String = "RemindersListKey"
+        const val globalRequestCodeKey: String = "GlobalRequestCodeKey"
 
         lateinit var globalAlarmManager: AlarmManager
 
         val reminderRecyclerAdapter = ReminderRecyclerAdapter()
 
-        val RESULT_DELETE = 6//custom result code for delete
+        const val RESULT_DELETE = 6//custom result code for delete
 
         var notificationID = 0 //used to keep notifications unique thus allowing notifications to stack
 
@@ -61,25 +61,6 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
                 return "th"
             }
         }
-
-        fun findTimeFromNowString(timeInMins: Int): String { //returns a string with absolute value of time from now and its correct unit
-            val absTime = timeInMins.absoluteValue
-
-            if (absTime == 0) { return "0 Minutes" } //less than 1 minute
-            else if (absTime == 1) { return absTime.toString().plus(" Minute") } //equal to 1 minute
-            else if (absTime < 60) { return absTime.toString().plus(" Minutes") } //less than 1 hour
-            else if ((absTime / 60) == 1) { return (absTime / 60).toString().plus(" Hour") } //equal to 1 hour
-            else if ((absTime / 60) < 24 ) { return (absTime / 60).toString().plus(" Hours") } //less than 1 day
-            else if ((absTime / 60 / 24) == 1) { return (absTime / 60 / 24).toString().plus(" Day") } //equal to 1 day
-            else if ((absTime / 60 / 24) < 7) { return (absTime / 60 / 24).toString().plus(" Days") } //less than 1 week
-            else if ((absTime / 60 / 24 / 7) == 1) { return (absTime / 60 / 24 / 7).toString().plus(" Week") } //equal to 1 week
-            else if ((absTime / 60 / 24 / 7) < 4) { return (absTime / 60 / 24 / 7).toString().plus(" Weeks") } //less than 1 month
-            else if ((absTime / 60 / 24 / 7 / 4) == 1) { return (absTime / 60 / 24 / 7 / 4).toString().plus(" Month") } //equal to 1 month
-            else if ((absTime / 60 / 24 / 7 / 4) < 12) { return (absTime / 60 / 24 / 7 / 4).toString().plus(" Months") } //less than one year
-            else if ((absTime / 60 / 24 / 7 / 4 / 12) == 1) { return (absTime / 60 / 24 / 7 / 4 / 12).toString().plus(" Year") } //equal to 1 year
-            else return (absTime / 60 / 24 / 7 / 4 / 12).toString().plus(" Years")
-        }
-
         fun findTimeFromNowMins(calendar: Calendar): Int {
             //Get time difference of each time unit with fromNowMins as variable to use as the standard
             var fromNowMins: Int = calendar.get(Calendar.MINUTE) - Calendar.getInstance().get(Calendar.MINUTE)
@@ -90,7 +71,8 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
             fromNowMins += (fromNowHours * 60) + (fromNowDays * 24 * 60) + (fromNowYears * 525600) //Add the other time unit differences, in minutes, to fromNowMins
             return fromNowMins
         }
-        fun saveAll(context: Context) {
+
+        fun saveAll(context: Context) {//saves the list and global request code
 
             val sharedPreferences = context.getSharedPreferences(prefs, Context.MODE_PRIVATE)
 
@@ -100,7 +82,6 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
             val requestCodeJson: String = myGson.toJson(Reminder.globalRequestCode)
             editor.putString(globalRequestCodeKey, requestCodeJson)
             //puts reminder list as a json
-
             val listJson: String = myGson.toJson(Reminder.reminderList)
             editor.putString(remindersListKey, listJson)
 

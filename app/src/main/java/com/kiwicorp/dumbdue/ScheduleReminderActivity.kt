@@ -11,6 +11,7 @@ import android.widget.*
 import kotlinx.android.synthetic.main.layout_schedule_reminder_activity.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.absoluteValue
 
 class ScheduleReminderActivity : Activity() {
     private var repeatVal: Int = Reminder.REPEAT_NONE
@@ -206,15 +207,32 @@ class ScheduleReminderActivity : Activity() {
         }
 
         if (fromNowMins >= 0) { //if time from now is positive or the same, updates text to be in format: "Date in fromNowMins (units)" and sets grey background color
-            dateTextView.text = dateFormatter.format(calendar.time).plus(" in ").plus(MainActivity.findTimeFromNowString(fromNowMins))
+            dateTextView.text = dateFormatter.format(calendar.time).plus(" in ").plus(findTimeFromNowString(fromNowMins))
             dateTextView.setBackgroundColor(Color.parseColor("#303030"))
             repeatTextView.setBackgroundColor(Color.parseColor("#303030"))
         }
         else { //if time from now is negative, updates text to be in format: "Date fromNowMins (units) ago" and sets red background color
-            dateTextView.text = dateFormatter.format(calendar.time).plus(" ").plus(MainActivity.findTimeFromNowString(fromNowMins)).plus(" ago")
+            dateTextView.text = dateFormatter.format(calendar.time).plus(" ").plus(findTimeFromNowString(fromNowMins)).plus(" ago")
             dateTextView.setBackgroundColor(Color.parseColor("#f54242"))
             repeatTextView.setBackgroundColor(Color.parseColor("#f54242"))
         }
+    }
+    private fun findTimeFromNowString(timeInMins: Int): String { //returns a string with absolute value of time from now and its correct unit
+        val absTime = timeInMins.absoluteValue
+
+        if (absTime == 0) { return "0 Minutes" } //less than 1 minute
+        else if (absTime == 1) { return absTime.toString().plus(" Minute") } //equal to 1 minute
+        else if (absTime < 60) { return absTime.toString().plus(" Minutes") } //less than 1 hour
+        else if ((absTime / 60) == 1) { return (absTime / 60).toString().plus(" Hour") } //equal to 1 hour
+        else if ((absTime / 60) < 24 ) { return (absTime / 60).toString().plus(" Hours") } //less than 1 day
+        else if ((absTime / 60 / 24) == 1) { return (absTime / 60 / 24).toString().plus(" Day") } //equal to 1 day
+        else if ((absTime / 60 / 24) < 7) { return (absTime / 60 / 24).toString().plus(" Days") } //less than 1 week
+        else if ((absTime / 60 / 24 / 7) == 1) { return (absTime / 60 / 24 / 7).toString().plus(" Week") } //equal to 1 week
+        else if ((absTime / 60 / 24 / 7) < 4) { return (absTime / 60 / 24 / 7).toString().plus(" Weeks") } //less than 1 month
+        else if ((absTime / 60 / 24 / 7 / 4) == 1) { return (absTime / 60 / 24 / 7 / 4).toString().plus(" Month") } //equal to 1 month
+        else if ((absTime / 60 / 24 / 7 / 4) < 12) { return (absTime / 60 / 24 / 7 / 4).toString().plus(" Months") } //less than one year
+        else if ((absTime / 60 / 24 / 7 / 4 / 12) == 1) { return (absTime / 60 / 24 / 7 / 4 / 12).toString().plus(" Year") } //equal to 1 year
+        else return (absTime / 60 / 24 / 7 / 4 / 12).toString().plus(" Years")
     }
 
 }

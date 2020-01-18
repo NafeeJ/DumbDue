@@ -24,7 +24,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
 
     }
 
-    private var text: String
+    private var title: String = ""
     private var remindCalendar: Calendar //calendar with date to remind
     private var repeatVal: Int = 0 //val for user's desired repeat frequency
     @Transient private var context: Context
@@ -35,7 +35,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
     @Transient private var intermediateReceiverPendingIntent: PendingIntent
 
     init {
-        this.text = text
+        this.title = text
         this.remindCalendar = remindCalendar
         this.repeatVal = repeatVal
         this.context = context
@@ -43,7 +43,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
 
         intermediateReceiverIntent = Intent(this.context,IntermediateReceiver::class.java)
         intermediateReceiverIntent.putExtra("requestCode", requestCode)
-        intermediateReceiverIntent.putExtra("reminderText",this.text)
+        intermediateReceiverIntent.putExtra("reminderText",this.title)
 
         intermediateReceiverPendingIntent = PendingIntent.getBroadcast(this.context,this.requestCode,intermediateReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT)
 
@@ -72,14 +72,14 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         MainActivity.reminderRecyclerAdapter.notifyDataSetChanged()
     }
 
-    fun getText(): String { return text }
+    fun getText(): String { return title }
 
     fun getRemindCalendar(): Calendar{ return remindCalendar }
 
     fun getRepeatVal(): Int{ return repeatVal }
 
     fun getReminderData(): ReminderData {
-        val reminderData = ReminderData(this.text,this.remindCalendar,this.repeatVal, reminderList.indexOf(this))
+        val reminderData = ReminderData(this.title,this.remindCalendar,this.repeatVal, reminderList.indexOf(this))
         return reminderData
     }
 
@@ -87,7 +87,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         this.context = context
         intermediateReceiverIntent = Intent(this.context,IntermediateReceiver::class.java)
         intermediateReceiverIntent.putExtra("requestCode", requestCode)
-        intermediateReceiverIntent.putExtra("reminderText",this.text)
+        intermediateReceiverIntent.putExtra("reminderText",this.title)
         intermediateReceiverPendingIntent = PendingIntent.getBroadcast(this.context,this.requestCode,intermediateReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager = MainActivity.globalAlarmManager
         setAlarm(remindCalendar)

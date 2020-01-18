@@ -10,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.layout_reminder_item.view.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.absoluteValue
 
 
 class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -93,7 +94,7 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
             }
         }
 
-        Snackbar.make(view,"Done with " + completedItem.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
+        Snackbar.make(view,"Completed " + completedItem.getText() + " :)", Snackbar.LENGTH_LONG).setAction("Undo") {
             //if reminder is repeating, remove item and readd with remind calendar decremented with the correct amount
             //else readd reminder normally
             when(completedItem.getRepeatVal()) {
@@ -137,9 +138,9 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         private val colorBar: View = itemView.colorBar
         var onReminderListener: OnReminderListener
 
-        private val dateFormatter = SimpleDateFormat("EEE, d MMM, h:mm a") //creates a date format
-        private val timeFormatter = SimpleDateFormat("h:mm a")
-        private val dayOfWeekFormatter = SimpleDateFormat("EEEE")
+        private val dateFormatter = SimpleDateFormat("MMM d, h:mm a") //month day, hour:min am/pm
+        private val timeFormatter = SimpleDateFormat("h:mm a")//hour:min am/pm
+        private val dayOfWeekFormatter = SimpleDateFormat("EEEE")//day
 
         init {
             this.onReminderListener = onReminderListener
@@ -154,11 +155,11 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
             if (fromNowMins > 0) {
                 colorBar.setBackgroundColor(Color.parseColor("#3371FF"))//set color bar to blue
                 dateOrRepeatTextView.setTextColor(Color.parseColor("#525252"))//set text color to grey
-                timeFromNowTextView.text = "in ".plus(MainActivity.findTimeFromNowString(fromNowMins))
+                timeFromNowTextView.text = findTimeFromNowString(reminder.getRemindCalendar())
             } else {
                 colorBar.setBackgroundColor(Color.parseColor("#f54242"))//set color bar to red
                 dateOrRepeatTextView.setTextColor(Color.parseColor("#f54242"))//set text color to red
-                timeFromNowTextView.text = MainActivity.findTimeFromNowString(fromNowMins).plus(" ago")
+                timeFromNowTextView.text = findTimeFromNowString(reminder.getRemindCalendar())
             }
             //if the reminder is repeating display its repeating interval
             if (reminder.getRepeatVal() != Reminder.REPEAT_NONE) {
@@ -173,11 +174,43 @@ class ReminderRecyclerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
                dateOrRepeatTextView.text = dateFormatter.format(reminder.getRemindCalendar().time)
             }
         }
-
         override fun onClick(v: View?) {
             onReminderListener.onReminderClick(adapterPosition)
         }
 
+        private fun findTimeFromNowString(calendar: Calendar): String { //returns a string with absolute value of time from now and its correct unit or if in between 1 day and 1 week, returns day of week
+            val fromNowMins: Int = MainActivity.findTimeFromNowMins(calendar)
+            val absTime = fromNowMins.absoluteValue
+
+            var timeFromNowString: String
+
+            val dayformatter = SimpleDateFormat("EEE")
+            //sets timeFromNow to the greatest whole unit of time + that unit
+            if (absTime == 0) { timeFromNowString = "0m" } //less than 1 minute
+            else if (absTime == 1) { timeFromNowString = absTime.toString().plus("m") } //equal to 1 minute
+            else if (absTime < 60) { timeFromNowString = absTime.toString().plus("m") } //less than 1 hour
+            else if ((absTime / 60) == 1) { timeFromNowString = (absTime / 60).toString().plus("h") } //equal to 1 hour
+            else if ((absTime / 60) < 24 ) { timeFromNowString = (absTime / 60).toString().plus("h") } //less than 1 day
+            else if ((absTime / 60 / 24) == 1) { timeFromNowString = (absTime / 60 / 24).toString().plus("d") } //equal to 1 day
+            else if ((absTime / 60 / 24) < 7) { timeFromNowString = (absTime / 60 / 24).toString().plus("d") } //less than 1 week
+            else if ((absTime / 60 / 24 / 7) == 1) { timeFromNowString = (absTime / 60 / 24 / 7).toString().plus("w") } //equal to 1 week
+            else if ((absTime / 60 / 24 / 7) < 4) { timeFromNowString = (absTime / 60 / 24 / 7).toString().plus("w") } //less than 1 month
+            else if ((absTime / 60 / 24 / 7 / 4) == 1) { timeFromNowString = (absTime / 60 / 24 / 7 / 4).toString().plus("mo") } //equal to 1 month
+            else if ((absTime / 60 / 24 / 7 / 4) < 12) { timeFromNowString = (absTime / 60 / 24 / 7 / 4).toString().plus("mo") } //less than one year
+            else if ((absTime / 60 / 24 / 7 / 4 / 12) == 1) { timeFromNowString = (absTime / 60 / 24 / 7 / 4 / 12).toString().plus("yr")  } //equal to 1 year
+            else timeFromNowString = (absTime / 60 / 24 / 7 / 4 / 12).toString().plus("yr")
+
+            if (fromNowMins >= 0 && (((absTime / 60 / 24) >= 7 && (absTime / 60) >= 24) || (absTime / 60) <= 12  )) {//adds "in" to beginning of timeFromNow if positive and not in between 1 week and 12 hours
+                timeFromNowString = "in ".plus(timeFromNowString)
+            } else if(fromNowMins > 0 && ((absTime / 60) > 12 && (absTime / 60) < 24)  ) {
+                timeFromNowString = timeFormatter.format(calendar.time)
+            }else if ((fromNowMins / 60 / 24) < 7 && fromNowMins > 0) {//sets timeFromNow to be the day of reminder, if fromNowMins is postive and less than 7 days but more than one day
+                timeFromNowString = dayformatter.format(calendar.time)
+            } else {//if time from now is negative add "ago"
+                timeFromNowString = timeFromNowString.plus(" ago")
+            }
+            return timeFromNowString
+        }
     }
 }
 

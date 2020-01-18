@@ -16,7 +16,7 @@ class NotificationReceiver : BroadcastReceiver() {
 
         val timeFormatter = SimpleDateFormat("h:mm:ss:SS a ")
 
-        val notificationText: String = intent.getStringExtra("reminderText")
+        val notificationText: String? = intent.getStringExtra("reminderText")
 
         val repeatingIntent= Intent(context, MainActivity::class.java)
         repeatingIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
