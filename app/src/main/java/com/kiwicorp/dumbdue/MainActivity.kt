@@ -10,6 +10,10 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -20,6 +24,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
+import kotlin.concurrent.fixedRateTimer
 import kotlin.math.absoluteValue
 
 class MainActivity : AppCompatActivity(), OnReminderListener {
@@ -118,6 +123,13 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
         initRecyclerView()
         reminderRecyclerAdapter.submitList(Reminder.reminderList)
         reminderRecyclerAdapter.submitOnReminderClickListener(this)
+
+        //updates recycler view every 5 seconds
+        fixedRateTimer("timer",false,0,5000) {
+            this@MainActivity.runOnUiThread {
+                reminderRecyclerAdapter.notifyDataSetChanged()
+            }
+        }
 
         scheduleFAB.setOnClickListener {
             startActivity(Intent(applicationContext, ScheduleReminderActivity::class.java))
