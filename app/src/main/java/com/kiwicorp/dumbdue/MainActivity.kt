@@ -10,11 +10,11 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
-import android.view.View
-import android.widget.Toast
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +25,6 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
-import kotlin.math.absoluteValue
 
 class MainActivity : AppCompatActivity(), OnReminderListener {
     private lateinit var deleteIcon: Drawable
@@ -71,7 +70,6 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
             fromNowMins += (fromNowHours * 60) + (fromNowDays * 24 * 60) + (fromNowYears * 525600) //Add the other time unit differences, in minutes, to fromNowMins
             return fromNowMins
         }
-
         fun saveAll(context: Context) {//saves the list and global request code
 
             val sharedPreferences = context.getSharedPreferences(prefs, Context.MODE_PRIVATE)
@@ -92,6 +90,10 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val toolbar: Toolbar = findViewById(R.id.toolBar)
+        setSupportActionBar(toolbar)
+        getSupportActionBar()?.setDisplayShowTitleEnabled(false)
 
         globalAlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         
@@ -174,6 +176,22 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
         itemTouchHelper.attachToRecyclerView(recycler_view)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflator: MenuInflater = menuInflater
+        inflator.inflate(R.menu.action_bar_menu,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_settings -> {
+            startActivity(Intent(applicationContext, SettingsActivity::class.java))
+            true
+        }
+        else -> {
+            super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun initRecyclerView() {
         recycler_view.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -209,6 +227,7 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
     }
     //on activity result for edit reminder request activity
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         //check which request we're responding to
         if (requestCode == EDIT_REMINDER_REQUEST) {
 

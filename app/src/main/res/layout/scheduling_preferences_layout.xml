@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/centerLine"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true" />
+
+    <Button
+        android:id="@+id/presetButton1"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/plus10minbutton"
+        android:layout_toStartOf="@id/presetButton2"
+        android:background="@color/colorPrimaryDark"
+        android:text="9:30 AM"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/presetButton2"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/plus1hrbutton"
+        android:layout_toStartOf="@id/centerLine"
+        android:background="@color/colorPrimaryDark"
+        android:text="12:00 PM"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/presetButton3"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/plus3hrbutton"
+        android:layout_toEndOf="@id/centerLine"
+        android:background="@color/colorPrimaryDark"
+        android:text="6:30 PM"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/presetButton4"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/plus1daybutton"
+        android:layout_toEndOf="@id/presetButton3"
+        android:background="@color/colorPrimaryDark"
+        android:text="10:00 PM"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/plus10minbutton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/plus1hrbutton"
+        android:background="@color/colorPrimaryDark"
+        android:text="+10 min"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/minus10minbutton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/plus10minbutton"
+        android:layout_toStartOf="@id/plus1hrbutton"
+        android:background="@color/colorPrimaryDark"
+        android:text="-10 min"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/plus1hrbutton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/centerLine"
+        android:background="@color/colorPrimaryDark"
+        android:text="+1 hr"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/minus1hrbutton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/plus1hrbutton"
+        android:layout_toStartOf="@id/centerLine"
+        android:background="@color/colorPrimaryDark"
+        android:text="-1 hr"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/plus3hrbutton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/centerLine"
+        android:background="@color/colorPrimaryDark"
+        android:text="+3 hrs"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/minus3hrbutton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/plus3hrbutton"
+        android:layout_toEndOf="@id/centerLine"
+        android:background="@color/colorPrimaryDark"
+        android:text="-3 hrs"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/plus1daybutton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/plus3hrbutton"
+        android:background="@color/colorPrimaryDark"
+        android:text="+1 day"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/minus1daybutton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/plus1daybutton"
+        android:layout_toEndOf="@id/minus3hrbutton"
+        android:background="@color/colorPrimaryDark"
+        android:text="-1 day"
+        android:textColor="#FFFFFF" />
+
+</RelativeLayout>
