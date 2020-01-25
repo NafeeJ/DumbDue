@@ -1,15 +1,20 @@
 package com.kiwicorp.dumbdue
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
+import com.takisoft.preferencex.PreferenceFragmentCompat
+
 
 private const val TITLE_TAG = "settingsActivityTitle"
 
 class SettingsActivity : AppCompatActivity(),
-    PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+    androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +53,7 @@ class SettingsActivity : AppCompatActivity(),
     }
 
     override fun onPreferenceStartFragment(
-        caller: PreferenceFragmentCompat,
+        caller: androidx.preference.PreferenceFragmentCompat,
         pref: Preference
     ): Boolean {
         // Instantiate the new Fragment
@@ -70,22 +75,31 @@ class SettingsActivity : AppCompatActivity(),
     }
 
     class HeaderFragment : PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-
+        override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.header_preferences, rootKey)
         }
+
+
     }
 
-    class MessagesFragment : PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-
-            setPreferencesFromResource(R.xml.messages_preferences, rootKey)
-
+    class QuickAccessTimesFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
+            setPreferencesFromResource(R.xml.preset_time_preferences, rootKey)
         }
+
+        override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+        ): View? {
+            return super.onCreateView(inflater, container, savedInstanceState)
+        }
+
+
     }
 
-    class SyncFragment : PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+    class ThemesFragment : PreferenceFragmentCompat() {
+        override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.sync_preferences, rootKey)
         }
     }

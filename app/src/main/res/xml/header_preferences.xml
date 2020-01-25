@@ -4,20 +4,20 @@
         app:title="Editor"
         app:key="editor">
         <Preference
-            app:fragment="com.kiwicorp.dumbdue.SettingsActivity$MessagesFragment"
-            app:icon="@drawable/messages"
-            app:key="messages_header"
-            app:title="@string/messages_header" />
+            app:fragment="com.kiwicorp.dumbdue.SettingsActivity$QuickAccessTimesFragment"
+            app:icon="@drawable/time_black"
+            app:key="quick_access_times_header"
+            app:title="@string/quick_acess_times_header"/>
     </PreferenceCategory>
 
     <PreferenceCategory
         app:title="Appearance"
         app:key="appearance">
         <Preference
-            app:fragment="com.kiwicorp.dumbdue.SettingsActivity$SyncFragment"
-            app:icon="@drawable/sync"
-            app:key="sync_header"
-            app:title="@string/sync_header" />
+            app:fragment="com.kiwicorp.dumbdue.SettingsActivity$ThemesFragment"
+            app:icon="@drawable/paint_palette_black"
+            app:key="themes_header"
+            app:title="@string/themes_header" />
     </PreferenceCategory>
 
 

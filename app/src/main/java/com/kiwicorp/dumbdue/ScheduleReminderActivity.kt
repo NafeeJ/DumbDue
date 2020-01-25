@@ -2,6 +2,7 @@ package com.kiwicorp.dumbdue
 
 import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -12,11 +13,12 @@ import kotlinx.android.synthetic.main.layout_schedule_reminder_activity.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue
+import androidx.preference.PreferenceManager
 
 class ScheduleReminderActivity : Activity() {
     private var repeatVal: Int = Reminder.REPEAT_NONE
 
-    private val dateFormatter = SimpleDateFormat("EEE, d MMM, h:mm a") //creates a date format
+    private val dateFormatter = SimpleDateFormat("EEE, d MMM, h:mm a")
     private val timeFormatter = SimpleDateFormat("h:mm a")
     private val dayOfWeekFormatter = SimpleDateFormat("EEEE")
 
@@ -29,6 +31,12 @@ class ScheduleReminderActivity : Activity() {
         setContentView(R.layout.layout_schedule_reminder_activity)
 
         dueDateCalendar = Calendar.getInstance()
+
+        val quickAccessTimesList = getPresetTimes()
+        val quickAccess1Calendar = quickAccessTimesList[0]
+        val quickAccess2Calendar = quickAccessTimesList[1]
+        val quickAccess3Calendar = quickAccessTimesList[2]
+        val quickAccess4Calendar = quickAccessTimesList[3]
 
         //gets display metrics of phone screen
         val displayMetrics = DisplayMetrics()
@@ -51,12 +59,29 @@ class ScheduleReminderActivity : Activity() {
         val buttonPlus1day: Button = findViewById(R.id.plus1daybutton)
         val buttonMinus1day: Button = findViewById(R.id.minus1daybutton)
 
+        val timeFormatter = SimpleDateFormat("h:mm a")
+
         //initialize preset buttons and their intended hour and minutes
         //Later allow user to change time presets
-        val buttonPreset1: Button = findViewById(R.id.presetButton1); val preset1HourOfDay = 9; val preset1Min = 30
-        val buttonPreset2: Button = findViewById(R.id.presetButton2); val preset2HourOfDay = 12; val preset2Min = 0
-        val buttonPreset3: Button = findViewById(R.id.presetButton3); val preset3HourOfDay = 18; val preset3Min = 30
-        val buttonPreset4: Button = findViewById(R.id.presetButton4); val preset4HourOfDay = 22; val preset4Min = 0
+        val buttonPreset1: Button = findViewById(R.id.presetButton1)
+        val preset1HourOfDay = quickAccess1Calendar.get(Calendar.HOUR_OF_DAY)
+        val preset1Min = quickAccess1Calendar.get(Calendar.MINUTE)
+        buttonPreset1.text = timeFormatter.format(quickAccess1Calendar.time)
+
+        val buttonPreset2: Button = findViewById(R.id.presetButton2)
+        val preset2HourOfDay = quickAccess2Calendar.get(Calendar.HOUR_OF_DAY)
+        val preset2Min = quickAccess2Calendar.get(Calendar.MINUTE)
+        buttonPreset2.text = timeFormatter.format(quickAccess2Calendar.time)
+
+        val buttonPreset3: Button = findViewById(R.id.presetButton3)
+        val preset3HourOfDay = quickAccess3Calendar.get(Calendar.HOUR_OF_DAY)
+        val preset3Min = quickAccess3Calendar.get(Calendar.MINUTE)
+        buttonPreset3.text = timeFormatter.format(quickAccess3Calendar.time)
+
+        val buttonPreset4: Button = findViewById(R.id.presetButton4)
+        val preset4HourOfDay = quickAccess4Calendar.get(Calendar.HOUR_OF_DAY)
+        val preset4Min = quickAccess4Calendar.get(Calendar.MINUTE)
+        buttonPreset4.text = timeFormatter.format(quickAccess4Calendar.time)
 
         val addButton: ImageButton = findViewById(R.id.addButton)
         val cancelButton: ImageButton = findViewById(R.id.cancelButton)
@@ -181,6 +206,28 @@ class ScheduleReminderActivity : Activity() {
             startActivityForResult(datePickerIntent, DATE_PICK_REQUEST)
         }
 
+    }
+
+    private fun getPresetTimes(): List<Calendar> {
+        val timeFormatter = SimpleDateFormat("HH:mm", Locale.US)
+
+        val sharedPreferences: SharedPreferences = PreferenceManager(applicationContext).sharedPreferences
+        val quickAccess1String = sharedPreferences.getString("preset1", "8:00")
+        val quickAccess2String = sharedPreferences.getString("preset2", "12:00")
+        val quickAccess3String = sharedPreferences.getString("preset3", "17:00")
+        val quickAccess4String = sharedPreferences.getString("preset4", "22:00")
+
+        val quickAccess1Calendar = Calendar.getInstance()
+        val quickAccess2Calendar = Calendar.getInstance()
+        val quickAccess3Calendar = Calendar.getInstance()
+        val quickAccess4Calendar = Calendar.getInstance()
+
+        quickAccess1Calendar.time = timeFormatter.parse(quickAccess1String)
+        quickAccess2Calendar.time = timeFormatter.parse(quickAccess2String)
+        quickAccess3Calendar.time = timeFormatter.parse(quickAccess3String)
+        quickAccess4Calendar.time = timeFormatter.parse(quickAccess4String)
+
+        return listOf<Calendar>(quickAccess1Calendar,quickAccess2Calendar,quickAccess3Calendar,quickAccess4Calendar)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {

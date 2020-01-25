@@ -4,12 +4,20 @@
     <string name="title_activity_settings">Settings</string>
 
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+    <string name="quick_acess_times_header">Quick Access Times</string>
+    <string name="themes_header">Theme</string>
 
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <!-- Preset Times Preferences -->
+    <string name="quick_access_1_title">Quick Access 1</string>
+    <string name="quick_access_2_title">Quick Access 2</string>
+    <string name="quick_access_3_title">Quick Access 3</string>
+    <string name="quick_access_4_title">Quick Access 4</string>
+
+    <!-- Quick Access Times Default Values-->
+    <string name="quick_access_1_default">8:00</string>
+    <string name="quick_access_2_default">12:00</string>
+    <string name="quick_access_3_default">17:00</string>
+    <string name="quick_access_4_default">22:00</string>
 
     <!-- Sync Preferences -->
     <string name="sync_title">Sync email periodically</string>
@@ -18,6 +26,4 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

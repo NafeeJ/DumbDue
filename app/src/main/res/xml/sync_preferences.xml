@@ -1,7 +1,4 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        <com.kiwicorp.dumbdue.TimePickerPreference>
-
-        </com.kiwicorp.dumbdue.TimePickerPreference>
 
 </PreferenceScreen>

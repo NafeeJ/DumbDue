@@ -12,22 +12,25 @@ import java.util.*
 class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        val timeFormatter = SimpleDateFormat("h:mm:ss:SS a ")
+        val notificationManager: NotificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val notificationText: String? = intent.getStringExtra("reminderText")
 
-        val repeatingIntent= Intent(context, MainActivity::class.java)
-        repeatingIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        val notificationOnClickIntent= Intent(context, MainActivity::class.java)
+        notificationOnClickIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
 
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(context,MainActivity.notificationID,repeatingIntent,PendingIntent.FLAG_UPDATE_CURRENT)
+        val notificationOnClickPendingIntent: PendingIntent = PendingIntent.getActivity(context,
+            MainActivity.notificationID,
+            notificationOnClickIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val builder: Notification.Builder = Notification.Builder(context,NotificationChannel.CHANNEL_1_ID)
-            .setContentIntent(pendingIntent)
+        val builder: Notification.Builder = Notification.Builder(context,
+            NotificationChannel.CHANNEL_1_ID)
+            .setContentIntent(notificationOnClickPendingIntent)
             .setSmallIcon(R.drawable.ic_android_black_24dp)
             .setContentTitle(notificationText)
-            .setContentText(timeFormatter.format(Calendar.getInstance().time))
+            .setShowWhen(true)
             .setAutoCancel(true)//makes notification dismissible when the user swipes it away
 
         notificationManager.notify(++MainActivity.notificationID,builder.build())
