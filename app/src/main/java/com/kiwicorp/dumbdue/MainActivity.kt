@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
 
         val toolbar: Toolbar = findViewById(R.id.toolBar)
         setSupportActionBar(toolbar)
-        getSupportActionBar()?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         globalAlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         

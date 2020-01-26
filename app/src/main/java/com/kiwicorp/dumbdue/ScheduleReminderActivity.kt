@@ -32,7 +32,7 @@ class ScheduleReminderActivity : Activity() {
 
         dueDateCalendar = Calendar.getInstance()
 
-        val quickAccessTimesList = getPresetTimes()
+        val quickAccessTimesList = getQuickAccessTimes()
         val quickAccess1Calendar = quickAccessTimesList[0]
         val quickAccess2Calendar = quickAccessTimesList[1]
         val quickAccess3Calendar = quickAccessTimesList[2]
@@ -208,7 +208,7 @@ class ScheduleReminderActivity : Activity() {
 
     }
 
-    private fun getPresetTimes(): List<Calendar> {
+    private fun getQuickAccessTimes(): List<Calendar> {
         val timeFormatter = SimpleDateFormat("HH:mm", Locale.US)
 
         val sharedPreferences: SharedPreferences = PreferenceManager(applicationContext).sharedPreferences

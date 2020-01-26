@@ -19,7 +19,6 @@
         android:textColor="#FFFFFF"
         android:textSize="20sp" />
 
-
     <TextView
         android:id="@+id/dateOrRepeatTextView"
         android:layout_width="wrap_content"
