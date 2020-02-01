@@ -52,8 +52,7 @@ class ReminderSection(title: String, list:LinkedList<Reminder>, clickListener: C
             for (element in iterator) {
                 val sectionAdapterPosition = MainActivity.sectionAdapter.getSectionPosition(element)
                 if (positionInAdapter < sectionAdapterPosition) {
-                    val section = sectionList[iterator.previousIndex() - 1]
-                    return section
+                    return sectionList[iterator.previousIndex() - 1]
                 }
             }
             return sectionList.last()
