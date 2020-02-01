@@ -13,6 +13,8 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Toast
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -22,11 +24,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
-import kotlin.concurrent.fixedRateTimer
 
-class MainActivity : AppCompatActivity(), OnReminderListener {
+class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
     private lateinit var deleteIcon: Drawable
     private lateinit var checkIcon: Drawable
 
@@ -40,9 +42,13 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
         const val remindersListKey: String = "RemindersListKey"
         const val globalRequestCodeKey: String = "GlobalRequestCodeKey"
 
+        val todayCalendar: Calendar = Calendar.getInstance()//calendar with date at 11:59:59 pm today
+        val tomorrowCalendar: Calendar = Calendar.getInstance()//calendar with date at 11:59:59 pm tomorrow
+        val next7daysCalendar: Calendar = Calendar.getInstance()//calendar with date at 11:59:59 pm in 7 days
+
         lateinit var globalAlarmManager: AlarmManager
 
-        val reminderRecyclerAdapter = ReminderRecyclerAdapter()
+        val sectionAdapter = ReminderSectionedAdapter()
 
         const val RESULT_DELETE = 6//custom result code for delete
 
@@ -91,6 +97,22 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        todayCalendar.set(Calendar.MILLISECOND, 59)
+        todayCalendar.set(Calendar.SECOND,59)
+        todayCalendar.set(Calendar.MINUTE, 59)
+        todayCalendar.set(Calendar.HOUR_OF_DAY,23)
+
+        tomorrowCalendar.set(Calendar.MILLISECOND, 59)
+        tomorrowCalendar.set(Calendar.SECOND,59)
+        tomorrowCalendar.set(Calendar.HOUR_OF_DAY,23)
+        tomorrowCalendar.add(Calendar.DAY_OF_YEAR,1)
+
+        next7daysCalendar.set(Calendar.MILLISECOND, 59)
+        next7daysCalendar.set(Calendar.SECOND,59)
+        next7daysCalendar.set(Calendar.MINUTE, 59)
+        next7daysCalendar.set(Calendar.HOUR_OF_DAY,23)
+        next7daysCalendar.add(Calendar.WEEK_OF_YEAR,1)
+
         val toolbar: Toolbar = findViewById(R.id.toolBar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -102,17 +124,24 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
         deleteIcon = ContextCompat.getDrawable(this, R.drawable.delete_white) as Drawable
         checkIcon = ContextCompat.getDrawable(this,R.drawable.check_white) as Drawable
 
-        loadAll()
-        initRecyclerView()
-        reminderRecyclerAdapter.submitList(Reminder.reminderList)
-        reminderRecyclerAdapter.submitOnReminderClickListener(this)
+//        loadAll()
 
-        //updates recycler view every 5 seconds
-        fixedRateTimer("timer",false,0,5000) {
-            this@MainActivity.runOnUiThread {
-                reminderRecyclerAdapter.notifyDataSetChanged()
-            }
+        sectionAdapter.addSection("Overdue",ReminderSection("Overdue",Reminder.overdueList,this))
+        sectionAdapter.addSection("Today",ReminderSection("Today",Reminder.todayList,this))
+        sectionAdapter.addSection("Tomorrow",ReminderSection("Tomorrow",Reminder.tomorrowList,this))
+        sectionAdapter.addSection("Next 7 Days",ReminderSection("Next 7 Days",Reminder.next7daysList,this))
+        sectionAdapter.addSection("Future",ReminderSection("Future", Reminder.futureList,this))
+
+        recycler_view.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = sectionAdapter
         }
+//        //updates recycler view every 5 seconds
+//        fixedRateTimer("timer",false,0,5000) {
+//            this@MainActivity.runOnUiThread {
+//                reminderRecyclerAdapter.notifyDataSetChanged()
+//            }
+//        }
 
         scheduleFAB.setOnClickListener {
             startActivity(Intent(applicationContext, ScheduleReminderActivity::class.java))
@@ -124,9 +153,9 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 if (direction == ItemTouchHelper.RIGHT) {//if user swipes right, deleteReminder reminder
-                    reminderRecyclerAdapter.swipeDeleteItem(viewHolder,findViewById(R.id.activity_main))
+                    sectionAdapter.swipeDeleteItem(viewHolder,findViewById(R.id.activity_main))
                 } else if ( direction == ItemTouchHelper.LEFT) {//if user swipes left, complete reminder
-                    reminderRecyclerAdapter.completeItem(viewHolder,findViewById(R.id.activity_main))
+                    sectionAdapter.swipeCompleteItem(viewHolder,findViewById(R.id.activity_main))
                 }
 
             }
@@ -177,8 +206,8 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflator: MenuInflater = menuInflater
-        inflator.inflate(R.menu.action_bar_menu,menu)
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.action_bar_menu,menu)
         return true
     }
 
@@ -187,19 +216,12 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
             startActivity(Intent(applicationContext, SettingsActivity::class.java))
             true
         }
-        R.id.action_timer -> {
-            startActivity(Intent(applicationContext, TimerActivity::class.java))
-            true
-        }
+//        R.id.action_timer -> {
+//            startActivity(Intent(applicationContext, TimerActivity::class.java))
+//            true
+//        }
         else -> {
             super.onOptionsItemSelected(item)
-        }
-    }
-
-    private fun initRecyclerView() {
-        recycler_view.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
-            adapter = reminderRecyclerAdapter
         }
     }
 
@@ -223,38 +245,40 @@ class MainActivity : AppCompatActivity(), OnReminderListener {
         Reminder.globalRequestCode = indexFromJson
     }
 
-    override fun onReminderClick(position: Int) {
-        val reminder: Reminder = Reminder.reminderList.get(position)
-        val intent = Intent(this,EditReminderActivity::class.java)
-        intent.putExtra("ReminderData", reminder.getReminderData())
-        startActivityForResult(intent,EDIT_REMINDER_REQUEST)
+    override fun onItemRootViewClicked(@NonNull sectionTitle: String, itemPosition: Int) {
+        Toast.makeText(applicationContext,String.format("Clicked on position #%s of Section %s",sectionAdapter.getPositionInSection(itemPosition),sectionTitle),Toast.LENGTH_SHORT).show()
+//        val reminder: Reminder = Reminder.reminderList[position]
+//        val intent = Intent(this,EditReminderActivity::class.java)
+//        intent.putExtra("ReminderData", reminder.getReminderData())
+//        startActivityForResult(intent,EDIT_REMINDER_REQUEST)
     }
+
     //on activity result for edit reminder request activity
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        //check which request we're responding to
-        if (requestCode == EDIT_REMINDER_REQUEST) {
-
-            if (resultCode == Activity.RESULT_OK) {
-                val newData: Reminder.ReminderData? = data?.getParcelableExtra("ReminderData")
-                //remove reminder and create a new reminder with desired specifications
-                if (newData != null) {
-                    val reminder: Reminder = Reminder.reminderList.get(newData.index)
-                    reminderRecyclerAdapter.removeItem(reminder)
-                    Reminder(newData.text,newData.remindCalendar,newData.repeatVal,applicationContext)
-                }
-            }
-
-            if (resultCode == RESULT_DELETE) {
-                val deleteData: Reminder.ReminderData? = data?.getParcelableExtra("ReminderData")
-                //deletes reminder
-                if (deleteData != null) {
-                    val reminder: Reminder = Reminder.reminderList.get(deleteData.index)
-                    reminderRecyclerAdapter.deleteItem(reminder,findViewById(R.id.activity_main))
-                }
-            }
-        }
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        //check which request we're responding to
+//        if (requestCode == EDIT_REMINDER_REQUEST) {
+//
+//            if (resultCode == Activity.RESULT_OK) {
+//                val newData: Reminder.ReminderData? = data?.getParcelableExtra("ReminderData")
+//                //remove reminder and create a new reminder with desired specifications
+//                if (newData != null) {
+//                    val reminder: Reminder = Reminder.reminderList[newData.index]
+//                    reminderRecyclerAdapter.removeItem(reminder)
+//                    Reminder(newData.text,newData.remindCalendar,newData.repeatVal,applicationContext)
+//                }
+//            }
+//
+//            if (resultCode == RESULT_DELETE) {
+//                val deleteData: Reminder.ReminderData? = data?.getParcelableExtra("ReminderData")
+//                //deletes reminder
+//                if (deleteData != null) {
+//                    val reminder: Reminder = Reminder.reminderList[deleteData.index]
+//                    reminderRecyclerAdapter.deleteItem(reminder,findViewById(R.id.activity_main))
+//                }
+//            }
+//        }
+//    }
 
 
 }

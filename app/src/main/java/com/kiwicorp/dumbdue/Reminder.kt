@@ -1,6 +1,7 @@
 package com.kiwicorp.dumbdue
 
 import android.app.AlarmManager
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -21,6 +22,12 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         var globalRequestCode: Int = 0
 
         var reminderList: LinkedList<Reminder> = LinkedList()
+
+        val overdueList: LinkedList<Reminder> = LinkedList()
+        val todayList: LinkedList<Reminder> = LinkedList()
+        val tomorrowList: LinkedList<Reminder> = LinkedList()
+        val next7daysList: LinkedList<Reminder> = LinkedList()
+        val futureList: LinkedList<Reminder> = LinkedList()
 
     }
 
@@ -47,29 +54,43 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
 
         intermediateReceiverPendingIntent = PendingIntent.getBroadcast(this.context,this.requestCode,intermediateReceiverIntent,PendingIntent.FLAG_UPDATE_CURRENT)
 
-        insertInOrder(reminderList, this)
-        MainActivity.saveAll(this.context)
+        insertInOrder(findList(),this)
+//        MainActivity.saveAll(this.context)
         setAlarm(this.remindCalendar)
     }
 
-    private fun insertInOrder(reminderList: LinkedList<Reminder>, reminder: Reminder) {
-        if (reminderList.isEmpty()) {
-            reminderList.add(reminder)
-            MainActivity.reminderRecyclerAdapter.notifyItemInserted(0)
+    private fun insertInOrder(list: LinkedList<Reminder>, reminder: Reminder) {
+        if (list.isEmpty()) {
+            list.add(reminder)
+            MainActivity.sectionAdapter.notifyDataSetChanged()
             return
         }
 
-        val iterator = reminderList.listIterator()
+        val iterator = list.listIterator()
         for (element in iterator) {
             if (element.getRemindCalendar().timeInMillis > reminder.getRemindCalendar().timeInMillis) {
-                reminderList.add(iterator.previousIndex(), reminder)
-                MainActivity.reminderRecyclerAdapter.notifyItemInserted(iterator.previousIndex())
+                list.add(iterator.previousIndex(), reminder)
+                MainActivity.sectionAdapter.notifyDataSetChanged()
                 return
             }
         }
 
-        reminderList.add(reminder)
-        MainActivity.reminderRecyclerAdapter.notifyDataSetChanged()
+        list.add(reminder)
+        MainActivity.sectionAdapter.notifyDataSetChanged()
+    }
+
+    private fun findList(): LinkedList<Reminder> {//returns the list this reminder belongs to
+        if (remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis) {
+            return overdueList
+        } else if (remindCalendar.timeInMillis < MainActivity.todayCalendar.timeInMillis) {
+            return todayList
+        } else if (remindCalendar.timeInMillis < MainActivity.tomorrowCalendar.timeInMillis) {
+            return tomorrowList
+        } else if (remindCalendar.timeInMillis < MainActivity.next7daysCalendar.timeInMillis) {
+            return next7daysList
+        } else {
+            return futureList
+        }
     }
 
     fun getText(): String { return title }
@@ -79,8 +100,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
     fun getRepeatVal(): Int{ return repeatVal }
 
     fun getReminderData(): ReminderData {
-        val reminderData = ReminderData(this.title,this.remindCalendar,this.repeatVal, reminderList.indexOf(this))
-        return reminderData
+        return ReminderData(this.title,this.remindCalendar,this.repeatVal, reminderList.indexOf(this))
     }
 
     fun setNotifications(context: Context) {//sets all the alarms lost when reminder was deleted or app was closed
@@ -103,14 +123,19 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         val notificationPendingIntent = PendingIntent.getBroadcast(context,requestCode,notificationReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.cancel(notificationPendingIntent)
         //remove from list and save
-        reminderList.remove(this)
-        MainActivity.saveAll(context)
+        findList().remove(this)
+//        MainActivity.saveAll(context)
+
+        val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
     }
 
-    fun reAddReminder() {
-        insertInOrder(reminderList,this)
+    fun reAddReminder(position: Int) {
+        val list = findList()
+        insertInOrder(findList(),this)
         setNotifications(context)
-        MainActivity.saveAll(context)
+        MainActivity.sectionAdapter.notifyItemInserted(position)
+//        MainActivity.saveAll(context)
     }
 
     @Parcelize
