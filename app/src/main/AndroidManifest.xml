@@ -42,6 +42,7 @@
 
         <receiver android:name=".NotificationReceiver" />
         <receiver android:name=".IntermediateReceiver" />
+        <receiver android:name=".UpdateReceiver" />
     </application>
 
 </manifest>

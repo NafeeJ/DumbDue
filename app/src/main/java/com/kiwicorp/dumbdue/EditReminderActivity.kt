@@ -35,7 +35,8 @@ class EditReminderActivity : Activity() {
         dueDateCalendar = reminderData.remindCalendar
         repeatVal = reminderData.repeatVal
         val reminderText: String = reminderData.text
-        val index: Int = reminderData.index
+        val sectionTitle: String = reminderData.sectionTitle
+        val indexInSection: Int = reminderData.indexInSection
 
         val quickAccessList = getQuickAccessTimes()
         val quickAccess1 = quickAccessList[0]
@@ -163,7 +164,7 @@ class EditReminderActivity : Activity() {
             finish()
         }
         addButton.setOnClickListener {
-            intent.putExtra("ReminderData",Reminder.ReminderData(reminderEditText.text.toString(),dueDateCalendar,repeatVal,index))
+            intent.putExtra("ReminderData",Reminder.ReminderData(reminderEditText.text.toString(),dueDateCalendar,repeatVal,sectionTitle,indexInSection))
             setResult(RESULT_OK,intent)
             finish()
         }
