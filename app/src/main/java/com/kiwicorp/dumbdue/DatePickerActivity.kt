@@ -12,8 +12,7 @@ import java.util.*
 
 class DatePickerActivity : Activity() {
 
-    private val timeFormatter = SimpleDateFormat("h:mm a")
-
+    private val timeFormatter = SimpleDateFormat("h:mm a", Locale.US)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

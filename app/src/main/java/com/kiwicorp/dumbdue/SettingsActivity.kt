@@ -78,8 +78,6 @@ class SettingsActivity : AppCompatActivity(),
         override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.header_preferences, rootKey)
         }
-
-
     }
 
     class QuickAccessTimesFragment : PreferenceFragmentCompat() {
@@ -94,8 +92,6 @@ class SettingsActivity : AppCompatActivity(),
         ): View? {
             return super.onCreateView(inflater, container, savedInstanceState)
         }
-
-
     }
 
     class ThemesFragment : PreferenceFragmentCompat() {

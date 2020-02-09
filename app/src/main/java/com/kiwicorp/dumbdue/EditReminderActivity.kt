@@ -18,9 +18,9 @@ import kotlin.math.absoluteValue
 class EditReminderActivity : Activity() {
     private var repeatVal: Int = Reminder.REPEAT_NONE
 
-    private val dateFormatter = SimpleDateFormat("EEE, d MMM, h:mm a") //creates a date format
-    private val timeFormatter = SimpleDateFormat("h:mm a")
-    private val dayOfWeekFormatter = SimpleDateFormat("EEEE")
+    private val dateFormatter = SimpleDateFormat("EEE, d MMM, h:mm a", Locale.US)
+    private val timeFormatter = SimpleDateFormat("h:mm a", Locale.US)
+    private val dayOfWeekFormatter = SimpleDateFormat("EEEE", Locale.US)
 
     private lateinit var dueDateCalendar: Calendar //Calendar with the intended date of notification
 
@@ -97,12 +97,15 @@ class EditReminderActivity : Activity() {
         dateTextView.gravity = Gravity.CENTER_VERTICAL //sets text to be in the middle of text view
         dateTextView.height = height / 5
 
-        val reminderEditText: EditText = findViewById(R.id.taskEditText)
+        val reminderEditText: EditText = findViewById(R.id.titleEditText)
         reminderEditText.height = height / 5
         reminderEditText.setText(reminderText)
 
-
-        val timeButtons = listOf(buttonPlus10min,buttonMinus10min,buttonPlus1hr,buttonMinus1hr,buttonPlus3hr,buttonMinus3hr,buttonPlus1day,buttonMinus1day,buttonPreset1,buttonPreset2,buttonPreset3,buttonPreset4) //list of all time buttons
+        val timeButtons = listOf(
+            buttonPlus10min,buttonMinus10min,buttonPlus1hr
+            ,buttonMinus1hr,buttonPlus3hr,buttonMinus3hr,
+            buttonPlus1day,buttonMinus1day,buttonPreset1,
+            buttonPreset2,buttonPreset3,buttonPreset4) //list of all time buttons
         for (button in timeButtons) { //sets time buttons dimensions
             button.width = width / 4
             button.height = height / 5
@@ -143,33 +146,55 @@ class EditReminderActivity : Activity() {
         }
         //preset buttons set calendar to intended time on provided day
         buttonPreset1.setOnClickListener {
-            dueDateCalendar.set(dueDateCalendar.get(Calendar.YEAR),dueDateCalendar.get(Calendar.MONTH),dueDateCalendar.get(Calendar.DATE),preset1HourOfDay,preset1Min)
+            dueDateCalendar.set(dueDateCalendar.get(Calendar.YEAR),
+                dueDateCalendar.get(Calendar.MONTH),
+                dueDateCalendar.get(Calendar.DATE),
+                preset1HourOfDay,
+                preset1Min)
             updateDateTextView(dueDateCalendar)
         }
         buttonPreset2.setOnClickListener {
-            dueDateCalendar.set(dueDateCalendar.get(Calendar.YEAR),dueDateCalendar.get(Calendar.MONTH),dueDateCalendar.get(Calendar.DATE),preset2HourOfDay,preset2Min)
+            dueDateCalendar.set(
+                dueDateCalendar.get(Calendar.YEAR),
+                dueDateCalendar.get(Calendar.MONTH),
+                dueDateCalendar.get(Calendar.DATE),
+                preset2HourOfDay,
+                preset2Min)
             updateDateTextView(dueDateCalendar)
         }
         buttonPreset3.setOnClickListener {
-            dueDateCalendar.set(dueDateCalendar.get(Calendar.YEAR),dueDateCalendar.get(Calendar.MONTH),dueDateCalendar.get(Calendar.DATE),preset3HourOfDay,preset3Min)
+            dueDateCalendar.set(
+                dueDateCalendar.get(Calendar.YEAR),
+                dueDateCalendar.get(Calendar.MONTH),
+                dueDateCalendar.get(Calendar.DATE),
+                preset3HourOfDay,
+                preset3Min)
             updateDateTextView(dueDateCalendar)
         }
         buttonPreset4.setOnClickListener {
-            dueDateCalendar.set(dueDateCalendar.get(Calendar.YEAR),dueDateCalendar.get(Calendar.MONTH),dueDateCalendar.get(Calendar.DATE),preset4HourOfDay,preset4Min)
+            dueDateCalendar.set(
+                dueDateCalendar.get(Calendar.YEAR),
+                dueDateCalendar.get(Calendar.MONTH),
+                dueDateCalendar.get(Calendar.DATE),
+                preset4HourOfDay,
+                preset4Min)
             updateDateTextView(dueDateCalendar)
         }
 
-        cancelButton.setOnClickListener{
-            setResult(RESULT_CANCELED)
-            finish()
-        }
+        cancelButton.setOnClickListener{ setResult(RESULT_CANCELED); finish() }
         addButton.setOnClickListener {
-            intent.putExtra("ReminderData",Reminder.ReminderData(reminderEditText.text.toString(),dueDateCalendar,repeatVal,sectionTitle,indexInSection))
+            //stores reminder data in intent to later be retrieved in main activity to apply edits
+            intent.putExtra("ReminderData",
+                Reminder.ReminderData(reminderEditText.text.toString(),
+                    dueDateCalendar,repeatVal,sectionTitle,indexInSection))
+            //set result
             setResult(RESULT_OK,intent)
             finish()
         }
         deleteButton.setOnClickListener {
+            //stores reminder data intent to later be retrieved in main activity's on result
             intent.putExtra("ReminderData", reminderData)
+            //set result
             setResult(MainActivity.RESULT_DELETE,intent)
             finish()
         }
@@ -179,11 +204,22 @@ class EditReminderActivity : Activity() {
             popup.inflate(R.menu.repeat_popup_menu)
             popup.show()
 
-            //sets item text
-            popup.menu.getItem(1).title = "Daily ".plus(timeFormatter.format(dueDateCalendar.time))
-            popup.menu.getItem(2).title = dayOfWeekFormatter.format(dueDateCalendar.get(Calendar.DAY_OF_WEEK)).plus("s ").plus(timeFormatter.format(dueDateCalendar.time))
-            popup.menu.getItem(3).title = dueDateCalendar.get(Calendar.DAY_OF_MONTH).toString().plus(MainActivity.daySuffixFinder(dueDateCalendar)).plus(" each month at ").plus(timeFormatter.format(dueDateCalendar.time))
-            //changes repeatVal based off of which menu item clicked
+            //sets pop up menu's item
+            popup.menu.getItem(1).title = "Daily "
+                .plus(timeFormatter.format(dueDateCalendar.time))
+
+            popup.menu.getItem(2).title = dayOfWeekFormatter
+                .format(dueDateCalendar.get(Calendar.DAY_OF_WEEK))
+                .plus("s ")
+                .plus(timeFormatter.format(dueDateCalendar.time))
+
+            popup.menu.getItem(3).title = dueDateCalendar
+                .get(Calendar.DAY_OF_MONTH).toString()
+                .plus(MainActivity.daySuffixFinder(dueDateCalendar))
+                .plus(" each month at ")
+                .plus(timeFormatter.format(dueDateCalendar.time))
+
+            //change reminder's repeat val based off of which menu item clicked
             popup.setOnMenuItemClickListener {
                 when(it.itemId) {
                     R.id.menu_none -> {
@@ -193,19 +229,26 @@ class EditReminderActivity : Activity() {
                     }
                     R.id.menu_daily -> {
                         repeatVal = Reminder.REPEAT_DAILY
-                        repeatTextView.text =  "Daily ".plus(timeFormatter.format(dueDateCalendar.time))
+                        repeatTextView.text =  "Daily "
+                            .plus(timeFormatter.format(dueDateCalendar.time))
                         repeatTextView.visibility = View.VISIBLE
                         true
                     }
                     R.id.menu_weekly -> {
                         repeatVal = Reminder.REPEAT_WEEKLY
-                        repeatTextView.text = dayOfWeekFormatter.format(dueDateCalendar.get(Calendar.DAY_OF_WEEK)).plus("s ").plus(timeFormatter.format(dueDateCalendar.time))
+                        repeatTextView.text = dayOfWeekFormatter
+                            .format(dueDateCalendar.get(Calendar.DAY_OF_WEEK))
+                            .plus("s ")
+                            .plus(timeFormatter.format(dueDateCalendar.time))
                         repeatTextView.visibility = View.VISIBLE
                         true
                     }
                     R.id.menu_monthly -> {
                         repeatVal = Reminder.REPEAT_MONTHLY
-                        repeatTextView.text = dueDateCalendar.get(Calendar.DAY_OF_MONTH).toString().plus(MainActivity.daySuffixFinder(dueDateCalendar)).plus(" each month at ").plus(timeFormatter.format(dueDateCalendar.time))
+                        repeatTextView.text = dueDateCalendar.get(Calendar.DAY_OF_MONTH).toString()
+                            .plus(MainActivity.daySuffixFinder(dueDateCalendar))
+                            .plus(" each month at ")
+                            .plus(timeFormatter.format(dueDateCalendar.time))
                         repeatTextView.visibility = View.VISIBLE
                         true
                     }
@@ -221,24 +264,25 @@ class EditReminderActivity : Activity() {
         }
 
     }
+    //returns a list of calendars each with the hour and minute of a preset time
     private fun getQuickAccessTimes(): List<Calendar> {
         val timeFormatter = SimpleDateFormat("HH:mm", Locale.US)
-
+        //get quick access times strings from shared preferences
         val sharedPreferences: SharedPreferences = PreferenceManager(applicationContext).sharedPreferences
-        val quickAccess1String = sharedPreferences.getString("preset1", "8:00")
-        val quickAccess2String = sharedPreferences.getString("preset2", "12:00")
-        val quickAccess3String = sharedPreferences.getString("preset3", "17:00")
-        val quickAccess4String = sharedPreferences.getString("preset4", "22:00")
+        val quickAccess1String: String = sharedPreferences.getString("quickAccess1", "8:00") as String
+        val quickAccess2String: String = sharedPreferences.getString("quickAccess2", "12:00") as String
+        val quickAccess3String: String = sharedPreferences.getString("quickAccess3", "17:00") as String
+        val quickAccess4String: String = sharedPreferences.getString("quickAccess4", "22:00") as String
 
         val quickAccess1Calendar = Calendar.getInstance()
         val quickAccess2Calendar = Calendar.getInstance()
         val quickAccess3Calendar = Calendar.getInstance()
         val quickAccess4Calendar = Calendar.getInstance()
 
-        quickAccess1Calendar.time = timeFormatter.parse(quickAccess1String)
-        quickAccess2Calendar.time = timeFormatter.parse(quickAccess2String)
-        quickAccess3Calendar.time = timeFormatter.parse(quickAccess3String)
-        quickAccess4Calendar.time = timeFormatter.parse(quickAccess4String)
+        quickAccess1Calendar.time = timeFormatter.parse(quickAccess1String) as Date
+        quickAccess2Calendar.time = timeFormatter.parse(quickAccess2String) as Date
+        quickAccess3Calendar.time = timeFormatter.parse(quickAccess3String) as Date
+        quickAccess4Calendar.time = timeFormatter.parse(quickAccess4String) as Date
 
         return listOf<Calendar>(quickAccess1Calendar,quickAccess2Calendar,quickAccess3Calendar,quickAccess4Calendar)
     }
@@ -253,46 +297,64 @@ class EditReminderActivity : Activity() {
             }
         }
     }
-    private fun updateDateTextView(calendar: Calendar) { //updates text view
-
+    //updates text view
+    private fun updateDateTextView(calendar: Calendar) {
         val fromNowMins = MainActivity.findTimeFromNowMins(calendar)
 
         //updates repeatTextView's text
-        if (repeatVal == Reminder.REPEAT_DAILY) {
-            repeatTextView.text =  "Daily ".plus(timeFormatter.format(calendar.time))
-        } else if (repeatVal == Reminder.REPEAT_WEEKLY) {
-            repeatTextView.text = dayOfWeekFormatter.format(calendar.get(Calendar.DAY_OF_WEEK)).plus("s ").plus(timeFormatter.format(calendar.time))
-        } else if (repeatVal == Reminder.REPEAT_MONTHLY) {
-            repeatTextView.text = calendar.get(Calendar.DAY_OF_MONTH).toString().plus(MainActivity.daySuffixFinder(calendar)).plus(" each month at ").plus(timeFormatter.format(calendar.time))
-        }
+        when(repeatVal) {
+            Reminder.REPEAT_DAILY -> repeatTextView.text =
+                "Daily ".plus(timeFormatter.format(calendar.time))
 
-        if (fromNowMins >= 0) { //if time from now is positive or the same, updates text to be in format: "Date in fromNowMins (units)" and sets grey background color
-            dateTextView.text = dateFormatter.format(calendar.time).plus(" in ").plus(findTimeFromNowString(fromNowMins))
+            Reminder.REPEAT_WEEKLY -> repeatTextView.text = dayOfWeekFormatter
+                .format(calendar.get(Calendar.DAY_OF_WEEK))
+                .plus("s ")
+                .plus(timeFormatter.format(calendar.time))
+
+            Reminder.REPEAT_MONTHLY -> repeatTextView.text = dayOfWeekFormatter
+                .format(calendar.get(Calendar.DAY_OF_WEEK))
+                .plus("s ")
+                .plus(timeFormatter.format(calendar.time))
+        }
+        //if time from now is positive or the same, updates text to be in format:
+        // "Date in fromNowMins (units)" and sets grey background color
+        if (fromNowMins >= 0) {
+            dateTextView.text = dateFormatter.format(calendar.time)
+                .plus(" in ")
+                .plus(findTimeFromNowString(fromNowMins))
             dateTextView.setBackgroundColor(Color.parseColor("#303030"))
             repeatTextView.setBackgroundColor(Color.parseColor("#303030"))
         }
-        else { //if time from now is negative, updates text to be in format: "Date fromNowMins (units) ago" and sets red background color
-            dateTextView.text = dateFormatter.format(calendar.time).plus(" ").plus(findTimeFromNowString(fromNowMins)).plus(" ago")
+        //if time from now is negative, updates text to be in format:
+        //"Date fromNowMins (units) ago" and sets red background color
+        else {
+            dateTextView.text = dateFormatter.format(calendar.time)
+                .plus(" ")
+                .plus(findTimeFromNowString(fromNowMins))
+                .plus(" ago")
             dateTextView.setBackgroundColor(Color.parseColor("#f54242"))
             repeatTextView.setBackgroundColor(Color.parseColor("#f54242"))
         }
     }
-    fun findTimeFromNowString(timeInMins: Int): String { //returns a string with absolute value of time from now and its correct unit
-        val absTime = timeInMins.absoluteValue
 
-        if (absTime == 0) { return "0 Minutes" } //less than 1 minute
-        else if (absTime == 1) { return absTime.toString().plus(" Minute") } //equal to 1 minute
-        else if (absTime < 60) { return absTime.toString().plus(" Minutes") } //less than 1 hour
-        else if ((absTime / 60) == 1) { return (absTime / 60).toString().plus(" Hour") } //equal to 1 hour
-        else if ((absTime / 60) < 24 ) { return (absTime / 60).toString().plus(" Hours") } //less than 1 day
-        else if ((absTime / 60 / 24) == 1) { return (absTime / 60 / 24).toString().plus(" Day") } //equal to 1 day
-        else if ((absTime / 60 / 24) < 7) { return (absTime / 60 / 24).toString().plus(" Days") } //less than 1 week
-        else if ((absTime / 60 / 24 / 7) == 1) { return (absTime / 60 / 24 / 7).toString().plus(" Week") } //equal to 1 week
-        else if ((absTime / 60 / 24 / 7) < 4) { return (absTime / 60 / 24 / 7).toString().plus(" Weeks") } //less than 1 month
-        else if ((absTime / 60 / 24 / 7 / 4) == 1) { return (absTime / 60 / 24 / 7 / 4).toString().plus(" Month") } //equal to 1 month
-        else if ((absTime / 60 / 24 / 7 / 4) < 12) { return (absTime / 60 / 24 / 7 / 4).toString().plus(" Months") } //less than one year
-        else if ((absTime / 60 / 24 / 7 / 4 / 12) == 1) { return (absTime / 60 / 24 / 7 / 4 / 12).toString().plus(" Year") } //equal to 1 year
-        else return (absTime / 60 / 24 / 7 / 4 / 12).toString().plus(" Years")
+    //returns a string with absolute value of time from now and its correct unit
+    private fun findTimeFromNowString(timeInMins: Int): String {
+        val absMins = timeInMins.absoluteValue
+        return when {
+            absMins == 0 -> { "0 Minutes" }//less than 1 minute
+            absMins == 1 -> { absMins.toString().plus(" Minute")}//equal to 1 minute
+            absMins < 60-> { absMins.toString().plus(" Minutes") } //less than 1 hour
+            absMins / 60 == 1 -> { (absMins / 60).toString().plus(" Hour") } //equal to 1 hour
+            absMins / 60 < 24 -> { (absMins / 60).toString().plus(" Hours") } //less than 1 day
+            absMins / 60 / 24 == 1 -> { (absMins / 60 / 24).toString().plus(" Day") } //equal to 1 day
+            absMins / 60 / 24 < 7 -> { (absMins / 60 / 24).toString().plus(" Days") } //less than 1 week
+            absMins / 60 / 24 / 7 == 1 -> { (absMins / 60 / 24 / 7).toString().plus(" Week") } //equal to 1 week
+            absMins / 60 / 24 / 7 < 4 -> { (absMins / 60 / 24 / 7).toString().plus(" Weeks") } //less than 1 month
+            absMins / 60 / 24 / 7 / 4 == 1 -> { (absMins / 60 / 24 / 7 / 4).toString().plus(" Month") } //equal to 1 month
+            absMins / 60 / 24 / 7 / 4 < 12 -> { (absMins / 60 / 24 / 7 / 4).toString().plus(" Months") } //less than one year
+            absMins / 60 / 24 / 7 / 4 / 12 == 1 -> { (absMins / 60 / 24 / 7 / 4 / 12).toString().plus(" Year") } //equal to 1 year
+            else -> (absMins / 60 / 24 / 7 / 4 / 12).toString().plus(" Years")
+        }
+
     }
-
 }

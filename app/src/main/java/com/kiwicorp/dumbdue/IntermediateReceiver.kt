@@ -17,15 +17,19 @@ class IntermediateReceiver : BroadcastReceiver() {
         requestCode = intent.getIntExtra("requestCode", 0)
         alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        notificationReceiverIntent = Intent(context,NotificationReceiver::class.java) //initializes the intent to start NotificationReceiver activity
-        notificationReceiverIntent.putExtra("reminderText",intent.getStringExtra("reminderText"))
-        notificationPendingIntent = PendingIntent.getBroadcast(context,requestCode,notificationReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT) //initializes the pending intent to be notification receiver
+        notificationReceiverIntent = Intent(context,NotificationReceiver::class.java)
+        notificationReceiverIntent.putExtra("reminderTitle",
+            intent.getStringExtra("reminderTitle"))
+        //initializes the pending intent to be notification receiver
+        notificationPendingIntent = PendingIntent.getBroadcast(context,
+            requestCode,notificationReceiverIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT)
 
-        setAlarm()
-    }
-
-    private fun setAlarm() {
-        this.alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, Calendar.getInstance().timeInMillis,60000,notificationPendingIntent) //sets a repeating alarm that repeats every minute
+        //repeating alarm that repeats every minute
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+            Calendar.getInstance().timeInMillis,
+            60000,
+            notificationPendingIntent)
     }
 
 }

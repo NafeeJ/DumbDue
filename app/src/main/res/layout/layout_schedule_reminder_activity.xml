@@ -13,7 +13,7 @@
         android:layout_centerHorizontal="true" />
 
     <EditText
-        android:id="@+id/taskEditText"
+        android:id="@+id/titleEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/repeatButton"
@@ -28,7 +28,7 @@
         android:id="@+id/dateTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/taskEditText"
+        android:layout_below="@id/titleEditText"
         android:layout_alignParentEnd="true"
         android:background="#303030"
         android:paddingLeft="10dp"

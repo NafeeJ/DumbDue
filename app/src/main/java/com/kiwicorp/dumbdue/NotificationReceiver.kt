@@ -15,7 +15,7 @@ class NotificationReceiver : BroadcastReceiver() {
         val notificationManager: NotificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val notificationText: String? = intent.getStringExtra("reminderText")
+        val notificationTitle: String? = intent.getStringExtra("reminderTitle")
 
         val notificationOnClickIntent= Intent(context, MainActivity::class.java)
         notificationOnClickIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -29,9 +29,9 @@ class NotificationReceiver : BroadcastReceiver() {
             NotificationChannel.CHANNEL_1_ID)
             .setContentIntent(notificationOnClickPendingIntent)
             .setSmallIcon(R.drawable.ic_android_black_24dp)
-            .setContentTitle(notificationText)
+            .setContentTitle(notificationTitle)
             .setShowWhen(true)
-            .setAutoCancel(true)//makes notification dismissible when the user swipes it away
+            .setAutoCancel(true)
 
         notificationManager.notify(++MainActivity.notificationID,builder.build())
     }
