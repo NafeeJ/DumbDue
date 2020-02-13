@@ -110,7 +110,6 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
             //apply changes
             editor.apply()
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -156,7 +155,9 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
         sectionAdapter.addSection("Next 7 Days",ReminderSection.reminderSectionList[3])
         sectionAdapter.addSection("Future",ReminderSection.reminderSectionList[4])
 
-        loadAll()
+        if (!checkIfLoaded()) {
+            loadAll()
+        }
 
         recycler_view.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -347,31 +348,29 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
             //if result is ok, edit reminder
             if (resultCode == Activity.RESULT_OK) {
                 //gets reminder data from edit reminder intent
-                val reminderToBeCreatedData: Reminder.ReminderData? = data?.getParcelableExtra("ReminderData")
+                val reminderToCreateData: Reminder.ReminderData? = data?.getParcelableExtra("ReminderData")
                 //remove reminder and create a new reminder with desired specifications
-                if (reminderToBeCreatedData != null) {
-                    val section: ReminderSection = sectionAdapter.getSection(reminderToBeCreatedData.sectionTitle) as ReminderSection
-                    val reminderList: LinkedList<Reminder> = section.getList()
-                    val reminder: Reminder = reminderList[reminderToBeCreatedData.indexInSection]
+                if (reminderToCreateData != null) {
+                    val section: ReminderSection = sectionAdapter.getSection(reminderToCreateData.sectionTitle) as ReminderSection
+                    val reminder: Reminder = section.getList()[reminderToCreateData.positionInSection]
                     //remove reminder
-                    reminderList.remove(reminder)
                     reminder.deleteReminder()
                     //create new reminder
-                    Reminder(reminderToBeCreatedData.text,reminderToBeCreatedData.remindCalendar,reminderToBeCreatedData.repeatVal,applicationContext)
+                    Reminder(reminderToCreateData.text,
+                        reminderToCreateData.remindCalendar,
+                        reminderToCreateData.repeatVal,
+                        applicationContext)
                 }
             }
             //if result is to delete, delete reminder
             if (resultCode == RESULT_DELETE) {
-                val reminderToBeDeletedData: Reminder.ReminderData? = data?.getParcelableExtra("ReminderData")
+                val reminderToDeleteData: Reminder.ReminderData? = data?.getParcelableExtra("ReminderData")
                 //deletes reminder
-                if (reminderToBeDeletedData != null) {
-                    val indexInSection = reminderToBeDeletedData.indexInSection
-                    val section: ReminderSection = sectionAdapter.getSection(reminderToBeDeletedData.sectionTitle) as ReminderSection
-                    val list: LinkedList<Reminder> = section.getList()
-                    val reminder: Reminder = list[indexInSection]
-                    list.remove(reminder)
+                if (reminderToDeleteData != null) {
+                    val section: ReminderSection = sectionAdapter.getSection(reminderToDeleteData.sectionTitle) as ReminderSection
+                    val reminder: Reminder = section.getList()[reminderToDeleteData.positionInSection]
+
                     reminder.deleteReminder()
-                    sectionAdapter.notifyItemRemovedFromSection(section,indexInSection)
                 }
             }
         }
@@ -380,22 +379,18 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
     fun swipeDeleteItem(viewHolder: RecyclerView.ViewHolder, view: View) {
 
         val reminderHolder: ReminderViewHolder = viewHolder as ReminderViewHolder
-        val reminderPositionInAdapter: Int = reminderHolder.adapterPosition
-        val section: ReminderSection = ReminderSection.getReminderSection(reminderPositionInAdapter)
-        val reminderPositionInSection : Int = sectionAdapter.getPositionInSection(reminderPositionInAdapter)
-        val reminderList : LinkedList<Reminder> = section.getList()
-        val removedReminder: Reminder = reminderList[reminderPositionInSection]
+        val positionInAdapter: Int = reminderHolder.adapterPosition
+        val section: ReminderSection = ReminderSection.getReminderSection(positionInAdapter)
+        val positionInSection: Int = sectionAdapter.getPositionInSection(positionInAdapter)
+        val reminderList: LinkedList<Reminder> = section.getList()
+        val removedReminder: Reminder = reminderList[positionInSection]
 
         removedReminder.deleteReminder()
-        reminderList.remove(removedReminder)
 
-        if (!reminderList.isEmpty()) {
-            sectionAdapter.notifyItemRemovedFromSection(section,reminderPositionInSection)
-        }
         //creates a snackbar indicating a reminder has been deleted, and shows the option to undo
         Snackbar.make(view, "Bye-Bye " + removedReminder.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
             //readd reminder if undo is clicked
-            removedReminder.reAddReminder(reminderPositionInAdapter)
+            removedReminder.reAddReminder(positionInAdapter)
         }.show()
     }
 
@@ -408,11 +403,6 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
         val removedReminder: Reminder = reminderList[reminderPositionInSection]
 
         removedReminder.deleteReminder()
-        reminderList.remove(removedReminder)
-
-        if (!reminderList.isEmpty()) {
-            sectionAdapter.notifyItemRemovedFromSection(section,reminderPositionInSection)
-        }
 
         //if reminder is repeating, readd item with remind calendar incremented with the correct amount
         when(removedReminder.getRepeatVal()) {
@@ -462,6 +452,15 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
                 else -> removedReminder.reAddReminder(reminderPositionInAdapter)
             }
         }.show()
+    }
+    //if reminders have already been loaded return true
+    private fun checkIfLoaded(): Boolean {
+        for(section in ReminderSection.reminderSectionList) {
+            if (!section.getList().isEmpty()) {
+                return true
+            }
+        }
+        return false
     }
 
 }

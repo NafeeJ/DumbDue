@@ -59,7 +59,7 @@ class ScheduleReminderActivity : Activity() {
         val buttonPlus1day: Button = findViewById(R.id.plus1daybutton)
         val buttonMinus1day: Button = findViewById(R.id.minus1daybutton)
 
-        val timeFormatter = SimpleDateFormat("h:mm a")
+        val timeFormatter = SimpleDateFormat("h:mm a", Locale.US)
 
         //initialize preset buttons and their intended hour and minutes
         //Later allow user to change time presets
@@ -325,7 +325,7 @@ class ScheduleReminderActivity : Activity() {
             absTime == 0 -> { "0 Minutes" } //less than 1 minute
             absTime == 1 -> { absTime.toString().plus(" Minute") } //equal to 1 minute
             absTime < 60 -> { absTime.toString().plus(" Minutes") } //less than 1 hour
-            absTime / 60 == 1 -> { (absTime / 60).toString().plus("Hour")}//equal to 1 hour
+            absTime / 60 == 1 -> { (absTime / 60).toString().plus(" Hour")}//equal to 1 hour
             absTime / 60 < 24 -> { (absTime / 60).toString().plus(" Hours") } //less than 1 day
             absTime / 60 / 24 == 1 -> { (absTime / 60 / 24).toString().plus(" Day") } //equal to 1 day
             absTime / 60 / 24 < 7 -> { (absTime / 60 / 24).toString().plus(" Days") } //less than 1 week

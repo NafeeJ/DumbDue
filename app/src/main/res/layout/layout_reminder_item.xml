@@ -53,5 +53,4 @@
         android:layout_height="65dp"
         android:background="#ff0000"/>
 
-
 </RelativeLayout>

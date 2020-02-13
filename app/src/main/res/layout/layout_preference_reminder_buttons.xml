@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#000000">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/settingsToolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <View
         android:id="@+id/centerLine"
@@ -12,76 +20,12 @@
         android:layout_height="0dp"
         android:layout_centerHorizontal="true" />
 
-    <EditText
-        android:id="@+id/titleEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/repeatButton"
-        android:autofillHints="true"
-        android:background="@color/colorPrimaryDark"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:paddingLeft="10dp"
-        android:textColor="#FFFFFF" />
-
-    <TextView
-        android:id="@+id/dateTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/titleEditText"
-        android:layout_alignParentEnd="true"
-        android:background="#303030"
-        android:paddingLeft="10dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="#FFFFFF" />
-
-    <TextView
-        android:id="@+id/repeatTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/dateTextView"
-        android:background="#303030"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:paddingLeft="10dp"
-        android:paddingBottom="5dp"
-        android:textColor="#FFFFFF"
-        tools:visibility="gone" />
-
-    <ImageButton
-        android:id="@+id/cancelButton"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="20dp"
-        android:layout_toStartOf="@id/repeatButton"
-        android:backgroundTint="#000000"
-        android:src="@drawable/cancel_white" />
-
-    <ImageButton
-        android:id="@+id/repeatButton"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:backgroundTint="#000000"
-        android:src="@drawable/repeat_white" />
-
-    <ImageButton
-        android:id="@+id/addButton"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="20dp"
-        android:layout_toEndOf="@id/repeatButton"
-        android:backgroundTint="#000000"
-        android:src="@drawable/check_white" />
-
     <Button
         android:id="@+id/presetButton1"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/repeatTextView"
+        android:layout_above="@+id/plus1hrbutton"
         android:layout_toStartOf="@id/presetButton2"
         android:background="@color/colorPrimaryDark"
         android:textColor="#FFFFFF" />
@@ -91,7 +35,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/repeatTextView"
+        android:layout_above="@+id/plus1hrbutton"
         android:layout_toStartOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
         android:textColor="#FFFFFF" />
@@ -101,7 +45,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/repeatTextView"
+        android:layout_above="@+id/plus1hrbutton"
         android:layout_toEndOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
         android:textColor="#FFFFFF" />
@@ -111,7 +55,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/repeatTextView"
+        android:layout_above="@+id/plus1hrbutton"
         android:layout_toEndOf="@id/presetButton3"
         android:background="@color/colorPrimaryDark"
         android:textColor="#FFFFFF" />
@@ -121,7 +65,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/presetButton1"
+        android:layout_centerVertical="true"
         android:layout_toStartOf="@id/plus1hrbutton"
         android:background="@color/colorPrimaryDark"
         android:text="+10 min"
@@ -143,7 +87,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/presetButton2"
+        android:layout_centerVertical="true"
         android:layout_toStartOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
         android:text="+1 hr"
@@ -165,7 +109,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/presetButton3"
+        android:layout_centerVertical="true"
         android:layout_toEndOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
         android:text="+3 hrs"
@@ -187,7 +131,7 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/presetButton4"
+        android:layout_centerVertical="true"
         android:layout_toEndOf="@id/plus3hrbutton"
         android:background="@color/colorPrimaryDark"
         android:text="+1 day"

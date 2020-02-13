@@ -25,7 +25,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -39,6 +38,14 @@
         <activity
             android:name=".EditReminderActivity"
             android:theme="@style/SchedulingTheme" />
+        <activity
+            android:name=".ReminderButtonPreferenceActivity"
+            android:parentActivityName=".SettingsActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <receiver android:name=".NotificationReceiver" />
         <receiver android:name=".IntermediateReceiver" />

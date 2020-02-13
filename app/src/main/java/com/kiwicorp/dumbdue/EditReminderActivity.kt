@@ -36,7 +36,7 @@ class EditReminderActivity : Activity() {
         repeatVal = reminderData.repeatVal
         val reminderText: String = reminderData.text
         val sectionTitle: String = reminderData.sectionTitle
-        val indexInSection: Int = reminderData.indexInSection
+        val indexInSection: Int = reminderData.positionInSection
 
         val quickAccessList = getQuickAccessTimes()
         val quickAccess1 = quickAccessList[0]
