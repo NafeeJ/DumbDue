@@ -21,69 +21,58 @@
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:id="@+id/presetButton1"
+        android:id="@+id/quickAccessButton1"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/plus1hrbutton"
-        android:layout_toStartOf="@id/presetButton2"
+        android:layout_above="@id/timeSetter1Button"
+        android:layout_toStartOf="@id/quickAccessButton2"
         android:background="@color/colorPrimaryDark"
         android:textColor="#FFFFFF" />
 
     <Button
-        android:id="@+id/presetButton2"
+        android:id="@+id/quickAccessButton2"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/plus1hrbutton"
+        android:layout_above="@id/timeSetter1Button"
         android:layout_toStartOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
         android:textColor="#FFFFFF" />
 
     <Button
-        android:id="@+id/presetButton3"
+        android:id="@+id/quickAccessButton3"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/plus1hrbutton"
+        android:layout_above="@id/timeSetter1Button"
         android:layout_toEndOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
         android:textColor="#FFFFFF" />
 
     <Button
-        android:id="@+id/presetButton4"
+        android:id="@+id/quickAccessButton4"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/plus1hrbutton"
-        android:layout_toEndOf="@id/presetButton3"
+        android:layout_above="@id/timeSetter1Button"
+        android:layout_toEndOf="@id/quickAccessButton3"
         android:background="@color/colorPrimaryDark"
         android:textColor="#FFFFFF" />
 
     <Button
-        android:id="@+id/plus10minbutton"
+        android:id="@+id/timeSetter1Button"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toStartOf="@id/plus1hrbutton"
+        android:layout_toStartOf="@id/timeSetter2Button"
         android:background="@color/colorPrimaryDark"
         android:text="+10 min"
         android:textColor="#FFFFFF" />
 
     <Button
-        android:id="@+id/minus10minbutton"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/plus10minbutton"
-        android:layout_toStartOf="@id/plus1hrbutton"
-        android:background="@color/colorPrimaryDark"
-        android:text="-10 min"
-        android:textColor="#FFFFFF" />
-
-    <Button
-        android:id="@+id/plus1hrbutton"
+        android:id="@+id/timeSetter2Button"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -94,18 +83,7 @@
         android:textColor="#FFFFFF" />
 
     <Button
-        android:id="@+id/minus1hrbutton"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/plus1hrbutton"
-        android:layout_toStartOf="@id/centerLine"
-        android:background="@color/colorPrimaryDark"
-        android:text="-1 hr"
-        android:textColor="#FFFFFF" />
-
-    <Button
-        android:id="@+id/plus3hrbutton"
+        android:id="@+id/timeSetter3Button"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -116,34 +94,56 @@
         android:textColor="#FFFFFF" />
 
     <Button
-        android:id="@+id/minus3hrbutton"
+        android:id="@+id/timeSetter4Button"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/plus3hrbutton"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/timeSetter3Button"
+        android:background="@color/colorPrimaryDark"
+        android:text="+1 day"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/timeSetter5Button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timeSetter1Button"
+        android:layout_toStartOf="@id/timeSetter6Button"
+        android:background="@color/colorPrimaryDark"
+        android:text="-10 min"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/timeSetter6Button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timeSetter3Button"
+        android:layout_toStartOf="@id/centerLine"
+        android:background="@color/colorPrimaryDark"
+        android:text="-1 hr"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/timeSetter7Button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/timeSetter4Button"
         android:layout_toEndOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
         android:text="-3 hrs"
         android:textColor="#FFFFFF" />
 
     <Button
-        android:id="@+id/plus1daybutton"
+        android:id="@+id/timeSetter8Button"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/plus3hrbutton"
-        android:background="@color/colorPrimaryDark"
-        android:text="+1 day"
-        android:textColor="#FFFFFF" />
-
-    <Button
-        android:id="@+id/minus1daybutton"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/plus1daybutton"
-        android:layout_toEndOf="@id/minus3hrbutton"
+        android:layout_below="@id/timeSetter4Button"
+        android:layout_toEndOf="@id/timeSetter7Button"
         android:background="@color/colorPrimaryDark"
         android:text="-1 day"
         android:textColor="#FFFFFF" />

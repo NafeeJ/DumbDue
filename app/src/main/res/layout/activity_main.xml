@@ -31,7 +31,7 @@
             android:clickable="true"
             android:visibility="visible"
             android:src="@drawable/add_white"
-         app:backgroundTint="@color/colorPrimaryDark" />
+            android:background="@color/colorPrimaryDark" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"

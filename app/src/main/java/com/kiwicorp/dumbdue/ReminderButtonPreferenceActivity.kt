@@ -11,11 +11,19 @@ import java.util.*
 
 class ReminderButtonPreferenceActivity : AppCompatActivity() {
     companion object {
-        const val TIME_MUTATOR_1: String = "TimeMutator1"
-        const val MINUS_MIN_KEY: String = "minusMin"
-        const val PLUS_HR_1_KEY: String = "plusHr1Key"
-        const val MINUS_HR__KEY: String = "minusHr2Key"
+        const val TIME_SETTER_1_KEY: String = "TimeSetter1"
+        const val TIME_SETTER_2_KEY: String = "TimeSetter2"
+        const val TIME_SETTER_3_KEY: String = "TimeSetter3"
+        const val TIME_SETTER_4_KEY: String = "TimeSetter4"
+        const val TIME_SETTER_5_KEY: String = "TimeSetter5"
+        const val TIME_SETTER_6_KEY: String = "TimeSetter6"
+        const val TIME_SETTER_7_KEY: String = "TimeSetter7"
+        const val TIME_SETTER_8_KEY: String = "TimeSetter8"
 
+        const val QUICK_ACCESS_1_KEY: String = "QuickAccess1"
+        const val QUICK_ACCESS_2_KEY: String = "QuickAccess2"
+        const val QUICK_ACCESS_3_KEY: String = "QuickAccess3"
+        const val QUICK_ACCESS_4_KEY: String = "QuickAccess4"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,42 +35,42 @@ class ReminderButtonPreferenceActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val buttonPlusMin1: Button = findViewById(R.id.plus10minbutton)
-        val buttonMinusMin2: Button = findViewById(R.id.minus10minbutton)
-        val buttonPlusHr1: Button = findViewById(R.id.plus1hrbutton)
-        val buttonMinusHr1: Button = findViewById(R.id.minus1hrbutton)
-        val buttonPlusHr2: Button = findViewById(R.id.plus3hrbutton)
-        val buttonMinusHr2: Button = findViewById(R.id.minus3hrbutton)
-        val buttonPlus1day: Button = findViewById(R.id.plus1daybutton)
-        val buttonMinus1day: Button = findViewById(R.id.minus1daybutton)
+        val timeSetter1: Button = findViewById(R.id.timeSetterButton1)
+        val timeSetter2: Button = findViewById(R.id.timeSetterButton2)
+        val timeSetter3: Button = findViewById(R.id.timeSetterButton3)
+        val timeSetter4: Button = findViewById(R.id.timeSetterButton4)
+        val timeSetter5: Button = findViewById(R.id.timeSetterButton5)
+        val timeSetter6: Button = findViewById(R.id.timeSetterButton6)
+        val timeSetter7: Button = findViewById(R.id.timeSetterButton7)
+        val timeSetter8: Button = findViewById(R.id.timeSetterButton8)
 
-        val quickAccessList = getQuickAccessTimes()
-        val quickAccess1 = quickAccessList[0]
-        val quickAccess2 = quickAccessList[1]
-        val quickAccess3 = quickAccessList[2]
-        val quickAccess4 = quickAccessList[3]
+        val quickAccessTimesList = getQuickAccessTimes()
+        val quickAccessTime1 = quickAccessTimesList[0]
+        val quickAccessTime2 = quickAccessTimesList[1]
+        val quickAccessTime3 = quickAccessTimesList[2]
+        val quickAccessTime4 = quickAccessTimesList[3]
 
         val timeFormatter = SimpleDateFormat("h:mm a", Locale.US)
 
-        val buttonPreset1: Button = findViewById(R.id.presetButton1)
-        val preset1HourOfDay = quickAccess1.get(Calendar.HOUR_OF_DAY)
-        val preset1Min = quickAccess1.get(Calendar.MINUTE)
-        buttonPreset1.text = timeFormatter.format(quickAccess1.time)
+        val quickAccessButton1: Button = findViewById(R.id.quickAccessButton1)
+        val quickAccessTime1HourOfDay = quickAccessTime1.get(Calendar.HOUR_OF_DAY)
+        val quickAccessTime1Min = quickAccessTime1.get(Calendar.MINUTE)
+        quickAccessButton1.text = timeFormatter.format(quickAccessTime1.time)
 
-        val buttonPreset2: Button = findViewById(R.id.presetButton2)
-        val preset2HourOfDay = quickAccess2.get(Calendar.HOUR_OF_DAY)
-        val preset2Min = quickAccess2.get(Calendar.MINUTE)
-        buttonPreset2.text = timeFormatter.format(quickAccess2.time)
+        val quickAccessButton2: Button = findViewById(R.id.quickAccessButton2)
+        val quickAccessTime2HourOfDay = quickAccessTime1.get(Calendar.HOUR_OF_DAY)
+        val quickAccessTime2Min = quickAccessTime2.get(Calendar.MINUTE)
+        quickAccessButton2.text = timeFormatter.format(quickAccessTime2.time)
 
-        val buttonPreset3: Button = findViewById(R.id.presetButton3)
-        val preset3HourOfDay = quickAccess3.get(Calendar.HOUR_OF_DAY)
-        val preset3Min = quickAccess3.get(Calendar.MINUTE)
-        buttonPreset3.text = timeFormatter.format(quickAccess3.time)
+        val quickAccessButton3: Button = findViewById(R.id.quickAccessButton3)
+        val quickAccessTime3HourOfDay = quickAccessTime1.get(Calendar.HOUR_OF_DAY)
+        val quickAccessTime3Min = quickAccessTime3.get(Calendar.MINUTE)
+        quickAccessButton3.text = timeFormatter.format(quickAccessTime3.time)
 
-        val buttonPreset4: Button = findViewById(R.id.presetButton4)
-        val preset4HourOfDay = quickAccess4.get(Calendar.HOUR_OF_DAY)
-        val preset4Min = quickAccess4.get(Calendar.MINUTE)
-        buttonPreset4.text = timeFormatter.format(quickAccess4.time)
+        val quickAccessButton4: Button = findViewById(R.id.quickAccessButton4)
+        val quickAccessTime4HourOfDay = quickAccessTime1.get(Calendar.HOUR_OF_DAY)
+        val quickAccessTime4Min = quickAccessTime4.get(Calendar.MINUTE)
+        quickAccessButton4.text = timeFormatter.format(quickAccessTime4.time)
     }
 
     //returns a list of calendars each with the hour and minute of a preset time
@@ -70,10 +78,10 @@ class ReminderButtonPreferenceActivity : AppCompatActivity() {
         val timeFormatter = SimpleDateFormat("HH:mm", Locale.US)
         //get quick access times strings from shared preferences
         val sharedPreferences: SharedPreferences = PreferenceManager(applicationContext).sharedPreferences
-        val quickAccess1String: String = sharedPreferences.getString("quickAccess1", "8:00") as String
-        val quickAccess2String: String = sharedPreferences.getString("quickAccess2", "12:00") as String
-        val quickAccess3String: String = sharedPreferences.getString("quickAccess3", "17:00") as String
-        val quickAccess4String: String = sharedPreferences.getString("quickAccess4", "22:00") as String
+        val quickAccess1String: String = sharedPreferences.getString(QUICK_ACCESS_1_KEY, "8:00") as String
+        val quickAccess2String: String = sharedPreferences.getString(QUICK_ACCESS_2_KEY, "12:00") as String
+        val quickAccess3String: String = sharedPreferences.getString(QUICK_ACCESS_3_KEY, "17:00") as String
+        val quickAccess4String: String = sharedPreferences.getString(QUICK_ACCESS_4_KEY, "22:00") as String
 
         val quickAccess1Calendar = Calendar.getInstance()
         val quickAccess2Calendar = Calendar.getInstance()
