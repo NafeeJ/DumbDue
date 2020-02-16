@@ -167,6 +167,7 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
         for (section in ReminderSection.reminderSectionList) {
             if (section.getList().isEmpty()) {
                 section.isVisible = false
+                sectionAdapter.notifyDataSetChanged()
             }
         }
 
@@ -388,7 +389,7 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
         removedReminder.deleteReminder()
 
         //creates a snackbar indicating a reminder has been deleted, and shows the option to undo
-        Snackbar.make(view, "Bye-Bye " + removedReminder.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
+        Snackbar.make(findViewById(R.id.main_coordinator_layout), "Bye-Bye " + removedReminder.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
             //readd reminder if undo is clicked
             removedReminder.reAddReminder(positionInAdapter)
         }.show()
@@ -420,7 +421,7 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
             }
         }
         //creates snackbar indicating that a reminder has been completed, and shows the option to undo
-        Snackbar.make(view,"Completed " + removedReminder.getText() + " :)", Snackbar.LENGTH_LONG).setAction("Undo") {
+        Snackbar.make(findViewById(R.id.main_coordinator_layout),"Completed " + removedReminder.getText() + " :)", Snackbar.LENGTH_LONG).setAction("Undo") {
             //executes if undo is clicked
             val updatedSection : ReminderSection = ReminderSection.getReminderSection(removedReminder)
             val updatedList : LinkedList<Reminder> = updatedSection.getList()

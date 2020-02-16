@@ -20,6 +20,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/main_coordinator_layout"
         tools:context=".MainActivity">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -30,14 +31,12 @@
             android:layout_gravity="bottom|end"
             android:clickable="true"
             android:visibility="visible"
-            android:src="@drawable/add_white"
-            android:background="@color/colorPrimaryDark" />
+            android:src="@drawable/add_white" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:background="#000000" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

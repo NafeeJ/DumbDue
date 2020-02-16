@@ -86,7 +86,7 @@
         android:backgroundTint="#000000"
         android:src="@drawable/delete_white" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/quickAccessButton1"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
@@ -96,7 +96,7 @@
         android:background="@color/colorPrimaryDark"
         android:textColor="#FFFFFF" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/quickAccessButton2"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
@@ -106,7 +106,7 @@
         android:background="@color/colorPrimaryDark"
         android:textColor="#FFFFFF" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/quickAccessButton3"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
@@ -116,7 +116,7 @@
         android:background="@color/colorPrimaryDark"
         android:textColor="#FFFFFF" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/quickAccessButton4"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
@@ -126,7 +126,7 @@
         android:background="@color/colorPrimaryDark"
         android:textColor="#FFFFFF" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/timeSetterButton1"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
@@ -137,7 +137,7 @@
         android:text="+10 min"
         android:textColor="#FFFFFF" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/timeSetterButton2"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
@@ -148,7 +148,7 @@
         android:text="+1 hr"
         android:textColor="#FFFFFF" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/timeSetterButton3"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
@@ -159,7 +159,7 @@
         android:text="+3 hrs"
         android:textColor="#FFFFFF" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/timeSetterButton4"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
@@ -170,7 +170,7 @@
         android:text="+1 day"
         android:textColor="#FFFFFF" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/timeSetterButton5"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
@@ -181,7 +181,7 @@
         android:text="-10 min"
         android:textColor="#FFFFFF" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/timeSetterButton6"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
@@ -192,7 +192,7 @@
         android:text="-1 hr"
         android:textColor="#FFFFFF" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/timeSetterButton7"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"
@@ -203,7 +203,7 @@
         android:text="-3 hrs"
         android:textColor="#FFFFFF" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/timeSetterButton8"
         style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
         android:layout_width="wrap_content"

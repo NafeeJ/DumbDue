@@ -44,6 +44,12 @@ class ReminderButtonPreferenceActivity : AppCompatActivity() {
         val timeSetter7: Button = findViewById(R.id.timeSetterButton7)
         val timeSetter8: Button = findViewById(R.id.timeSetterButton8)
 
+        timeSetter1.setOnClickListener {
+            val dialogFragment = TimeSetterPreferenceDialog()
+            val fragmentManager = supportFragmentManager.beginTransaction()
+            dialogFragment.show(fragmentManager,"dialog")
+        }
+
         val quickAccessTimesList = getQuickAccessTimes()
         val quickAccessTime1 = quickAccessTimesList[0]
         val quickAccessTime2 = quickAccessTimesList[1]

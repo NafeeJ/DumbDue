@@ -18,6 +18,7 @@
     <string name="quick_access_2_default">12:00</string>
     <string name="quick_access_3_default">17:00</string>
     <string name="quick_access_4_default">22:00</string>
+    <string name="Done">Done</string>
 
     <!-- Sync Preferences -->
     <string name="sync_title">Sync email periodically</string>
