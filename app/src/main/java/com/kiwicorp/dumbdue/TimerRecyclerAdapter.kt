@@ -3,11 +3,10 @@ package com.kiwicorp.dumbdue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.layout_timer_item.view.*
+import kotlinx.android.synthetic.main.item_timer.view.*
 
 class TimerRecyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var timers: MutableList<DumbTimer>
@@ -15,7 +14,7 @@ class TimerRecyclerAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return TimerViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.layout_timer_item, parent, false), onTimerListener)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_timer, parent, false), onTimerListener)
     }
 
     override fun getItemCount(): Int {

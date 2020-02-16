@@ -5,9 +5,13 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class ReminderButtonPreferenceActivity : AppCompatActivity() {
     companion object {
@@ -28,7 +32,7 @@ class ReminderButtonPreferenceActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.layout_preference_reminder_buttons)
+        setContentView(R.layout.activity_preference_time_setters)
 
         val toolBar: Toolbar = findViewById(R.id.settingsToolBar)
         setSupportActionBar(toolBar)
@@ -45,9 +49,14 @@ class ReminderButtonPreferenceActivity : AppCompatActivity() {
         val timeSetter8: Button = findViewById(R.id.timeSetterButton8)
 
         timeSetter1.setOnClickListener {
-            val dialogFragment = TimeSetterPreferenceDialog()
-            val fragmentManager = supportFragmentManager.beginTransaction()
-            dialogFragment.show(fragmentManager,"dialog")
+            val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+            val prev: Fragment? = supportFragmentManager.findFragmentByTag("dialog")
+            if (prev != null) {
+                ft.remove(prev)
+            }
+            ft.addToBackStack(null)
+            val dialogFragment: DialogFragment = TimeSetterPreferenceDialog()
+            dialogFragment.show(ft, "dialog")
         }
 
         val quickAccessTimesList = getQuickAccessTimes()

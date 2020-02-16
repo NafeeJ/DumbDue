@@ -330,6 +330,7 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
     }
     //starts edit reminder activity when user clicks on a reminder in recycler view
     override fun onItemRootViewClicked(@NonNull sectionTitle: String, itemPosition: Int) {
+        recycler_view.isClickable = false
         //get reminder that was clicked on
         val section: ReminderSection = sectionAdapter.getSection(sectionTitle) as ReminderSection
         val reminder: Reminder = section.getList()[sectionAdapter.getPositionInSection(itemPosition)]

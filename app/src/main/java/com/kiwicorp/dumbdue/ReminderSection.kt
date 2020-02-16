@@ -3,7 +3,6 @@ package com.kiwicorp.dumbdue
 import android.view.View
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import io.github.luizgrp.sectionedrecyclerviewadapter.Section
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
@@ -14,8 +13,8 @@ class ReminderSection constructor(private val title: String,
                                   private val list:LinkedList<Reminder>,
                                   private val clickListener: ClickListener):
     Section(SectionParameters.builder()
-    .itemResourceId(R.layout.layout_reminder_item)
-    .headerResourceId(R.layout.section_reminder_header)
+    .itemResourceId(R.layout.item_reminder)
+    .headerResourceId(R.layout.section_header_reminder)
     .build()) {
 
     companion object {

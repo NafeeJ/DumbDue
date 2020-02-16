@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
-import kotlinx.android.synthetic.main.layout_schedule_reminder_activity.*
+import kotlinx.android.synthetic.main.activity_schedule_reminder.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue

@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
-import kotlinx.android.synthetic.main.layout_schedule_reminder_activity.*
+import kotlinx.android.synthetic.main.activity_schedule_reminder.*
 import java.util.*
 
 class EditReminderActivity : ReminderButtonsBaseActivity() {
@@ -12,7 +12,7 @@ class EditReminderActivity : ReminderButtonsBaseActivity() {
     private val DATE_PICK_REQUEST: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setContentView(R.layout.layout_edit_reminder_activity)
+        setContentView(R.layout.activity_edit_reminder)
         super.onCreate(savedInstanceState)
 
         val reminderData: Reminder.ReminderData =

@@ -16,7 +16,7 @@ class DatePickerActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.layout_date_picker)
+        setContentView(R.layout.dialog_date_picker)
 
         val calendarView: CalendarView = findViewById(R.id.calendarView)
 

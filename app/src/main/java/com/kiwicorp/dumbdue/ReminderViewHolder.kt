@@ -4,7 +4,7 @@ import android.graphics.Color
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.layout_reminder_item.view.*
+import kotlinx.android.synthetic.main.item_reminder.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue
