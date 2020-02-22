@@ -1,19 +1,15 @@
 package com.kiwicorp.dumbdue
 
+
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.preference.PreferenceManager
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-class ReminderButtonPreferenceActivity : AppCompatActivity() {
+class TimeSetterButtonsPreferenceActivity : AppCompatActivity() {
     companion object {
         const val TIME_SETTER_1_KEY: String = "TimeSetter1"
         const val TIME_SETTER_2_KEY: String = "TimeSetter2"
@@ -32,12 +28,8 @@ class ReminderButtonPreferenceActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_preference_time_setters)
-
-        val toolBar: Toolbar = findViewById(R.id.settingsToolBar)
-        setSupportActionBar(toolBar)
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        // Inflate the layout for this fragment
+        setContentView(R.layout.activity_time_setter_button_preference)
 
         val timeSetter1: Button = findViewById(R.id.timeSetterButton1)
         val timeSetter2: Button = findViewById(R.id.timeSetterButton2)
@@ -49,14 +41,10 @@ class ReminderButtonPreferenceActivity : AppCompatActivity() {
         val timeSetter8: Button = findViewById(R.id.timeSetterButton8)
 
         timeSetter1.setOnClickListener {
-            val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-            val prev: Fragment? = supportFragmentManager.findFragmentByTag("dialog")
-            if (prev != null) {
-                ft.remove(prev)
-            }
-            ft.addToBackStack(null)
-            val dialogFragment: DialogFragment = TimeSetterPreferenceDialog()
-            dialogFragment.show(ft, "dialog")
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container,EditTimerSetterButtonsFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         val quickAccessTimesList = getQuickAccessTimes()
@@ -110,4 +98,6 @@ class ReminderButtonPreferenceActivity : AppCompatActivity() {
 
         return listOf<Calendar>(quickAccess1Calendar,quickAccess2Calendar,quickAccess3Calendar,quickAccess4Calendar)
     }
+
+
 }

@@ -84,14 +84,6 @@ class SettingsActivity : AppCompatActivity(),
         override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.preset_time_preferences, rootKey)
         }
-
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View? {
-            return super.onCreateView(inflater, container, savedInstanceState)
-        }
     }
 
     class ThemesFragment : PreferenceFragmentCompat() {

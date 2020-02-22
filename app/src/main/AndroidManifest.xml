@@ -39,14 +39,14 @@
             android:name=".EditReminderActivity"
             android:theme="@style/SchedulingTheme" />
         <activity
-            android:name=".ReminderButtonPreferenceActivity"
+            android:name=".TimeSetterButtonsPreferenceActivity"
             android:parentActivityName=".SettingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".TimerActivity"/>
         <receiver android:name=".NotificationReceiver" />
         <receiver android:name=".IntermediateReceiver" />
         <receiver android:name=".UpdateReceiver" />

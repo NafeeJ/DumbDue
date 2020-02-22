@@ -1,12 +1,6 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceScreen android:title="Edit Buttons">
-        <intent android:action="android.intent.action.VIEW"
-            android:targetPackage="com.kiwicorp.dumbdue"
-            android:targetClass="com.kiwicorp.dumbdue.ReminderButtonPreferenceActivity"/>
-    </PreferenceScreen>
-
     <PreferenceCategory
         app:title="Editor"
         app:key="editor">
@@ -26,6 +20,13 @@
             app:key="themes_header"
             app:title="@string/themes_header" />
     </PreferenceCategory>
+
+    <PreferenceScreen android:title="Edit Time Setter Buttons">
+        <intent android:action="android.intent.action.VIEW"
+            android:targetPackage="com.kiwicorp.dumbdue"
+            android:targetClass="com.kiwicorp.dumbdue.TimeSetterButtonsPreferenceActivity"/>
+    </PreferenceScreen>
+
 
 
 </PreferenceScreen>
