@@ -69,7 +69,6 @@
         android:layout_centerVertical="true"
         android:layout_toStartOf="@id/timeSetterButton2"
         android:background="@color/colorPrimaryDark"
-        android:text="+10 min"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -80,7 +79,6 @@
         android:layout_centerVertical="true"
         android:layout_toStartOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
-        android:text="+1 hr"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -91,7 +89,6 @@
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
-        android:text="+3 hrs"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -102,7 +99,6 @@
         android:layout_centerVertical="true"
         android:layout_toEndOf="@id/timeSetterButton3"
         android:background="@color/colorPrimaryDark"
-        android:text="+1 day"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -113,7 +109,6 @@
         android:layout_below="@id/timeSetterButton1"
         android:layout_toStartOf="@id/timeSetterButton6"
         android:background="@color/colorPrimaryDark"
-        android:text="-10 min"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -124,7 +119,6 @@
         android:layout_below="@id/timeSetterButton3"
         android:layout_toStartOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
-        android:text="-1 hr"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -135,7 +129,6 @@
         android:layout_below="@id/timeSetterButton4"
         android:layout_toEndOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
-        android:text="-3 hrs"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -146,7 +139,6 @@
         android:layout_below="@id/timeSetterButton4"
         android:layout_toEndOf="@id/timeSetterButton7"
         android:background="@color/colorPrimaryDark"
-        android:text="-1 day"
         android:textColor="#FFFFFF" />
 
     <FrameLayout

@@ -1,15 +1,17 @@
 package com.kiwicorp.dumbdue
 
 
+import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
+import kotlinx.android.synthetic.main.activity_time_setter_button_preference.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TimeSetterButtonsPreferenceActivity : AppCompatActivity() {
+class TimeSetterButtonsPreferenceActivity : AppCompatActivity(), EditTimerSetterButtonsFragment.OnTimeSetterEditedListener {
     companion object {
         const val TIME_SETTER_1_KEY: String = "TimeSetter1"
         const val TIME_SETTER_2_KEY: String = "TimeSetter2"
@@ -40,13 +42,33 @@ class TimeSetterButtonsPreferenceActivity : AppCompatActivity() {
         val timeSetter7: Button = findViewById(R.id.timeSetterButton7)
         val timeSetter8: Button = findViewById(R.id.timeSetterButton8)
 
-        timeSetter1.setOnClickListener {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container,EditTimerSetterButtonsFragment())
-                .addToBackStack(null)
-                .commit()
-        }
+        loadTimeSetterButtons()
 
+        timeSetter1.setOnClickListener {
+            startEditButtonFragment(TIME_SETTER_1_KEY,timeSetter1.text as String)
+        }
+        timeSetter2.setOnClickListener {
+            startEditButtonFragment(TIME_SETTER_2_KEY,timeSetter2.text as String)
+        }
+        timeSetter3.setOnClickListener {
+            startEditButtonFragment(TIME_SETTER_3_KEY,timeSetter3.text as String)
+        }
+        timeSetter4.setOnClickListener {
+            startEditButtonFragment(TIME_SETTER_4_KEY,timeSetter4.text as String)
+        }
+        timeSetter5.setOnClickListener {
+            startEditButtonFragment(TIME_SETTER_5_KEY,timeSetter5.text as String)
+        }
+        timeSetter6.setOnClickListener {
+            startEditButtonFragment(TIME_SETTER_6_KEY,timeSetter6.text as String)
+        }
+        timeSetter7.setOnClickListener {
+            startEditButtonFragment(TIME_SETTER_7_KEY,timeSetter7.text as String)
+        }
+        timeSetter8.setOnClickListener {
+            startEditButtonFragment(TIME_SETTER_8_KEY,timeSetter8.text as String)
+        }
+        
         val quickAccessTimesList = getQuickAccessTimes()
         val quickAccessTime1 = quickAccessTimesList[0]
         val quickAccessTime2 = quickAccessTimesList[1]
@@ -99,5 +121,40 @@ class TimeSetterButtonsPreferenceActivity : AppCompatActivity() {
         return listOf<Calendar>(quickAccess1Calendar,quickAccess2Calendar,quickAccess3Calendar,quickAccess4Calendar)
     }
 
+    private fun startEditButtonFragment(key: String, timeSetterText: String) {
+        val fragment = EditTimerSetterButtonsFragment()
+        val bundle = Bundle()
+        bundle.putString("TimeSetterText",timeSetterText)
+        bundle.putString("Key",key)
+        fragment.arguments = bundle
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container,fragment)
+            .addToBackStack(null)
+            .commit()
+    }
 
+    override fun onTimeSetterEdited(time: String, timeSetterIndex: Int) {
+        when (timeSetterIndex) {
+            1 -> timeSetterButton1.text = time
+            2 -> timeSetterButton2.text = time
+            3 -> timeSetterButton3.text = time
+            4 -> timeSetterButton4.text = time
+            5 -> timeSetterButton5.text = time
+            6 -> timeSetterButton6.text = time
+            7 -> timeSetterButton7.text = time
+            else -> timeSetterButton8.text = time
+        }
+    }
+
+    private fun loadTimeSetterButtons() {
+        val sharedPreferences: SharedPreferences = getSharedPreferences("Preferences",Context.MODE_PRIVATE)
+        timeSetterButton1.text = sharedPreferences.getString(TIME_SETTER_1_KEY,"+10 min")
+        timeSetterButton2.text = sharedPreferences.getString(TIME_SETTER_2_KEY,"+1 hr")
+        timeSetterButton3.text = sharedPreferences.getString(TIME_SETTER_3_KEY,"+3 hr")
+        timeSetterButton4.text = sharedPreferences.getString(TIME_SETTER_4_KEY,"+1 day")
+        timeSetterButton5.text = sharedPreferences.getString(TIME_SETTER_5_KEY,"-10 min")
+        timeSetterButton6.text = sharedPreferences.getString(TIME_SETTER_6_KEY,"-1 hr")
+        timeSetterButton7.text = sharedPreferences.getString(TIME_SETTER_7_KEY,"-3 hr")
+        timeSetterButton8.text = sharedPreferences.getString(TIME_SETTER_8_KEY,"+1 day")
+    }
 }
