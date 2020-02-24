@@ -356,12 +356,15 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
                     val section: ReminderSection = sectionAdapter.getSection(reminderToCreateData.sectionTitle) as ReminderSection
                     val reminder: Reminder = section.getList()[reminderToCreateData.positionInSection]
                     //remove reminder
+                    sectionAdapter.notifyItemRemovedFromSection(section,reminder.getReminderData().positionInSection)
                     reminder.deleteReminder()
                     //create new reminder
-                    Reminder(reminderToCreateData.text,
+                    val newReminder = Reminder(reminderToCreateData.text,
                         reminderToCreateData.remindCalendar,
                         reminderToCreateData.repeatVal,
                         applicationContext)
+
+                    sectionAdapter.notifyItemInsertedInSection(newReminder.getReminderData().sectionTitle,newReminder.getReminderData().positionInSection)
                 }
             }
             //if result is to delete, delete reminder
@@ -372,6 +375,7 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
                     val section: ReminderSection = sectionAdapter.getSection(reminderToDeleteData.sectionTitle) as ReminderSection
                     val reminder: Reminder = section.getList()[reminderToDeleteData.positionInSection]
 
+                    sectionAdapter.notifyItemRemovedFromSection(section,reminderToDeleteData.positionInSection)
                     reminder.deleteReminder()
                 }
             }

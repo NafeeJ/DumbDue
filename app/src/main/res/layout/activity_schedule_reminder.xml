@@ -22,6 +22,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:paddingLeft="10dp"
+        android:paddingStart="10dp"
         android:textColor="#FFFFFF" />
 
     <TextView
@@ -32,6 +33,7 @@
         android:layout_alignParentEnd="true"
         android:background="#303030"
         android:paddingLeft="10dp"
+        android:paddingStart="10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#FFFFFF" />
 
@@ -55,7 +57,8 @@
         android:layout_marginEnd="20dp"
         android:layout_toStartOf="@id/repeatButton"
         android:backgroundTint="#000000"
-        android:src="@drawable/cancel_white" />
+        android:src="@drawable/cancel_white"
+        android:contentDescription="@string/cancel_content_description"/>
 
     <ImageButton
         android:id="@+id/repeatButton"
@@ -64,7 +67,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:backgroundTint="#000000"
-        android:src="@drawable/repeat_white" />
+        android:src="@drawable/repeat_white"
+        android:contentDescription="@string/repeat_content_description"/>
 
     <ImageButton
         android:id="@+id/addButton"
@@ -74,7 +78,8 @@
         android:layout_marginStart="20dp"
         android:layout_toEndOf="@id/repeatButton"
         android:backgroundTint="#000000"
-        android:src="@drawable/check_white" />
+        android:src="@drawable/check_white"
+        android:contentDescription="@string/check_content_description"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/quickAccessButton1"
@@ -124,7 +129,6 @@
         android:layout_below="@+id/quickAccessButton1"
         android:layout_toStartOf="@id/timeSetterButton2"
         android:background="@color/colorPrimaryDark"
-        android:text="+10 min"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -135,7 +139,6 @@
         android:layout_below="@+id/quickAccessButton1"
         android:layout_toStartOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
-        android:text="+1 hr"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -146,7 +149,6 @@
         android:layout_below="@+id/quickAccessButton1"
         android:layout_toEndOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
-        android:text="+3 hrs"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -157,7 +159,6 @@
         android:layout_below="@+id/quickAccessButton1"
         android:layout_toEndOf="@id/timeSetterButton3"
         android:background="@color/colorPrimaryDark"
-        android:text="+1 day"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -168,7 +169,6 @@
         android:layout_below="@id/timeSetterButton1"
         android:layout_toStartOf="@id/timeSetterButton6"
         android:background="@color/colorPrimaryDark"
-        android:text="-10 min"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -179,7 +179,6 @@
         android:layout_below="@id/timeSetterButton3"
         android:layout_toStartOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
-        android:text="-1 hr"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -190,7 +189,6 @@
         android:layout_below="@id/timeSetterButton4"
         android:layout_toEndOf="@id/centerLine"
         android:background="@color/colorPrimaryDark"
-        android:text="-3 hrs"
         android:textColor="#FFFFFF" />
 
     <com.google.android.material.button.MaterialButton
@@ -201,7 +199,6 @@
         android:layout_below="@id/timeSetterButton4"
         android:layout_toEndOf="@id/timeSetterButton7"
         android:background="@color/colorPrimaryDark"
-        android:text="-1 day"
         android:textColor="#FFFFFF" />
 
 </RelativeLayout>

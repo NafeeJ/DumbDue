@@ -13,6 +13,11 @@ import com.shawnlin.numberpicker.NumberPicker
 
 class EditTimerSetterButtonsFragment : Fragment() {
     lateinit var onTimeSetterEditedListenerListener: OnTimeSetterEditedListener
+    //widgets
+    lateinit var doneButton: Button
+    lateinit var timePicker: NumberPicker
+    lateinit var plusMinusPicker: NumberPicker
+    lateinit var unitsPicker: NumberPicker
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -23,41 +28,44 @@ class EditTimerSetterButtonsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val timeSetterText: String = arguments!!.getString("TimeSetterText") as String
-        val key: String = arguments!!.getString("Key") as String
-        //parse string
-        var plusMinus: Char = timeSetterText[0]
-        var (time,notDigits) = timeSetterText.partition { it.isDigit() }
-        var unit = notDigits.substring(2)
+        //get key and time setter text from bundle
+        val timeSetterText: String = arguments!!.getString("TimeSetterText") as String// contains the text of the button
+        val key: String = arguments!!.getString("Key") as String//contains the key corresponding to the button
+        //parse time setter text
+        var plusMinus: Char = timeSetterText[0] //char that contains + or -
+        var (time,notDigits) = timeSetterText.partition { it.isDigit() } //time is a contains the actual number of how much to increment/decrement
+        var unit: String = notDigits.substring(2)  //contains the unit of the text
 
         val view: View = layoutInflater.inflate(R.layout.fragment_preference_edit_time_setters,container,false)
 
-        val doneButton: Button = view.findViewById(R.id.dialog_button)
-
-        val plusMinusList = arrayOf("+","-")
-        val pickerPlusMinus: NumberPicker = view.findViewById(R.id.picker_plus_minus)
-        pickerPlusMinus.minValue = 1
-        pickerPlusMinus.maxValue = 2
-        pickerPlusMinus.displayedValues = plusMinusList
-        pickerPlusMinus.value = when (plusMinus) {'+' -> 1 else -> 2 }
-        pickerPlusMinus.setOnValueChangedListener { _, _, newVal ->
+        doneButton = view.findViewById(R.id.dialog_button)
+        //initialize pickers
+        val plusMinusList = arrayOf("+","-") //list provided to plus minus picker to display
+        plusMinusPicker = view.findViewById(R.id.picker_plus_minus)
+        plusMinusPicker.minValue = 1 //corresponds to +
+        plusMinusPicker.maxValue = 2 //corresponds to -
+        plusMinusPicker.displayedValues = plusMinusList
+        plusMinusPicker.value = when (plusMinus) {'+' -> 1 else -> 2 }
+        //changes plus minus to correct symbol when picker's value is changed
+        plusMinusPicker.setOnValueChangedListener { _, _, newVal ->
             plusMinus = when(newVal) {
                 1 -> '+'
                 else -> '-'
             }
         }
-        val timePicker: NumberPicker = view.findViewById(R.id.picker_times)
+        timePicker = view.findViewById(R.id.picker_times)
         timePicker.minValue = 1
-        updateTimePickerMaxVal(unit,timePicker)
+        updateTimePickerMaxVal(unit)
         timePicker.value = time.toInt()
+        //changes time to correct value when picker's value is changed
         timePicker.setOnValueChangedListener { _, _, newVal -> time = newVal.toString() }
 
-        val unitsList = arrayOf("min","hr","day","wk","mo","yr")
-        val pickerUnits: NumberPicker = view.findViewById(R.id.picker_units)
-        pickerUnits.minValue = 1
-        pickerUnits.maxValue = 6
-        pickerUnits.displayedValues = unitsList
-        pickerUnits.value = when (unit) {
+        val unitsList = arrayOf("min","hr","day","wk","mo","yr") //list provided to unit picker to display
+        unitsPicker = view.findViewById(R.id.picker_units)
+        unitsPicker.minValue = 1 //corresponds to min
+        unitsPicker.maxValue = 6 //corresponds to yr
+        unitsPicker.displayedValues = unitsList
+        unitsPicker.value = when (unit) {
             "min" -> 1
             "hr" -> 2
             "day" -> 3
@@ -65,9 +73,9 @@ class EditTimerSetterButtonsFragment : Fragment() {
             "mo" -> 5
             else -> 6
         }
-        updateTimePickerMaxVal(unit,timePicker)
-        pickerUnits.setOnValueChangedListener { _, _, newVal ->
-            time = timePicker.value.toString()
+        updateTimePickerMaxVal(unit)
+        unitsPicker.setOnValueChangedListener { _, _, newVal ->
+            //updates unit to correct value when picker's value is changed
             unit = when(newVal) {
                 1 -> "min"
                 2 -> "hr"
@@ -76,34 +84,38 @@ class EditTimerSetterButtonsFragment : Fragment() {
                 5 -> "mo"
                 else -> "yr"
             }
-            updateTimePickerMaxVal(unit,timePicker)
+            updateTimePickerMaxVal(unit)
+            //updates time picker value in case the max val is changed and the user immediately confirms
+            time = timePicker.value.toString()
         }
         doneButton.setOnClickListener {
-            val returnString= "$plusMinus$time $unit"
+            //stores the new time setter text
+            val returnTimeSetterText= "$plusMinus$time $unit"
             val sharedPreferences  = activity!!.getSharedPreferences("Preferences", Context.MODE_PRIVATE)
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
-            editor.putString(key,returnString)
+            editor.putString(key,returnTimeSetterText)
             editor.apply()
-
-            onTimeSetterEditedListenerListener.onTimeSetterEdited(returnString,Character.getNumericValue(key.last()))
-
+            //updates time setter button in activity
+            onTimeSetterEditedListenerListener.onTimeSetterEdited(returnTimeSetterText,Character.getNumericValue(key.last()))
+            //goes back to parent activity
             activity!!.supportFragmentManager.popBackStack()
         }
 
         return view
     }
-
-    private fun updateTimePickerMaxVal(unit: String,timePicker: NumberPicker) {
+    //updates the max vale of the time picker based on the unit given
+    //timePicker is always time picker
+    private fun updateTimePickerMaxVal(unit: String) {
         when(unit) {
             "min" -> timePicker.maxValue = 59
             "hr" -> timePicker.maxValue = 23
             "day" -> timePicker.maxValue = 6
-            "wk" -> timePicker.maxValue = 51
+            "wk" -> timePicker.maxValue = 3
             "mo" -> timePicker.maxValue = 11
             "yr" -> timePicker.maxValue = 100
         }
     }
-
+    //interface that allows the button text to be updated in the activity
     interface OnTimeSetterEditedListener {
         fun onTimeSetterEdited(time: String, timeSetterIndex: Int)
     }

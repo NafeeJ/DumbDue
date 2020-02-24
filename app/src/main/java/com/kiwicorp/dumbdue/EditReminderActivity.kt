@@ -19,6 +19,7 @@ class EditReminderActivity : ReminderButtonsBaseActivity() {
             intent.getParcelableExtra("ReminderData") as Reminder.ReminderData
 
         dueDateCalendar = reminderData.remindCalendar
+        updateTextViews()
         repeatVal = reminderData.repeatVal
         val reminderText: String = reminderData.text
         val sectionTitle: String = reminderData.sectionTitle

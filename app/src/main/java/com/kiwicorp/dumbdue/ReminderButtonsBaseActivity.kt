@@ -55,6 +55,15 @@ abstract class ReminderButtonsBaseActivity : AppCompatActivity() {
         val timeSetterButton7: Button = findViewById(R.id.timeSetterButton7)
         val timeSetterButton8: Button = findViewById(R.id.timeSetterButton8)
 
+        //list of time incrementing/decrementing button
+        val timeButtons = listOf(
+            timeSetterButton1, timeSetterButton2, timeSetterButton3,
+            timeSetterButton4, timeSetterButton5, timeSetterButton6,
+            timeSetterButton7, timeSetterButton8, quickAccessButton4,
+            quickAccessButton2, quickAccessButton3, quickAccessButton4)
+
+        TimeSetterButtonsPreferenceActivity.loadTimeSetterButtons(applicationContext,timeButtons)
+
         //initialize preset buttons and their intended hour and minutes
         //Later allow user to change time presets
         val quickAccessButton1: Button = findViewById(R.id.quickAccessButton1)
@@ -82,12 +91,6 @@ abstract class ReminderButtonsBaseActivity : AppCompatActivity() {
         dateTextView.gravity = Gravity.CENTER_VERTICAL //sets text to be in the middle of text view
         dateTextView.height = screenHeight / 5
 
-        //list of time incrementing/decrementing button
-        val timeButtons = listOf(
-            timeSetterButton1, timeSetterButton2, timeSetterButton3,
-            timeSetterButton4, timeSetterButton5, timeSetterButton6,
-            timeSetterButton7, timeSetterButton8, quickAccessButton4,
-            quickAccessButton2, quickAccessButton3, quickAccessButton4)
         for (button in timeButtons) { //sets time buttons dimensions
             button.width = screenWidth / 4
             button.height = screenHeight / 5
@@ -95,35 +98,35 @@ abstract class ReminderButtonsBaseActivity : AppCompatActivity() {
 
         //adds or subtracts intended unit to intended due date
         timeSetterButton1.setOnClickListener{
-            dueDateCalendar.add(Calendar.MINUTE,10)
+            updateCalendar(timeSetterButton1.text as String)
             updateTextViews()
         }
         timeSetterButton2.setOnClickListener{
-            dueDateCalendar.add(Calendar.MINUTE,-10)
+            updateCalendar(timeSetterButton2.text as String)
             updateTextViews()
         }
         timeSetterButton3.setOnClickListener{
-            dueDateCalendar.add(Calendar.HOUR,1)
+            updateCalendar(timeSetterButton3.text as String)
             updateTextViews()
         }
         timeSetterButton4.setOnClickListener{
-            dueDateCalendar.add(Calendar.HOUR,-1)
+            updateCalendar(timeSetterButton4.text as String)
             updateTextViews()
         }
         timeSetterButton5.setOnClickListener{
-            dueDateCalendar.add(Calendar.HOUR,3)
+            updateCalendar(timeSetterButton5.text as String)
             updateTextViews()
         }
         timeSetterButton6.setOnClickListener{
-            dueDateCalendar.add(Calendar.HOUR,-3)
+            updateCalendar(timeSetterButton6.text as String)
             updateTextViews()
         }
         timeSetterButton7.setOnClickListener{
-            dueDateCalendar.add(Calendar.DAY_OF_YEAR,1)
+            updateCalendar(timeSetterButton7.text as String)
             updateTextViews()
         }
         timeSetterButton8.setOnClickListener{
-            dueDateCalendar.add(Calendar.DAY_OF_YEAR,-1)
+            updateCalendar(timeSetterButton8.text as String)
             updateTextViews()
         }
         //sets all preset button functionality
@@ -223,6 +226,25 @@ abstract class ReminderButtonsBaseActivity : AppCompatActivity() {
             repeatTextView.setBackgroundColor(Color.parseColor("#f54242"))
         }
     }
+
+    private fun updateCalendar(text: String) {
+        val (number,notDigits) = text.partition { it.isDigit() } //number is a contains the actual number of how much to increment/decrement
+        val unit: String = notDigits.substring(2)  //contains the unit of the text
+        val unitInt: Int = when (unit) {
+            "min" -> Calendar.MINUTE
+            "hr" -> Calendar.HOUR
+            "day" -> Calendar.DAY_OF_YEAR
+            "wk" -> Calendar.WEEK_OF_YEAR
+            "mo" -> Calendar.MONTH
+            else -> Calendar.YEAR
+        }
+        var incrementNumber: Int = number.toInt()
+        if (notDigits[0] == '-') {
+            incrementNumber *= -1
+        }
+        dueDateCalendar.add(unitInt,incrementNumber)
+    }
+
     //returns a string with absolute value of time from now and its correct unit
     protected fun findTimeFromNowString(timeInMins: Int): String {
         val absTime = timeInMins.absoluteValue

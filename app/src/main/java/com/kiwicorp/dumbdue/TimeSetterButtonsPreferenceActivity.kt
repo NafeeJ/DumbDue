@@ -26,6 +26,18 @@ class TimeSetterButtonsPreferenceActivity : AppCompatActivity(), EditTimerSetter
         const val QUICK_ACCESS_2_KEY: String = "QuickAccess2"
         const val QUICK_ACCESS_3_KEY: String = "QuickAccess3"
         const val QUICK_ACCESS_4_KEY: String = "QuickAccess4"
+
+        fun loadTimeSetterButtons(context: Context, buttons: List<Button>) {
+            val sharedPreferences: SharedPreferences = context.getSharedPreferences("Preferences",Context.MODE_PRIVATE)
+            buttons[0].text = sharedPreferences.getString(TIME_SETTER_1_KEY,"+10 min")
+            buttons[1].text = sharedPreferences.getString(TIME_SETTER_2_KEY,"+1 hr")
+            buttons[2].text = sharedPreferences.getString(TIME_SETTER_3_KEY,"+3 hr")
+            buttons[3].text = sharedPreferences.getString(TIME_SETTER_4_KEY,"+1 day")
+            buttons[4].text = sharedPreferences.getString(TIME_SETTER_5_KEY,"-10 min")
+            buttons[5].text = sharedPreferences.getString(TIME_SETTER_6_KEY,"-1 hr")
+            buttons[6].text = sharedPreferences.getString(TIME_SETTER_7_KEY,"-3 hr")
+            buttons[7].text = sharedPreferences.getString(TIME_SETTER_8_KEY,"+1 day")
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +54,7 @@ class TimeSetterButtonsPreferenceActivity : AppCompatActivity(), EditTimerSetter
         val timeSetter7: Button = findViewById(R.id.timeSetterButton7)
         val timeSetter8: Button = findViewById(R.id.timeSetterButton8)
 
-        loadTimeSetterButtons()
+        loadTimeSetterButtons(applicationContext,listOf(timeSetter1,timeSetter2,timeSetter3,timeSetter4,timeSetter5,timeSetter6,timeSetter7,timeSetter8))
 
         timeSetter1.setOnClickListener {
             startEditButtonFragment(TIME_SETTER_1_KEY,timeSetter1.text as String)
@@ -68,7 +80,7 @@ class TimeSetterButtonsPreferenceActivity : AppCompatActivity(), EditTimerSetter
         timeSetter8.setOnClickListener {
             startEditButtonFragment(TIME_SETTER_8_KEY,timeSetter8.text as String)
         }
-        
+
         val quickAccessTimesList = getQuickAccessTimes()
         val quickAccessTime1 = quickAccessTimesList[0]
         val quickAccessTime2 = quickAccessTimesList[1]
@@ -144,17 +156,5 @@ class TimeSetterButtonsPreferenceActivity : AppCompatActivity(), EditTimerSetter
             7 -> timeSetterButton7.text = time
             else -> timeSetterButton8.text = time
         }
-    }
-
-    private fun loadTimeSetterButtons() {
-        val sharedPreferences: SharedPreferences = getSharedPreferences("Preferences",Context.MODE_PRIVATE)
-        timeSetterButton1.text = sharedPreferences.getString(TIME_SETTER_1_KEY,"+10 min")
-        timeSetterButton2.text = sharedPreferences.getString(TIME_SETTER_2_KEY,"+1 hr")
-        timeSetterButton3.text = sharedPreferences.getString(TIME_SETTER_3_KEY,"+3 hr")
-        timeSetterButton4.text = sharedPreferences.getString(TIME_SETTER_4_KEY,"+1 day")
-        timeSetterButton5.text = sharedPreferences.getString(TIME_SETTER_5_KEY,"-10 min")
-        timeSetterButton6.text = sharedPreferences.getString(TIME_SETTER_6_KEY,"-1 hr")
-        timeSetterButton7.text = sharedPreferences.getString(TIME_SETTER_7_KEY,"-3 hr")
-        timeSetterButton8.text = sharedPreferences.getString(TIME_SETTER_8_KEY,"+1 day")
     }
 }
