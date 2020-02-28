@@ -4,11 +4,11 @@
     <PreferenceCategory
         app:title="Editor"
         app:key="editor">
-        <Preference
-            app:fragment="com.kiwicorp.dumbdue.SettingsActivity$QuickAccessTimesFragment"
-            app:icon="@drawable/time_black"
-            app:key="quick_access_times_header"
-            app:title="@string/quick_acess_times_header"/>
+        <PreferenceScreen android:title="Edit Time Setter Buttons">
+            <intent android:action="android.intent.action.VIEW"
+                android:targetPackage="com.kiwicorp.dumbdue"
+                android:targetClass="com.kiwicorp.dumbdue.TimeSetterButtonsPreferenceActivity"/>
+        </PreferenceScreen>
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -20,12 +20,6 @@
             app:key="themes_header"
             app:title="@string/themes_header" />
     </PreferenceCategory>
-
-    <PreferenceScreen android:title="Edit Time Setter Buttons">
-        <intent android:action="android.intent.action.VIEW"
-            android:targetPackage="com.kiwicorp.dumbdue"
-            android:targetClass="com.kiwicorp.dumbdue.TimeSetterButtonsPreferenceActivity"/>
-    </PreferenceScreen>
 
 
 

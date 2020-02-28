@@ -80,12 +80,6 @@ class SettingsActivity : AppCompatActivity(),
         }
     }
 
-    class QuickAccessTimesFragment : PreferenceFragmentCompat() {
-        override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
-            setPreferencesFromResource(R.xml.preset_time_preferences, rootKey)
-        }
-    }
-
     class ThemesFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.sync_preferences, rootKey)

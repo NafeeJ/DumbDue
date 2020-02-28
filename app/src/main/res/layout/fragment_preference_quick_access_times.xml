@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:clickable="true">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/settingsToolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/picker_hours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/picker_minutes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settingsToolBar"
+        android:layout_marginStart="100dp"
+        app:np_dividerColor="#00000000"
+        app:np_height="180dp"
+        app:np_max="12"
+        app:np_min="1"
+        app:np_selectedTextColor="#FFFFFF"
+        app:np_textColor="#FFFFFF"
+        app:np_width="64dp" />
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/picker_minutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settingsToolBar"
+        app:np_dividerColor="#00000000"
+        app:np_height="180dp"
+        app:np_max="59"
+        app:np_min="0"
+        app:np_selectedTextColor="#FFFFFF"
+        app:np_textColor="#FFFFFF"
+        app:np_width="64dp" />
+
+    <com.shawnlin.numberpicker.NumberPicker
+        android:id="@+id/picker_am_pm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/picker_minutes"
+        app:layout_constraintTop_toBottomOf="@id/settingsToolBar"
+        android:layout_marginEnd="105dp"
+        app:np_dividerColor="#00000000"
+        app:np_height="180dp"
+        app:np_max="2"
+        app:np_min="1"
+        app:np_selectedTextColor="#FFFFFF"
+        app:np_textColor="#FFFFFF"
+        app:np_width="64dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text=":"
+        android:textColor="#FFFFFF"
+        android:textSize="23dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/picker_minutes"
+        app:layout_constraintStart_toStartOf="@id/picker_hours"
+        app:layout_constraintTop_toBottomOf="@id/settingsToolBar"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/done_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/Done" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

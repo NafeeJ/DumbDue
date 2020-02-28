@@ -38,7 +38,7 @@ class EditTimerSetterButtonsFragment : Fragment() {
 
         val view: View = layoutInflater.inflate(R.layout.fragment_preference_edit_time_setters,container,false)
 
-        doneButton = view.findViewById(R.id.dialog_button)
+        doneButton = view.findViewById(R.id.done_button)
         //initialize pickers
         val plusMinusList = arrayOf("+","-") //list provided to plus minus picker to display
         plusMinusPicker = view.findViewById(R.id.picker_plus_minus)
@@ -90,13 +90,13 @@ class EditTimerSetterButtonsFragment : Fragment() {
         }
         doneButton.setOnClickListener {
             //stores the new time setter text
-            val returnTimeSetterText= "$plusMinus$time $unit"
-            val sharedPreferences  = activity!!.getSharedPreferences("Preferences", Context.MODE_PRIVATE)
+            val newTimeSetter = "$plusMinus$time $unit"
+            val sharedPreferences = activity!!.getSharedPreferences("Preferences", Context.MODE_PRIVATE)
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
-            editor.putString(key,returnTimeSetterText)
+            editor.putString(key,newTimeSetter)
             editor.apply()
             //updates time setter button in activity
-            onTimeSetterEditedListenerListener.onTimeSetterEdited(returnTimeSetterText,Character.getNumericValue(key.last()))
+            onTimeSetterEditedListenerListener.onTimeSetterEdited(newTimeSetter,Character.getNumericValue(key.last()))
             //goes back to parent activity
             activity!!.supportFragmentManager.popBackStack()
         }
@@ -104,7 +104,6 @@ class EditTimerSetterButtonsFragment : Fragment() {
         return view
     }
     //updates the max vale of the time picker based on the unit given
-    //timePicker is always time picker
     private fun updateTimePickerMaxVal(unit: String) {
         when(unit) {
             "min" -> timePicker.maxValue = 59
@@ -117,7 +116,7 @@ class EditTimerSetterButtonsFragment : Fragment() {
     }
     //interface that allows the button text to be updated in the activity
     interface OnTimeSetterEditedListener {
-        fun onTimeSetterEdited(time: String, timeSetterIndex: Int)
+        fun onTimeSetterEdited(time: String, index: Int)
     }
 
 }

@@ -7,7 +7,7 @@ import android.widget.*
 import kotlinx.android.synthetic.main.activity_schedule_reminder.*
 import java.util.*
 
-class EditReminderActivity : ReminderButtonsBaseActivity() {
+class EditReminderActivity : AbstractReminderButtonsActivity() {
 
     private val DATE_PICK_REQUEST: Int = 1
 
