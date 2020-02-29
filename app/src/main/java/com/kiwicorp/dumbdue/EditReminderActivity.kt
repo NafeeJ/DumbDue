@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.activity_schedule_reminder.*
 import java.util.*
 
@@ -52,62 +53,71 @@ class EditReminderActivity : AbstractReminderButtonsActivity() {
             finish()
         }
         repeatButton.setOnClickListener {
-            //create and show popup menu
-            val popup = PopupMenu(this,findViewById(R.id.repeatButton))
-            popup.inflate(R.menu.repeat_popup_menu)
-            popup.show()
+            //create and show dialog
+            val dialog = BottomSheetDialog(this)
+            val dialogView = layoutInflater.inflate(R.layout.dialog_choose_repeat,null)
+            dialog.setContentView(dialogView)
+            dialog.setCanceledOnTouchOutside(true)
 
-            //sets pop up menu's item
-            popup.menu.getItem(1).title = "Daily "
-                .plus(timeFormatter.format(dueDateCalendar.time))
+            //widgets
+            val repeatOffTextView: TextView = dialogView.findViewById(R.id.repeatOffText)
+            val repeatDailyTextView: TextView = dialogView.findViewById(R.id.repeatDailyText)
+            val repeatWeekdaysTextView: TextView = dialogView.findViewById(R.id.repeatWeekdays)
+            val repeatWeeklyTextView: TextView = dialogView.findViewById(R.id.repeatWeekly)
+            val repeatMonthlyTextView: TextView = dialogView.findViewById(R.id.repeatMonthly)
 
-            popup.menu.getItem(2).title = dayOfWeekFormatter
-                .format(dueDateCalendar.get(Calendar.DAY_OF_WEEK))
+            //set text views text
+            repeatOffTextView.text = "Repeat Off"
+            repeatDailyTextView.text = "Daily ".plus(timeFormatter.format(dueDateCalendar.time))
+            repeatWeekdaysTextView.text = "Weekdays ".plus(timeFormatter.format(dueDateCalendar.time))
+            repeatWeeklyTextView.text = dayOfWeekFormatter.format(dueDateCalendar.get(Calendar.DAY_OF_WEEK))
                 .plus("s ")
                 .plus(timeFormatter.format(dueDateCalendar.time))
-
-            popup.menu.getItem(3).title = dueDateCalendar
+            repeatMonthlyTextView.text = dueDateCalendar
                 .get(Calendar.DAY_OF_MONTH).toString()
                 .plus(MainActivity.daySuffixFinder(dueDateCalendar))
                 .plus(" each month at ")
                 .plus(timeFormatter.format(dueDateCalendar.time))
 
-            //change reminder's repeat val based off of which menu item clicked
-            popup.setOnMenuItemClickListener {
-                when(it.itemId) {
-                    R.id.menu_none -> {
-                        repeatVal = Reminder.REPEAT_NONE
-                        repeatTextView.visibility = View.GONE
-                        true
-                    }
-                    R.id.menu_daily -> {
-                        repeatVal = Reminder.REPEAT_DAILY
-                        repeatTextView.text =  "Daily "
-                            .plus(timeFormatter.format(dueDateCalendar.time))
-                        repeatTextView.visibility = View.VISIBLE
-                        true
-                    }
-                    R.id.menu_weekly -> {
-                        repeatVal = Reminder.REPEAT_WEEKLY
-                        repeatTextView.text = dayOfWeekFormatter
-                            .format(dueDateCalendar.get(Calendar.DAY_OF_WEEK))
-                            .plus("s ")
-                            .plus(timeFormatter.format(dueDateCalendar.time))
-                        repeatTextView.visibility = View.VISIBLE
-                        true
-                    }
-                    R.id.menu_monthly -> {
-                        repeatVal = Reminder.REPEAT_MONTHLY
-                        repeatTextView.text = dueDateCalendar.get(Calendar.DAY_OF_MONTH).toString()
-                            .plus(MainActivity.daySuffixFinder(dueDateCalendar))
-                            .plus(" each month at ")
-                            .plus(timeFormatter.format(dueDateCalendar.time))
-                        repeatTextView.visibility = View.VISIBLE
-                        true
-                    }
-                    else -> false
-                }
+            repeatOffTextView.setOnClickListener {
+                repeatVal = Reminder.REPEAT_NONE
+                repeatTextView.visibility = View.GONE
+                dialog.dismiss()
             }
+            repeatDailyTextView.setOnClickListener {
+                repeatVal = Reminder.REPEAT_DAILY
+                repeatTextView.text =  "Daily "
+                    .plus(timeFormatter.format(dueDateCalendar.time))
+                repeatTextView.visibility = View.VISIBLE
+                dialog.dismiss()
+            }
+            repeatWeekdaysTextView.setOnClickListener {
+                repeatVal = Reminder.REPEAT_WEEKDAYS
+                repeatTextView.text = "Weekdays "
+                    .plus(timeFormatter.format(dueDateCalendar.time))
+                repeatTextView.visibility = View.VISIBLE
+                dialog.dismiss()
+            }
+            repeatWeeklyTextView.setOnClickListener {
+                repeatVal = Reminder.REPEAT_WEEKLY
+                repeatTextView.text = dayOfWeekFormatter
+                    .format(dueDateCalendar.get(Calendar.DAY_OF_WEEK))
+                    .plus("s ")
+                    .plus(timeFormatter.format(dueDateCalendar.time))
+                repeatTextView.visibility = View.VISIBLE
+                dialog.dismiss()
+            }
+            repeatMonthlyTextView.setOnClickListener {
+                repeatVal = Reminder.REPEAT_MONTHLY
+                repeatTextView.text = dueDateCalendar.get(Calendar.DAY_OF_MONTH).toString()
+                    .plus(MainActivity.daySuffixFinder(dueDateCalendar))
+                    .plus(" each month at ")
+                    .plus(timeFormatter.format(dueDateCalendar.time))
+                repeatTextView.visibility = View.VISIBLE
+                dialog.dismiss()
+            }
+
+            dialog.show()
         }
 
         dateTextView.setOnClickListener {

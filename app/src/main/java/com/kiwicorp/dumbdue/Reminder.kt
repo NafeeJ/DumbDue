@@ -16,8 +16,9 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         //ints used to determine the user's desired repeat frequency
         const val REPEAT_NONE: Int = 0
         const val REPEAT_DAILY: Int = 1
-        const val REPEAT_WEEKLY: Int = 2
-        const val REPEAT_MONTHLY: Int = 3
+        const val REPEAT_WEEKDAYS: Int = 2
+        const val REPEAT_WEEKLY: Int = 3
+        const val REPEAT_MONTHLY: Int = 4
         //request code used to keep track and make sure all pending intents for notifications are unique
         var globalRequestCode: Int = 0
         //lists that store the reminders
