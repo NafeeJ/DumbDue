@@ -35,7 +35,7 @@ class TimeSetterButtonsPreferenceActivity : AppCompatActivity(),
             buttons[4].text = sharedPreferences.getString(TIME_SETTER_5_KEY,"-10 min")
             buttons[5].text = sharedPreferences.getString(TIME_SETTER_6_KEY,"-1 hr")
             buttons[6].text = sharedPreferences.getString(TIME_SETTER_7_KEY,"-3 hr")
-            buttons[7].text = sharedPreferences.getString(TIME_SETTER_8_KEY,"+1 day")
+            buttons[7].text = sharedPreferences.getString(TIME_SETTER_8_KEY,"-1 day")
         }
 
         fun loadQuickAccessButtonTexts(context: Context,buttons: List<Button>) {

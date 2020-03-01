@@ -117,20 +117,18 @@ abstract class AbstractReminderButtonsActivity : AppCompatActivity() {
 
     protected fun updateTextViews() { //updates text view
         val fromNowMins = MainActivity.findTimeFromNowMins(dueDateCalendar)
-        //updates repeatTextView's text
-        when(repeatVal) {
-            Reminder.REPEAT_DAILY -> repeatTextView.text =
-                "Daily ".plus(timeFormatter.format(dueDateCalendar.time))
+        val time = dueDateCalendar.time
 
-            Reminder.REPEAT_WEEKLY -> repeatTextView.text = dayOfWeekFormatter
-                .format(dueDateCalendar.get(Calendar.DAY_OF_WEEK))
+        repeatTextView.text = when(repeatVal) {
+            Reminder.REPEAT_DAILY -> "Daily ".plus(timeFormatter.format(time))
+            Reminder.REPEAT_WEEKDAYS -> "Weekdays ".plus(timeFormatter.format(time))
+            Reminder.REPEAT_WEEKLY -> dayOfWeekFormatter.format(time)
                 .plus("s ")
-                .plus(timeFormatter.format(dueDateCalendar.time))
-
-            Reminder.REPEAT_MONTHLY -> repeatTextView.text = dayOfWeekFormatter
-                .format(dueDateCalendar.get(Calendar.DAY_OF_WEEK))
+                .plus(timeFormatter.format(time))
+            Reminder.REPEAT_MONTHLY -> dayOfWeekFormatter.format(time)
                 .plus("s ")
-                .plus(timeFormatter.format(dueDateCalendar.time))
+                .plus(timeFormatter.format(time))
+            else -> ""
         }
         //if time from now is positive or the same, updates text to be in format:
         // "Date in fromNowMins (units)" and sets grey background color
@@ -156,7 +154,6 @@ abstract class AbstractReminderButtonsActivity : AppCompatActivity() {
     //returns a string with absolute value of time from now and its correct unit
     private fun findTimeFromNowString(timeInMins: Int): String {
         val absTime = timeInMins.absoluteValue
-
         return when {
             absTime == 0 -> { "0 Minutes" } //less than 1 minute
             absTime == 1 -> { absTime.toString().plus(" Minute") } //equal to 1 minute

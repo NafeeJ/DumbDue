@@ -45,7 +45,7 @@ class ScheduleReminderActivity : AbstractReminderButtonsActivity() {
             repeatOffTextView.text = "Repeat Off"
             repeatDailyTextView.text = "Daily ".plus(timeFormatter.format(dueDateCalendar.time))
             repeatWeekdaysTextView.text = "Weekdays ".plus(timeFormatter.format(dueDateCalendar.time))
-            repeatWeeklyTextView.text = dayOfWeekFormatter.format(dueDateCalendar.get(Calendar.DAY_OF_WEEK))
+            repeatWeeklyTextView.text = dayOfWeekFormatter.format(dueDateCalendar.time)
                 .plus("s ")
                 .plus(timeFormatter.format(dueDateCalendar.time))
             repeatMonthlyTextView.text = dueDateCalendar
@@ -53,7 +53,7 @@ class ScheduleReminderActivity : AbstractReminderButtonsActivity() {
                 .plus(MainActivity.daySuffixFinder(dueDateCalendar))
                 .plus(" each month at ")
                 .plus(timeFormatter.format(dueDateCalendar.time))
-
+            //set click listeners
             repeatOffTextView.setOnClickListener {
                 repeatVal = Reminder.REPEAT_NONE
                 repeatTextView.visibility = View.GONE
@@ -76,7 +76,7 @@ class ScheduleReminderActivity : AbstractReminderButtonsActivity() {
             repeatWeeklyTextView.setOnClickListener {
                 repeatVal = Reminder.REPEAT_WEEKLY
                 repeatTextView.text = dayOfWeekFormatter
-                    .format(dueDateCalendar.get(Calendar.DAY_OF_WEEK))
+                    .format(dueDateCalendar.time)
                     .plus("s ")
                     .plus(timeFormatter.format(dueDateCalendar.time))
                 repeatTextView.visibility = View.VISIBLE
@@ -91,7 +91,6 @@ class ScheduleReminderActivity : AbstractReminderButtonsActivity() {
                 repeatTextView.visibility = View.VISIBLE
                 dialog.dismiss()
             }
-
             dialog.show()
         }
 

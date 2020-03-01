@@ -58,12 +58,11 @@ class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(i
             when (repeatVal) {
                 Reminder.REPEAT_DAILY -> dateOrRepeatTextView.text = "Daily "
                     .plus(timeFormatter.format(reminder.getRemindCalendar().time))
-
-                Reminder.REPEAT_WEEKLY -> dateOrRepeatTextView.text = dayOfWeekFormatter
-                    .format(reminder.getRemindCalendar().get(
-                    Calendar.DAY_OF_WEEK)).plus("s ")
+                Reminder.REPEAT_WEEKDAYS -> dateOrRepeatTextView.text = "Weekdays "
                     .plus(timeFormatter.format(reminder.getRemindCalendar().time))
-
+                Reminder.REPEAT_WEEKLY -> dateOrRepeatTextView.text = dayOfWeekFormatter
+                    .format(reminder.getRemindCalendar().time).plus("s ")
+                    .plus(timeFormatter.format(reminder.getRemindCalendar().time))
                 Reminder.REPEAT_MONTHLY -> dateOrRepeatTextView.text = reminder.getRemindCalendar()
                     .get(Calendar.DAY_OF_MONTH).toString()
                     .plus(MainActivity.daySuffixFinder(reminder.getRemindCalendar()))

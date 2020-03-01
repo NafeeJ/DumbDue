@@ -330,7 +330,6 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
     }
     //starts edit reminder activity when user clicks on a reminder in recycler view
     override fun onItemRootViewClicked(@NonNull sectionTitle: String, itemPosition: Int) {
-        recycler_view.isClickable = false
         //get reminder that was clicked on
         val section: ReminderSection = sectionAdapter.getSection(sectionTitle) as ReminderSection
         val reminder: Reminder = section.getList()[sectionAdapter.getPositionInSection(itemPosition)]
@@ -364,7 +363,9 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
                         reminderToCreateData.repeatVal,
                         applicationContext)
 
-                    sectionAdapter.notifyItemInsertedInSection(newReminder.getReminderData().sectionTitle,newReminder.getReminderData().positionInSection)
+                    sectionAdapter.notifyItemInsertedInSection(
+                        newReminder.getReminderData().sectionTitle,
+                        newReminder.getReminderData().positionInSection)
                 }
             }
             //if result is to delete, delete reminder
@@ -401,62 +402,51 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
     }
 
     fun swipeCompleteItem(viewHolder: RecyclerView.ViewHolder, view: View) {
-        val reminderHolder: ReminderViewHolder = viewHolder as ReminderViewHolder
-        val reminderPositionInAdapter: Int = reminderHolder.adapterPosition
-        val section: ReminderSection = ReminderSection.getReminderSection(reminderPositionInAdapter)
+        val reminderPositionInAdapter: Int = viewHolder.adapterPosition
+        val section: ReminderSection = ReminderSection.getReminderSection(viewHolder.adapterPosition)
         val reminderPositionInSection : Int = sectionAdapter.getPositionInSection(reminderPositionInAdapter)
         val reminderList : LinkedList<Reminder> = section.getList()
         val removedReminder: Reminder = reminderList[reminderPositionInSection]
+        val previousTime = removedReminder.getRemindCalendar().time
 
         removedReminder.deleteReminder()
-
         //if reminder is repeating, readd item with remind calendar incremented with the correct amount
-        when(removedReminder.getRepeatVal()) {
-            Reminder.REPEAT_DAILY -> {
-                removedReminder.getRemindCalendar().add(Calendar.DAY_OF_YEAR, 1)
-                removedReminder.reAddReminder(reminderPositionInAdapter)
+        if (removedReminder.getRepeatVal() != Reminder.REPEAT_NONE) {
+            val calendar = removedReminder.getRemindCalendar()
+
+            when(removedReminder.getRepeatVal()) {
+                Reminder.REPEAT_DAILY -> { calendar.add(Calendar.DAY_OF_YEAR, 1) }
+                Reminder.REPEAT_WEEKDAYS -> {
+                    when (calendar.get(Calendar.DAY_OF_WEEK)) {
+                        Calendar.FRIDAY -> calendar.add(Calendar.DAY_OF_YEAR, 3)
+                        Calendar.SATURDAY -> calendar.add(Calendar.DAY_OF_YEAR, 2)
+                        else -> calendar.add(Calendar.DAY_OF_YEAR, 1)
+                    }
+                }
+                Reminder.REPEAT_WEEKLY -> { calendar.add(Calendar.WEEK_OF_YEAR, 1) }
+                Reminder.REPEAT_MONTHLY -> { calendar.add(Calendar.MONTH, 1) }
             }
-            Reminder.REPEAT_WEEKLY -> {
-                removedReminder.getRemindCalendar().add(Calendar.WEEK_OF_YEAR, 1)
-                removedReminder.reAddReminder(reminderPositionInAdapter)
-            }
-            Reminder.REPEAT_MONTHLY -> {
-                removedReminder.getRemindCalendar().add(Calendar.MONTH, 1)
-                removedReminder.reAddReminder(reminderPositionInAdapter)
-            }
+            removedReminder.reAddReminder(reminderPositionInAdapter)
         }
         //creates snackbar indicating that a reminder has been completed, and shows the option to undo
         Snackbar.make(findViewById(R.id.main_coordinator_layout),"Completed " + removedReminder.getText() + " :)", Snackbar.LENGTH_LONG).setAction("Undo") {
-            //executes if undo is clicked
-            val updatedSection : ReminderSection = ReminderSection.getReminderSection(removedReminder)
-            val updatedList : LinkedList<Reminder> = updatedSection.getList()
-            val updatedCompletedPosition = updatedList.indexOf(removedReminder)
-            /* if reminder is repeating, remove item and readd with remind calendar decremented
-            the correct amount, else readd reminder normally */
-            when(removedReminder.getRepeatVal()) {
-                Reminder.REPEAT_DAILY -> {
-                    updatedList.removeAt(updatedCompletedPosition)
-                    sectionAdapter.notifyItemRemoved(updatedCompletedPosition)
-
-                    removedReminder.getRemindCalendar().add(Calendar.DAY_OF_YEAR, -1)
-                    removedReminder.reAddReminder(reminderPositionInAdapter)
+            if (removedReminder.getRepeatVal() != Reminder.REPEAT_NONE) {
+                val updatedSection : ReminderSection = ReminderSection.getReminderSection(removedReminder)
+                val updatedList : LinkedList<Reminder> = updatedSection.getList()
+                val updatedCompletedPosition = updatedList.indexOf(removedReminder)
+                /* if reminder is repeating, remove item and readd with remind calendar decremented
+                the correct amount, else readd reminder normally */
+                updatedList.removeAt(updatedCompletedPosition)
+                sectionAdapter.notifyItemRemoved(updatedCompletedPosition)
+                if (updatedSection.getList().isEmpty()) {
+                    updatedSection.isVisible = false
+                    sectionAdapter.notifyDataSetChanged()
                 }
-                Reminder.REPEAT_WEEKLY -> {
-                    updatedList.removeAt(updatedCompletedPosition)
-                    sectionAdapter.notifyItemRemoved(updatedCompletedPosition)
-
-                    removedReminder.getRemindCalendar().add(Calendar.WEEK_OF_YEAR, -1)
-                    removedReminder.reAddReminder(reminderPositionInAdapter)
+                if (removedReminder.getRepeatVal() != Reminder.REPEAT_NONE) {
+                    removedReminder.getRemindCalendar().time = previousTime
                 }
-                Reminder.REPEAT_MONTHLY -> {
-                    updatedList.removeAt(updatedCompletedPosition)
-                    sectionAdapter.notifyItemRemoved(updatedCompletedPosition)
-
-                    removedReminder.getRemindCalendar().add(Calendar.MONTH, -1)
-                    removedReminder.reAddReminder(reminderPositionInAdapter)
-                }
-                else -> removedReminder.reAddReminder(reminderPositionInAdapter)
             }
+            removedReminder.reAddReminder(reminderPositionInAdapter)
         }.show()
     }
     //if reminders have already been loaded return true
