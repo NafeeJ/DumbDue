@@ -23,8 +23,6 @@ class EditReminderActivity : AbstractReminderButtonsActivity() {
         updateTextViews()
         repeatVal = reminderData.repeatVal
         val reminderText: String = reminderData.text
-        val sectionTitle: String = reminderData.sectionTitle
-        val indexInSection: Int = reminderData.positionInSection
 
         val addButton: ImageButton = findViewById(R.id.addButton)
         val cancelButton: ImageButton = findViewById(R.id.cancelButton)
@@ -40,7 +38,8 @@ class EditReminderActivity : AbstractReminderButtonsActivity() {
             //stores reminder data in intent to later be retrieved in main activity to apply edits
             intent.putExtra("ReminderData",
                 Reminder.ReminderData(reminderEditText.text.toString(),
-                    dueDateCalendar,repeatVal,sectionTitle,indexInSection))
+                    dueDateCalendar,repeatVal,reminderData.requestCode,reminderData.sectionTitle,reminderData.positionInSection
+                ))
             //set result
             setResult(RESULT_OK,intent)
             finish()

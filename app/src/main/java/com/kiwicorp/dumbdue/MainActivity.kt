@@ -11,10 +11,10 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
     private val updateRequestCode: Int = 1230498
 
     companion object {
+        private const val TAG: String = "MainActivity"
         //Shared Preferences Keys
         const val prefs: String = "Preferences"
         const val overdueListKey: String = "OverdueListKey"
@@ -210,12 +211,11 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 //if user swipes right, delete reminder
                 if (direction == ItemTouchHelper.RIGHT) {
-                    swipeDeleteItem(viewHolder,findViewById(R.id.activity_main))
+                    swipeDeleteItem(viewHolder)
                     //if user swipes left, complete reminder
                 } else if ( direction == ItemTouchHelper.LEFT) {
-                    swipeCompleteItem(viewHolder,findViewById(R.id.activity_main))
+                    swipeCompleteItem(viewHolder)
                 }
-
             }
             //allows for color and icons in the background when reminders are swiped
             override fun onChildDraw(
@@ -383,7 +383,7 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
         }
     }
     //function that executes when the user swipes to delete a reminder
-    fun swipeDeleteItem(viewHolder: RecyclerView.ViewHolder, view: View) {
+    fun swipeDeleteItem(viewHolder: RecyclerView.ViewHolder) {
 
         val reminderHolder: ReminderViewHolder = viewHolder as ReminderViewHolder
         val positionInAdapter: Int = reminderHolder.adapterPosition
@@ -401,7 +401,7 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
         }.show()
     }
 
-    fun swipeCompleteItem(viewHolder: RecyclerView.ViewHolder, view: View) {
+    fun swipeCompleteItem(viewHolder: RecyclerView.ViewHolder) {
         val reminderPositionInAdapter: Int = viewHolder.adapterPosition
         val section: ReminderSection = ReminderSection.getReminderSection(viewHolder.adapterPosition)
         val reminderPositionInSection : Int = sectionAdapter.getPositionInSection(reminderPositionInAdapter)

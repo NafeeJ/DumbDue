@@ -11,15 +11,17 @@ class IntermediateReceiver : BroadcastReceiver() {
     private lateinit var notificationReceiverIntent: Intent
     private lateinit var notificationPendingIntent : PendingIntent
     private lateinit var alarmManager: AlarmManager
-    private var requestCode: Int = 0
 
     override fun onReceive(context: Context, intent: Intent) {
-        requestCode = intent.getIntExtra("requestCode", 0)
         alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         notificationReceiverIntent = Intent(context,NotificationReceiver::class.java)
-        notificationReceiverIntent.putExtra("reminderTitle",
-            intent.getStringExtra("reminderTitle"))
+        val reminderDataBundle = intent.getBundleExtra("ReminderDataBundle")
+        val reminderData = reminderDataBundle.getParcelable<Reminder.ReminderData>("ReminderData")
+        val requestCode = reminderData!!.requestCode
+
+        notificationReceiverIntent.putExtra("ReminderDataBundle",intent.getBundleExtra("ReminderDataBundle"))
+
         //initializes the pending intent to be notification receiver
         notificationPendingIntent = PendingIntent.getBroadcast(context,
             requestCode,notificationReceiverIntent,

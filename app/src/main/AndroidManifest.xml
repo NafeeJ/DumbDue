@@ -39,6 +39,9 @@
             android:name=".EditReminderActivity"
             android:theme="@style/SchedulingTheme" />
         <activity
+            android:name=".LockScreenReminderActivity"
+            android:theme="@style/SchedulingTheme" />
+        <activity
             android:name=".TimeSetterButtonsPreferenceActivity"
             android:parentActivityName=".SettingsActivity">
             <intent-filter>
@@ -50,6 +53,11 @@
         <receiver android:name=".NotificationReceiver" />
         <receiver android:name=".IntermediateReceiver" />
         <receiver android:name=".UpdateReceiver" />
+        <receiver android:name=".LockScreenReminderBroadcastReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="com.dumbdue.LockScreenReminderBroadcastReceiver"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

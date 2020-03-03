@@ -15,18 +15,26 @@ class NotificationReceiver : BroadcastReceiver() {
         val notificationManager: NotificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val notificationTitle: String? = intent.getStringExtra("reminderTitle")
+        val reminderDataBundle = intent.getBundleExtra("ReminderDataBundle")
+        val reminderData: Reminder.ReminderData = reminderDataBundle.getParcelable("ReminderData") as Reminder.ReminderData
 
-        val notificationOnClickIntent= Intent(context, MainActivity::class.java)
-        notificationOnClickIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        val notificationTitle: String = reminderData.text
 
-        val notificationOnClickPendingIntent: PendingIntent = PendingIntent.getActivity(context,
-            MainActivity.notificationID,
-            notificationOnClickIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT)
+//        val startActivityIntent = Intent(context,LockScreenReminderActivity::class.java)
+//        startActivityIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+//        startActivityIntent.putExtra("ReminderDataBundle",reminderDataBundle)
+//
+//        val startActivityPendingIntent = PendingIntent.getActivity(context,0,startActivityIntent,PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val builder: Notification.Builder = Notification.Builder(context,
-            NotificationChannel.CHANNEL_1_ID)
+        val broadcastIntent = Intent(context,LockScreenReminderBroadcastReceiver::class.java)
+        broadcastIntent.action = "com.dumbdue.LockScreenReminderBroadcastReceiver"
+        broadcastIntent.putExtra("ReminderDataBundle",reminderDataBundle)
+
+        val notificationOnClickPendingIntent: PendingIntent =
+            PendingIntent.getBroadcast(context,0,
+                broadcastIntent,PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val builder: Notification.Builder = Notification.Builder(context, NotificationChannel.CHANNEL_1_ID)
             .setContentIntent(notificationOnClickPendingIntent)
             .setSmallIcon(R.drawable.ic_android_black_24dp)
             .setContentTitle(notificationTitle)

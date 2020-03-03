@@ -5,6 +5,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import java.util.*
@@ -44,10 +45,12 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         this.repeatVal = repeatVal
         this.context = context
         requestCode = ++globalRequestCode
+        insertInOrder(getList(),this)
 
         intermediateReceiverIntent = Intent(this.context,IntermediateReceiver::class.java)
-        intermediateReceiverIntent.putExtra("requestCode", requestCode)
-        intermediateReceiverIntent.putExtra("reminderText",this.title)
+        val reminderDataBundle = Bundle()
+        reminderDataBundle.putParcelable("ReminderData",getReminderData())
+        intermediateReceiverIntent.putExtra("ReminderDataBundle",reminderDataBundle)
 
         intermediateReceiverPendingIntent = PendingIntent.getBroadcast(
             this.context,
@@ -55,7 +58,6 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
             intermediateReceiverIntent,
             PendingIntent.FLAG_UPDATE_CURRENT)
 
-        insertInOrder(getList(),this)
         MainActivity.saveAll(this.context)
         setAlarm(this.remindCalendar)
         val section = ReminderSection.getReminderSection(this)
@@ -101,13 +103,14 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
 
     fun getReminderData(): ReminderData {
         val section: ReminderSection = ReminderSection.getReminderSection(this)
-        return ReminderData(title,remindCalendar,repeatVal,section.getTitle(),getList().indexOf(this))
+        return ReminderData(title,remindCalendar,repeatVal,requestCode,section.getTitle(),getList().indexOf(this))
     }
     //function that sets all the alarms for when reminder was deleted or app was closed
     private fun setNotifications(context: Context) {
-        intermediateReceiverIntent = Intent(this.context,IntermediateReceiver::class.java)
-        intermediateReceiverIntent.putExtra("requestCode", requestCode)
-        intermediateReceiverIntent.putExtra("reminderTitle",title)
+        intermediateReceiverIntent = Intent(context,IntermediateReceiver::class.java)
+        val reminderDataBundle = Bundle()
+        reminderDataBundle.putParcelable("ReminderData",getReminderData())
+        intermediateReceiverIntent.putExtra("ReminderDataBundle",reminderDataBundle)
 
         intermediateReceiverPendingIntent = PendingIntent.getBroadcast(context,
             requestCode,
@@ -166,7 +169,9 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
     }
     //data class that stores the essentials for recreating reminders when saving, loading, and editing
     @Parcelize data class ReminderData(val text: String,
-                                       val remindCalendar: Calendar, val repeatVal: Int,
+                                       val remindCalendar: Calendar,
+                                       val repeatVal: Int,
+                                       val requestCode: Int,
                                        val sectionTitle: String,
                                        val positionInSection: Int): Parcelable
 }
