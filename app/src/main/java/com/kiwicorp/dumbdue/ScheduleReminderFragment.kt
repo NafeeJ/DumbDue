@@ -1,35 +1,67 @@
 package com.kiwicorp.dumbdue
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
+import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.android.synthetic.main.activity_schedule_reminder.*
-import kotlinx.android.synthetic.main.dialog_choose_repeat.*
-import org.w3c.dom.Text
 import java.util.*
 
-class ScheduleReminderActivity : AbstractReminderButtonsActivity() {
 
+class ScheduleReminderFragment : AbstractReminderButtonFragment() {
     private val DATE_PICK_REQUEST: Int = 1
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        setContentView(R.layout.activity_schedule_reminder)
-        super.onCreate(savedInstanceState)
+    //widgets
+    lateinit var titleEditText: EditText
+    lateinit var cancelButton: ImageButton
+    lateinit var addButton: ImageButton
+    lateinit var repeatButton: ImageButton
 
-        val titleEditText: EditText = findViewById(R.id.titleEditText)
-        titleEditText.height = screenHeight / 5
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        mView = inflater.inflate(R.layout.activity_schedule_reminder,container,false)
+
+        titleEditText = mView.findViewById(R.id.titleEditText)
         titleEditText.requestFocus() //opens keyboard when window opens
+        val imm: InputMethodManager = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,InputMethodManager.HIDE_NOT_ALWAYS) //shows keyboard when title edit text is focused
 
-        cancelButton.setOnClickListener{ finish() }
+        //closes keyboard if the current focus is not the edit text
+        fun closeKeyboard() {
+            val view: View? = activity!!.currentFocus
+            if (view != null) {
+                imm.hideSoftInputFromWindow(view.windowToken, 0)
+            }
+        }
+
+        cancelButton = mView.findViewById(R.id.cancelButton)
+        addButton= mView.findViewById(R.id.addButton)
+        repeatButton= mView.findViewById(R.id.repeatButton)
+
+        cancelButton.setOnClickListener{
+            activity!!.supportFragmentManager.popBackStack()
+            closeKeyboard()
+        }
         addButton.setOnClickListener {
-            Reminder(titleEditText.text.toString(),dueDateCalendar,repeatVal,applicationContext)
-            finish()
+            Reminder(titleEditText.text.toString(),dueDateCalendar,repeatVal,context!!)
+            activity!!.supportFragmentManager.popBackStack()
+            closeKeyboard()
         }
         repeatButton.setOnClickListener {
+            closeKeyboard()
             //create and show dialog
-            val dialog = BottomSheetDialog(this)
+            val dialog = BottomSheetDialog(context!!)
             val dialogView = layoutInflater.inflate(R.layout.dialog_choose_repeat,null)
             dialog.setContentView(dialogView)
             dialog.setCanceledOnTouchOutside(true)
@@ -94,11 +126,16 @@ class ScheduleReminderActivity : AbstractReminderButtonsActivity() {
             dialog.show()
         }
 
+        dateTextView = mView.findViewById(R.id.dateTextView)
         dateTextView.setOnClickListener {
-            val datePickerIntent = Intent(applicationContext, DatePickerActivity::class.java)
+            val datePickerIntent = Intent(context!!, DatePickerActivity::class.java)
             datePickerIntent.putExtra("timeInMillis", dueDateCalendar.timeInMillis)
             startActivityForResult(datePickerIntent, DATE_PICK_REQUEST)
         }
+
+        super.onCreateView(inflater, container, savedInstanceState)
+
+        return mView
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -106,11 +143,13 @@ class ScheduleReminderActivity : AbstractReminderButtonsActivity() {
         // Check which request we're responding to
         if (requestCode == DATE_PICK_REQUEST) {
             // Make sure the request was successful
-            if (resultCode == RESULT_OK && data != null) {
+            if (resultCode == AppCompatActivity.RESULT_OK && data != null) {
                 dueDateCalendar.timeInMillis =
                     data.getLongExtra("newTimeInMillis", dueDateCalendar.timeInMillis)
                 updateTextViews()
             }
         }
     }
+
+
 }

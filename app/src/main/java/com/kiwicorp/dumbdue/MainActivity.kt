@@ -11,7 +11,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -40,7 +39,6 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
     private val updateRequestCode: Int = 1230498
 
     companion object {
-        private const val TAG: String = "MainActivity"
         //Shared Preferences Keys
         const val prefs: String = "Preferences"
         const val overdueListKey: String = "OverdueListKey"
@@ -182,17 +180,17 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
             this@MainActivity.runOnUiThread {
                 sectionAdapter.notifyDataSetChanged()
                 for (reminder in Reminder.todayList) {
+                    //if reminder becomes overdue, move to overdue section
                     if (reminder.getRemindCalendar().timeInMillis < Calendar.getInstance().timeInMillis) {
-                        //if reminder becomes overdue, move to overdue section
                         val index = Reminder.todayList.indexOf(reminder)
                         Reminder.todayList.remove(reminder)
                         reminder.deleteReminder()
                         sectionAdapter.notifyItemRemovedFromSection("Today",index)
                         Reminder(reminder.getText(),reminder.getRemindCalendar(),reminder.getRepeatVal(),applicationContext)
-                        //remove section if empty
-                        val section: ReminderSection = ReminderSection.getReminderSection(reminder)
-                        if (section.getList().isEmpty()) {
-                            section.isVisible = false
+                        //remove today section if empty
+                        val todaySection: ReminderSection = sectionAdapter.getSection("Today") as ReminderSection
+                        if (Reminder.todayList.isEmpty()) {
+                            todaySection.isVisible = false
                             sectionAdapter.notifyDataSetChanged()
                         }
                     }
@@ -200,9 +198,22 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
             }
         }
 
-        scheduleFAB.setOnClickListener {
-            startActivity(Intent(applicationContext, ScheduleReminderActivity::class.java))
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount == 0) {
+                scheduleFAB.show()
+            } else {
+                scheduleFAB.hide()
+            }
         }
+
+        scheduleFAB.setOnClickListener {
+            val fragment = ScheduleReminderFragment()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container,fragment)
+                .addToBackStack(null)
+                .commit()
+        }
+
         //create an item touch helper to allow for reminders to be able to be swiped
         val itemTouchHelperCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
@@ -458,5 +469,6 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
         }
         return false
     }
+
 
 }

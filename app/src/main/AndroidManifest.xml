@@ -29,10 +29,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ScheduleReminderActivity"
-            android:theme="@style/SchedulingTheme"
-            android:windowSoftInputMode="stateVisible" />
-        <activity
             android:name=".DatePickerActivity"
             android:theme="@style/SchedulingTheme" />
         <activity
