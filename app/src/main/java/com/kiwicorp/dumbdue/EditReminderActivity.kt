@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import kotlinx.android.synthetic.main.activity_schedule_reminder.*
+import kotlinx.android.synthetic.main.fragment_schedule_reminder.*
 import java.util.*
 
 class EditReminderActivity : AbstractReminderButtonsActivity() {

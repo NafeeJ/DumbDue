@@ -7,7 +7,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_schedule_reminder.*
+import kotlinx.android.synthetic.main.fragment_schedule_reminder.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.absoluteValue

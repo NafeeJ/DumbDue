@@ -1,24 +1,20 @@
 package com.kiwicorp.dumbdue
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.util.*
 
 
-class ScheduleReminderFragment : AbstractReminderButtonFragment() {
-    private val DATE_PICK_REQUEST: Int = 1
-
+class ScheduleReminderFragment : AbstractReminderButtonFragment(), DatePickerDialogFragment.OnDateChangedListener {
     //widgets
     lateinit var titleEditText: EditText
     lateinit var cancelButton: ImageButton
@@ -30,7 +26,7 @@ class ScheduleReminderFragment : AbstractReminderButtonFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mView = inflater.inflate(R.layout.activity_schedule_reminder,container,false)
+        mView = inflater.inflate(R.layout.fragment_schedule_reminder,container,false)
 
         titleEditText = mView.findViewById(R.id.titleEditText)
         titleEditText.requestFocus() //opens keyboard when window opens
@@ -128,9 +124,15 @@ class ScheduleReminderFragment : AbstractReminderButtonFragment() {
 
         dateTextView = mView.findViewById(R.id.dateTextView)
         dateTextView.setOnClickListener {
-            val datePickerIntent = Intent(context!!, DatePickerActivity::class.java)
-            datePickerIntent.putExtra("timeInMillis", dueDateCalendar.timeInMillis)
-            startActivityForResult(datePickerIntent, DATE_PICK_REQUEST)
+            closeKeyboard()
+            val datePickerDialogFragment: Fragment = DatePickerDialogFragment()
+            val args = Bundle()
+            args.putLong("timeInMillis",dueDateCalendar.timeInMillis)
+            datePickerDialogFragment.arguments = args
+            childFragmentManager.beginTransaction()
+                .replace(R.id.container,datePickerDialogFragment)
+                .addToBackStack(null)
+                .commit()
         }
 
         super.onCreateView(inflater, container, savedInstanceState)
@@ -138,17 +140,9 @@ class ScheduleReminderFragment : AbstractReminderButtonFragment() {
         return mView
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        // Check which request we're responding to
-        if (requestCode == DATE_PICK_REQUEST) {
-            // Make sure the request was successful
-            if (resultCode == AppCompatActivity.RESULT_OK && data != null) {
-                dueDateCalendar.timeInMillis =
-                    data.getLongExtra("newTimeInMillis", dueDateCalendar.timeInMillis)
-                updateTextViews()
-            }
-        }
+    override fun onDateChanged(timeInMillis: Long) {
+        dueDateCalendar.timeInMillis = timeInMillis
+        updateTextViews()
     }
 
 
