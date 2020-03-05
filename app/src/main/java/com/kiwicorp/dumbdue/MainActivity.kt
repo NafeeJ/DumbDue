@@ -330,7 +330,8 @@ class MainActivity : AppCompatActivity(),
     //creates all reminders in the list
     private fun loadList(list: LinkedList<Reminder>) {
         for (reminder in list) {
-            Reminder(reminder.text, reminder.remindCalendar, reminder.repeatVal, applicationContext)
+            val newReminder = Reminder(reminder.text, reminder.remindCalendar, reminder.repeatVal, applicationContext)
+            newReminder.requestCode = reminder.requestCode
         }
     }
     //starts edit reminder activity when user clicks on a reminder in recycler view

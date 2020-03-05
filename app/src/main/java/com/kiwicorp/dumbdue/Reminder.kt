@@ -29,7 +29,7 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
         var next7daysList: LinkedList<Reminder> = LinkedList()
         var futureList: LinkedList<Reminder> = LinkedList()
     }
-    private val requestCode: Int //reminder's unique requestCode for pending intent
+    var requestCode: Int //reminder's unique requestCode for pending intent
 
     @Transient private var alarmManager: AlarmManager = MainActivity.globalAlarmManager
     @Transient private var intermediateReceiverIntent: Intent
