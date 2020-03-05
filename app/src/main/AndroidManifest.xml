@@ -32,9 +32,6 @@
             android:name=".DatePickerActivity"
             android:theme="@style/SchedulingTheme" />
         <activity
-            android:name=".EditReminderActivity"
-            android:theme="@style/SchedulingTheme" />
-        <activity
             android:name=".LockScreenReminderActivity"
             android:theme="@style/SchedulingTheme" />
         <activity

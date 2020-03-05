@@ -10,18 +10,15 @@ class UpdateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         this.context = context
-        updateList(Reminder.tomorrowList,"Tomorrow")
-        updateList(Reminder.next7daysList,"Next 7 Days")
-        updateList(Reminder.futureList,"Future")
+        updateList(Reminder.tomorrowList)
+        updateList(Reminder.next7daysList)
+        updateList(Reminder.futureList)
     }
 
-    private fun updateList(list: LinkedList<Reminder>,title: String) {
+    private fun updateList(list: LinkedList<Reminder>) {
         for (reminder in list) {
-            val index = list.indexOf(reminder)
-            list.remove(reminder)
             reminder.deleteReminder()
-            MainActivity.sectionAdapter.notifyItemRemovedFromSection(title,index)
-            Reminder(reminder.getText(),reminder.getRemindCalendar(),reminder.getRepeatVal(),context)
+            Reminder(reminder.text,reminder.remindCalendar,reminder.repeatVal,context)
         }
     }
 }

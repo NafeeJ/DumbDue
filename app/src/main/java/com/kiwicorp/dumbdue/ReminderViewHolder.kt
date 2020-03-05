@@ -23,10 +23,10 @@ class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(i
 
     fun bind(reminder: Reminder) {
         //sets the reminder text
-        reminderTextView.text = reminder.getText()
+        reminderTextView.text = reminder.text
 
-        val remindCalendar: Calendar = reminder.getRemindCalendar()
-        val repeatVal: Int = reminder.getRepeatVal()
+        val remindCalendar: Calendar = reminder.remindCalendar
+        val repeatVal: Int = reminder.repeatVal
 
         when {
             remindCalendar < Calendar.getInstance() -> {
@@ -51,26 +51,26 @@ class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(i
             }
         }
 
-        timeFromNowTextView.text = findTimeFromNowString(reminder.getRemindCalendar())
+        timeFromNowTextView.text = findTimeFromNowString(reminder.remindCalendar)
 
         //if the reminder is repeating display its repeating interval
         if (repeatVal != Reminder.REPEAT_NONE) {
             when (repeatVal) {
                 Reminder.REPEAT_DAILY -> dateOrRepeatTextView.text = "Daily "
-                    .plus(timeFormatter.format(reminder.getRemindCalendar().time))
+                    .plus(timeFormatter.format(reminder.remindCalendar.time))
                 Reminder.REPEAT_WEEKDAYS -> dateOrRepeatTextView.text = "Weekdays "
-                    .plus(timeFormatter.format(reminder.getRemindCalendar().time))
+                    .plus(timeFormatter.format(reminder.remindCalendar.time))
                 Reminder.REPEAT_WEEKLY -> dateOrRepeatTextView.text = dayOfWeekFormatter
-                    .format(reminder.getRemindCalendar().time).plus("s ")
-                    .plus(timeFormatter.format(reminder.getRemindCalendar().time))
-                Reminder.REPEAT_MONTHLY -> dateOrRepeatTextView.text = reminder.getRemindCalendar()
+                    .format(reminder.remindCalendar.time).plus("s ")
+                    .plus(timeFormatter.format(reminder.remindCalendar.time))
+                Reminder.REPEAT_MONTHLY -> dateOrRepeatTextView.text = reminder.remindCalendar
                     .get(Calendar.DAY_OF_MONTH).toString()
-                    .plus(MainActivity.daySuffixFinder(reminder.getRemindCalendar()))
+                    .plus(MainActivity.daySuffixFinder(reminder.remindCalendar))
                     .plus(" each month at ")
-                    .plus(timeFormatter.format(reminder.getRemindCalendar().time))
+                    .plus(timeFormatter.format(reminder.remindCalendar.time))
             }
         } else {//if the reminder is not repeating display the date
-            dateOrRepeatTextView.text = dateFormatter.format(reminder.getRemindCalendar().time)
+            dateOrRepeatTextView.text = dateFormatter.format(reminder.remindCalendar.time)
         }
     }
     //returns a string with absolute value of time from now and its correct unit

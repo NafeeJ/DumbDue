@@ -1,6 +1,5 @@
 package com.kiwicorp.dumbdue
 
-import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -30,7 +29,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
-class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
+class MainActivity : AppCompatActivity(),
+    ReminderSection.ClickListener,
+    EditReminderFragment.OnReminderEditListener {
+
     private lateinit var deleteIcon: Drawable
     private lateinit var checkIcon: Drawable
 
@@ -175,21 +177,18 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
         val updatePendingIntent = PendingIntent.getBroadcast(applicationContext,updateRequestCode,updateIntent,PendingIntent.FLAG_UPDATE_CURRENT)
         globalAlarmManager.setInexactRepeating(AlarmManager.RTC,todayCalendar.timeInMillis,AlarmManager.INTERVAL_DAY,updatePendingIntent)
 
-        //updates recycler view every 5 seconds
-        fixedRateTimer("timer",false,0,5000) {
+        //updates recycler view every 60 seconds
+        fixedRateTimer("timer",false,0,60000) {
             this@MainActivity.runOnUiThread {
                 sectionAdapter.notifyDataSetChanged()
                 for (reminder in Reminder.todayList) {
                     //if reminder becomes overdue, move to overdue section
-                    if (reminder.getRemindCalendar().timeInMillis < Calendar.getInstance().timeInMillis) {
-                        val index = Reminder.todayList.indexOf(reminder)
-                        Reminder.todayList.remove(reminder)
+                    if (reminder.remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis) {
                         reminder.deleteReminder()
-                        sectionAdapter.notifyItemRemovedFromSection("Today",index)
-                        Reminder(reminder.getText(),reminder.getRemindCalendar(),reminder.getRepeatVal(),applicationContext)
+                        Reminder(reminder.text,reminder.remindCalendar,reminder.repeatVal,applicationContext)
                         //remove today section if empty
-                        val todaySection: ReminderSection = sectionAdapter.getSection("Today") as ReminderSection
                         if (Reminder.todayList.isEmpty()) {
+                            val todaySection: ReminderSection = sectionAdapter.getSection("Today") as ReminderSection
                             todaySection.isVisible = false
                             sectionAdapter.notifyDataSetChanged()
                         }
@@ -331,12 +330,7 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
     //creates all reminders in the list
     private fun loadList(list: LinkedList<Reminder>) {
         for (reminder in list) {
-            Reminder(
-                reminder.getText(),
-                reminder.getRemindCalendar(),
-                reminder.getRepeatVal(),
-                applicationContext
-            )
+            Reminder(reminder.text, reminder.remindCalendar, reminder.repeatVal, applicationContext)
         }
     }
     //starts edit reminder activity when user clicks on a reminder in recycler view
@@ -344,54 +338,15 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
         //get reminder that was clicked on
         val section: ReminderSection = sectionAdapter.getSection(sectionTitle) as ReminderSection
         val reminder: Reminder = section.getList()[sectionAdapter.getPositionInSection(itemPosition)]
-        //create intent to start edit reminder activity
-        val editIntent = Intent(this,EditReminderActivity::class.java)
-        //store reminder data to be later retrieved by the edit reminder activity
-        editIntent.putExtra("ReminderData", reminder.getReminderData())
-        //starts edit reminder activty
-        startActivityForResult(editIntent,EDIT_REMINDER_REQUEST)
-    }
 
-    //executes based off of result of edit reminder activity
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        //check which request we're responding to
-        if (requestCode == EDIT_REMINDER_REQUEST) {
-            //if result is ok, edit reminder
-            if (resultCode == Activity.RESULT_OK) {
-                //gets reminder data from edit reminder intent
-                val reminderToCreateData: Reminder.ReminderData? = data?.getParcelableExtra("ReminderData")
-                //remove reminder and create a new reminder with desired specifications
-                if (reminderToCreateData != null) {
-                    val section: ReminderSection = sectionAdapter.getSection(reminderToCreateData.sectionTitle) as ReminderSection
-                    val reminder: Reminder = section.getList()[reminderToCreateData.positionInSection]
-                    //remove reminder
-                    sectionAdapter.notifyItemRemovedFromSection(section,reminder.getReminderData().positionInSection)
-                    reminder.deleteReminder()
-                    //create new reminder
-                    val newReminder = Reminder(reminderToCreateData.text,
-                        reminderToCreateData.remindCalendar,
-                        reminderToCreateData.repeatVal,
-                        applicationContext)
-
-                    sectionAdapter.notifyItemInsertedInSection(
-                        newReminder.getReminderData().sectionTitle,
-                        newReminder.getReminderData().positionInSection)
-                }
-            }
-            //if result is to delete, delete reminder
-            if (resultCode == RESULT_DELETE) {
-                val reminderToDeleteData: Reminder.ReminderData? = data?.getParcelableExtra("ReminderData")
-                //deletes reminder
-                if (reminderToDeleteData != null) {
-                    val section: ReminderSection = sectionAdapter.getSection(reminderToDeleteData.sectionTitle) as ReminderSection
-                    val reminder: Reminder = section.getList()[reminderToDeleteData.positionInSection]
-
-                    sectionAdapter.notifyItemRemovedFromSection(section,reminderToDeleteData.positionInSection)
-                    reminder.deleteReminder()
-                }
-            }
-        }
+        val editReminderFragment = EditReminderFragment()
+        val args = Bundle()
+        args.putParcelable("ReminderData",reminder.getReminderData())
+        editReminderFragment.arguments = args
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container,editReminderFragment)
+            .addToBackStack(null)
+            .commit()
     }
     //function that executes when the user swipes to delete a reminder
     fun swipeDeleteItem(viewHolder: RecyclerView.ViewHolder) {
@@ -406,7 +361,7 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
         removedReminder.deleteReminder()
 
         //creates a snackbar indicating a reminder has been deleted, and shows the option to undo
-        Snackbar.make(findViewById(R.id.main_coordinator_layout), "Bye-Bye " + removedReminder.getText(), Snackbar.LENGTH_LONG).setAction("Undo") {
+        Snackbar.make(findViewById(R.id.main_coordinator_layout), "Bye-Bye " + removedReminder.text, Snackbar.LENGTH_LONG).setAction("Undo") {
             //readd reminder if undo is clicked
             removedReminder.reAddReminder(positionInAdapter)
         }.show()
@@ -418,14 +373,14 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
         val reminderPositionInSection : Int = sectionAdapter.getPositionInSection(reminderPositionInAdapter)
         val reminderList : LinkedList<Reminder> = section.getList()
         val removedReminder: Reminder = reminderList[reminderPositionInSection]
-        val previousTime = removedReminder.getRemindCalendar().time
+        val previousTime = removedReminder.remindCalendar.time
 
         removedReminder.deleteReminder()
         //if reminder is repeating, readd item with remind calendar incremented with the correct amount
-        if (removedReminder.getRepeatVal() != Reminder.REPEAT_NONE) {
-            val calendar = removedReminder.getRemindCalendar()
+        if (removedReminder.repeatVal != Reminder.REPEAT_NONE) {
+            val calendar = removedReminder.remindCalendar
 
-            when(removedReminder.getRepeatVal()) {
+            when(removedReminder.repeatVal) {
                 Reminder.REPEAT_DAILY -> { calendar.add(Calendar.DAY_OF_YEAR, 1) }
                 Reminder.REPEAT_WEEKDAYS -> {
                     when (calendar.get(Calendar.DAY_OF_WEEK)) {
@@ -440,8 +395,8 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
             removedReminder.reAddReminder(reminderPositionInAdapter)
         }
         //creates snackbar indicating that a reminder has been completed, and shows the option to undo
-        Snackbar.make(findViewById(R.id.main_coordinator_layout),"Completed " + removedReminder.getText() + " :)", Snackbar.LENGTH_LONG).setAction("Undo") {
-            if (removedReminder.getRepeatVal() != Reminder.REPEAT_NONE) {
+        Snackbar.make(findViewById(R.id.main_coordinator_layout),"Completed " + removedReminder.text + " :)", Snackbar.LENGTH_LONG).setAction("Undo") {
+            if (removedReminder.repeatVal != Reminder.REPEAT_NONE) {
                 val updatedSection : ReminderSection = ReminderSection.getReminderSection(removedReminder)
                 val updatedList : LinkedList<Reminder> = updatedSection.getList()
                 val updatedCompletedPosition = updatedList.indexOf(removedReminder)
@@ -453,8 +408,8 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
                     updatedSection.isVisible = false
                     sectionAdapter.notifyDataSetChanged()
                 }
-                if (removedReminder.getRepeatVal() != Reminder.REPEAT_NONE) {
-                    removedReminder.getRemindCalendar().time = previousTime
+                if (removedReminder.repeatVal != Reminder.REPEAT_NONE) {
+                    removedReminder.remindCalendar.time = previousTime
                 }
             }
             removedReminder.reAddReminder(reminderPositionInAdapter)
@@ -468,6 +423,24 @@ class MainActivity : AppCompatActivity(), ReminderSection.ClickListener {
             }
         }
         return false
+    }
+
+    override fun onReminderEdited(newText: String, newRemindCalendar: Calendar,
+                                  newRepeatVal: Int, oldSectionTitle: String, oldPositionInSection: Int) {
+
+        val oldSection: ReminderSection = sectionAdapter.getSection(oldSectionTitle) as ReminderSection
+        val oldReminder = oldSection.getList()[oldPositionInSection]
+        //remove reminder
+        oldReminder.deleteReminder()
+        //create new reminder with new specifications
+        Reminder(newText,newRemindCalendar,newRepeatVal,applicationContext)
+    }
+
+    override fun onReminderDeleted(sectionTitle: String, positionInSection: Int) {
+        val section: ReminderSection = sectionAdapter.getSection(sectionTitle) as ReminderSection
+        val reminder: Reminder = section.getList()[positionInSection]
+        //delete reminder
+        reminder.deleteReminder()
     }
 
 

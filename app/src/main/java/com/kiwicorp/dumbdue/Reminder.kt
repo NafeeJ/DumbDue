@@ -11,7 +11,7 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 
-class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: Context) {
+class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: Int, @Transient val context: Context) {
 
     companion object {
         //ints used to determine the user's desired repeat frequency
@@ -29,21 +29,13 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         var next7daysList: LinkedList<Reminder> = LinkedList()
         var futureList: LinkedList<Reminder> = LinkedList()
     }
-    private var title: String = ""
-    private var remindCalendar: Calendar //calendar with date and time of intended reminder
-    private var repeatVal: Int = 0 //int to indicate user's desired repeat frequency
-    @Transient private var context: Context //application context
-    private var requestCode: Int = 0 //reminder's unique requestCode for pending intent
+    private val requestCode: Int //reminder's unique requestCode for pending intent
 
     @Transient private var alarmManager: AlarmManager = MainActivity.globalAlarmManager
     @Transient private var intermediateReceiverIntent: Intent
     @Transient private var intermediateReceiverPendingIntent: PendingIntent
 
     init {
-        this.title = text
-        this.remindCalendar = remindCalendar
-        this.repeatVal = repeatVal
-        this.context = context
         requestCode = ++globalRequestCode
         insertInOrder(getList(),this)
 
@@ -74,7 +66,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         //finds and adds reminder into its correct position
         val iterator = list.listIterator()
         for (element in iterator) {
-            if (element.getRemindCalendar().timeInMillis > reminder.getRemindCalendar().timeInMillis) {
+            if (element.remindCalendar.timeInMillis > reminder.remindCalendar.timeInMillis) {
                 list.add(iterator.previousIndex(), reminder)
                 MainActivity.sectionAdapter.notifyDataSetChanged()
                 return
@@ -84,26 +76,20 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         list.add(reminder)
         MainActivity.sectionAdapter.notifyDataSetChanged()
     }
-    //returns the list this reminder belongs to
+    //returns the list this reminder belongs to based off of its time
     private fun getList(): LinkedList<Reminder> {
-        when {
-            remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis -> return overdueList
-            remindCalendar.timeInMillis < MainActivity.todayCalendar.timeInMillis -> return todayList
-            remindCalendar.timeInMillis < MainActivity.tomorrowCalendar.timeInMillis -> return tomorrowList
-            remindCalendar.timeInMillis < MainActivity.next7daysCalendar.timeInMillis -> return next7daysList
+        return when {
+            remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis -> overdueList
+            remindCalendar.timeInMillis < MainActivity.todayCalendar.timeInMillis -> todayList
+            remindCalendar.timeInMillis < MainActivity.tomorrowCalendar.timeInMillis -> tomorrowList
+            remindCalendar.timeInMillis < MainActivity.next7daysCalendar.timeInMillis -> next7daysList
+            else -> futureList
         }
-        return futureList
     }
-
-    fun getText(): String { return title }
-
-    fun getRemindCalendar(): Calendar{ return remindCalendar }
-
-    fun getRepeatVal(): Int{ return repeatVal }
 
     fun getReminderData(): ReminderData {
         val section: ReminderSection = ReminderSection.getReminderSection(this)
-        return ReminderData(title,remindCalendar,repeatVal,requestCode,section.getTitle(),getList().indexOf(this))
+        return ReminderData(text,remindCalendar,repeatVal,requestCode,section.getTitle(),getList().indexOf(this))
     }
     //function that sets all the alarms for when reminder was deleted or app was closed
     private fun setNotifications(context: Context) {
@@ -139,20 +125,17 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         val list = getList()
         val positionInSection = list.indexOf(this)
         //remove this reminder from its list and save
+        MainActivity.sectionAdapter.notifyItemRemovedFromSection(section,positionInSection)
         list.remove(this)
-        if (!list.isEmpty()) {
-            MainActivity.sectionAdapter.notifyItemRemovedFromSection(section,positionInSection)
-        }
-        MainActivity.saveAll(context)
-
-        //cancels all notification currently being shown
-        val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancelAll()
         //if list is empty sets this reminder's section to be invisible
-        if (section.getList().isEmpty()) {
+        if (list.isEmpty()) {
             section.isVisible = false
             MainActivity.sectionAdapter.notifyDataSetChanged()
         }
+        MainActivity.saveAll(context)
+        //cancels all notification currently being shown
+        val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
     }
     //readds this reminder into its position after it has been deleted/completed and the user undos
     fun reAddReminder(position: Int) {
@@ -168,10 +151,7 @@ class Reminder(text: String, remindCalendar: Calendar, repeatVal: Int, context: 
         MainActivity.sectionAdapter.notifySectionChangedToVisible(section)
     }
     //data class that stores the essentials for recreating reminders when saving, loading, and editing
-    @Parcelize data class ReminderData(val text: String,
-                                       val remindCalendar: Calendar,
-                                       val repeatVal: Int,
-                                       val requestCode: Int,
-                                       val sectionTitle: String,
-                                       val positionInSection: Int): Parcelable
+    @Parcelize data class ReminderData(val text: String, val remindCalendar: Calendar,
+                                       val repeatVal: Int, val requestCode: Int,
+                                       val sectionTitle: String, val positionInSection: Int): Parcelable
 }
