@@ -38,7 +38,7 @@ class ReminderSection constructor(private val title: String,
             //finds the section of the reminder
             val iterator = sectionList.listIterator()
             for (element in iterator) {
-                val sectionAdapterPosition = MainActivity.sectionAdapter.getSectionPosition(element)
+                val sectionAdapterPosition = ReminderActivity.sectionAdapter.getSectionPosition(element)
                 if (positionInAdapter < sectionAdapterPosition) {
                     return sectionList[iterator.previousIndex() - 1]
                 }

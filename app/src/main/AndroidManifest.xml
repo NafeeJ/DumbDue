@@ -16,21 +16,18 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".ReminderActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.kiwicorp.dumbdue.MainActivity" />
+                android:value="com.kiwicorp.dumbdue.ReminderActivity" />
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".ReminderActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".DatePickerActivity"
-            android:theme="@style/SchedulingTheme" />
         <activity
             android:name=".LockScreenReminderActivity"
             android:theme="@style/SchedulingTheme" />

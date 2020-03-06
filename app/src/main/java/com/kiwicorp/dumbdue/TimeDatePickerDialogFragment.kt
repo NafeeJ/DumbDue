@@ -14,7 +14,7 @@ import androidx.fragment.app.DialogFragment
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DatePickerDialogFragment : DialogFragment() {
+class TimeDatePickerDialogFragment : DialogFragment() {
     private lateinit var onDateChangedListener: OnDateChangedListener
 
     lateinit var mView: View

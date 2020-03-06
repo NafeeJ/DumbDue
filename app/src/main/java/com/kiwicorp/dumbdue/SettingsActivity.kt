@@ -1,9 +1,6 @@
 package com.kiwicorp.dumbdue
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -82,7 +79,7 @@ class SettingsActivity : AppCompatActivity(),
 
     class ThemesFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
-            setPreferencesFromResource(R.xml.sync_preferences, rootKey)
+            setPreferencesFromResource(R.xml.themes_preference, rootKey)
         }
     }
 }

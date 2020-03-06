@@ -25,11 +25,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_reminder.*
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
-class MainActivity : AppCompatActivity(),
+class ReminderActivity : AppCompatActivity(),
     ReminderSection.ClickListener,
     EditReminderFragment.OnReminderEditListener {
 
@@ -49,10 +49,6 @@ class MainActivity : AppCompatActivity(),
         const val next7DaysListKey: String = "Next7DaysListKey"
         const val futureListKey: String = "FutureListKey"
         const val globalRequestCodeKey: String = "GlobalRequestCodeKey"
-
-        //custom request codes to handle editing reminders
-        const val EDIT_REMINDER_REQUEST: Int = 2
-        const val RESULT_DELETE = 6
 
         val todayCalendar: Calendar = Calendar.getInstance()//calendar with date at 23:59:59 today
         val tomorrowCalendar: Calendar = Calendar.getInstance()//calendar with date at 23:59:59 tomorrow
@@ -115,7 +111,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_reminder)
         //set today calendar to correct date and time
         todayCalendar.set(Calendar.MILLISECOND, 59)
         todayCalendar.set(Calendar.SECOND,59)
@@ -161,7 +157,7 @@ class MainActivity : AppCompatActivity(),
         }
 
         recycler_view.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
+            layoutManager = LinearLayoutManager(this@ReminderActivity)
             adapter = sectionAdapter
         }
         //makes empty sections invisible
@@ -179,7 +175,7 @@ class MainActivity : AppCompatActivity(),
 
         //updates recycler view every 60 seconds
         fixedRateTimer("timer",false,0,60000) {
-            this@MainActivity.runOnUiThread {
+            this@ReminderActivity.runOnUiThread {
                 sectionAdapter.notifyDataSetChanged()
                 for (reminder in Reminder.todayList) {
                     //if reminder becomes overdue, move to overdue section
@@ -428,7 +424,6 @@ class MainActivity : AppCompatActivity(),
 
     override fun onReminderEdited(newText: String, newRemindCalendar: Calendar,
                                   newRepeatVal: Int, oldSectionTitle: String, oldPositionInSection: Int) {
-
         val oldSection: ReminderSection = sectionAdapter.getSection(oldSectionTitle) as ReminderSection
         val oldReminder = oldSection.getList()[oldPositionInSection]
         //remove reminder
@@ -443,6 +438,4 @@ class MainActivity : AppCompatActivity(),
         //delete reminder
         reminder.deleteReminder()
     }
-
-
 }

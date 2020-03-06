@@ -6,8 +6,6 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import java.text.SimpleDateFormat
-import java.util.*
 
 class NotificationReceiver : BroadcastReceiver() {
 
@@ -41,6 +39,6 @@ class NotificationReceiver : BroadcastReceiver() {
             .setShowWhen(true)
             .setAutoCancel(true)
 
-        notificationManager.notify(++MainActivity.notificationID,builder.build())
+        notificationManager.notify(++ReminderActivity.notificationID,builder.build())
     }
 }

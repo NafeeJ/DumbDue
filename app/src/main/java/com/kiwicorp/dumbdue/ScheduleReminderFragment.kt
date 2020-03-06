@@ -10,11 +10,14 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.util.*
 
 
-class ScheduleReminderFragment : AbstractReminderButtonFragment(), DatePickerDialogFragment.OnDateChangedListener {
+class ScheduleReminderFragment : AbstractReminderButtonFragment(),
+    TimeDatePickerDialogFragment.OnDateChangedListener,
+    TimeDatePickerSpinnerDialogFragment.OnDateChangedListener {
     //widgets
     lateinit var titleEditText: EditText
     lateinit var cancelButton: ImageButton
@@ -78,7 +81,7 @@ class ScheduleReminderFragment : AbstractReminderButtonFragment(), DatePickerDia
                 .plus(timeFormatter.format(dueDateCalendar.time))
             repeatMonthlyTextView.text = dueDateCalendar
                 .get(Calendar.DAY_OF_MONTH).toString()
-                .plus(MainActivity.daySuffixFinder(dueDateCalendar))
+                .plus(ReminderActivity.daySuffixFinder(dueDateCalendar))
                 .plus(" each month at ")
                 .plus(timeFormatter.format(dueDateCalendar.time))
             //set click listeners
@@ -113,7 +116,7 @@ class ScheduleReminderFragment : AbstractReminderButtonFragment(), DatePickerDia
             repeatMonthlyTextView.setOnClickListener {
                 repeatVal = Reminder.REPEAT_MONTHLY
                 repeatTextView.text = dueDateCalendar.get(Calendar.DAY_OF_MONTH).toString()
-                    .plus(MainActivity.daySuffixFinder(dueDateCalendar))
+                    .plus(ReminderActivity.daySuffixFinder(dueDateCalendar))
                     .plus(" each month at ")
                     .plus(timeFormatter.format(dueDateCalendar.time))
                 repeatTextView.visibility = View.VISIBLE
@@ -125,14 +128,24 @@ class ScheduleReminderFragment : AbstractReminderButtonFragment(), DatePickerDia
         dateTextView = mView.findViewById(R.id.dateTextView)
         dateTextView.setOnClickListener {
             closeKeyboard()
-            val datePickerDialogFragment: Fragment = DatePickerDialogFragment()
-            val args = Bundle()
-            args.putLong("timeInMillis",dueDateCalendar.timeInMillis)
-            datePickerDialogFragment.arguments = args
-            childFragmentManager.beginTransaction()
-                .replace(R.id.container,datePickerDialogFragment)
-                .addToBackStack(null)
-                .commit()
+            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity!!.applicationContext)
+            val timeDatePickerString = sharedPreferences.getString("time_date_picker","")
+            if (timeDatePickerString == "stock") {
+                val datePickerDialogFragment: Fragment = TimeDatePickerDialogFragment()
+                val args = Bundle()
+                args.putLong("timeInMillis",dueDateCalendar.timeInMillis)
+                datePickerDialogFragment.arguments = args
+                childFragmentManager.beginTransaction()
+                    .replace(R.id.container,datePickerDialogFragment)
+                    .addToBackStack(null)
+                    .commit()
+            } else if (timeDatePickerString == "spinner") {
+                val datePickerSpinnerDialogFragment = TimeDatePickerSpinnerDialogFragment()
+                val args = Bundle()
+                args.putLong("timeInMillis",dueDateCalendar.timeInMillis)
+                datePickerSpinnerDialogFragment.arguments = args
+                datePickerSpinnerDialogFragment.show(childFragmentManager,null)
+            }
         }
 
         super.onCreateView(inflater, container, savedInstanceState)
@@ -144,6 +157,4 @@ class ScheduleReminderFragment : AbstractReminderButtonFragment(), DatePickerDia
         dueDateCalendar.timeInMillis = timeInMillis
         updateTextViews()
     }
-
-
 }

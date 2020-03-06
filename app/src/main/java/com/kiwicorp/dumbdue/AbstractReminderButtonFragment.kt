@@ -103,7 +103,7 @@ abstract class AbstractReminderButtonFragment : Fragment() {
         return mView
     }
     protected fun updateTextViews() { //updates text view
-        val fromNowMins = MainActivity.findTimeFromNowMins(dueDateCalendar)
+        val fromNowMins = ReminderActivity.findTimeFromNowMins(dueDateCalendar)
         val time = dueDateCalendar.time
 
         repeatTextView.text = when(repeatVal) {

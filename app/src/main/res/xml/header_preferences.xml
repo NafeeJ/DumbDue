@@ -19,6 +19,13 @@
             app:icon="@drawable/paint_palette_black"
             app:key="themes_header"
             app:title="@string/themes_header" />
+        <ListPreference
+            app:key="time_date_picker"
+            app:title="Time/Date Picker"
+            app:useSimpleSummaryProvider="true"
+            app:entryValues="@array/time_date_picker_values"
+            app:entries="@array/time_date_picker_entries"
+            app:defaultValue="spinner"/>
     </PreferenceCategory>
 
 
