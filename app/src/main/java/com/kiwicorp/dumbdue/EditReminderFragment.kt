@@ -85,6 +85,7 @@ class EditReminderFragment : AbstractReminderButtonFragment(),
             val repeatWeekdaysTextView: TextView = dialogView.findViewById(R.id.repeatWeekdays)
             val repeatWeeklyTextView: TextView = dialogView.findViewById(R.id.repeatWeekly)
             val repeatMonthlyTextView: TextView = dialogView.findViewById(R.id.repeatMonthly)
+            val repeatCustomTextView: TextView = dialogView.findViewById(R.id.repeatCustom)
 
             //set text views text
             repeatOffTextView.text = "Repeat Off"
@@ -98,6 +99,7 @@ class EditReminderFragment : AbstractReminderButtonFragment(),
                 .plus(ReminderActivity.daySuffixFinder(dueDateCalendar))
                 .plus(" each month at ")
                 .plus(timeFormatter.format(dueDateCalendar.time))
+            repeatCustomTextView.text = "Repeat Custom"
             //set click listeners
             repeatOffTextView.setOnClickListener {
                 repeatVal = Reminder.REPEAT_NONE
@@ -135,6 +137,9 @@ class EditReminderFragment : AbstractReminderButtonFragment(),
                     .plus(timeFormatter.format(dueDateCalendar.time))
                 repeatTextView.visibility = View.VISIBLE
                 dialog.dismiss()
+            }
+            repeatCustomTextView.setOnClickListener {
+
             }
             dialog.show()
         }
