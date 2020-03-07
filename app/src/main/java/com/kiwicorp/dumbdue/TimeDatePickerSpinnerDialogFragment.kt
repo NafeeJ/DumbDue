@@ -85,6 +85,7 @@ class TimeDatePickerSpinnerDialogFragment : BottomSheetDialogFragment() {
         }
         //configure hour picker
         hourPicker.maxValue = 12
+        hourPicker.value = calendar.get(Calendar.HOUR)
         hourPicker.setOnValueChangedListener { _, _, newVal ->
             calendar.set(Calendar.HOUR,newVal)
             onDateChangedListener.onDateChanged(calendar.timeInMillis)
@@ -94,6 +95,7 @@ class TimeDatePickerSpinnerDialogFragment : BottomSheetDialogFragment() {
         for (i in 0..9) { minuteList[i] = ("0").plus(minuteList[i]) }//add 0s before all digits less then 10 in minute list
         minutePicker.maxValue = 59
         minutePicker.minValue = 0
+        minutePicker.value = calendar.get(Calendar.MINUTE)
         minutePicker.displayedValues = minuteList
         minutePicker.setOnValueChangedListener { _, _, newVal ->
             calendar.set(Calendar.MINUTE,newVal)
@@ -103,6 +105,10 @@ class TimeDatePickerSpinnerDialogFragment : BottomSheetDialogFragment() {
         val ampmList: Array<String> = arrayOf("AM","PM")
         ampmPicker.maxValue = 2
         ampmPicker.displayedValues = ampmList
+        ampmPicker.value = when (calendar.get(Calendar.AM_PM)) {
+            Calendar.AM -> 1
+            else -> 2
+        }
         ampmPicker.setOnValueChangedListener { _, _, newVal ->
             calendar.set(Calendar.AM_PM, if (newVal == 1) Calendar.AM else Calendar.PM )
             onDateChangedListener.onDateChanged(calendar.timeInMillis)

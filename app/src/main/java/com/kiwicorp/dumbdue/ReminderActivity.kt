@@ -38,6 +38,8 @@ class ReminderActivity : AppCompatActivity(),
 
     private lateinit var swipeBackground: ColorDrawable
 
+    private var reminderClicked: Boolean = false
+
     private val updateRequestCode: Int = 1230498
 
     companion object {
@@ -330,7 +332,7 @@ class ReminderActivity : AppCompatActivity(),
             newReminder.requestCode = reminder.requestCode
         }
     }
-    //starts edit reminder activity when user clicks on a reminder in recycler view
+    //starts edit reminder fragment when user clicks on a reminder in recycler view
     override fun onItemRootViewClicked(@NonNull sectionTitle: String, itemPosition: Int) {
         //get reminder that was clicked on
         val section: ReminderSection = sectionAdapter.getSection(sectionTitle) as ReminderSection
@@ -345,6 +347,7 @@ class ReminderActivity : AppCompatActivity(),
             .addToBackStack(null)
             .commit()
     }
+
     //function that executes when the user swipes to delete a reminder
     fun swipeDeleteItem(viewHolder: RecyclerView.ViewHolder) {
 

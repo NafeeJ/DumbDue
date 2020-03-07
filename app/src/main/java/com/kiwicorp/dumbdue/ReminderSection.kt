@@ -9,7 +9,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapt
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ReminderSection constructor(private val title: String,
+class ReminderSection(private val title: String,
                                   private val list:LinkedList<Reminder>,
                                   private val clickListener: ClickListener):
     Section(SectionParameters.builder()

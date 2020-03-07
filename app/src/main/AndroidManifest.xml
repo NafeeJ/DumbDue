@@ -21,7 +21,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kiwicorp.dumbdue.ReminderActivity" />
         </activity>
-        <activity android:name=".ReminderActivity">
+        <activity android:name=".ReminderActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
