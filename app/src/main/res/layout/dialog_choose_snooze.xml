@@ -4,52 +4,53 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/repeatOffText"
+        android:id="@+id/noneTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
-        android:textSize="18sp" />
-
+        android:textSize="18sp"
+        android:text="@string/auto_snooze_none"/>
     <TextView
-        android:id="@+id/repeatDailyText"
+        android:id="@+id/everyMinuteTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
-        android:textSize="18sp"/>
-
+        android:textSize="18sp"
+        android:text="@string/auto_snooze_minute"/>
     <TextView
-        android:id="@+id/repeatWeekdays"
+        android:id="@+id/every5MinutesTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
-        android:textSize="18sp"/>
-
+        android:textSize="18sp"
+        android:text="@string/auto_snooze_5_minute"/>
     <TextView
-        android:id="@+id/repeatWeekly"
+        android:id="@+id/every10MinutesTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
-        android:textSize="18sp"/>
-
+        android:textSize="18sp"
+        android:text="@string/auto_snooze_10_minutes"/>
     <TextView
-        android:id="@+id/repeatMonthly"
+        android:id="@+id/every15MinutesTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
-        android:textSize="18sp"/>
-
+        android:textSize="18sp"
+        android:text="@string/auto_snooze_15_minutes"/>
     <TextView
-        android:id="@+id/repeatYearly"
+        android:id="@+id/every30MinutesTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
-        android:textSize="18sp"/>
-
+        android:textSize="18sp"
+        android:text="@string/auto_snooze_30_minutes"/>
     <TextView
-        android:id="@+id/repeatCustom"
+        android:id="@+id/everyHourTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
-        android:textSize="18sp"/>
+        android:textSize="18sp"
+        android:text="@string/auto_snooze_hour"/>
 
 </LinearLayout>

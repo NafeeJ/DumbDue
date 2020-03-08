@@ -183,7 +183,7 @@ class ReminderActivity : AppCompatActivity(),
                     //if reminder becomes overdue, move to overdue section
                     if (reminder.remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis) {
                         reminder.deleteReminder()
-                        Reminder(reminder.text,reminder.remindCalendar,reminder.repeatVal,applicationContext)
+                        Reminder(reminder.text,reminder.remindCalendar,reminder.repeatVal,reminder.autoSnoozeVal,applicationContext)
                         //remove today section if empty
                         if (Reminder.todayList.isEmpty()) {
                             val todaySection: ReminderSection = sectionAdapter.getSection("Today") as ReminderSection
@@ -328,7 +328,7 @@ class ReminderActivity : AppCompatActivity(),
     //creates all reminders in the list
     private fun loadList(list: LinkedList<Reminder>) {
         for (reminder in list) {
-            val newReminder = Reminder(reminder.text, reminder.remindCalendar, reminder.repeatVal, applicationContext)
+            val newReminder = Reminder(reminder.text, reminder.remindCalendar, reminder.repeatVal, reminder.autoSnoozeVal,applicationContext)
             newReminder.requestCode = reminder.requestCode
         }
     }
@@ -379,7 +379,7 @@ class ReminderActivity : AppCompatActivity(),
         //if reminder is repeating, readd item with remind calendar incremented with the correct amount
         if (removedReminder.repeatVal != Reminder.REPEAT_NONE) {
             val calendar = removedReminder.remindCalendar
-
+            //todo implement custom repeat
             when(removedReminder.repeatVal) {
                 Reminder.REPEAT_DAILY -> { calendar.add(Calendar.DAY_OF_YEAR, 1) }
                 Reminder.REPEAT_WEEKDAYS -> {
@@ -391,6 +391,7 @@ class ReminderActivity : AppCompatActivity(),
                 }
                 Reminder.REPEAT_WEEKLY -> { calendar.add(Calendar.WEEK_OF_YEAR, 1) }
                 Reminder.REPEAT_MONTHLY -> { calendar.add(Calendar.MONTH, 1) }
+                Reminder.REPEAT_YEARLY -> { calendar.add(Calendar.YEAR,1) }
             }
             removedReminder.reAddReminder(reminderPositionInAdapter)
         }
@@ -425,20 +426,19 @@ class ReminderActivity : AppCompatActivity(),
         return false
     }
 
-    override fun onReminderEdited(newText: String, newRemindCalendar: Calendar,
-                                  newRepeatVal: Int, oldSectionTitle: String, oldPositionInSection: Int) {
+    override fun onReminderEdited(
+        newText: String,
+        newRemindCalendar: Calendar,
+        newRepeatVal: Int,
+        newAutoSnoozeVal: Int,
+        oldSectionTitle: String,
+        oldPositionInSection: Int
+    ) {
         val oldSection: ReminderSection = sectionAdapter.getSection(oldSectionTitle) as ReminderSection
         val oldReminder = oldSection.getList()[oldPositionInSection]
         //remove reminder
         oldReminder.deleteReminder()
         //create new reminder with new specifications
-        Reminder(newText,newRemindCalendar,newRepeatVal,applicationContext)
-    }
-
-    override fun onReminderDeleted(sectionTitle: String, positionInSection: Int) {
-        val section: ReminderSection = sectionAdapter.getSection(sectionTitle) as ReminderSection
-        val reminder: Reminder = section.getList()[positionInSection]
-        //delete reminder
-        reminder.deleteReminder()
+        Reminder(newText,newRemindCalendar,newRepeatVal,newAutoSnoozeVal,applicationContext)
     }
 }

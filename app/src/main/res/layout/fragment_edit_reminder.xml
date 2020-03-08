@@ -52,47 +52,45 @@
 
     <ImageButton
         android:id="@+id/cancelButton"
-        android:layout_width="80dp"
+        android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:layout_marginHorizontal="10dp"
-        android:layout_toStartOf="@id/repeatButton"
+        android:layout_marginEnd="20dp"
+        android:layout_toStartOf="@id/snoozeButton"
         android:backgroundTint="#000000"
         android:src="@drawable/cancel_white"
         android:contentDescription="@string/cancel_content_description"/>
 
     <ImageButton
-        android:id="@+id/repeatButton"
-        android:layout_width="80dp"
+        android:id="@+id/snoozeButton"
+        android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:layout_marginHorizontal="10dp"
         android:layout_toStartOf="@id/centerLine"
+        android:backgroundTint="#000000"
+        android:src="@drawable/snooze_white"
+        android:contentDescription="@string/snooze_content_description"/>
+
+    <ImageButton
+        android:id="@+id/repeatButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@id/centerLine"
         android:backgroundTint="#000000"
         android:src="@drawable/repeat_white"
         android:contentDescription="@string/repeat_content_description"/>
 
     <ImageButton
         android:id="@+id/addButton"
-        android:layout_width="80dp"
+        android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:layout_marginHorizontal="10dp"
-        android:layout_toEndOf="@id/centerLine"
+        android:layout_marginStart="20dp"
+        android:layout_toEndOf="@id/repeatButton"
         android:backgroundTint="#000000"
         android:src="@drawable/check_white"
         android:contentDescription="@string/check_content_description"/>
-
-    <ImageButton
-        android:id="@+id/deleteButton"
-        android:layout_width="80dp"
-        android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginHorizontal="10dp"
-        android:layout_toEndOf="@id/addButton"
-        android:backgroundTint="#000000"
-        android:src="@drawable/delete_white"
-        android:contentDescription="@string/delete_content_description"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/quickAccessButton1"

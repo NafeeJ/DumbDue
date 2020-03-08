@@ -11,7 +11,7 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 
-class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: Int, @Transient val context: Context) {
+class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: Int,val autoSnoozeVal: Int, @Transient val context: Context) {
 
     companion object {
         //ints used to determine the user's desired repeat frequency
@@ -20,6 +20,16 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
         const val REPEAT_WEEKDAYS: Int = 2
         const val REPEAT_WEEKLY: Int = 3
         const val REPEAT_MONTHLY: Int = 4
+        const val REPEAT_YEARLY: Int = 5
+        const val REPEAT_CUSTOM: Int = 6
+        //ints used to determine user's desired autosnooze
+        const val AUTO_SNOOZE_NONE: Int = 0
+        const val AUTO_SNOOZE_MINUTE: Int = 1
+        const val AUTO_SNOOZE_5_MINUTES: Int = 2
+        const val AUTO_SNOOZE_10_MINUTES: Int = 3
+        const val AUTO_SNOOZE_15_MINUTES: Int = 4
+        const val AUTO_SNOOZE_30_MINUTES: Int = 5
+        const val AUTO_SNOOZE_HOUR : Int = 6
         //request code used to keep track and make sure all pending intents for notifications are unique
         var globalRequestCode: Int = 0
         //lists that store the reminders
@@ -32,14 +42,16 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
     var requestCode: Int //reminder's unique requestCode for pending intent
 
     @Transient private var alarmManager: AlarmManager = ReminderActivity.globalAlarmManager
+    @Transient private lateinit var intermediateReceiverIntent: Intent
+    @Transient private lateinit var intermediateReceiverPendingIntent: PendingIntent
 
     init {
         requestCode = ++globalRequestCode
         insertInOrder(getList(),this)
+        ReminderActivity.saveAll(context)
 
         setNotifications(context)
 
-        ReminderActivity.saveAll(context)
         val section = ReminderSection.getReminderSection(this)
         section.isVisible = true
     }
@@ -76,16 +88,17 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
 
     fun getReminderData(): ReminderData {
         val section: ReminderSection = ReminderSection.getReminderSection(this)
-        return ReminderData(text,remindCalendar,repeatVal,requestCode,section.getTitle(),getList().indexOf(this))
+        val data =  ReminderData(text,remindCalendar,repeatVal,requestCode,autoSnoozeVal,section.getTitle(),getList().indexOf(this))
+        return data
     }
     //function that sets all the alarms for when reminder was deleted or app was closed
     private fun setNotifications(context: Context) {
-        val intermediateReceiverIntent = Intent(context,IntermediateReceiver::class.java)
+        intermediateReceiverIntent = Intent(context,IntermediateReceiver::class.java)
         val reminderDataBundle = Bundle()
         reminderDataBundle.putParcelable("ReminderData",getReminderData())
         intermediateReceiverIntent.putExtra("ReminderDataBundle",reminderDataBundle)
 
-        val intermediateReceiverPendingIntent = PendingIntent.getBroadcast(context, requestCode,
+        intermediateReceiverPendingIntent = PendingIntent.getBroadcast(context, requestCode,
             intermediateReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP,
@@ -94,6 +107,8 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
     }
 
     fun deleteReminder() {
+        //cancel the intermediate alarm
+        alarmManager.cancel(intermediateReceiverPendingIntent)
         //cancels repeating alarms
         val notificationReceiverIntent = Intent(context,NotificationReceiver::class.java)
         val notificationPendingIntent = PendingIntent.getBroadcast(context,requestCode,notificationReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -102,15 +117,15 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
         val section: ReminderSection = ReminderSection.getReminderSection(this)
         val list = getList()
         val positionInSection = list.indexOf(this)
-        //remove this reminder from its list
+        //remove this reminder from its list and save
         ReminderActivity.sectionAdapter.notifyItemRemovedFromSection(section,positionInSection)
         list.remove(this)
+        ReminderActivity.saveAll(context)
         //if list is empty sets this reminder's section to be invisible
         if (list.isEmpty()) {
             section.isVisible = false
             ReminderActivity.sectionAdapter.notifyDataSetChanged()
         }
-        ReminderActivity.saveAll(context)
         //cancels all notification currently being shown
         //todo fix this so that notifications IDs are being kept track of
         val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -120,10 +135,9 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
     fun reAddReminder(position: Int) {
         insertInOrder(getList(),this)
         ReminderActivity.sectionAdapter.notifyItemInserted(position)
+        ReminderActivity.saveAll(context)
 
         setNotifications(context)
-
-        ReminderActivity.saveAll(context)
 
         val section = ReminderSection.getReminderSection(this)
         section.isVisible = true
@@ -131,6 +145,6 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
     }
     //data class that stores the essentials for recreating reminders when saving, loading, and editing
     @Parcelize data class ReminderData(val text: String, val remindCalendar: Calendar,
-                                       val repeatVal: Int, val requestCode: Int,
+                                       val repeatVal: Int, val requestCode: Int, val autoSnoozeVal: Int,
                                        val sectionTitle: String, val positionInSection: Int): Parcelable
 }

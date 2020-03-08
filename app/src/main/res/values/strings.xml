@@ -25,13 +25,16 @@
     <string name="check_content_description">Check mark icon</string>
     <string name="delete_content_description">Trash can icon</string>
     <string name="repeat_content_description">Cyclic arrows icon</string>
+    <string name="snooze_content_description">Alarm with Z in Middle</string>
 
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <!-- Auto Snooze Text -->
+    <string name="auto_snooze_none">None</string>
+    <string name="auto_snooze_minute">Every Minute</string>
+    <string name="auto_snooze_5_minute">Every 5 Minutes</string>
+    <string name="auto_snooze_10_minutes">Every 10 Minutes</string>
+    <string name="auto_snooze_15_minutes">Every 15 Minutes</string>
+    <string name="auto_snooze_30_minutes">Every 30 minutes</string>
+    <string name="auto_snooze_hour">Every Hour</string>
 
     <!-- Content Reminder Buttons Activity -->
     <string name="mark_done">Mark Done</string>

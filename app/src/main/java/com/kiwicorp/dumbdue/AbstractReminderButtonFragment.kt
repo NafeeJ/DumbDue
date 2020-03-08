@@ -2,6 +2,7 @@ package com.kiwicorp.dumbdue
 
 import android.graphics.Color
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,11 +16,13 @@ import kotlin.math.absoluteValue
 abstract class AbstractReminderButtonFragment : Fragment() {
     protected lateinit var mView: View
     protected var dueDateCalendar: Calendar = Calendar.getInstance()
-    protected var repeatVal: Int = 0
+    protected var repeatVal: Int = Reminder.REPEAT_NONE
+    protected var autoSnoozeVal: Int = Reminder.AUTO_SNOOZE_MINUTE
     protected lateinit var dateTextView: TextView
     protected lateinit var repeatTextView: TextView
 
     protected val dateFormatter = SimpleDateFormat("EEE, d MMM, h:mm a", Locale.US)
+    protected val dateFormatter2 = SimpleDateFormat("MMM d, h:mm a", Locale.US)
     protected val timeFormatter = SimpleDateFormat("h:mm a", Locale.US)
     protected val dayOfWeekFormatter = SimpleDateFormat("EEEE", Locale.US)
 
@@ -28,6 +31,10 @@ abstract class AbstractReminderButtonFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //set auto snooze based off of default value
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity!!.applicationContext)
+        val autoSnoozeString: String = sharedPreferences.getString("default_auto_snooze",Reminder.AUTO_SNOOZE_MINUTE.toString()) as String
+        autoSnoozeVal = autoSnoozeString.toInt()
         //initialize all buttons
         val timeSetterButton1: Button = mView.findViewById(R.id.timeSetterButton1)
         val timeSetterButton2: Button = mView.findViewById(R.id.timeSetterButton2)
@@ -37,13 +44,11 @@ abstract class AbstractReminderButtonFragment : Fragment() {
         val timeSetterButton6: Button = mView.findViewById(R.id.timeSetterButton6)
         val timeSetterButton7: Button = mView.findViewById(R.id.timeSetterButton7)
         val timeSetterButton8: Button = mView.findViewById(R.id.timeSetterButton8)
-
         //initialize preset buttons and their intended hour and minutes
         val quickAccessButton1: Button = mView.findViewById(R.id.quickAccessButton1)
         val quickAccessButton2: Button = mView.findViewById(R.id.quickAccessButton2)
         val quickAccessButton3: Button = mView.findViewById(R.id.quickAccessButton3)
         val quickAccessButton4: Button = mView.findViewById(R.id.quickAccessButton4)
-
         //list of time incrementing/decrementing button
         val timeButtons = listOf(
             timeSetterButton1, timeSetterButton2, timeSetterButton3,
@@ -66,8 +71,7 @@ abstract class AbstractReminderButtonFragment : Fragment() {
         for (button in timeSetterButtons) {
             button.setOnClickListener {
                 //update due date calendar
-                /* number is the actual number of how much to increment/decrement,
-                notDigits contains "+ unit" */
+                /* number is the actual number of how much to increment/decrement, notDigits contains "+ unit" */
                 val (number,notDigits)= button.text.partition { it.isDigit() }
                 val unit: String = notDigits.substring(2)  //contains the unit of the text
                 val unitInt: Int = when (unit) {
@@ -105,16 +109,18 @@ abstract class AbstractReminderButtonFragment : Fragment() {
     protected fun updateTextViews() { //updates text view
         val fromNowMins = ReminderActivity.findTimeFromNowMins(dueDateCalendar)
         val time = dueDateCalendar.time
-
         repeatTextView.text = when(repeatVal) {
             Reminder.REPEAT_DAILY -> "Daily ".plus(timeFormatter.format(time))
             Reminder.REPEAT_WEEKDAYS -> "Weekdays ".plus(timeFormatter.format(time))
             Reminder.REPEAT_WEEKLY -> dayOfWeekFormatter.format(time)
                 .plus("s ")
                 .plus(timeFormatter.format(time))
-            Reminder.REPEAT_MONTHLY -> dayOfWeekFormatter.format(time)
-                .plus("s ")
+            Reminder.REPEAT_MONTHLY -> dueDateCalendar.get(Calendar.DAY_OF_MONTH).toString()
+                .plus(ReminderActivity.daySuffixFinder(dueDateCalendar))
+                .plus(" each month at ")
                 .plus(timeFormatter.format(time))
+            Reminder.REPEAT_YEARLY -> "Every ".plus(dateFormatter2.format(dueDateCalendar.time))
+            Reminder.REPEAT_CUSTOM -> "Custom"
             else -> ""
         }
         //if time from now is positive or the same, updates text to be in format:
