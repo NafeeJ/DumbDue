@@ -23,11 +23,9 @@ class EditReminderFragment : ScheduleReminderFragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        isEditReminderFragment = true
+
         super.onCreateView(inflater, container, savedInstanceState)
-
-        closeKeyboard()
-        titleEditText.clearFocus()
-
         //get reminder data and set vals
         val reminderData: Reminder.ReminderData =
             arguments!!.getParcelable("ReminderData") as Reminder.ReminderData
@@ -35,6 +33,9 @@ class EditReminderFragment : ScheduleReminderFragment(),
         titleEditText.setText(reminderData.text)
         autoSnoozeVal = reminderData.autoSnoozeVal
         repeatVal = reminderData.repeatVal
+
+        updateTextViews()
+        updateSnoozeButtonImage()
 
         addButton.setOnClickListener {
             onReminderEditListener.onReminderEdited(titleEditText.text.toString(),

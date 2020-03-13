@@ -26,6 +26,8 @@ open class ScheduleReminderFragment : AbstractReminderButtonFragment(),
     protected lateinit var snoozeButton: ImageButton
     protected lateinit var imm: InputMethodManager
 
+    protected var isEditReminderFragment: Boolean = false //boolean used to determine if the keyboard should open when the fragment starts
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -34,63 +36,29 @@ open class ScheduleReminderFragment : AbstractReminderButtonFragment(),
         mView = inflater.inflate(R.layout.fragment_schedule_reminder,container,false)
 
         titleEditText = mView.findViewById(R.id.titleEditText)
-        titleEditText.requestFocus() //opens keyboard when window opens
         imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,InputMethodManager.HIDE_NOT_ALWAYS) //shows keyboard when title edit text is focused
 
-        cancelButton = mView.findViewById(R.id.cancelButton)
-        addButton = mView.findViewById(R.id.addButton)
-        repeatButton = mView.findViewById(R.id.repeatButton)
-        snoozeButton = mView.findViewById(R.id.snoozeButton)
-
-        fun updateSnoozeButtonImage() {
-            val image = when(autoSnoozeVal) {
-                Reminder.AUTO_SNOOZE_NONE -> R.drawable.white_none_square
-                Reminder.AUTO_SNOOZE_MINUTE -> R.drawable.one_white
-                Reminder.AUTO_SNOOZE_5_MINUTES -> R.drawable.five_white
-                Reminder.AUTO_SNOOZE_10_MINUTES -> R.drawable.ten_white
-                Reminder.AUTO_SNOOZE_15_MINUTES -> R.drawable.fifteen_white
-                Reminder.AUTO_SNOOZE_30_MINUTES -> R.drawable.thirty_white
-                Reminder.AUTO_SNOOZE_HOUR -> R.drawable.one_hour_white
-                else -> 0
-            }
-            snoozeButton.setImageResource(image)
+        if (!isEditReminderFragment) {
+            //opens keyboard when window opens
+            titleEditText.requestFocus()
+            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,InputMethodManager.HIDE_NOT_ALWAYS)
         }
 
+        cancelButton = mView.findViewById(R.id.cancelButton)
+        snoozeButton = mView.findViewById(R.id.snoozeButton)
+        repeatButton = mView.findViewById(R.id.repeatButton)
+        addButton = mView.findViewById(R.id.addButton)
+
+
+        //set auto snooze based off of default value
+        val sharedPreferences = android.preference.PreferenceManager.getDefaultSharedPreferences(activity!!.applicationContext)
+        val autoSnoozeString: String = sharedPreferences.getString("default_auto_snooze",Reminder.AUTO_SNOOZE_MINUTE.toString()) as String
+        autoSnoozeVal = autoSnoozeString.toInt()
+        updateSnoozeButtonImage()
+        //set click listeners
         cancelButton.setOnClickListener{
             activity!!.supportFragmentManager.popBackStack()
             closeKeyboard()
-        }
-        addButton.setOnClickListener {
-            Reminder(titleEditText.text.toString(),dueDateCalendar,repeatVal,autoSnoozeVal,context!!)
-            activity!!.supportFragmentManager.popBackStack()
-            closeKeyboard()
-        }
-        snoozeButton.setOnClickListener {
-            closeKeyboard()
-            //create and show dialog
-            val dialog = BottomSheetDialog(context!!)
-            val dialogView = layoutInflater.inflate(R.layout.dialog_choose_snooze,null)
-            dialog.setContentView(dialogView)
-            dialog.setCanceledOnTouchOutside(true)
-
-            val noneTextView: TextView = dialogView.findViewById(R.id.noneTextView)
-            val everyMinuteTextView: TextView = dialogView.findViewById(R.id.everyMinuteTextView)
-            val every5MinutesTextView: TextView = dialogView.findViewById(R.id.every5MinutesTextView)
-            val every10MinutesTextView: TextView = dialogView.findViewById(R.id.every10MinutesTextView)
-            val every15MinutesTextView: TextView = dialogView.findViewById(R.id.every15MinutesTextView)
-            val every30MinutesTextView: TextView = dialogView.findViewById(R.id.every30MinutesTextView)
-            val everyHourTextView: TextView = dialogView.findViewById(R.id.everyHourTextView)
-            //todo parse text or use map
-            noneTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_NONE; dialog.dismiss(); updateSnoozeButtonImage() }
-            everyMinuteTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_MINUTE; dialog.dismiss(); updateSnoozeButtonImage() }
-            every5MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_5_MINUTES; dialog.dismiss(); updateSnoozeButtonImage()  }
-            every10MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_10_MINUTES; dialog.dismiss(); updateSnoozeButtonImage()  }
-            every15MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_15_MINUTES; dialog.dismiss(); updateSnoozeButtonImage()  }
-            every30MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_30_MINUTES; dialog.dismiss(); updateSnoozeButtonImage()  }
-            everyHourTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_HOUR; dialog.dismiss(); updateSnoozeButtonImage()  }
-
-            dialog.show()
         }
         repeatButton.setOnClickListener {
             closeKeyboard()
@@ -158,11 +126,41 @@ open class ScheduleReminderFragment : AbstractReminderButtonFragment(),
             }
             dialog.show()
         }
+        snoozeButton.setOnClickListener {
+            closeKeyboard()
+            //create and show dialog
+            val dialog = BottomSheetDialog(context!!)
+            val dialogView = layoutInflater.inflate(R.layout.dialog_choose_snooze,null)
+            dialog.setContentView(dialogView)
+            dialog.setCanceledOnTouchOutside(true)
 
+            val noneTextView: TextView = dialogView.findViewById(R.id.noneTextView)
+            val everyMinuteTextView: TextView = dialogView.findViewById(R.id.everyMinuteTextView)
+            val every5MinutesTextView: TextView = dialogView.findViewById(R.id.every5MinutesTextView)
+            val every10MinutesTextView: TextView = dialogView.findViewById(R.id.every10MinutesTextView)
+            val every15MinutesTextView: TextView = dialogView.findViewById(R.id.every15MinutesTextView)
+            val every30MinutesTextView: TextView = dialogView.findViewById(R.id.every30MinutesTextView)
+            val everyHourTextView: TextView = dialogView.findViewById(R.id.everyHourTextView)
+
+            noneTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_NONE; dialog.dismiss(); updateSnoozeButtonImage() }
+            everyMinuteTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_MINUTE; dialog.dismiss(); updateSnoozeButtonImage() }
+            every5MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_5_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
+            every10MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_10_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
+            every15MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_15_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
+            every30MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_30_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
+            everyHourTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_HOUR; dialog.dismiss(); updateSnoozeButtonImage() }
+
+            dialog.show()
+        }
+
+        addButton.setOnClickListener {
+            Reminder(titleEditText.text.toString(),dueDateCalendar,repeatVal,autoSnoozeVal,context!!)
+            activity!!.supportFragmentManager.popBackStack()
+            closeKeyboard()
+        }
         dateTextView = mView.findViewById(R.id.dateTextView)
         dateTextView.setOnClickListener {
             closeKeyboard()
-            val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity!!.applicationContext)
             val timeDatePickerString = sharedPreferences.getString("time_date_picker","spinner")
             if (timeDatePickerString == "stock") {
                 val datePickerDialogFragment: Fragment = TimeDatePickerDialogFragment()
@@ -181,14 +179,10 @@ open class ScheduleReminderFragment : AbstractReminderButtonFragment(),
                 datePickerSpinnerDialogFragment.show(childFragmentManager,null)
             }
         }
-
         super.onCreateView(inflater, container, savedInstanceState)
-
         updateSnoozeButtonImage()
-
         return mView
     }
-
     //closes keyboard if the current focus is not the edit text
     protected fun closeKeyboard() {
         val view: View? = activity!!.currentFocus
@@ -196,7 +190,19 @@ open class ScheduleReminderFragment : AbstractReminderButtonFragment(),
             imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
-
+    protected fun updateSnoozeButtonImage() {
+        val image = when(autoSnoozeVal) {
+            Reminder.AUTO_SNOOZE_NONE -> R.drawable.white_none_square
+            Reminder.AUTO_SNOOZE_MINUTE -> R.drawable.one_white
+            Reminder.AUTO_SNOOZE_5_MINUTES -> R.drawable.five_white
+            Reminder.AUTO_SNOOZE_10_MINUTES -> R.drawable.ten_white
+            Reminder.AUTO_SNOOZE_15_MINUTES -> R.drawable.fifteen_white
+            Reminder.AUTO_SNOOZE_30_MINUTES -> R.drawable.thirty_white
+            Reminder.AUTO_SNOOZE_HOUR -> R.drawable.one_hour_white
+            else -> 0
+        }
+        snoozeButton.setImageResource(image)
+    }
     override fun onDateChanged(timeInMillis: Long) {
         dueDateCalendar.timeInMillis = timeInMillis
         updateTextViews()

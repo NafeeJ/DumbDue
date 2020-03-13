@@ -11,7 +11,7 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 
-class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: Int,val autoSnoozeVal: Int, @Transient val context: Context) {
+class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: Int,val autoSnoozeVal: Int, @Transient var context: Context) {
 
     companion object {
         //ints used to determine the user's desired repeat frequency
@@ -33,13 +33,17 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
         //request code used to keep track and make sure all pending intents for notifications are unique
         var globalRequestCode: Int = 0
         //lists that store the reminders
-        var overdueList: LinkedList<Reminder> = LinkedList()
-        var todayList: LinkedList<Reminder> = LinkedList()
-        var tomorrowList: LinkedList<Reminder> = LinkedList()
-        var next7daysList: LinkedList<Reminder> = LinkedList()
-        var futureList: LinkedList<Reminder> = LinkedList()
+        val overdueList = LinkedList<Reminder>()
+        val todayList = LinkedList<Reminder>()
+        val tomorrowList = LinkedList<Reminder>()
+        val next7daysList = LinkedList<Reminder>()
+        val futureList = LinkedList<Reminder>()
+        val reminderListArray: Array<LinkedList<Reminder>> = arrayOf(overdueList, todayList,
+            tomorrowList, next7daysList, futureList)
     }
     var requestCode: Int //reminder's unique requestCode for pending intent
+    @Transient var list: LinkedList<Reminder>
+    @Transient lateinit var section: ReminderSection
 
     @Transient private var alarmManager: AlarmManager = ReminderActivity.globalAlarmManager
     @Transient private lateinit var intermediateReceiverIntent: Intent
@@ -47,20 +51,27 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
 
     init {
         requestCode = ++globalRequestCode
-        insertInOrder(getList(),this)
+        list = getCorrectList()
+        insertInOrder(list,this)
+
         ReminderActivity.saveAll(context)
 
         setNotifications(context)
-
-        val section = ReminderSection.getReminderSection(this)
-        section.isVisible = true
     }
     //inserts reminder into its correct position in the given list
-    private fun insertInOrder(list: LinkedList<Reminder>, reminder: Reminder) {
+    fun insertInOrder(list: LinkedList<Reminder>, reminder: Reminder) {
+        fun notifySection() {
+            section = ReminderSection.getReminderSection(this)
+            if (list.size == 1) {//if list was empty
+                section.isVisible = true
+                ReminderActivity.sectionAdapter.notifySectionChangedToVisible(section)
+            }
+            ReminderActivity.sectionAdapter.notifyItemInsertedInSection(section,list.indexOf(this))
+        }
         //simply adds reminder if list is empty
         if (list.isEmpty()) {
             list.add(reminder)
-            ReminderActivity.sectionAdapter.notifyDataSetChanged()
+            notifySection()
             return
         }
         //finds and adds reminder into its correct position
@@ -68,15 +79,15 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
         for (element in iterator) {
             if (element.remindCalendar.timeInMillis > reminder.remindCalendar.timeInMillis) {
                 list.add(iterator.previousIndex(), reminder)
-                ReminderActivity.sectionAdapter.notifyDataSetChanged()
+                notifySection()
                 return
             }
         }
         list.add(reminder)
-        ReminderActivity.sectionAdapter.notifyDataSetChanged()
+        notifySection()
     }
     //returns the list this reminder belongs to based off of its time
-    private fun getList(): LinkedList<Reminder> {
+    private fun getCorrectList(): LinkedList<Reminder> {
         return when {
             remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis -> overdueList
             remindCalendar.timeInMillis < ReminderActivity.todayCalendar.timeInMillis -> todayList
@@ -87,9 +98,7 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
     }
 
     fun getReminderData(): ReminderData {
-        val section: ReminderSection = ReminderSection.getReminderSection(this)
-        val data =  ReminderData(text,remindCalendar,repeatVal,requestCode,autoSnoozeVal,section.getTitle(),getList().indexOf(this))
-        return data
+        return ReminderData(text,remindCalendar,repeatVal,requestCode,autoSnoozeVal,section.getTitle(),list.indexOf(this))
     }
     //function that sets all the alarms for when reminder was deleted or app was closed
     private fun setNotifications(context: Context) {
@@ -105,7 +114,6 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
             remindCalendar.timeInMillis - 10000,
             intermediateReceiverPendingIntent)
     }
-
     fun deleteReminder() {
         //cancel the intermediate alarm
         alarmManager.cancel(intermediateReceiverPendingIntent)
@@ -114,14 +122,11 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
         val notificationPendingIntent = PendingIntent.getBroadcast(context,requestCode,notificationReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         alarmManager.cancel(notificationPendingIntent)
 
-        val section: ReminderSection = ReminderSection.getReminderSection(this)
-        val list = getList()
         val positionInSection = list.indexOf(this)
         //remove this reminder from its list and save
         ReminderActivity.sectionAdapter.notifyItemRemovedFromSection(section,positionInSection)
         list.remove(this)
         ReminderActivity.saveAll(context)
-        //if list is empty sets this reminder's section to be invisible
         if (list.isEmpty()) {
             section.isVisible = false
             ReminderActivity.sectionAdapter.notifyDataSetChanged()
@@ -132,19 +137,27 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
         notificationManager.cancelAll()
     }
     //readds this reminder into its position after it has been deleted/completed and the user undos
-    fun reAddReminder(position: Int) {
-        insertInOrder(getList(),this)
-        ReminderActivity.sectionAdapter.notifyItemInserted(position)
+    fun reAddReminder() {
+        insertInOrder(list,this)
+
         ReminderActivity.saveAll(context)
 
         setNotifications(context)
+    }
+    //loads reminder after app closes and is reopened
+    fun loadReminder(context: Context) {
+        //initialize transient variables
+        this.context = context
+        alarmManager = ReminderActivity.globalAlarmManager
+        intermediateReceiverIntent = Intent(context,IntermediateReceiver::class.java)
+        intermediateReceiverPendingIntent = PendingIntent.getBroadcast(context, requestCode,
+            intermediateReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        list = getCorrectList()
 
-        val section = ReminderSection.getReminderSection(this)
-        section.isVisible = true
-        ReminderActivity.sectionAdapter.notifySectionChangedToVisible(section)
+        insertInOrder(list,this)
     }
     //data class that stores the essentials for recreating reminders when saving, loading, and editing
     @Parcelize data class ReminderData(val text: String, val remindCalendar: Calendar,
                                        val repeatVal: Int, val requestCode: Int, val autoSnoozeVal: Int,
                                        val sectionTitle: String, val positionInSection: Int): Parcelable
-}
+    }

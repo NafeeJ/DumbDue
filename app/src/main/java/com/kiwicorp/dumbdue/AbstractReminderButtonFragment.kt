@@ -31,10 +31,6 @@ abstract class AbstractReminderButtonFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //set auto snooze based off of default value
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity!!.applicationContext)
-        val autoSnoozeString: String = sharedPreferences.getString("default_auto_snooze",Reminder.AUTO_SNOOZE_MINUTE.toString()) as String
-        autoSnoozeVal = autoSnoozeString.toInt()
         //initialize all buttons
         val timeSetterButton1: Button = mView.findViewById(R.id.timeSetterButton1)
         val timeSetterButton2: Button = mView.findViewById(R.id.timeSetterButton2)
