@@ -146,15 +146,17 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
     }
     //loads reminder after app closes and is reopened
     fun loadReminder(context: Context) {
-        //initialize transient variables
+        list = getCorrectList()
+        insertInOrder(list,this)
+
         this.context = context
         alarmManager = ReminderActivity.globalAlarmManager
         intermediateReceiverIntent = Intent(context,IntermediateReceiver::class.java)
+        val reminderDataBundle = Bundle()
+        reminderDataBundle.putParcelable("ReminderData",getReminderData())
+        intermediateReceiverIntent.putExtra("ReminderDataBundle",reminderDataBundle)
         intermediateReceiverPendingIntent = PendingIntent.getBroadcast(context, requestCode,
             intermediateReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        list = getCorrectList()
-
-        insertInOrder(list,this)
     }
     //data class that stores the essentials for recreating reminders when saving, loading, and editing
     @Parcelize data class ReminderData(val text: String, val remindCalendar: Calendar,
