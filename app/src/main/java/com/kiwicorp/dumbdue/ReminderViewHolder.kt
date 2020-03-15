@@ -3,6 +3,7 @@ package com.kiwicorp.dumbdue
 import android.graphics.Color
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.NonNull
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_reminder.view.*
 import java.text.SimpleDateFormat
@@ -119,4 +120,8 @@ class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(i
         return timeFromNowString
     }
 
+}
+class HeaderViewHolder(@NonNull view: View) : RecyclerView.ViewHolder(view) {
+
+    val sectionTitle: TextView = view.findViewById(R.id.sectionTitle)
 }

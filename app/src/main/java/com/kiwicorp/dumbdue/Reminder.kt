@@ -42,7 +42,7 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
             tomorrowList, next7daysList, futureList)
     }
     var requestCode: Int //reminder's unique requestCode for pending intent
-    @Transient var list: LinkedList<Reminder>
+    @Transient var list: LinkedList<Reminder>//contains one of companion lists
     @Transient lateinit var section: ReminderSection
 
     @Transient private var alarmManager: AlarmManager = ReminderActivity.globalAlarmManager
@@ -87,7 +87,7 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
         notifySection()
     }
     //returns the list this reminder belongs to based off of its time
-    fun getCorrectList(): LinkedList<Reminder> {
+    private fun getCorrectList(): LinkedList<Reminder> {
         return when {
             remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis -> overdueList
             remindCalendar.timeInMillis < ReminderActivity.todayCalendar.timeInMillis -> todayList

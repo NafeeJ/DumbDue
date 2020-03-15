@@ -135,11 +135,13 @@ class ReminderActivity : AppCompatActivity(),
         deleteIcon = ContextCompat.getDrawable(this, R.drawable.delete_white) as Drawable
         checkIcon = ContextCompat.getDrawable(this,R.drawable.check_white) as Drawable
         //create and add reminder sections to the reminder section list
-        ReminderSection.reminderSectionList.add(ReminderSection("Overdue",Reminder.overdueList,this))
-        ReminderSection.reminderSectionList.add(ReminderSection("Today",Reminder.todayList,this))
-        ReminderSection.reminderSectionList.add(ReminderSection("Tomorrow",Reminder.tomorrowList,this))
-        ReminderSection.reminderSectionList.add(ReminderSection("Next 7 Days",Reminder.next7daysList,this))
-        ReminderSection.reminderSectionList.add(ReminderSection("Future", Reminder.futureList,this))
+        ReminderSection.reminderSectionList = arrayOf(
+            ReminderSection("Overdue",Reminder.overdueList,this),
+            ReminderSection("Today",Reminder.todayList,this),
+            ReminderSection("Tomorrow",Reminder.tomorrowList,this),
+            ReminderSection("Next 7 Days",Reminder.next7daysList,this),
+            ReminderSection("Future", Reminder.futureList,this))
+
         //add reminder sections to section adapter
         sectionAdapter.addSection("Overdue",ReminderSection.reminderSectionList[0])
         sectionAdapter.addSection("Today",ReminderSection.reminderSectionList[1])
@@ -194,14 +196,13 @@ class ReminderActivity : AppCompatActivity(),
         fixedRateTimer("time",false,calendar.time,60000) {
             this@ReminderActivity.runOnUiThread {
                 Log.d(TAG,"Timer Update")
-                sectionAdapter.notifyDataSetChanged()
                 var numMoved = 0
                 for (reminder in Reminder.todayList) {
                     if (reminder.remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis) {
                         numMoved++
-                        Reminder.overdueList.add(reminder)
+                        reminder.insertInOrder(Reminder.overdueList,reminder)
                         reminder.section = ReminderSection.reminderSectionList[0]
-                        reminder.list = reminder.getCorrectList()
+                        reminder.list = Reminder.overdueList
                     }
                 }
                 if (numMoved != 0) {
@@ -215,8 +216,8 @@ class ReminderActivity : AppCompatActivity(),
                     if (Reminder.todayList.isEmpty()) {
                         ReminderSection.reminderSectionList[1].isVisible = false
                     }
-                    sectionAdapter.notifyDataSetChanged()
                 }
+                sectionAdapter.notifyDataSetChanged()
             }
         }
 

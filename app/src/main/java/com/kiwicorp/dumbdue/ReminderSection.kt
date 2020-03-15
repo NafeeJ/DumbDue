@@ -18,7 +18,7 @@ class ReminderSection(private val title: String,
     .build()) {
 
     companion object {
-        val reminderSectionList: ArrayList<ReminderSection> = ArrayList()
+        lateinit var reminderSectionList: Array<ReminderSection>
 
         //returns the section of the reminder at the given position
         fun getReminderSection(positionInAdapter: Int): ReminderSection {
