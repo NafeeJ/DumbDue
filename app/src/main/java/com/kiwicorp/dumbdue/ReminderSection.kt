@@ -9,13 +9,14 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapt
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ReminderSection(private val title: String,
-                                  private val list:LinkedList<Reminder>,
-                                  private val clickListener: ClickListener):
+class ReminderSection(
+    private val title: String,
+    private val list:LinkedList<Reminder>,
+    private val clickListener: ClickListener):
     Section(SectionParameters.builder()
-    .itemResourceId(R.layout.item_reminder)
-    .headerResourceId(R.layout.section_header_reminder)
-    .build()) {
+        .itemResourceId(R.layout.item_reminder)
+        .headerResourceId(R.layout.section_header_reminder)
+        .build()) {
 
     companion object {
         lateinit var reminderSectionList: Array<ReminderSection>

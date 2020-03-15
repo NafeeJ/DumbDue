@@ -11,9 +11,9 @@ class UpdateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         this.context = context
-        updateList(Reminder.tomorrowList)
-        updateList(Reminder.next7daysList)
-        updateList(Reminder.futureList)
+        updateList(ReminderActivity.tomorrowList)
+        updateList(ReminderActivity.next7daysList)
+        updateList(ReminderActivity.futureList)
     }
 
     private fun updateList(list: LinkedList<Reminder>) {

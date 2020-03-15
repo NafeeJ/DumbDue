@@ -1,6 +1,7 @@
 package com.kiwicorp.dumbdue
 
 import android.app.AlarmManager
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -10,7 +11,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -30,12 +30,10 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapt
 import kotlinx.android.synthetic.main.activity_reminder.*
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
-import kotlin.math.abs
 
 class ReminderActivity : AppCompatActivity(),
     ReminderSection.ClickListener,
     EditReminderFragment.OnReminderEditListener {
-
 
     private lateinit var deleteIcon: Drawable
     private lateinit var checkIcon: Drawable
@@ -56,6 +54,13 @@ class ReminderActivity : AppCompatActivity(),
         val sectionAdapter = SectionedRecyclerViewAdapter()
 
         var notificationID = 0 //used to keep notifications unique thus allowing notifications to stack
+
+        //lists that store the reminders
+        val overdueList = LinkedList<Reminder>()
+        val todayList = LinkedList<Reminder>()
+        val tomorrowList = LinkedList<Reminder>()
+        val next7daysList = LinkedList<Reminder>()
+        val futureList = LinkedList<Reminder>()
 
         //returns the correct suffix of number of the day based off the date of the calendar
         fun daySuffixFinder(calendar: Calendar): String {
@@ -82,15 +87,16 @@ class ReminderActivity : AppCompatActivity(),
         //saves all the reminder lists into shared preferences
         fun saveAll(context: Context) {
 
+            val reminderListArray: Array<LinkedList<Reminder>> = arrayOf(overdueList, todayList,
+                tomorrowList, next7daysList, futureList)
             val sharedPreferences = context.getSharedPreferences("Preferences", Context.MODE_PRIVATE)
-
             val myGson = Gson()
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
             //put global request code as a json
             val requestCodeJson: String = myGson.toJson(Reminder.globalRequestCode)
             editor.putString("GlobalRequestCode", requestCodeJson)
             val reminderList = LinkedList<Reminder>()
-            for (list in Reminder.reminderListArray) {
+            for (list in reminderListArray) {
                 for (reminder in list) {
                     reminderList.add(reminder)
                 }
@@ -101,6 +107,46 @@ class ReminderActivity : AppCompatActivity(),
             editor.putString("ReminderList",reminderListJson)
             //apply changes
             editor.apply()
+        }
+
+        //returns the list this reminder belongs to based off of its time
+        fun getCorrectList(remindCalendar: Calendar): LinkedList<Reminder> {
+            return when {
+                remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis -> overdueList
+                remindCalendar.timeInMillis < todayCalendar.timeInMillis -> todayList
+                remindCalendar.timeInMillis < tomorrowCalendar.timeInMillis -> tomorrowList
+                remindCalendar.timeInMillis < next7daysCalendar.timeInMillis -> next7daysList
+                else -> futureList
+            }
+        }
+
+        //inserts reminder into its correct position in the given list
+        fun insertInOrder(list: LinkedList<Reminder>, reminder: Reminder) {
+            fun notifySection() {
+                reminder.section = ReminderSection.getReminderSection(reminder)
+                sectionAdapter.notifyItemInsertedInSection(reminder.section,list.indexOf(reminder))
+            }
+            //simply adds reminder if list is empty
+            if (list.isEmpty()) {
+                list.add(reminder)
+                notifySection()
+                if (list.size == 1) {//if list was empty
+                    reminder.section.isVisible = true
+                    sectionAdapter.notifySectionChangedToVisible(reminder.section)
+                }
+                return
+            }
+            //finds and adds reminder into its correct position
+            val iterator = list.listIterator()
+            for (element in iterator) {
+                if (element.remindCalendar.timeInMillis > reminder.remindCalendar.timeInMillis) {
+                    list.add(iterator.previousIndex(), reminder)
+                    notifySection()
+                    return
+                }
+            }
+            list.add(reminder)
+            notifySection()
         }
     }
 
@@ -136,11 +182,11 @@ class ReminderActivity : AppCompatActivity(),
         checkIcon = ContextCompat.getDrawable(this,R.drawable.check_white) as Drawable
         //create and add reminder sections to the reminder section list
         ReminderSection.reminderSectionList = arrayOf(
-            ReminderSection("Overdue",Reminder.overdueList,this),
-            ReminderSection("Today",Reminder.todayList,this),
-            ReminderSection("Tomorrow",Reminder.tomorrowList,this),
-            ReminderSection("Next 7 Days",Reminder.next7daysList,this),
-            ReminderSection("Future", Reminder.futureList,this))
+            ReminderSection("Overdue", overdueList,this),
+            ReminderSection("Today", todayList,this),
+            ReminderSection("Tomorrow", tomorrowList,this),
+            ReminderSection("Next 7 Days", next7daysList,this),
+            ReminderSection("Future", futureList,this))
 
         //add reminder sections to section adapter
         sectionAdapter.addSection("Overdue",ReminderSection.reminderSectionList[0])
@@ -149,27 +195,25 @@ class ReminderActivity : AppCompatActivity(),
         sectionAdapter.addSection("Next 7 Days",ReminderSection.reminderSectionList[3])
         sectionAdapter.addSection("Future",ReminderSection.reminderSectionList[4])
 
-        if (!isLoaded()) {
-            val sharedPreferences = getSharedPreferences("Preferences", Context.MODE_PRIVATE)
-            val gson = Gson()
+        val sharedPreferences = getSharedPreferences("Preferences", Context.MODE_PRIVATE)
+        val gson = Gson()
 
-            val emptyListJson = gson.toJson(LinkedList<Reminder>())//an empty list in case lists haven't been stored
+        val emptyListJson = gson.toJson(LinkedList<Reminder>())//an empty list in case lists haven't been stored
 
-            val reminderListJson = sharedPreferences.getString("ReminderList",emptyListJson)
-            //gets type to allow gson to know what type of object it's retrieving
-            val reminderListType = object : TypeToken<LinkedList<Reminder>>() {}.type
-            //get list
-            val reminderListFromJson = gson.fromJson<LinkedList<Reminder>>(reminderListJson,reminderListType)
-            //load reminders
-            for (reminder in reminderListFromJson) {
-                reminder.loadReminder(applicationContext)
-            }
-            //initializes global request code from shared preferences
-            val requestCodeJson = sharedPreferences.getString("GlobalRequestCode", gson.toJson(0))
-            val intType = object : TypeToken<Int>() {}.type
-            val indexFromJson = gson.fromJson<Int>(requestCodeJson,intType)
-            Reminder.globalRequestCode = indexFromJson
+        val reminderListJson = sharedPreferences.getString("ReminderList",emptyListJson)
+        //gets type to allow gson to know what type of object it's retrieving
+        val reminderListType = object : TypeToken<LinkedList<Reminder>>() {}.type
+        //get list
+        val reminderListFromJson = gson.fromJson<LinkedList<Reminder>>(reminderListJson,reminderListType)
+        //load reminders
+        for (reminder in reminderListFromJson) {
+            reminder.loadReminder(applicationContext)
         }
+        //initializes global request code from shared preferences
+        val requestCodeJson = sharedPreferences.getString("GlobalRequestCode", gson.toJson(0))
+        val intType = object : TypeToken<Int>() {}.type
+        val indexFromJson = gson.fromJson<Int>(requestCodeJson,intType)
+        Reminder.globalRequestCode = indexFromJson
 
         recycler_view.apply {
             layoutManager = LinearLayoutManager(this@ReminderActivity)
@@ -197,23 +241,23 @@ class ReminderActivity : AppCompatActivity(),
             this@ReminderActivity.runOnUiThread {
                 Log.d(TAG,"Timer Update")
                 var numMoved = 0
-                for (reminder in Reminder.todayList) {
+                for (reminder in todayList) {
                     if (reminder.remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis) {
                         numMoved++
-                        reminder.insertInOrder(Reminder.overdueList,reminder)
+                        insertInOrder(overdueList, reminder)
                         reminder.section = ReminderSection.reminderSectionList[0]
-                        reminder.list = Reminder.overdueList
+                        reminder.list = overdueList
                     }
                 }
                 if (numMoved != 0) {
-                    Reminder.todayList.removeAll {
+                    todayList.removeAll {
                         it.remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis
                     }
-                    if (Reminder.overdueList.size == numMoved) {
+                    if (overdueList.size == numMoved) {
                         ReminderSection.reminderSectionList[0].isVisible = true
                         sectionAdapter.notifySectionChangedToVisible("Overdue")
                     }
-                    if (Reminder.todayList.isEmpty()) {
+                    if (todayList.isEmpty()) {
                         ReminderSection.reminderSectionList[1].isVisible = false
                     }
                 }
@@ -340,7 +384,6 @@ class ReminderActivity : AppCompatActivity(),
 
     //function that executes when the user swipes to delete a reminder
     fun swipeDeleteItem(viewHolder: RecyclerView.ViewHolder) {
-
         val reminderHolder: ReminderViewHolder = viewHolder as ReminderViewHolder
         val positionInAdapter: Int = reminderHolder.adapterPosition
         val section: ReminderSection = ReminderSection.getReminderSection(positionInAdapter)
@@ -348,10 +391,10 @@ class ReminderActivity : AppCompatActivity(),
         val reminderList: LinkedList<Reminder> = section.getList()
         val removedReminder: Reminder = reminderList[positionInSection]
 
-        removedReminder.deleteReminder()
+        deleteReminder(removedReminder)
         //creates a snackbar indicating a reminder has been deleted, and shows the option to undo
         Snackbar.make(findViewById(R.id.main_coordinator_layout), "Bye-Bye " + removedReminder.text, Snackbar.LENGTH_LONG).setAction("Undo") {
-            //readd reminder if undo is clicked
+            //re-add reminder if undo is clicked
             removedReminder.reAddReminder()
         }.show()
     }
@@ -364,8 +407,8 @@ class ReminderActivity : AppCompatActivity(),
         val removedReminder: Reminder = reminderList[reminderPositionInSection]
         val previousTime = removedReminder.remindCalendar.time
 
-        removedReminder.deleteReminder()
-        //if reminder is repeating, readd item with remind calendar incremented with the correct amount
+        deleteReminder(removedReminder)
+        //if reminder is repeating, re-add item with remind calendar incremented with the correct amount
         if (removedReminder.repeatVal != Reminder.REPEAT_NONE) {
             val calendar = removedReminder.remindCalendar
             //todo implement custom repeat
@@ -390,8 +433,8 @@ class ReminderActivity : AppCompatActivity(),
                 val updatedSection : ReminderSection = ReminderSection.getReminderSection(removedReminder)
                 val updatedList : LinkedList<Reminder> = updatedSection.getList()
                 val updatedCompletedPosition = updatedList.indexOf(removedReminder)
-                /* if reminder is repeating, remove item and readd with remind calendar decremented
-                the correct amount, else readd reminder normally */
+                /* if reminder is repeating, remove item and re-add with remind calendar decremented
+                the correct amount, else re-add reminder normally */
                 updatedList.removeAt(updatedCompletedPosition)
                 sectionAdapter.notifyItemRemoved(updatedCompletedPosition)
                 if (updatedSection.getList().isEmpty()) {
@@ -405,15 +448,6 @@ class ReminderActivity : AppCompatActivity(),
             removedReminder.reAddReminder()
         }.show()
     }
-    //if reminders have already been loaded return true
-    private fun isLoaded(): Boolean {
-        for(section in ReminderSection.reminderSectionList) {
-            if (!section.getList().isEmpty()) {
-                return true
-            }
-        }
-        return false
-    }
 
     override fun onReminderEdited(
         newText: String,
@@ -426,8 +460,31 @@ class ReminderActivity : AppCompatActivity(),
         val oldSection: ReminderSection = sectionAdapter.getSection(oldSectionTitle) as ReminderSection
         val oldReminder = oldSection.getList()[oldPositionInSection]
         //remove reminder
-        oldReminder.deleteReminder()
+        deleteReminder(oldReminder)
         //create new reminder with new specifications
         Reminder(newText,newRemindCalendar,newRepeatVal,newAutoSnoozeVal,applicationContext)
+    }
+
+    private fun deleteReminder(reminder: Reminder) {
+        //cancel the intermediate alarm
+        globalAlarmManager.cancel(reminder.intermediateReceiverPendingIntent)
+        //cancels repeating alarms
+        val notificationReceiverIntent = Intent(applicationContext, NotificationReceiver::class.java)
+        val notificationPendingIntent = PendingIntent.getBroadcast(applicationContext, reminder.requestCode, notificationReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        globalAlarmManager.cancel(notificationPendingIntent)
+
+        val positionInSection = reminder.list.indexOf(reminder)
+        //remove this reminder from its list and save
+        sectionAdapter.notifyItemRemovedFromSection(reminder.section, positionInSection)
+        reminder.list.remove(reminder)
+        saveAll(applicationContext)
+        if (reminder.list.isEmpty()) {
+            reminder.section.isVisible = false
+            sectionAdapter.notifyDataSetChanged()
+        }
+        //cancels all notification currently being shown
+        //todo fix this so that notifications IDs are being kept track of
+        val notificationManager: NotificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
     }
 }
