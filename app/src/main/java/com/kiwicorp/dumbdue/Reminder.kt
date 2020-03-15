@@ -87,7 +87,7 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
         notifySection()
     }
     //returns the list this reminder belongs to based off of its time
-    private fun getCorrectList(): LinkedList<Reminder> {
+    fun getCorrectList(): LinkedList<Reminder> {
         return when {
             remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis -> overdueList
             remindCalendar.timeInMillis < ReminderActivity.todayCalendar.timeInMillis -> todayList

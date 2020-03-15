@@ -15,7 +15,7 @@ import kotlin.math.absoluteValue
 
 abstract class AbstractReminderButtonFragment : Fragment() {
     protected lateinit var mView: View
-    protected var dueDateCalendar: Calendar = Calendar.getInstance()
+    protected lateinit var dueDateCalendar: Calendar
     protected var repeatVal: Int = Reminder.REPEAT_NONE
     protected var autoSnoozeVal: Int = Reminder.AUTO_SNOOZE_MINUTE
     protected lateinit var dateTextView: TextView
@@ -31,6 +31,9 @@ abstract class AbstractReminderButtonFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        dueDateCalendar = Calendar.getInstance()
+        dueDateCalendar.set(Calendar.SECOND,0)
+        dueDateCalendar.set(Calendar.MILLISECOND,0)
         //initialize all buttons
         val timeSetterButton1: Button = mView.findViewById(R.id.timeSetterButton1)
         val timeSetterButton2: Button = mView.findViewById(R.id.timeSetterButton2)
@@ -67,7 +70,7 @@ abstract class AbstractReminderButtonFragment : Fragment() {
         for (button in timeSetterButtons) {
             button.setOnClickListener {
                 //update due date calendar
-                /* number is the actual number of how much to increment/decrement, notDigits contains "+ unit" */
+                // number is the actual number of how much to increment/decrement, notDigits contains "+ unit"
                 val (number,notDigits)= button.text.partition { it.isDigit() }
                 val unit: String = notDigits.substring(2)  //contains the unit of the text
                 val unitInt: Int = when (unit) {
@@ -79,9 +82,7 @@ abstract class AbstractReminderButtonFragment : Fragment() {
                     else -> Calendar.YEAR
                 }
                 var incrementNumber: Int = number.toString().toInt()
-                if (notDigits[0] == '-') {
-                    incrementNumber *= -1
-                }
+                if (notDigits[0] == '-') incrementNumber *= -1
                 dueDateCalendar.add(unitInt,incrementNumber)
 
                 updateTextViews()
@@ -119,8 +120,9 @@ abstract class AbstractReminderButtonFragment : Fragment() {
             Reminder.REPEAT_CUSTOM -> "Custom"
             else -> ""
         }
-        //if time from now is positive or the same, updates text to be in format:
-        // "Date in fromNowMins (units)" and sets grey background color
+        /** if time from now is negative, updates text to be in format:
+         * "Date fromNowMins (units) ago" and sets red background color
+         */
         if (fromNowMins >= 0) {
             dateTextView.text = dateFormatter.format(dueDateCalendar.time)
                 .plus(" in ")
@@ -128,8 +130,6 @@ abstract class AbstractReminderButtonFragment : Fragment() {
             dateTextView.setBackgroundColor(Color.parseColor("#303030"))
             repeatTextView.setBackgroundColor(Color.parseColor("#303030"))
         }
-        //if time from now is negative, updates text to be in format:
-        //"Date fromNowMins (units) ago" and sets red background color
         else {
             dateTextView.text = dateFormatter.format(dueDateCalendar.time)
                 .plus(" ")

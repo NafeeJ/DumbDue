@@ -10,6 +10,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -29,6 +30,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapt
 import kotlinx.android.synthetic.main.activity_reminder.*
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
+import kotlin.math.abs
 
 class ReminderActivity : AppCompatActivity(),
     ReminderSection.ClickListener,
@@ -183,30 +185,37 @@ class ReminderActivity : AppCompatActivity(),
         val updateIntent = Intent(applicationContext,UpdateReceiver::class.java)
         val updatePendingIntent = PendingIntent.getBroadcast(applicationContext,updateRequestCode,updateIntent,PendingIntent.FLAG_UPDATE_CURRENT)
         globalAlarmManager.setInexactRepeating(AlarmManager.RTC,todayCalendar.timeInMillis,AlarmManager.INTERVAL_DAY,updatePendingIntent)
+
         val calendar = Calendar.getInstance()
+        calendar.set(Calendar.MILLISECOND,0)
+        calendar.set(Calendar.SECOND,0)
 
         //updates recycler view every 5 seconds
-        fixedRateTimer("timer",false,0,5000) {
+        fixedRateTimer("time",false,calendar.time,60000) {
             this@ReminderActivity.runOnUiThread {
+                Log.d(TAG,"Timer Update")
                 sectionAdapter.notifyDataSetChanged()
+                var numMoved = 0
                 for (reminder in Reminder.todayList) {
-                    Log.d(TAG,"Looking through today list")
-                    //if reminder becomes overdue, move to overdue section
-                    if (reminder.remindCalendar.timeInMillis < System.currentTimeMillis()) {
-                        Log.d(TAG,"Found an overdue Reminder")
-                        Reminder.todayList.remove(reminder)
-                        Log.d(TAG,"Removing the Reminder")
-                        if (Reminder.todayList.isEmpty()) {
-                            Log.d(TAG,"Removing the Section")
-                            val todaySection = ReminderSection.reminderSectionList[1]
-                            todaySection.isVisible = false
-                            sectionAdapter.notifyDataSetChanged()
-                            Log.d(TAG,"Section has been removed")
-                        }
-                        reminder.list = Reminder.overdueList
-                        reminder.insertInOrder(reminder.list,reminder)
-                        reminder.section = ReminderSection.getReminderSection(reminder)
+                    if (reminder.remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis) {
+                        numMoved++
+                        Reminder.overdueList.add(reminder)
+                        reminder.section = ReminderSection.reminderSectionList[0]
+                        reminder.list = reminder.getCorrectList()
                     }
+                }
+                if (numMoved != 0) {
+                    Reminder.todayList.removeAll {
+                        it.remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis
+                    }
+                    if (Reminder.overdueList.size == numMoved) {
+                        ReminderSection.reminderSectionList[0].isVisible = true
+                        sectionAdapter.notifySectionChangedToVisible("Overdue")
+                    }
+                    if (Reminder.todayList.isEmpty()) {
+                        ReminderSection.reminderSectionList[1].isVisible = false
+                    }
+                    sectionAdapter.notifyDataSetChanged()
                 }
             }
         }

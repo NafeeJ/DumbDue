@@ -20,6 +20,7 @@ class IntermediateReceiver : BroadcastReceiver() {
         val reminderData = reminderDataBundle.getParcelable<Reminder.ReminderData>("ReminderData")
         val requestCode = reminderData!!.requestCode
         val autoSnoozeVal = reminderData.autoSnoozeVal
+        val remindCalendar = reminderData.remindCalendar
 
         notificationReceiverIntent.putExtra("ReminderDataBundle",intent.getBundleExtra("ReminderDataBundle"))
 
@@ -40,12 +41,9 @@ class IntermediateReceiver : BroadcastReceiver() {
 
         if (interval != null) {
             //repeating alarm that repeats every minute
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
-                Calendar.getInstance().timeInMillis,
-                interval,
-                notificationPendingIntent)
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,remindCalendar.timeInMillis, interval, notificationPendingIntent)
         } else {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP,Calendar.getInstance().timeInMillis,notificationPendingIntent)
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP,remindCalendar.timeInMillis,notificationPendingIntent)
         }
     }
 }

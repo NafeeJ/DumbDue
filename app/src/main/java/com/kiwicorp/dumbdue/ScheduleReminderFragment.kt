@@ -43,13 +43,10 @@ open class ScheduleReminderFragment : AbstractReminderButtonFragment(),
             titleEditText.requestFocus()
             imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,InputMethodManager.HIDE_NOT_ALWAYS)
         }
-
         cancelButton = mView.findViewById(R.id.cancelButton)
         snoozeButton = mView.findViewById(R.id.snoozeButton)
         repeatButton = mView.findViewById(R.id.repeatButton)
         addButton = mView.findViewById(R.id.addButton)
-
-
         //set auto snooze based off of default value
         val sharedPreferences = android.preference.PreferenceManager.getDefaultSharedPreferences(activity!!.applicationContext)
         val autoSnoozeString: String = sharedPreferences.getString("default_auto_snooze",Reminder.AUTO_SNOOZE_MINUTE.toString()) as String
