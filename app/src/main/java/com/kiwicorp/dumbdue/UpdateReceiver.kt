@@ -17,9 +17,9 @@ class UpdateReceiver : BroadcastReceiver() {
     }
 
     private fun updateList(list: LinkedList<Reminder>) {
-        for (reminder in list) {
-            reminder.deleteReminder()
-            Reminder(reminder.text,reminder.remindCalendar,reminder.repeatVal,reminder.autoSnoozeVal,context)
-        }
+//        for (reminder in list) {
+//            reminder.deleteReminder()
+//            Reminder(reminder.text,reminder.remindCalendar,reminder.repeatVal,reminder.autoSnoozeVal,context)
+//        }
     }
 }

@@ -124,16 +124,16 @@ class ReminderActivity : AppCompatActivity(),
         fun insertInOrder(list: LinkedList<Reminder>, reminder: Reminder) {
             fun notifySection() {
                 reminder.section = ReminderSection.getReminderSection(reminder)
+                if (list.size == 1) {//if list was empty
+                    reminder.section.isVisible = true
+                    sectionAdapter.notifySectionChangedToVisible(reminder.section)
+                }
                 sectionAdapter.notifyItemInsertedInSection(reminder.section,list.indexOf(reminder))
             }
             //simply adds reminder if list is empty
             if (list.isEmpty()) {
                 list.add(reminder)
                 notifySection()
-                if (list.size == 1) {//if list was empty
-                    reminder.section.isVisible = true
-                    sectionAdapter.notifySectionChangedToVisible(reminder.section)
-                }
                 return
             }
             //finds and adds reminder into its correct position
