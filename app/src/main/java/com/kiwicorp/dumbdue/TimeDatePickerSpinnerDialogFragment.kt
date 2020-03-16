@@ -56,8 +56,9 @@ class TimeDatePickerSpinnerDialogFragment : BottomSheetDialogFragment() {
         val dateList: Array<String> = Array(5) {i -> dateFormatter.format(calendarList[i].time)} //list storing formatted dates of calendars
         datePicker.minValue = 0
         datePicker.maxValue = 4
-        datePicker.value = 3//sets the current value to be today's date
+        datePicker.value = 2//sets the current value to be today's date
         datePicker.displayedValues = dateList
+        //todo make it so today's date is displayed as "Today"
         datePicker.setOnValueChangedListener { _, oldVal, newVal ->
             if (oldVal < newVal || (oldVal == 4 && newVal == 0)) {//if the picker is increasing
                 //gets the proper index of the new val +1/+2

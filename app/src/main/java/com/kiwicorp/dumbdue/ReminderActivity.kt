@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -127,8 +128,9 @@ class ReminderActivity : AppCompatActivity(),
                 if (list.size == 1) {//if list was empty
                     reminder.section.isVisible = true
                     sectionAdapter.notifySectionChangedToVisible(reminder.section)
+                } else {
+                    sectionAdapter.notifyItemInsertedInSection(reminder.section,list.indexOf(reminder))
                 }
-                sectionAdapter.notifyItemInsertedInSection(reminder.section,list.indexOf(reminder))
             }
             //simply adds reminder if list is empty
             if (list.isEmpty()) {
@@ -145,6 +147,7 @@ class ReminderActivity : AppCompatActivity(),
                     return
                 }
             }
+            //if reminder time in millis greater than/equal to all other reminders, add to end
             list.add(reminder)
             notifySection()
         }
@@ -180,6 +183,7 @@ class ReminderActivity : AppCompatActivity(),
 
         deleteIcon = ContextCompat.getDrawable(this, R.drawable.delete_white) as Drawable
         checkIcon = ContextCompat.getDrawable(this,R.drawable.check_white) as Drawable
+
         //create and add reminder sections to the reminder section list
         ReminderSection.reminderSectionList = arrayOf(
             ReminderSection("Overdue", overdueList,this),
@@ -226,18 +230,12 @@ class ReminderActivity : AppCompatActivity(),
                 sectionAdapter.notifyDataSetChanged()
             }
         }
-        //todo test if this shit actually works
-        //sets a repeating alarm that updates the recycler view at 23:59:59 every night
-        val updateIntent = Intent(applicationContext,UpdateReceiver::class.java)
-        val updatePendingIntent = PendingIntent.getBroadcast(applicationContext,updateRequestCode,updateIntent,PendingIntent.FLAG_UPDATE_CURRENT)
-        globalAlarmManager.setInexactRepeating(AlarmManager.RTC,todayCalendar.timeInMillis,AlarmManager.INTERVAL_DAY,updatePendingIntent)
-
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.MILLISECOND,0)
         calendar.set(Calendar.SECOND,0)
 
-        //updates recycler view every 5 seconds
-        fixedRateTimer("time",false,calendar.time,60000) {
+        //updates recycler view every minute on the minute
+        fixedRateTimer("updateTodayOverdueLists",false,calendar.time,60000) {
             this@ReminderActivity.runOnUiThread {
                 Log.d(TAG,"Timer Update")
                 var numMoved = 0
@@ -261,6 +259,52 @@ class ReminderActivity : AppCompatActivity(),
                         ReminderSection.reminderSectionList[1].isVisible = false
                     }
                 }
+                sectionAdapter.notifyDataSetChanged()
+            }
+        }
+
+        fixedRateTimer("updateTomorrowNext7FutureLists",false, todayCalendar.time,8.64e+7.toLong()) {
+            this@ReminderActivity.runOnUiThread {
+                todayCalendar.add(Calendar.DAY_OF_YEAR,1)
+                tomorrowCalendar.add(Calendar.DAY_OF_YEAR,1)
+                next7daysCalendar.add(Calendar.DAY_OF_YEAR,1)
+                for (reminder in tomorrowList) {
+                    insertInOrder(todayList, reminder)
+                    reminder.section = ReminderSection.reminderSectionList[1]
+                    reminder.list = todayList
+                }
+                tomorrowList.clear()
+                var numMovedFromNext7 = 0
+                for (reminder in next7daysList) {
+                    if (reminder.remindCalendar.timeInMillis < tomorrowCalendar.timeInMillis) {
+                        numMovedFromNext7++
+                        insertInOrder(tomorrowList,reminder)
+                        reminder.section = ReminderSection.reminderSectionList[2]
+                        reminder.list = tomorrowList
+                    } else break
+                }
+                if (tomorrowList.isEmpty()) ReminderSection.reminderSectionList[1].isVisible = false
+                if (numMovedFromNext7 != 0) {
+                    next7daysList.removeAll {
+                        it.remindCalendar.timeInMillis < tomorrowCalendar.timeInMillis
+                    }
+                }
+                if (next7daysList.isEmpty()) ReminderSection.reminderSectionList[3].isVisible = false
+                var numMovedFromFuture = 0
+                for (reminder in futureList) {
+                    if (reminder.remindCalendar.timeInMillis < next7daysCalendar.timeInMillis) {
+                        numMovedFromFuture++
+                        insertInOrder(next7daysList,reminder)
+                        reminder.section = ReminderSection.reminderSectionList[3]
+                        reminder.list = next7daysList
+                    } else break
+                }
+                if (numMovedFromFuture != 0) {
+                    futureList.removeAll {
+                        it.remindCalendar.timeInMillis < next7daysCalendar.timeInMillis
+                    }
+                }
+                if (futureList.isEmpty()) ReminderSection.reminderSectionList[4].isVisible = false
                 sectionAdapter.notifyDataSetChanged()
             }
         }
