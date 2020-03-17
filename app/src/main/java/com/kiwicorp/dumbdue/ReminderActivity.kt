@@ -237,7 +237,6 @@ class ReminderActivity : AppCompatActivity(),
         //updates recycler view every minute on the minute
         fixedRateTimer("updateTodayOverdueLists",false,calendar.time,60000) {
             this@ReminderActivity.runOnUiThread {
-                Log.d(TAG,"Timer Update")
                 var numMoved = 0
                 for (reminder in todayList) {
                     if (reminder.remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis) {
@@ -273,6 +272,7 @@ class ReminderActivity : AppCompatActivity(),
                     reminder.section = ReminderSection.reminderSectionList[1]
                     reminder.list = todayList
                 }
+                if (todayList.size == tomorrowList.size && !todayList.isEmpty()) ReminderSection.reminderSectionList[1].isVisible = true
                 tomorrowList.clear()
                 var numMovedFromNext7 = 0
                 for (reminder in next7daysList) {
@@ -283,13 +283,11 @@ class ReminderActivity : AppCompatActivity(),
                         reminder.list = tomorrowList
                     } else break
                 }
-                if (tomorrowList.isEmpty()) ReminderSection.reminderSectionList[1].isVisible = false
                 if (numMovedFromNext7 != 0) {
                     next7daysList.removeAll {
                         it.remindCalendar.timeInMillis < tomorrowCalendar.timeInMillis
                     }
                 }
-                if (next7daysList.isEmpty()) ReminderSection.reminderSectionList[3].isVisible = false
                 var numMovedFromFuture = 0
                 for (reminder in futureList) {
                     if (reminder.remindCalendar.timeInMillis < next7daysCalendar.timeInMillis) {
@@ -304,6 +302,10 @@ class ReminderActivity : AppCompatActivity(),
                         it.remindCalendar.timeInMillis < next7daysCalendar.timeInMillis
                     }
                 }
+                if (tomorrowList.size == numMovedFromNext7 && !tomorrowList.isEmpty()) ReminderSection.reminderSectionList[2].isVisible = true
+                if (next7daysList.size == numMovedFromFuture && !next7daysList.isEmpty()) ReminderSection.reminderSectionList[3].isVisible = true
+                if (tomorrowList.isEmpty()) ReminderSection.reminderSectionList[2].isVisible = false
+                if (next7daysList.isEmpty()) ReminderSection.reminderSectionList[3].isVisible = false
                 if (futureList.isEmpty()) ReminderSection.reminderSectionList[4].isVisible = false
                 sectionAdapter.notifyDataSetChanged()
             }
