@@ -1,6 +1,7 @@
 package com.kiwicorp.dumbdue
 
 import android.app.AlarmManager
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -35,7 +36,6 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
     var requestCode: Int //reminder's unique requestCode for pending intent
     @Transient var list: LinkedList<Reminder>//contains one of companion lists
     @Transient lateinit var section: ReminderSection
-    @Transient var alarmManager = ReminderActivity.globalAlarmManager
 
     @Transient lateinit var intermediateReceiverIntent: Intent
     @Transient lateinit var intermediateReceiverPendingIntent: PendingIntent
@@ -43,13 +43,33 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
     init {
         requestCode = ++globalRequestCode
         list = ReminderActivity.getCorrectList(remindCalendar)
-        ReminderActivity.insertInOrder(list,this)
-        ReminderActivity.saveAll(context)
-        setNotifications()
+        ReminderActivity.insertReminderInOrder(list,this)//todo move to where reminders are created
+        ReminderActivity.saveAll(context)//todo move to where reminders are created
+        setNotifications()//todo move back to here?
     }
 
     fun getReminderData(): ReminderData {
-        return ReminderData(text,remindCalendar,repeatVal,requestCode,autoSnoozeVal,section.getTitle(),list.indexOf(this))
+        return ReminderData(text,remindCalendar,repeatVal,requestCode,autoSnoozeVal,section.title,list.indexOf(this))
+    }
+
+    //re-adds this reminder into its position after it has been deleted/completed and the user undo's
+    fun reAddReminder() {
+        ReminderActivity.insertReminderInOrder(list,this)
+        ReminderActivity.saveAll(context)
+        setNotifications()
+    }
+    //loads reminder after app closes and is reopened
+    fun loadReminder(context: Context) {
+        list = ReminderActivity.getCorrectList(remindCalendar)
+        ReminderActivity.insertReminderInOrder(list,this)
+
+        this.context = context
+        intermediateReceiverIntent = Intent(context,IntermediateReceiver::class.java)
+        val reminderDataBundle = Bundle()
+        reminderDataBundle.putParcelable("ReminderData",getReminderData())
+        intermediateReceiverIntent.putExtra("ReminderDataBundle",reminderDataBundle)
+        intermediateReceiverPendingIntent = PendingIntent.getBroadcast(context, requestCode,
+            intermediateReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
     //function that sets all the alarms for when reminder was deleted or app was closed
     private fun setNotifications() {
@@ -61,29 +81,23 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
         intermediateReceiverPendingIntent = PendingIntent.getBroadcast(context, requestCode,
             intermediateReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,
+        ReminderActivity.globalAlarmManager.setExact(AlarmManager.RTC_WAKEUP,
             remindCalendar.timeInMillis - 10000,
             intermediateReceiverPendingIntent)
     }
-    //re-adds this reminder into its position after it has been deleted/completed and the user undo's
-    fun reAddReminder() {
-        ReminderActivity.insertInOrder(list,this)
-        ReminderActivity.saveAll(context)
-        setNotifications()
-    }
-    //loads reminder after app closes and is reopened
-    fun loadReminder(context: Context) {
-        list = ReminderActivity.getCorrectList(remindCalendar)
-        ReminderActivity.insertInOrder(list,this)
 
-        this.context = context
-        alarmManager = ReminderActivity.globalAlarmManager
-        intermediateReceiverIntent = Intent(context,IntermediateReceiver::class.java)
-        val reminderDataBundle = Bundle()
-        reminderDataBundle.putParcelable("ReminderData",getReminderData())
-        intermediateReceiverIntent.putExtra("ReminderDataBundle",reminderDataBundle)
-        intermediateReceiverPendingIntent = PendingIntent.getBroadcast(context, requestCode,
-            intermediateReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+    fun cancelNotifications() {
+        //cancel the intermediate alarm
+        ReminderActivity.globalAlarmManager.cancel(intermediateReceiverPendingIntent)
+        //cancels repeating alarms
+        val notificationReceiverIntent = Intent(context, NotificationReceiver::class.java)
+        val notificationPendingIntent = PendingIntent.getBroadcast(context, requestCode, notificationReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        ReminderActivity.globalAlarmManager.cancel(notificationPendingIntent)
+
+        //cancels all notification currently being shown
+        //todo fix this so that notifications IDs are being kept track of
+        val notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
     }
     //data class that stores the essentials for recreating reminders when saving, loading, and editing
     @Parcelize data class ReminderData(

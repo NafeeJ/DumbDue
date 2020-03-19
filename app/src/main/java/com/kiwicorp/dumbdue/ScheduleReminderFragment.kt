@@ -10,7 +10,6 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.util.*
 
@@ -59,99 +58,15 @@ open class ScheduleReminderFragment : AbstractReminderButtonFragment(),
         }
         repeatButton.setOnClickListener {
             closeKeyboard()
-            //create and show dialog
-            val dialog = BottomSheetDialog(context!!)
-            val dialogView = layoutInflater.inflate(R.layout.dialog_choose_repeat,null)
-            dialog.setContentView(dialogView)
-            dialog.setCanceledOnTouchOutside(true)
-
-            val repeatOffTextView: TextView = dialogView.findViewById(R.id.repeatOffText)
-            val repeatDailyTextView: TextView = dialogView.findViewById(R.id.repeatDailyText)
-            val repeatWeekdaysTextView: TextView = dialogView.findViewById(R.id.repeatWeekdays)
-            val repeatWeeklyTextView: TextView = dialogView.findViewById(R.id.repeatWeekly)
-            val repeatYearlyTextView: TextView = dialogView.findViewById(R.id.repeatYearly)
-            val repeatMonthlyTextView: TextView = dialogView.findViewById(R.id.repeatMonthly)
-            val repeatCustomTextView: TextView = dialogView.findViewById(R.id.repeatCustom)
-            //set text views text
-            repeatOffTextView.text = "Repeat Off"
-            repeatDailyTextView.text = "Daily ".plus(timeFormatter.format(dueDateCalendar.time))
-            repeatWeekdaysTextView.text = "Weekdays ".plus(timeFormatter.format(dueDateCalendar.time))
-            repeatWeeklyTextView.text = dayOfWeekFormatter.format(dueDateCalendar.time)
-                .plus("s ")
-                .plus(timeFormatter.format(dueDateCalendar.time))
-            repeatMonthlyTextView.text = dueDateCalendar
-                .get(Calendar.DAY_OF_MONTH).toString()
-                .plus(ReminderActivity.daySuffixFinder(dueDateCalendar))
-                .plus(" each month at ")
-                .plus(timeFormatter.format(dueDateCalendar.time))
-            repeatYearlyTextView.text = "Every ".plus(dateFormatter2.format(dueDateCalendar.time))
-            repeatCustomTextView.text = "Custom"
-            //set click listeners
-            repeatOffTextView.setOnClickListener {
-                repeatVal = Reminder.REPEAT_NONE
-                repeatTextView.visibility = View.GONE
-                dialog.dismiss()
-            }
-            repeatDailyTextView.setOnClickListener {
-                repeatVal = Reminder.REPEAT_DAILY
-                updateTextViews()
-                repeatTextView.visibility = View.VISIBLE
-                dialog.dismiss()
-            }
-            repeatWeekdaysTextView.setOnClickListener {
-                repeatVal = Reminder.REPEAT_WEEKDAYS
-                updateTextViews()
-                repeatTextView.visibility = View.VISIBLE
-                dialog.dismiss()
-            }
-            repeatWeeklyTextView.setOnClickListener {
-                repeatVal = Reminder.REPEAT_WEEKLY
-                updateTextViews()
-                repeatTextView.visibility = View.VISIBLE
-                dialog.dismiss()
-            }
-            repeatMonthlyTextView.setOnClickListener {
-                repeatVal = Reminder.REPEAT_MONTHLY
-                updateTextViews()
-                repeatTextView.visibility = View.VISIBLE
-                dialog.dismiss()
-            }
-            repeatCustomTextView.setOnClickListener {
-                repeatVal = Reminder.REPEAT_CUSTOM
-                updateTextViews()
-                repeatTextView.visibility = View.VISIBLE
-            }
-            dialog.show()
+            showRepeatDialog()
         }
         snoozeButton.setOnClickListener {
             closeKeyboard()
-            //create and show dialog
-            val dialog = BottomSheetDialog(context!!)
-            val dialogView = layoutInflater.inflate(R.layout.dialog_choose_snooze,null)
-            dialog.setContentView(dialogView)
-            dialog.setCanceledOnTouchOutside(true)
-
-            val noneTextView: TextView = dialogView.findViewById(R.id.noneTextView)
-            val everyMinuteTextView: TextView = dialogView.findViewById(R.id.everyMinuteTextView)
-            val every5MinutesTextView: TextView = dialogView.findViewById(R.id.every5MinutesTextView)
-            val every10MinutesTextView: TextView = dialogView.findViewById(R.id.every10MinutesTextView)
-            val every15MinutesTextView: TextView = dialogView.findViewById(R.id.every15MinutesTextView)
-            val every30MinutesTextView: TextView = dialogView.findViewById(R.id.every30MinutesTextView)
-            val everyHourTextView: TextView = dialogView.findViewById(R.id.everyHourTextView)
-
-            noneTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_NONE; dialog.dismiss(); updateSnoozeButtonImage() }
-            everyMinuteTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_MINUTE; dialog.dismiss(); updateSnoozeButtonImage() }
-            every5MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_5_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
-            every10MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_10_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
-            every15MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_15_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
-            every30MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_30_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
-            everyHourTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_HOUR; dialog.dismiss(); updateSnoozeButtonImage() }
-
-            dialog.show()
+           showSnoozeDialog()
         }
 
         addButton.setOnClickListener {
-            Reminder(titleEditText.text.toString(),dueDateCalendar,repeatVal,autoSnoozeVal,context!!)
+            Reminder(titleEditText.text.toString(),reminderCalendar,repeatVal,autoSnoozeVal,context!!)
             activity!!.supportFragmentManager.popBackStack()
             closeKeyboard()
         }
@@ -162,7 +77,7 @@ open class ScheduleReminderFragment : AbstractReminderButtonFragment(),
             if (timeDatePickerString == "stock") {
                 val datePickerDialogFragment: Fragment = TimeDatePickerDialogFragment()
                 val args = Bundle()
-                args.putLong("timeInMillis",dueDateCalendar.timeInMillis)
+                args.putLong("timeInMillis",reminderCalendar.timeInMillis)
                 datePickerDialogFragment.arguments = args
                 childFragmentManager.beginTransaction()
                     .replace(R.id.container,datePickerDialogFragment)
@@ -171,7 +86,7 @@ open class ScheduleReminderFragment : AbstractReminderButtonFragment(),
             } else if (timeDatePickerString == "spinner") {
                 val datePickerSpinnerDialogFragment = TimeDatePickerSpinnerDialogFragment()
                 val args = Bundle()
-                args.putLong("timeInMillis",dueDateCalendar.timeInMillis)
+                args.putLong("timeInMillis",reminderCalendar.timeInMillis)
                 datePickerSpinnerDialogFragment.arguments = args
                 datePickerSpinnerDialogFragment.show(childFragmentManager,null)
             }
@@ -179,6 +94,97 @@ open class ScheduleReminderFragment : AbstractReminderButtonFragment(),
         super.onCreateView(inflater, container, savedInstanceState)
         updateSnoozeButtonImage()
         return mView
+    }
+    private fun showRepeatDialog() {
+        //create and show dialog
+        val dialog = BottomSheetDialog(context!!)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_choose_repeat,null)
+        dialog.setContentView(dialogView)
+        dialog.setCanceledOnTouchOutside(true)
+
+        val repeatOffTextView: TextView = dialogView.findViewById(R.id.repeatOffText)
+        val repeatDailyTextView: TextView = dialogView.findViewById(R.id.repeatDailyText)
+        val repeatWeekdaysTextView: TextView = dialogView.findViewById(R.id.repeatWeekdays)
+        val repeatWeeklyTextView: TextView = dialogView.findViewById(R.id.repeatWeekly)
+        val repeatYearlyTextView: TextView = dialogView.findViewById(R.id.repeatYearly)
+        val repeatMonthlyTextView: TextView = dialogView.findViewById(R.id.repeatMonthly)
+        val repeatCustomTextView: TextView = dialogView.findViewById(R.id.repeatCustom)
+        //set text views text
+        repeatOffTextView.text = "Repeat Off"
+        repeatDailyTextView.text = "Daily ".plus(timeFormatter.format(reminderCalendar.time))
+        repeatWeekdaysTextView.text = "Weekdays ".plus(timeFormatter.format(reminderCalendar.time))
+        repeatWeeklyTextView.text = dayOfWeekFormatter.format(reminderCalendar.time)
+            .plus("s ")
+            .plus(timeFormatter.format(reminderCalendar.time))
+        repeatMonthlyTextView.text = reminderCalendar
+            .get(Calendar.DAY_OF_MONTH).toString()
+            .plus(ReminderActivity.daySuffixFinder(reminderCalendar))
+            .plus(" each month at ")
+            .plus(timeFormatter.format(reminderCalendar.time))
+        repeatYearlyTextView.text = "Every ".plus(dateFormatter2.format(reminderCalendar.time))
+        repeatCustomTextView.text = "Custom"
+        //set click listeners
+        //todo make a loop of this?
+        repeatOffTextView.setOnClickListener {
+            repeatVal = Reminder.REPEAT_NONE
+            repeatTextView.visibility = View.GONE
+            dialog.dismiss()
+        }
+        repeatDailyTextView.setOnClickListener {
+            repeatVal = Reminder.REPEAT_DAILY
+            updateTextViews()
+            repeatTextView.visibility = View.VISIBLE
+            dialog.dismiss()
+        }
+        repeatWeekdaysTextView.setOnClickListener {
+            repeatVal = Reminder.REPEAT_WEEKDAYS
+            updateTextViews()
+            repeatTextView.visibility = View.VISIBLE
+            dialog.dismiss()
+        }
+        repeatWeeklyTextView.setOnClickListener {
+            repeatVal = Reminder.REPEAT_WEEKLY
+            updateTextViews()
+            repeatTextView.visibility = View.VISIBLE
+            dialog.dismiss()
+        }
+        repeatMonthlyTextView.setOnClickListener {
+            repeatVal = Reminder.REPEAT_MONTHLY
+            updateTextViews()
+            repeatTextView.visibility = View.VISIBLE
+            dialog.dismiss()
+        }
+        repeatCustomTextView.setOnClickListener {
+            repeatVal = Reminder.REPEAT_CUSTOM
+            updateTextViews()
+            repeatTextView.visibility = View.VISIBLE
+        }
+        dialog.show()
+    }
+    private fun showSnoozeDialog() {
+        //create and show dialog
+        val dialog = BottomSheetDialog(context!!)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_choose_snooze,null)
+        dialog.setContentView(dialogView)
+        dialog.setCanceledOnTouchOutside(true)
+
+        val noneTextView: TextView = dialogView.findViewById(R.id.noneTextView)
+        val everyMinuteTextView: TextView = dialogView.findViewById(R.id.everyMinuteTextView)
+        val every5MinutesTextView: TextView = dialogView.findViewById(R.id.every5MinutesTextView)
+        val every10MinutesTextView: TextView = dialogView.findViewById(R.id.every10MinutesTextView)
+        val every15MinutesTextView: TextView = dialogView.findViewById(R.id.every15MinutesTextView)
+        val every30MinutesTextView: TextView = dialogView.findViewById(R.id.every30MinutesTextView)
+        val everyHourTextView: TextView = dialogView.findViewById(R.id.everyHourTextView)
+
+        noneTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_NONE; dialog.dismiss(); updateSnoozeButtonImage() }
+        everyMinuteTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_MINUTE; dialog.dismiss(); updateSnoozeButtonImage() }
+        every5MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_5_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
+        every10MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_10_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
+        every15MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_15_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
+        every30MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_30_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
+        everyHourTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_HOUR; dialog.dismiss(); updateSnoozeButtonImage() }
+
+        dialog.show()
     }
     //closes keyboard if the current focus is not the edit text
     protected fun closeKeyboard() {
@@ -201,7 +207,7 @@ open class ScheduleReminderFragment : AbstractReminderButtonFragment(),
         snoozeButton.setImageResource(image)
     }
     override fun onDateChanged(timeInMillis: Long) {
-        dueDateCalendar.timeInMillis = timeInMillis
+        reminderCalendar.timeInMillis = timeInMillis
         updateTextViews()
     }
 }

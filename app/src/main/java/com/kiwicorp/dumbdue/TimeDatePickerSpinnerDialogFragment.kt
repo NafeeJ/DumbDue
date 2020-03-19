@@ -20,7 +20,7 @@ class TimeDatePickerSpinnerDialogFragment : BottomSheetDialogFragment() {
     lateinit var minutePicker: NumberPicker
     lateinit var ampmPicker: NumberPicker
 
-    var calendar = Calendar.getInstance()
+    var calendar: Calendar = Calendar.getInstance()
 
     private val dateFormatter = SimpleDateFormat("EEE MMM d", Locale.US)
 
@@ -51,14 +51,20 @@ class TimeDatePickerSpinnerDialogFragment : BottomSheetDialogFragment() {
             return tempCalendar
         }
 
+        fun formatCalendar(calendar: Calendar): String {
+            return if (calendar.get(Calendar.DAY_OF_YEAR) == Calendar.getInstance().get(Calendar.DAY_OF_YEAR)) {
+                "Today"
+            } else {
+                dateFormatter.format(calendar.time)
+            }
+        }
         //configure date picker
         val calendarList: Array<Calendar> = Array(5) {i -> dateInit(i - 2) } //list storing calendars
-        val dateList: Array<String> = Array(5) {i -> dateFormatter.format(calendarList[i].time)} //list storing formatted dates of calendars
+        val dateList: Array<String> = Array(5) {i -> formatCalendar(calendarList[i])} //list storing formatted dates of calendars
         datePicker.minValue = 0
         datePicker.maxValue = 4
         datePicker.value = 2//sets the current value to be today's date
         datePicker.displayedValues = dateList
-        //todo make it so today's date is displayed as "Today"
         datePicker.setOnValueChangedListener { _, oldVal, newVal ->
             if (oldVal < newVal || (oldVal == 4 && newVal == 0)) {//if the picker is increasing
                 //gets the proper index of the new val +1/+2
@@ -68,8 +74,8 @@ class TimeDatePickerSpinnerDialogFragment : BottomSheetDialogFragment() {
                 calendarList[indexPlus1].timeInMillis = calendarList[newVal].timeInMillis + 8.64e+7.toLong()
                 calendarList[indexPlus2].timeInMillis = calendarList[newVal].timeInMillis + (2 * 8.64e+7).toLong()
                 //updates the date list to display the correct calendar dates
-                dateList[indexPlus1] = dateFormatter.format(calendarList[indexPlus1].time)
-                dateList[indexPlus2] = dateFormatter.format(calendarList[indexPlus2].time)
+                dateList[indexPlus1] = formatCalendar(calendarList[indexPlus1])
+                dateList[indexPlus2] = formatCalendar(calendarList[indexPlus2])
             } else if (oldVal > newVal || (oldVal == 0 && newVal == 4)) {//if the picker is decreasing
                 //gets the proper index of the new val -1/-2
                 val indexMinus2: Int = if (newVal - 2 >= 0) newVal - 2 else newVal + 4 - 1
@@ -78,8 +84,8 @@ class TimeDatePickerSpinnerDialogFragment : BottomSheetDialogFragment() {
                 calendarList[indexMinus1].timeInMillis = calendarList[newVal].timeInMillis - 8.64e+7.toLong()
                 calendarList[indexMinus2].timeInMillis = calendarList[newVal].timeInMillis - (2 * 8.64e+7).toLong()
                 //updates the date list to display the correct dates
-                dateList[indexMinus1] = dateFormatter.format(calendarList[indexMinus1].time)
-                dateList[indexMinus2] = dateFormatter.format(calendarList[indexMinus2].time)
+                dateList[indexMinus1] = formatCalendar(calendarList[indexMinus1])
+                dateList[indexMinus2] = formatCalendar(calendarList[indexMinus2])
             }
             calendar.set(Calendar.DAY_OF_YEAR,calendarList[newVal].get(Calendar.DAY_OF_YEAR))
             onDateChangedListener.onDateChanged(calendar.timeInMillis)

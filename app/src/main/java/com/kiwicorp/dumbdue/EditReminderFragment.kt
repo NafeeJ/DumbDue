@@ -29,7 +29,7 @@ class EditReminderFragment : ScheduleReminderFragment(),
         //get reminder data and set vals
         val reminderData: Reminder.ReminderData =
             arguments!!.getParcelable("ReminderData") as Reminder.ReminderData
-        dueDateCalendar.timeInMillis = reminderData.remindCalendar.timeInMillis
+        reminderCalendar.timeInMillis = reminderData.remindCalendar.timeInMillis
         titleEditText.setText(reminderData.text)
         autoSnoozeVal = reminderData.autoSnoozeVal
         repeatVal = reminderData.repeatVal
@@ -39,7 +39,7 @@ class EditReminderFragment : ScheduleReminderFragment(),
 
         addButton.setOnClickListener {
             onReminderEditListener.onReminderEdited(titleEditText.text.toString(),
-                dueDateCalendar,repeatVal,autoSnoozeVal,reminderData.sectionTitle,reminderData.positionInSection)
+                reminderCalendar,repeatVal,autoSnoozeVal,reminderData.sectionTitle,reminderData.positionInSection)
             activity!!.supportFragmentManager.popBackStack()
             closeKeyboard()
         }
@@ -48,7 +48,7 @@ class EditReminderFragment : ScheduleReminderFragment(),
     }
 
     override fun onDateChanged(timeInMillis: Long) {
-        dueDateCalendar.timeInMillis = timeInMillis
+        reminderCalendar.timeInMillis = timeInMillis
         updateTextViews()
     }
 

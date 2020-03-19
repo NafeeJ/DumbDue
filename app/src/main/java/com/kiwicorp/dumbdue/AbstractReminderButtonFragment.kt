@@ -2,7 +2,6 @@ package com.kiwicorp.dumbdue
 
 import android.graphics.Color
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,7 @@ import kotlin.math.absoluteValue
 
 abstract class AbstractReminderButtonFragment : Fragment() {
     protected lateinit var mView: View
-    protected lateinit var dueDateCalendar: Calendar
+    protected lateinit var reminderCalendar: Calendar
     protected var repeatVal: Int = Reminder.REPEAT_NONE
     protected var autoSnoozeVal: Int = Reminder.AUTO_SNOOZE_MINUTE
     protected lateinit var dateTextView: TextView
@@ -31,9 +30,9 @@ abstract class AbstractReminderButtonFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        dueDateCalendar = Calendar.getInstance()
-        dueDateCalendar.set(Calendar.SECOND,0)
-        dueDateCalendar.set(Calendar.MILLISECOND,0)
+        reminderCalendar = Calendar.getInstance()
+        reminderCalendar.set(Calendar.SECOND,0)
+        reminderCalendar.set(Calendar.MILLISECOND,0)
         //initialize all buttons
         val timeSetterButton1: Button = mView.findViewById(R.id.timeSetterButton1)
         val timeSetterButton2: Button = mView.findViewById(R.id.timeSetterButton2)
@@ -83,7 +82,7 @@ abstract class AbstractReminderButtonFragment : Fragment() {
                 }
                 var incrementNumber: Int = number.toString().toInt()
                 if (notDigits[0] == '-') incrementNumber *= -1
-                dueDateCalendar.add(unitInt,incrementNumber)
+                reminderCalendar.add(unitInt,incrementNumber)
 
                 updateTextViews()
             }
@@ -94,8 +93,8 @@ abstract class AbstractReminderButtonFragment : Fragment() {
                 val text: String = button.text as String
                 val hour: Int = text.substringBefore(':').toInt()
                 val minute: Int = text.substringAfter(':').substringBefore(' ').toInt()
-                dueDateCalendar.set(Calendar.HOUR,hour)
-                dueDateCalendar.set(Calendar.MINUTE,minute)
+                reminderCalendar.set(Calendar.HOUR,hour)
+                reminderCalendar.set(Calendar.MINUTE,minute)
 
                 updateTextViews()
             }
@@ -104,19 +103,19 @@ abstract class AbstractReminderButtonFragment : Fragment() {
         return mView
     }
     protected fun updateTextViews() { //updates text view
-        val fromNowMins = ReminderActivity.findTimeFromNowMins(dueDateCalendar)
-        val time = dueDateCalendar.time
+        val fromNowMins = ReminderActivity.findTimeFromNowMins(reminderCalendar)
+        val time = reminderCalendar.time
         repeatTextView.text = when(repeatVal) {
             Reminder.REPEAT_DAILY -> "Daily ".plus(timeFormatter.format(time))
             Reminder.REPEAT_WEEKDAYS -> "Weekdays ".plus(timeFormatter.format(time))
             Reminder.REPEAT_WEEKLY -> dayOfWeekFormatter.format(time)
                 .plus("s ")
                 .plus(timeFormatter.format(time))
-            Reminder.REPEAT_MONTHLY -> dueDateCalendar.get(Calendar.DAY_OF_MONTH).toString()
-                .plus(ReminderActivity.daySuffixFinder(dueDateCalendar))
+            Reminder.REPEAT_MONTHLY -> reminderCalendar.get(Calendar.DAY_OF_MONTH).toString()
+                .plus(ReminderActivity.daySuffixFinder(reminderCalendar))
                 .plus(" each month at ")
                 .plus(timeFormatter.format(time))
-            Reminder.REPEAT_YEARLY -> "Every ".plus(dateFormatter2.format(dueDateCalendar.time))
+            Reminder.REPEAT_YEARLY -> "Every ".plus(dateFormatter2.format(reminderCalendar.time))
             Reminder.REPEAT_CUSTOM -> "Custom"
             else -> ""
         }
@@ -124,14 +123,14 @@ abstract class AbstractReminderButtonFragment : Fragment() {
          * "Date fromNowMins (units) ago" and sets red background color
          */
         if (fromNowMins >= 0) {
-            dateTextView.text = dateFormatter.format(dueDateCalendar.time)
+            dateTextView.text = dateFormatter.format(reminderCalendar.time)
                 .plus(" in ")
                 .plus(findTimeFromNowString(fromNowMins))
             dateTextView.setBackgroundColor(Color.parseColor("#303030"))
             repeatTextView.setBackgroundColor(Color.parseColor("#303030"))
         }
         else {
-            dateTextView.text = dateFormatter.format(dueDateCalendar.time)
+            dateTextView.text = dateFormatter.format(reminderCalendar.time)
                 .plus(" ")
                 .plus(findTimeFromNowString(fromNowMins))
                 .plus(" ago")

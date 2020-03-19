@@ -34,15 +34,15 @@ class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(i
                 colorBar.setBackgroundColor(Color.parseColor("#f54242"))//set color bar to red
                 dateOrRepeatTextView.setTextColor(Color.parseColor("#f54242"))//set text color to red
             }
-            remindCalendar < ReminderActivity.todayCalendar -> {
+            remindCalendar < ReminderActivity.endOfTodayCalendar -> {
                 colorBar.setBackgroundColor(Color.parseColor("#fff262"))//sets color bar to yellow
                 dateOrRepeatTextView.setTextColor(Color.parseColor("#525252"))//set text color to grey
             }
-            remindCalendar < ReminderActivity.tomorrowCalendar -> {
+            remindCalendar < ReminderActivity.endOfTomorrowCalendar -> {
                 colorBar.setBackgroundColor(Color.parseColor("#3371FF"))//sets color bar to blue
                 dateOrRepeatTextView.setTextColor(Color.parseColor("#525252"))//set text color to grey
             }
-            remindCalendar < ReminderActivity.next7daysCalendar -> {
+            remindCalendar < ReminderActivity.endOfNext7daysCalendar -> {
                 colorBar.setBackgroundColor(Color.parseColor("#6a44b1"))//sets color bar to purple
                 dateOrRepeatTextView.setTextColor(Color.parseColor("#525252"))//set text color to grey
             }
@@ -102,15 +102,15 @@ class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(i
 
         timeFromNowString = when {
             //add "in" to time from now string if within 3 hours or more than a week
-            fromNowMins >= 0 && ((absMins / 60.0).roundToInt() <= 3) || calendar.timeInMillis > ReminderActivity.next7daysCalendar.timeInMillis -> {
+            fromNowMins >= 0 && ((absMins / 60.0).roundToInt() <= 3) || calendar.timeInMillis > ReminderActivity.endOfNext7daysCalendar.timeInMillis -> {
                 "in ".plus(timeFromNowString)
             }
             //set time from now string to be the time if less than 2 days from today
-            fromNowMins > 0 && calendar.timeInMillis < ReminderActivity.tomorrowCalendar.timeInMillis -> {
+            fromNowMins > 0 && calendar.timeInMillis < ReminderActivity.endOfTomorrowCalendar.timeInMillis -> {
                 timeFormatter.format(calendar.time)
             }
             //set time from now string to be the day if less than a week from today
-            fromNowMins > 0 && calendar.timeInMillis < ReminderActivity.next7daysCalendar.timeInMillis -> {
+            fromNowMins > 0 && calendar.timeInMillis < ReminderActivity.endOfNext7daysCalendar.timeInMillis -> {
                 dayFormatter.format(calendar.time)
             }
             //if time from now is negative add "ago"
