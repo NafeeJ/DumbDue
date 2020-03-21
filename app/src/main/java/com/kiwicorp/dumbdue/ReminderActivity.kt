@@ -469,16 +469,17 @@ class ReminderActivity: AppCompatActivity(),
     //returns the section of the reminder at the given position
     private fun findReminderSection(positionInAdapter: Int): ReminderSection {
         val sectionList: Array<ReminderSection?> = arrayOfNulls(5)
+        var pos = 0
 
         //adds sections to section list if they're visible (meaning they're valid)
-        if (overdueSection.isVisible) sectionList[0] = overdueSection
-        if (todaySection.isVisible) sectionList[1] = todaySection
-        if (tomorrowSection.isVisible) sectionList[2] = tomorrowSection
-        if (next7DaysSection.isVisible) sectionList[3] = next7DaysSection
-        if (futureSection.isVisible) sectionList[4] = futureSection
+        if (overdueSection.isVisible) sectionList[pos++] = overdueSection
+        if (todaySection.isVisible) sectionList[pos++] = todaySection
+        if (tomorrowSection.isVisible) sectionList[pos++] = tomorrowSection
+        if (next7DaysSection.isVisible) sectionList[pos++] = next7DaysSection
+        if (futureSection.isVisible) sectionList[pos] = futureSection
 
         //finds the section of the reminder based of its adapter position
-        for (i in sectionList.indices) {
+        for (i in 0..pos) {
             val sectionAdapterPosition = sectionAdapter.getSectionPosition(sectionList[i])
             if (positionInAdapter < sectionAdapterPosition) return sectionList[i - 1] as ReminderSection
         }
