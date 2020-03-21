@@ -6,10 +6,10 @@
         android:id="@+id/action_settings"
         android:icon="@drawable/settings_white"
         android:title="settings"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_timer"
         android:icon="@drawable/time_white"
-        android:title="settings"
+        android:title="timer"
         app:showAsAction="always" />
 </menu>

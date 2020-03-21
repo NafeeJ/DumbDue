@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#000000">
 
     <TextView
@@ -14,10 +15,10 @@
         android:layout_marginBottom="2dp"
         android:maxLines = "1"
         android:ellipsize="end"
-        android:paddingLeft="10dp"
-        android:text="reminder"
+        android:paddingStart="10dp"
         android:textColor="#FFFFFF"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
         android:id="@+id/dateOrRepeatTextView"
@@ -29,9 +30,9 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
-        android:paddingLeft="10dp"
-        android:text="date/repeat"
-        android:textColor="#525252" />
+        android:paddingStart="10dp"
+        android:textColor="#525252"
+        tools:ignore="RtlSymmetry" />
 
     <TextView
         android:id="@+id/timeFromNowTextView"
@@ -43,9 +44,9 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
-        android:paddingRight="10dp"
-        android:text="time from now"
-        android:textColor="#525252" />
+        android:paddingEnd="10dp"
+        android:textColor="#525252"
+        tools:ignore="RtlSymmetry" />
 
     <View
         android:id="@+id/colorBar"

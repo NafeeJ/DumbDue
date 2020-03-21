@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@id/calendarView"
         android:layout_below="@id/calendarView"
-        android:text="OK" />
+        android:text="@string/ok" />
 
     <Button
         android:id="@+id/dateTimeCancelButton"
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_toStartOf="@id/dateTimeSetButton"
         android:layout_below="@id/calendarView"
-        android:text="CANCEL" />
+        android:text="@string/cancel" />
 
     <ImageButton
         android:id="@+id/timePickerImageButton"
@@ -47,8 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/timePickerImageButton"
         android:layout_below="@id/calendarView"
-        android:layout_marginTop="15dp"
-        android:text="TextView" />
+        android:layout_marginTop="15dp"/>
 
 
 </RelativeLayout>

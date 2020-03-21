@@ -43,9 +43,9 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
     init {
         requestCode = ++globalRequestCode
         list = ReminderActivity.getCorrectList(remindCalendar)
-        ReminderActivity.insertReminderInOrder(list,this)//todo move to where reminders are created
-        ReminderActivity.saveAll(context)//todo move to where reminders are created
-        setNotifications()//todo move back to here?
+        ReminderActivity.insertReminderInOrder(list,this)
+        ReminderActivity.saveAll(context)
+        setNotifications()
     }
 
     fun getReminderData(): ReminderData {

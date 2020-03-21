@@ -57,19 +57,12 @@ class ReminderActivity : AppCompatActivity(),
         lateinit var futureSection: ReminderSection
         //inserts reminder into its correct position in the given list
         fun insertReminderInOrder(list: LinkedList<Reminder>, reminder: Reminder) {
-            fun notifySection() {
-                reminder.section = findReminderSection(reminder)
-                if (list.size == 1) {//if list was empty
-                    reminder.section.isVisible = true
-                    sectionAdapter.notifySectionChangedToVisible(reminder.section)
-                } else {
-                    sectionAdapter.notifyItemInsertedInSection(reminder.section,list.indexOf(reminder))
-                }
-            }
             //simply adds reminder if list is empty
             if (list.isEmpty()) {
                 list.add(reminder)
-                notifySection()
+                reminder.section = findReminderSection(reminder)
+                reminder.section.isVisible = true
+                sectionAdapter.notifySectionChangedToVisible(reminder.section)
                 return
             }
             //finds and adds reminder into its correct position
@@ -77,13 +70,15 @@ class ReminderActivity : AppCompatActivity(),
             for (element in iterator) {
                 if (element.remindCalendar.timeInMillis > reminder.remindCalendar.timeInMillis) {
                     list.add(iterator.previousIndex(), reminder)
-                    notifySection()
+                    reminder.section = findReminderSection(reminder)
+                    sectionAdapter.notifyItemInsertedInSection(reminder.section,list.indexOf(reminder))
                     return
                 }
             }
             //if reminder time in millis greater than/equal to all other reminders, add to end
             list.add(reminder)
-            notifySection()
+            reminder.section = findReminderSection(reminder)
+            sectionAdapter.notifyItemInsertedInSection(reminder.section,list.indexOf(reminder))
         }
         //returns the list this reminder belongs to based off of its time
         fun getCorrectList(remindCalendar: Calendar): LinkedList<Reminder> {
@@ -147,6 +142,7 @@ class ReminderActivity : AppCompatActivity(),
             //apply changes
             editor.apply()
         }
+        //todo make calendar child class??
         //returns the correct suffix of number of the day based off the date of the calendar
         fun daySuffixFinder(calendar: Calendar): String {
             val dayOfMonth: Int = calendar.get(Calendar.DAY_OF_MONTH)
@@ -410,7 +406,6 @@ class ReminderActivity : AppCompatActivity(),
         val indexFromJson = gson.fromJson<Int>(requestCodeJson,intType)
         Reminder.globalRequestCode = indexFromJson
     }
-
     private fun swipeDelete(viewHolder: RecyclerView.ViewHolder) {
         val reminderHolder: ReminderViewHolder = viewHolder as ReminderViewHolder
         val positionInAdapter: Int = reminderHolder.adapterPosition
@@ -507,14 +502,8 @@ class ReminderActivity : AppCompatActivity(),
             .addToBackStack(null)
             .commit()
     }
-    override fun onReminderEdited(
-        newText: String,
-        newRemindCalendar: Calendar,
-        newRepeatVal: Int,
-        newAutoSnoozeVal: Int,
-        oldSectionTitle: String,
-        oldPositionInSection: Int
-    ) {
+    override fun onReminderEdited(newText: String, newRemindCalendar: Calendar, newRepeatVal: Int,
+        newAutoSnoozeVal: Int, oldSectionTitle: String, oldPositionInSection: Int) {
         val oldSection: ReminderSection = sectionAdapter.getSection(oldSectionTitle) as ReminderSection
         val oldReminder = oldSection.getList()[oldPositionInSection]
         deleteReminder(oldReminder)

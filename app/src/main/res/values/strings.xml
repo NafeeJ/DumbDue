@@ -42,4 +42,8 @@
     <string name="plus_3_hr">+3 Hr</string>
     <string name="plus_1_day">+1 Day</string>
 
+    <!-- OK and CANCEL -->
+    <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
+
 </resources>
