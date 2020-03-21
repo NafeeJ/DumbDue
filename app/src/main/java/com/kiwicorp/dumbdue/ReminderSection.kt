@@ -7,7 +7,6 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.Section
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ReminderSection(
     val title: String,

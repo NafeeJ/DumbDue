@@ -4,7 +4,6 @@ package com.kiwicorp.dumbdue
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.os.Build
 
 
 class NotificationChannel : android.app.Application() {

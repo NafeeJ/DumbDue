@@ -1,12 +1,9 @@
 package com.kiwicorp.dumbdue
 
-import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 
 class LockScreenReminderActivity: AbstractReminderButtonsActivity() {
     companion object { const val TAG: String = "LockScreenReminderActivity" }
