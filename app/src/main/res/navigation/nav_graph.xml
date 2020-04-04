@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_home">
+
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.kiwicorp.dumbdue.MainFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_mainFragment_to_scheduleReminderFragment"
+            app:destination="@id/nav_schedule_reminders" />
+        <action
+            android:id="@+id/action_mainFragment_to_editReminderFragment"
+            app:destination="@id/nav_edit_reminders" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_edit_reminders"
+        android:name="com.kiwicorp.dumbdue.EditReminderFragment"
+        android:label="EditReminderFragment"
+        tools:layout="@layout/fragment_edit_reminder"/>
+    <fragment
+        android:id="@+id/nav_schedule_reminders"
+        android:name="com.kiwicorp.dumbdue.ScheduleReminderFragment"
+        android:label="ScheduleReminderFragment"
+        tools:layout="@layout/fragment_schedule_reminder"/>
+    <activity
+        android:id="@+id/nav_settings"
+        android:name="com.kiwicorp.dumbdue.SettingsActivity"
+        android:label="SettingsActivity" />
+    <fragment
+        android:id="@+id/nav_timers"
+        android:name="com.kiwicorp.dumbdue.TimerFragment"
+        android:label="TimerFragment"
+        tools:layout="@layout/fragment_timer"/>
+</navigation>

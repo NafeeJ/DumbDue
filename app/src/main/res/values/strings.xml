@@ -42,6 +42,10 @@
     <string name="plus_3_hr">+3 Hr</string>
     <string name="plus_1_day">+1 Day</string>
 
+    <!-- Drawer Menu -->
+    <string name="menu_reminders">Reminders</string>
+    <string name="menu_timers">Timers</string>
+    <string name="menu_settings">Settings</string>
     <!-- OK and CANCEL -->
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>

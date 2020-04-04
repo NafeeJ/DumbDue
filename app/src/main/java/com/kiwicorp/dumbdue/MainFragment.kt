@@ -2,20 +2,19 @@ package com.kiwicorp.dumbdue
 
 import android.app.AlarmManager
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.NonNull
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,13 +23,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
-import kotlinx.android.synthetic.main.activity_reminder.*
+import kotlinx.android.synthetic.main.fragment_main.*
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
-class ReminderActivity: AppCompatActivity(),
-    ReminderSection.ClickListener,
-    EditReminderFragment.OnReminderEditListener {
+class MainFragment  : Fragment(), ReminderSection.ClickListener,
+EditReminderFragment.OnReminderEditListener {
     companion object {
         private const val TAG = "ReminderActivity"
 
@@ -138,66 +136,54 @@ class ReminderActivity: AppCompatActivity(),
         //returns the time in minutes from now of the date of the calendar
         fun findTimeFromNowMins(calendar: Calendar): Int {
             //Get time difference of each time unit with fromNowMins as variable to use as the standard
-            var fromNowMins: Int = calendar.get(Calendar.MINUTE) - Calendar.getInstance().get(Calendar.MINUTE)
-            val fromNowHours: Int = calendar.get(Calendar.HOUR_OF_DAY) - Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-            val fromNowDays: Int = calendar.get(Calendar.DAY_OF_YEAR) - Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
-            val fromNowYears: Int = calendar.get(Calendar.YEAR) - Calendar.getInstance().get(Calendar.YEAR)
+            var fromNowMins: Int = calendar.get(Calendar.MINUTE) - Calendar.getInstance().get(
+                Calendar.MINUTE)
+            val fromNowHours: Int = calendar.get(Calendar.HOUR_OF_DAY) - Calendar.getInstance().get(
+                Calendar.HOUR_OF_DAY)
+            val fromNowDays: Int = calendar.get(Calendar.DAY_OF_YEAR) - Calendar.getInstance().get(
+                Calendar.DAY_OF_YEAR)
+            val fromNowYears: Int = calendar.get(Calendar.YEAR) - Calendar.getInstance().get(
+                Calendar.YEAR)
             //Add the other time unit differences, in minutes, to fromNowMins
             fromNowMins += (fromNowHours * 60) + (fromNowDays * 24 * 60) + (fromNowYears * 525600)
             return fromNowMins
         }
     }
 
-    //creates menu on action bar
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater: MenuInflater = menuInflater
-        inflater.inflate(R.menu.action_bar_menu,menu)
-        return true
-    }
-    //starts activity depending on which option was selected
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.action_settings -> {
-            startActivity(Intent(applicationContext, SettingsActivity::class.java))
-            true
-        }
-        R.id.action_timer -> {
-            startActivity(Intent(applicationContext, TimerActivity::class.java))
-            true
-        }
-        else -> {
-            super.onOptionsItemSelected(item)
-        }
-    }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reminder)
 
-        val toolbar: Toolbar = findViewById(R.id.toolBar)
-        setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_main,null,false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         recycler_view.apply {
-            layoutManager = LinearLayoutManager(this@ReminderActivity)
+            layoutManager = LinearLayoutManager(activity!!)
             adapter = sectionAdapter
         }
-
-        globalAlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        val scheduleFAB: FloatingActionButton = findViewById(R.id.scheduleFAB)
-        scheduleFAB.setOnClickListener {
-            val fragment = ScheduleReminderFragment()
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container,fragment)
-                .addToBackStack(null)
-                .commit()
-        }
-        supportFragmentManager.addOnBackStackChangedListener {
-            if (supportFragmentManager.backStackEntryCount == 0) {
-                scheduleFAB.show()
-            } else {
-                scheduleFAB.hide()
-            }
-        }
+        //todo move to reminder activity?
+        globalAlarmManager = activity!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        //todo
+//        val scheduleFAB: FloatingActionButton = findViewById(R.id.scheduleFAB)
+//        scheduleFAB.setOnClickListener {
+//            val fragment = ScheduleReminderFragment()
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.container,fragment)
+//                .addToBackStack(null)
+//                .commit()
+//        }
+//        supportFragmentManager.addOnBackStackChangedListener {
+//            if (supportFragmentManager.backStackEntryCount == 0) {
+//                scheduleFAB.show()
+//            } else {
+//                scheduleFAB.hide()
+//            }
+//        }
 
         initializeSections()
         //load lists and notification ids
@@ -232,8 +218,8 @@ class ReminderActivity: AppCompatActivity(),
                 //do nothing if
                 if (viewHolder is HeaderViewHolder) return
 
-                val deleteIcon = ContextCompat.getDrawable(applicationContext, R.drawable.delete_white) as Drawable
-                val checkIcon = ContextCompat.getDrawable(applicationContext,R.drawable.check_white) as Drawable
+                val deleteIcon = ContextCompat.getDrawable(context!!, R.drawable.delete_white) as Drawable
+                val checkIcon = ContextCompat.getDrawable(context!!,R.drawable.check_white) as Drawable
                 lateinit var swipeBackground: ColorDrawable
 
                 val itemView = viewHolder.itemView
@@ -275,6 +261,7 @@ class ReminderActivity: AppCompatActivity(),
         initializeCompanionCalenders()
     }
 
+
     private fun initializeSections() {
         //create and add reminder sections to the reminder section list
         overdueSection = ReminderSection("Overdue", overdueList,this)
@@ -295,7 +282,7 @@ class ReminderActivity: AppCompatActivity(),
         thisMinuteCalendar.set(Calendar.SECOND,0)
         //updates today list every minute on the minute
         fixedRateTimer("updateTodayOverdueLists",false,thisMinuteCalendar.time,60000) {
-            this@ReminderActivity.runOnUiThread {
+            activity!!.runOnUiThread {
                 var numMoved = 0
                 for (reminder in todayList) {
                     if (reminder.remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis) {
@@ -322,7 +309,7 @@ class ReminderActivity: AppCompatActivity(),
         }
         //updates tomorrow, next 7 days, and future lists
         fixedRateTimer("updateTomorrowNext7FutureLists",false, endOfTodayCalendar.time,8.64e+7.toLong()) {
-            this@ReminderActivity.runOnUiThread {
+            activity!!.runOnUiThread {
                 endOfTodayCalendar.add(Calendar.DAY_OF_YEAR,1)
                 endOfTomorrowCalendar.add(Calendar.DAY_OF_YEAR,1)
                 endOfNext7daysCalendar.add(Calendar.DAY_OF_YEAR,1)
@@ -375,9 +362,10 @@ class ReminderActivity: AppCompatActivity(),
             }
         }
     }
+    //todo move to activity?
     private fun loadFromSharedPreferencesAll() {
         //load reminder lists from shared preferences
-        val sharedPreferences = getSharedPreferences("Preferences", Context.MODE_PRIVATE)
+        val sharedPreferences = activity!!.getSharedPreferences("Preferences", Context.MODE_PRIVATE)
         val gson = Gson()
         val emptyListJson = gson.toJson(LinkedList<Reminder>())//an empty list in case lists haven't been stored
         val reminderListJson = sharedPreferences.getString("ReminderList",emptyListJson)
@@ -387,7 +375,7 @@ class ReminderActivity: AppCompatActivity(),
         val reminderListFromJson = gson.fromJson<LinkedList<Reminder>>(reminderListJson,reminderListType)
         //load reminders
         for (reminder in reminderListFromJson) {
-            reminder.loadReminder(applicationContext)
+            reminder.loadReminder(context!!)
         }
         //initializes global request code from shared preferences
         val requestCodeJson = sharedPreferences.getString("GlobalRequestCode", gson.toJson(0))
@@ -407,7 +395,7 @@ class ReminderActivity: AppCompatActivity(),
 
         deleteReminder(removedReminder)
         //creates a snackbar indicating a reminder has been deleted, and shows the option to undo
-        Snackbar.make(findViewById(R.id.main_coordinator_layout), "Bye-Bye " + removedReminder.text, Snackbar.LENGTH_LONG).setAction("Undo") {
+        Snackbar.make(view!!.findViewById(R.id.main_coordinator_layout), "Bye-Bye " + removedReminder.text, Snackbar.LENGTH_LONG).setAction("Undo") {
             //re-add reminder if undo is clicked
             removedReminder.reAddReminder()
         }.show()
@@ -445,7 +433,7 @@ class ReminderActivity: AppCompatActivity(),
             removedReminder.reAddReminder()
         }
         //creates snackbar indicating that a reminder has been completed, and shows the option to undo
-        Snackbar.make(findViewById(R.id.main_coordinator_layout),"Completed " + removedReminder.text + " :)", Snackbar.LENGTH_LONG).setAction("Undo") {
+        Snackbar.make(view!!.findViewById(R.id.main_coordinator_layout),"Completed " + removedReminder.text + " :)", Snackbar.LENGTH_LONG).setAction("Undo") {
             if (removedReminder.repeatVal != Reminder.REPEAT_NONE) {
                 val updatedSection: ReminderSection = findReminderSection(removedReminder)
                 val updatedList: LinkedList<Reminder> = updatedSection.getList()
@@ -516,10 +504,11 @@ class ReminderActivity: AppCompatActivity(),
         val args = Bundle()
         args.putParcelable("ReminderData", (sectionAdapter.getSection(sectionTitle) as ReminderSection).getList()[sectionAdapter.getPositionInSection(itemPosition)].getReminderData())
         editReminderFragment.arguments = args
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.container,editReminderFragment)
-            .addToBackStack(null)
-            .commit()
+        //todo change to use navgraph
+//        supportFragmentManager.beginTransaction()
+//            .replace(R.id.container,editReminderFragment)
+//            .addToBackStack(null)
+//            .commit()
     }
     override fun onReminderEdited(newText: String, newRemindCalendar: Calendar, newRepeatVal: Int, newAutoSnoozeVal: Int, oldSectionTitle: String, oldPositionInSection: Int) {
         //pre-collapse
@@ -528,7 +517,7 @@ class ReminderActivity: AppCompatActivity(),
 //        deleteReminder(oldReminder)
 
         deleteReminder((sectionAdapter.getSection(oldSectionTitle) as ReminderSection).getList()[oldPositionInSection])
-        Reminder(newText,newRemindCalendar,newRepeatVal,newAutoSnoozeVal,applicationContext)
+        Reminder(newText,newRemindCalendar,newRepeatVal,newAutoSnoozeVal,context!!)
     }
     private fun deleteReminder(reminder: Reminder) {
         reminder.cancelNotifications()
@@ -536,10 +525,11 @@ class ReminderActivity: AppCompatActivity(),
         //remove this reminder from its list and save
         sectionAdapter.notifyItemRemovedFromSection(reminder.section, positionInSection)
         reminder.list.remove(reminder)
-        saveAll(applicationContext)
+        saveAll(context!!)
         if (reminder.list.isEmpty()) {
             reminder.section.isVisible = false
             sectionAdapter.notifyDataSetChanged()
         }
     }
+
 }

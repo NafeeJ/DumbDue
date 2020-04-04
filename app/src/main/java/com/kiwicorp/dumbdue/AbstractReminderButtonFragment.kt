@@ -103,7 +103,7 @@ abstract class AbstractReminderButtonFragment : Fragment() {
         return mView
     }
     protected fun updateTextViews() { //updates text view
-        val fromNowMins = ReminderActivity.findTimeFromNowMins(reminderCalendar)
+        val fromNowMins = MainFragment.findTimeFromNowMins(reminderCalendar)
         val time = reminderCalendar.time
         repeatTextView.text = when(repeatVal) {
             Reminder.REPEAT_DAILY -> "Daily ".plus(timeFormatter.format(time))
@@ -112,7 +112,7 @@ abstract class AbstractReminderButtonFragment : Fragment() {
                 .plus("s ")
                 .plus(timeFormatter.format(time))
             Reminder.REPEAT_MONTHLY -> reminderCalendar.get(Calendar.DAY_OF_MONTH).toString()
-                .plus(ReminderActivity.daySuffixFinder(reminderCalendar))
+                .plus(MainFragment.daySuffixFinder(reminderCalendar))
                 .plus(" each month at ")
                 .plus(timeFormatter.format(time))
             Reminder.REPEAT_YEARLY -> "Every ".plus(dateFormatter2.format(reminderCalendar.time))

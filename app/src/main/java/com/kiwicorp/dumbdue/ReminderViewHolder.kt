@@ -34,15 +34,15 @@ class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(i
                 colorBar.setBackgroundColor(Color.parseColor("#f54242"))//set color bar to red
                 dateOrRepeatTextView.setTextColor(Color.parseColor("#f54242"))//set text color to red
             }
-            remindCalendar < ReminderActivity.endOfTodayCalendar -> {
+            remindCalendar < MainFragment.endOfTodayCalendar -> {
                 colorBar.setBackgroundColor(Color.parseColor("#fff262"))//sets color bar to yellow
                 dateOrRepeatTextView.setTextColor(Color.parseColor("#525252"))//set text color to grey
             }
-            remindCalendar < ReminderActivity.endOfTomorrowCalendar -> {
+            remindCalendar < MainFragment.endOfTomorrowCalendar -> {
                 colorBar.setBackgroundColor(Color.parseColor("#3371FF"))//sets color bar to blue
                 dateOrRepeatTextView.setTextColor(Color.parseColor("#525252"))//set text color to grey
             }
-            remindCalendar < ReminderActivity.endOfNext7daysCalendar -> {
+            remindCalendar < MainFragment.endOfNext7daysCalendar -> {
                 colorBar.setBackgroundColor(Color.parseColor("#6a44b1"))//sets color bar to purple
                 dateOrRepeatTextView.setTextColor(Color.parseColor("#525252"))//set text color to grey
             }
@@ -66,7 +66,7 @@ class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(i
                     .plus(timeFormatter.format(reminder.remindCalendar.time))
                 Reminder.REPEAT_MONTHLY -> dateOrRepeatTextView.text = reminder.remindCalendar
                     .get(Calendar.DAY_OF_MONTH).toString()
-                    .plus(ReminderActivity.daySuffixFinder(reminder.remindCalendar))
+                    .plus(MainFragment.daySuffixFinder(reminder.remindCalendar))
                     .plus(" each month at ")
                     .plus(timeFormatter.format(reminder.remindCalendar.time))
             }
@@ -77,7 +77,7 @@ class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(i
     //returns a string with absolute value of time from now and its correct unit
     //or returns day of week if in between 1 day and 1 week
     private fun findTimeFromNowString(calendar: Calendar): String {
-        val fromNowMins: Int = ReminderActivity.findTimeFromNowMins(calendar)
+        val fromNowMins: Int = MainFragment.findTimeFromNowMins(calendar)
         val absMins = fromNowMins.absoluteValue
 
         var timeFromNowString: String
@@ -102,15 +102,15 @@ class ReminderViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(i
 
         timeFromNowString = when {
             //add "in" to time from now string if within 3 hours or more than a week
-            fromNowMins >= 0 && ((absMins / 60.0).roundToInt() <= 3) || calendar.timeInMillis > ReminderActivity.endOfNext7daysCalendar.timeInMillis -> {
+            fromNowMins >= 0 && ((absMins / 60.0).roundToInt() <= 3) || calendar.timeInMillis > MainFragment.endOfNext7daysCalendar.timeInMillis -> {
                 "in ".plus(timeFromNowString)
             }
             //set time from now string to be the time if less than 2 days from today
-            fromNowMins > 0 && calendar.timeInMillis < ReminderActivity.endOfTomorrowCalendar.timeInMillis -> {
+            fromNowMins > 0 && calendar.timeInMillis < MainFragment.endOfTomorrowCalendar.timeInMillis -> {
                 timeFormatter.format(calendar.time)
             }
             //set time from now string to be the day if less than a week from today
-            fromNowMins > 0 && calendar.timeInMillis < ReminderActivity.endOfNext7daysCalendar.timeInMillis -> {
+            fromNowMins > 0 && calendar.timeInMillis < MainFragment.endOfNext7daysCalendar.timeInMillis -> {
                 dayFormatter.format(calendar.time)
             }
             //if time from now is negative add "ago"

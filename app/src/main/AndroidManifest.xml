@@ -16,12 +16,14 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".ReminderActivity">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.kiwicorp.dumbdue.ReminderActivity" />
+                android:value="com.kiwicorp.dumbdue.MainActivity" />
         </activity>
-        <activity android:name=".ReminderActivity" android:launchMode="singleTop">
+        <activity android:name=".MainActivity"
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -39,10 +41,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".TimerActivity"/>
         <receiver android:name=".NotificationReceiver" />
         <receiver android:name=".IntermediateReceiver" />
-        <receiver android:name=".UpdateReceiver" />
         <receiver android:name=".LockScreenReminderBroadcastReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="com.dumbdue.LockScreenReminderBroadcastReceiver"/>

@@ -42,9 +42,9 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
 
     init {
         requestCode = ++globalRequestCode
-        list = ReminderActivity.getCorrectList(remindCalendar)
-        ReminderActivity.insertReminderInOrder(list,this)
-        ReminderActivity.saveAll(context)
+        list = MainFragment.getCorrectList(remindCalendar)
+        MainFragment.insertReminderInOrder(list,this)
+        MainFragment.saveAll(context)
         setNotifications()
     }
 
@@ -54,14 +54,14 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
 
     //re-adds this reminder into its position after it has been deleted/completed and the user undo's
     fun reAddReminder() {
-        ReminderActivity.insertReminderInOrder(list,this)
-        ReminderActivity.saveAll(context)
+        MainFragment.insertReminderInOrder(list,this)
+        MainFragment.saveAll(context)
         setNotifications()
     }
     //loads reminder after app closes and is reopened
     fun loadReminder(context: Context) {
-        list = ReminderActivity.getCorrectList(remindCalendar)
-        ReminderActivity.insertReminderInOrder(list,this)
+        list = MainFragment.getCorrectList(remindCalendar)
+        MainFragment.insertReminderInOrder(list,this)
 
         this.context = context
         intermediateReceiverIntent = Intent(context,IntermediateReceiver::class.java)
@@ -81,18 +81,18 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
         intermediateReceiverPendingIntent = PendingIntent.getBroadcast(context, requestCode,
             intermediateReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        ReminderActivity.globalAlarmManager.setExact(AlarmManager.RTC_WAKEUP,
+        MainFragment.globalAlarmManager.setExact(AlarmManager.RTC_WAKEUP,
             remindCalendar.timeInMillis - 10000,
             intermediateReceiverPendingIntent)
     }
 
     fun cancelNotifications() {
         //cancel the intermediate alarm
-        ReminderActivity.globalAlarmManager.cancel(intermediateReceiverPendingIntent)
+        MainFragment.globalAlarmManager.cancel(intermediateReceiverPendingIntent)
         //cancels repeating alarms
         val notificationReceiverIntent = Intent(context, NotificationReceiver::class.java)
         val notificationPendingIntent = PendingIntent.getBroadcast(context, requestCode, notificationReceiverIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        ReminderActivity.globalAlarmManager.cancel(notificationPendingIntent)
+        MainFragment.globalAlarmManager.cancel(notificationPendingIntent)
 
         //cancels all notification currently being shown
         //todo fix this so that notifications IDs are being kept track of

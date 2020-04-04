@@ -39,6 +39,6 @@ class NotificationReceiver : BroadcastReceiver() {
             .setShowWhen(true)
             .setAutoCancel(true)
 
-        notificationManager.notify(++ReminderActivity.notificationID,builder.build())
+        notificationManager.notify(++MainFragment.notificationID,builder.build())
     }
 }

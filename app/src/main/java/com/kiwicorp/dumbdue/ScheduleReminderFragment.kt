@@ -118,7 +118,7 @@ open class ScheduleReminderFragment : AbstractReminderButtonFragment(),
             .plus(timeFormatter.format(reminderCalendar.time))
         repeatMonthlyTextView.text = reminderCalendar
             .get(Calendar.DAY_OF_MONTH).toString()
-            .plus(ReminderActivity.daySuffixFinder(reminderCalendar))
+            .plus(MainFragment.daySuffixFinder(reminderCalendar))
             .plus(" each month at ")
             .plus(timeFormatter.format(reminderCalendar.time))
         repeatYearlyTextView.text = "Every ".plus(dateFormatter2.format(reminderCalendar.time))
