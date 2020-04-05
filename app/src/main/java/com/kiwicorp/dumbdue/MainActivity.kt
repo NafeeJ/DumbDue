@@ -28,7 +28,7 @@ class MainActivity: AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_reminders,R.id.nav_timers,R.id.nav_settings),drawerLayout)
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_main_reminder,R.id.nav_timer,R.id.nav_settings),drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         //navigates to intending destination and if navigating to settings, item will not be checked

@@ -76,7 +76,7 @@ class TimeDatePickerDialogFragment : DialogFragment() {
         val minute = calendar.get(Calendar.MINUTE)
 
         val timePicker = TimePickerDialog(context,
-            TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+            TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
                 calendar.set(Calendar.HOUR_OF_DAY,hourOfDay)
                 calendar.set(Calendar.MINUTE,minute)
                 textView.text = timeFormatter.format(calendar.time)

@@ -14,21 +14,25 @@ import android.view.ViewGroup
 import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
-import kotlinx.android.synthetic.main.fragment_main.*
+import kotlinx.android.synthetic.main.fragment_main_reminder.*
 import java.util.*
 
 class MainFragment  : Fragment(), ReminderSection.ClickListener,
 EditReminderFragment.OnReminderEditListener {
-    companion object {
-        private const val TAG = "ReminderActivity"
+    lateinit var navController: NavController
 
+    companion object {
         lateinit var globalAlarmManager: AlarmManager
 
         val sectionAdapter = SectionedRecyclerViewAdapter()
@@ -75,7 +79,6 @@ EditReminderFragment.OnReminderEditListener {
             reminder.section = findReminderSection(reminder)
             sectionAdapter.notifyItemInsertedInSection(reminder.section,list.indexOf(reminder))
         }
-
         //returns the section of the given reminder
         private fun findReminderSection(reminder: Reminder): ReminderSection {
             return when {
@@ -86,7 +89,6 @@ EditReminderFragment.OnReminderEditListener {
                 else -> futureSection
             }
         }
-
         //returns the list this reminder belongs to based off of its time
         fun getCorrectList(remindCalendar: Calendar): LinkedList<Reminder> {
             return when {
@@ -97,7 +99,6 @@ EditReminderFragment.OnReminderEditListener {
                 else -> futureList
             }
         }
-
         //saves all the reminder lists into shared preferences
         fun saveAll(context: Context) {
             val remindersListArray: Array<LinkedList<Reminder>> = arrayOf(overdueList, todayList,
@@ -152,11 +153,12 @@ EditReminderFragment.OnReminderEditListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_main,null,false)
+        return inflater.inflate(R.layout.fragment_main_reminder,null,false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        navController = Navigation.findNavController(view)
 
         recycler_view.apply {
             layoutManager = LinearLayoutManager(activity!!)
@@ -164,25 +166,15 @@ EditReminderFragment.OnReminderEditListener {
         }
         //todo move to reminder activity?
         globalAlarmManager = activity!!.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        //todo
-//        val scheduleFAB: FloatingActionButton = findViewById(R.id.scheduleFAB)
-//        scheduleFAB.setOnClickListener {
-//            val fragment = ScheduleReminderFragment()
-//            supportFragmentManager.beginTransaction()
-//                .replace(R.id.container,fragment)
-//                .addToBackStack(null)
-//                .commit()
-//        }
-//        supportFragmentManager.addOnBackStackChangedListener {
-//            if (supportFragmentManager.backStackEntryCount == 0) {
-//                scheduleFAB.show()
-//            } else {
-//                scheduleFAB.hide()
-//            }
-//        }
+
+        val scheduleFAB: FloatingActionButton = view.findViewById(R.id.scheduleFAB)
+        scheduleFAB.setOnClickListener {
+            navController.navigate(R.id.action_main_reminder_to_schedule_reminder)
+        }
 
         initializeSections()
         //load lists and notification ids
+        //checks if lists are already loaded to prevent reminders being loaded twice when navigating from settings activity
         if (!isLoaded()) {
             loadFromSharedPreferencesAll()
         }

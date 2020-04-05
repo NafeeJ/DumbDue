@@ -24,8 +24,6 @@ class EditReminderFragment : ScheduleReminderFragment(),
         savedInstanceState: Bundle?
     ): View? {
         isEditReminderFragment = true
-
-        super.onCreateView(inflater, container, savedInstanceState)
         //get reminder data and set vals
         val reminderData: Reminder.ReminderData =
             arguments!!.getParcelable("ReminderData") as Reminder.ReminderData
@@ -44,7 +42,7 @@ class EditReminderFragment : ScheduleReminderFragment(),
             closeKeyboard()
         }
 
-        return mView
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onDateChanged(timeInMillis: Long) {
