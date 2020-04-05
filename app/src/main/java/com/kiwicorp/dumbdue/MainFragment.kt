@@ -12,20 +12,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.NonNull
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.util.*
-import kotlin.concurrent.fixedRateTimer
 
 class MainFragment  : Fragment(), ReminderSection.ClickListener,
 EditReminderFragment.OnReminderEditListener {
@@ -103,7 +100,7 @@ EditReminderFragment.OnReminderEditListener {
 
         //saves all the reminder lists into shared preferences
         fun saveAll(context: Context) {
-            val reminderListArray: Array<LinkedList<Reminder>> = arrayOf(overdueList, todayList,
+            val remindersListArray: Array<LinkedList<Reminder>> = arrayOf(overdueList, todayList,
                 tomorrowList, next7daysList, futureList)
             val sharedPreferences = context.getSharedPreferences("Preferences", Context.MODE_PRIVATE)
             val myGson = Gson()
@@ -112,7 +109,7 @@ EditReminderFragment.OnReminderEditListener {
             val requestCodeJson: String = myGson.toJson(Reminder.globalRequestCode)
             editor.putString("GlobalRequestCode", requestCodeJson)
             val reminderList = LinkedList<Reminder>()
-            for (list in reminderListArray) {
+            for (list in remindersListArray) {
                 for (reminder in list) reminderList.add(reminder)
             }
             //get json strings of reminder lists
@@ -150,7 +147,6 @@ EditReminderFragment.OnReminderEditListener {
         }
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -187,7 +183,9 @@ EditReminderFragment.OnReminderEditListener {
 
         initializeSections()
         //load lists and notification ids
-        loadFromSharedPreferencesAll()
+        if (!isLoaded()) {
+            loadFromSharedPreferencesAll()
+        }
         //makes empty sections invisible
         for (section in arrayOf(overdueSection,todaySection,tomorrowSection,next7DaysSection,futureSection)) {
             if (section.getList().isEmpty()) {
@@ -361,6 +359,16 @@ EditReminderFragment.OnReminderEditListener {
 //                sectionAdapter.notifyDataSetChanged()
 //            }
 //        }
+    }
+    private fun isLoaded(): Boolean {
+        val remindersListArray: Array<LinkedList<Reminder>> = arrayOf(overdueList, todayList,
+            tomorrowList, next7daysList, futureList)
+        for (reminderList in remindersListArray) {
+            if (!reminderList.isEmpty()) {
+                return true
+            }
+        }
+        return false
     }
     //todo move to activity?
     private fun loadFromSharedPreferencesAll() {
