@@ -277,90 +277,90 @@ EditReminderFragment.OnReminderEditListener {
         sectionAdapter.addSection("Future",futureSection)
     }
     private fun startUpdateTimers() {
-        val thisMinuteCalendar = Calendar.getInstance()//calendar with the current minute
-        thisMinuteCalendar.set(Calendar.MILLISECOND,0)
-        thisMinuteCalendar.set(Calendar.SECOND,0)
-        //updates today list every minute on the minute
-        fixedRateTimer("updateTodayOverdueLists",false,thisMinuteCalendar.time,60000) {
-            activity!!.runOnUiThread {
-                var numMoved = 0
-                for (reminder in todayList) {
-                    if (reminder.remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis) {
-                        numMoved++
-                        insertReminderInOrder(overdueList, reminder)
-                        reminder.section = overdueSection
-                        reminder.list = overdueList
-                    }
-                }
-                if (numMoved != 0) {
-                    todayList.removeAll {
-                        it.remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis
-                    }
-                    if (overdueList.size == numMoved) {
-                        overdueSection.isVisible = true
-                        sectionAdapter.notifySectionChangedToVisible("Overdue")
-                    }
-                    if (todayList.isEmpty()) {
-                        todaySection.isVisible = false
-                    }
-                }
-                sectionAdapter.notifyDataSetChanged()
-            }
-        }
-        //updates tomorrow, next 7 days, and future lists
-        fixedRateTimer("updateTomorrowNext7FutureLists",false, endOfTodayCalendar.time,8.64e+7.toLong()) {
-            activity!!.runOnUiThread {
-                endOfTodayCalendar.add(Calendar.DAY_OF_YEAR,1)
-                endOfTomorrowCalendar.add(Calendar.DAY_OF_YEAR,1)
-                endOfNext7daysCalendar.add(Calendar.DAY_OF_YEAR,1)
-
-                for (reminder in tomorrowList) {
-                    insertReminderInOrder(todayList, reminder)
-                    reminder.section = todaySection
-                    reminder.list = todayList
-                }
-                if (!todayList.isEmpty()) todaySection.isVisible = true
-                tomorrowList.clear()
-
-                var numMovedFromNext7 = 0
-                for (reminder in next7daysList) {
-                    if (reminder.remindCalendar.timeInMillis < endOfTomorrowCalendar.timeInMillis) {
-                        numMovedFromNext7++
-                        insertReminderInOrder(tomorrowList,reminder)
-                        reminder.section = tomorrowSection
-                        reminder.list = tomorrowList
-                    } else break
-                }
-                if (numMovedFromNext7 != 0) {
-                    next7daysList.removeAll {
-                        it.remindCalendar.timeInMillis < endOfTomorrowCalendar.timeInMillis
-                    }
-                }
-
-                var numMovedFromFuture = 0
-                for (reminder in futureList) {
-                    if (reminder.remindCalendar.timeInMillis < endOfNext7daysCalendar.timeInMillis) {
-                        numMovedFromFuture++
-                        insertReminderInOrder(next7daysList,reminder)
-                        reminder.section = next7DaysSection
-                        reminder.list = next7daysList
-                    } else break
-                }
-                if (numMovedFromFuture != 0) {
-                    futureList.removeAll {
-                        it.remindCalendar.timeInMillis < endOfNext7daysCalendar.timeInMillis
-                    }
-                }
-
-                if (tomorrowList.size == numMovedFromNext7 && !tomorrowList.isEmpty()) tomorrowSection.isVisible = true
-                if (next7daysList.size == numMovedFromFuture && !next7daysList.isEmpty()) next7DaysSection.isVisible = true
-                if (tomorrowList.isEmpty()) tomorrowSection.isVisible = false
-                if (next7daysList.isEmpty()) next7DaysSection.isVisible = false
-                if (futureList.isEmpty()) futureSection.isVisible = false
-
-                sectionAdapter.notifyDataSetChanged()
-            }
-        }
+//        val thisMinuteCalendar = Calendar.getInstance()//calendar with the current minute
+//        thisMinuteCalendar.set(Calendar.MILLISECOND,0)
+//        thisMinuteCalendar.set(Calendar.SECOND,0)
+//        //updates today list every minute on the minute
+//        fixedRateTimer("updateTodayOverdueLists",false,thisMinuteCalendar.time,60000) {
+//            activity!!.runOnUiThread {
+//                var numMoved = 0
+//                for (reminder in todayList) {
+//                    if (reminder.remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis) {
+//                        numMoved++
+//                        insertReminderInOrder(overdueList, reminder)
+//                        reminder.section = overdueSection
+//                        reminder.list = overdueList
+//                    }
+//                }
+//                if (numMoved != 0) {
+//                    todayList.removeAll {
+//                        it.remindCalendar.timeInMillis < Calendar.getInstance().timeInMillis
+//                    }
+//                    if (overdueList.size == numMoved) {
+//                        overdueSection.isVisible = true
+//                        sectionAdapter.notifySectionChangedToVisible("Overdue")
+//                    }
+//                    if (todayList.isEmpty()) {
+//                        todaySection.isVisible = false
+//                    }
+//                }
+//                sectionAdapter.notifyDataSetChanged()
+//            }
+//        }
+//        //updates tomorrow, next 7 days, and future lists
+//        fixedRateTimer("updateTomorrowNext7FutureLists",false, endOfTodayCalendar.time,8.64e+7.toLong()) {
+//            activity!!.runOnUiThread {
+//                endOfTodayCalendar.add(Calendar.DAY_OF_YEAR,1)
+//                endOfTomorrowCalendar.add(Calendar.DAY_OF_YEAR,1)
+//                endOfNext7daysCalendar.add(Calendar.DAY_OF_YEAR,1)
+//
+//                for (reminder in tomorrowList) {
+//                    insertReminderInOrder(todayList, reminder)
+//                    reminder.section = todaySection
+//                    reminder.list = todayList
+//                }
+//                if (!todayList.isEmpty()) todaySection.isVisible = true
+//                tomorrowList.clear()
+//
+//                var numMovedFromNext7 = 0
+//                for (reminder in next7daysList) {
+//                    if (reminder.remindCalendar.timeInMillis < endOfTomorrowCalendar.timeInMillis) {
+//                        numMovedFromNext7++
+//                        insertReminderInOrder(tomorrowList,reminder)
+//                        reminder.section = tomorrowSection
+//                        reminder.list = tomorrowList
+//                    } else break
+//                }
+//                if (numMovedFromNext7 != 0) {
+//                    next7daysList.removeAll {
+//                        it.remindCalendar.timeInMillis < endOfTomorrowCalendar.timeInMillis
+//                    }
+//                }
+//
+//                var numMovedFromFuture = 0
+//                for (reminder in futureList) {
+//                    if (reminder.remindCalendar.timeInMillis < endOfNext7daysCalendar.timeInMillis) {
+//                        numMovedFromFuture++
+//                        insertReminderInOrder(next7daysList,reminder)
+//                        reminder.section = next7DaysSection
+//                        reminder.list = next7daysList
+//                    } else break
+//                }
+//                if (numMovedFromFuture != 0) {
+//                    futureList.removeAll {
+//                        it.remindCalendar.timeInMillis < endOfNext7daysCalendar.timeInMillis
+//                    }
+//                }
+//
+//                if (tomorrowList.size == numMovedFromNext7 && !tomorrowList.isEmpty()) tomorrowSection.isVisible = true
+//                if (next7daysList.size == numMovedFromFuture && !next7daysList.isEmpty()) next7DaysSection.isVisible = true
+//                if (tomorrowList.isEmpty()) tomorrowSection.isVisible = false
+//                if (next7daysList.isEmpty()) next7DaysSection.isVisible = false
+//                if (futureList.isEmpty()) futureSection.isVisible = false
+//
+//                sectionAdapter.notifyDataSetChanged()
+//            }
+//        }
     }
     //todo move to activity?
     private fun loadFromSharedPreferencesAll() {

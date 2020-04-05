@@ -10,7 +10,8 @@
             android:title="@string/menu_timers"/>
         <item
             android:id="@+id/nav_settings"
-            android:title="@string/menu_settings"/>
+            android:title="@string/menu_settings"
+            android:checkable="false"/>
     </group>
 
 </menu>

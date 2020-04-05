@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/nav_home">
+    app:startDestination="@id/nav_reminders">
 
 
     <fragment
-        android:id="@+id/nav_home"
+        android:id="@+id/nav_reminders"
         android:name="com.kiwicorp.dumbdue.MainFragment"
         android:label="MainFragment"
         tools:layout="@layout/fragment_main">
