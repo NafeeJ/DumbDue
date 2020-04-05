@@ -16,7 +16,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +25,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter
 import kotlinx.android.synthetic.main.fragment_main_reminder.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainFragment  : Fragment(), ReminderSection.ClickListener,
@@ -33,6 +33,8 @@ EditReminderFragment.OnReminderEditListener {
     lateinit var navController: NavController
 
     companion object {
+        const val TAG: String = "MainFragment"
+
         lateinit var globalAlarmManager: AlarmManager
 
         val sectionAdapter = SectionedRecyclerViewAdapter()
@@ -155,10 +157,11 @@ EditReminderFragment.OnReminderEditListener {
     ): View? {
         return inflater.inflate(R.layout.fragment_main_reminder,null,false)
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
+
+        initializeCompanionCalenders()
 
         recycler_view.apply {
             layoutManager = LinearLayoutManager(activity!!)
@@ -176,7 +179,7 @@ EditReminderFragment.OnReminderEditListener {
         //load lists and notification ids
         //checks if lists are already loaded to prevent reminders being loaded twice when navigating from settings activity
         if (!isLoaded()) {
-            loadFromSharedPreferencesAll()
+            loadAllFromSharedPreferences()
         }
         //makes empty sections invisible
         for (section in arrayOf(overdueSection,todaySection,tomorrowSection,next7DaysSection,futureSection)) {
@@ -247,11 +250,7 @@ EditReminderFragment.OnReminderEditListener {
         }
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(recycler_view)
-
-        initializeCompanionCalenders()
     }
-
-
     private fun initializeSections() {
         //create and add reminder sections to the reminder section list
         overdueSection = ReminderSection("Overdue", overdueList,this)
@@ -363,7 +362,7 @@ EditReminderFragment.OnReminderEditListener {
         return false
     }
     //todo move to activity?
-    private fun loadFromSharedPreferencesAll() {
+    private fun loadAllFromSharedPreferences() {
         //load reminder lists from shared preferences
         val sharedPreferences = activity!!.getSharedPreferences("Preferences", Context.MODE_PRIVATE)
         val gson = Gson()
@@ -481,12 +480,14 @@ EditReminderFragment.OnReminderEditListener {
         endOfTomorrowCalendar.set(Calendar.MILLISECOND, 59)
         endOfTomorrowCalendar.set(Calendar.SECOND,59)
         endOfTomorrowCalendar.set(Calendar.HOUR_OF_DAY,23)
+
         endOfTomorrowCalendar.add(Calendar.DAY_OF_YEAR,1)
 
         endOfNext7daysCalendar.set(Calendar.MILLISECOND, 59)
         endOfNext7daysCalendar.set(Calendar.SECOND,59)
         endOfNext7daysCalendar.set(Calendar.MINUTE, 59)
         endOfNext7daysCalendar.set(Calendar.HOUR_OF_DAY,23)
+
         endOfNext7daysCalendar.add(Calendar.WEEK_OF_YEAR,1)
     }
     //starts edit reminder fragment when user clicks on a reminder in recycler view
