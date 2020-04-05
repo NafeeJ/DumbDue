@@ -465,22 +465,19 @@ EditReminderFragment.OnReminderEditListener {
     //returns the section of the reminder at the given position
     private fun findReminderSection(positionInAdapter: Int): ReminderSection {
         val sectionList: Array<ReminderSection?> = arrayOfNulls(5)
-        var pos = 0
-
-        //adds sections to section list if they're visible (meaning they're valid)
-        if (overdueSection.isVisible) sectionList[pos++] = overdueSection
-        if (todaySection.isVisible) sectionList[pos++] = todaySection
-        if (tomorrowSection.isVisible) sectionList[pos++] = tomorrowSection
-        if (next7DaysSection.isVisible) sectionList[pos++] = next7DaysSection
-        if (futureSection.isVisible) sectionList[pos] = futureSection
-
+        var sectionListSize = 0
+        //adds sections to section list if they're visible (aka valid)
+        if (overdueSection.isVisible) sectionList[sectionListSize++] = overdueSection
+        if (todaySection.isVisible) sectionList[sectionListSize++] = todaySection
+        if (tomorrowSection.isVisible) sectionList[sectionListSize++] = tomorrowSection
+        if (next7DaysSection.isVisible) sectionList[sectionListSize++] = next7DaysSection
+        if (futureSection.isVisible) sectionList[sectionListSize++] = futureSection
         //finds the section of the reminder based of its adapter position
-        for (i in 0..pos) {
+        for (i in 0 until sectionListSize) {
             val sectionAdapterPosition = sectionAdapter.getSectionPosition(sectionList[i])
-            if (positionInAdapter < sectionAdapterPosition) return sectionList[i - 1] as ReminderSection
+            if (positionInAdapter < sectionAdapterPosition) return sectionList[i] as ReminderSection
         }
-
-        return sectionList.last() as ReminderSection
+        return sectionList[sectionListSize - 1] as ReminderSection
     }
 
     private fun initializeCompanionCalenders() {

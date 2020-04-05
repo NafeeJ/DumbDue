@@ -22,7 +22,7 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
         const val REPEAT_MONTHLY: Int = 4
         const val REPEAT_YEARLY: Int = 5
         const val REPEAT_CUSTOM: Int = 6
-        //ints used to determine user's desired autosnooze
+        //ints used to determine user's desired auto-snooze
         const val AUTO_SNOOZE_NONE: Int = 0
         const val AUTO_SNOOZE_MINUTE: Int = 1
         const val AUTO_SNOOZE_5_MINUTES: Int = 2
@@ -51,7 +51,6 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
     fun getReminderData(): ReminderData {
         return ReminderData(text,remindCalendar,repeatVal,requestCode,autoSnoozeVal,section.title,list.indexOf(this))
     }
-
     //re-adds this reminder into its position after it has been deleted/completed and the user undo's
     fun reAddReminder() {
         MainFragment.insertReminderInOrder(list,this)
