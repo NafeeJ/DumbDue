@@ -14,7 +14,7 @@ class NotificationReceiver : BroadcastReceiver() {
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val reminderDataBundle = intent.getBundleExtra("ReminderDataBundle")
-        val reminderData: Reminder.ReminderData = reminderDataBundle.getParcelable("ReminderData") as Reminder.ReminderData
+        val reminderData: OldReminder.ReminderData = reminderDataBundle.getParcelable("ReminderData") as OldReminder.ReminderData
 
         val notificationTitle: String = reminderData.text
 
@@ -32,7 +32,7 @@ class NotificationReceiver : BroadcastReceiver() {
             PendingIntent.getBroadcast(context,0,
                 broadcastIntent,PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val builder: Notification.Builder = Notification.Builder(context, NotificationChannel.CHANNEL_1_ID)
+        val builder: Notification.Builder = Notification.Builder(context, DumbDueApplication.CHANNEL_1_ID)
             .setContentIntent(notificationOnClickPendingIntent)
             .setSmallIcon(R.drawable.ic_android_black_24dp)
             .setContentTitle(notificationTitle)

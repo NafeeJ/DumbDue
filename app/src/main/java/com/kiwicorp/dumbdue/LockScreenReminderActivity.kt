@@ -12,7 +12,7 @@ class LockScreenReminderActivity: AbstractReminderButtonsActivity() {
         Log.d(TAG,"Lock Screen Activity Started")
         //todo allow for delaying reminders to actually work
         val reminderDataBundle = intent.getBundleExtra("ReminderDataBundle")
-        val reminderData: Reminder.ReminderData = reminderDataBundle.getParcelable("ReminderData") as Reminder.ReminderData
+        val reminderData: OldReminder.ReminderData = reminderDataBundle.getParcelable("ReminderData") as OldReminder.ReminderData
 
         setContentView(R.layout.activity_lockscreen_reminder)
         super.onCreate(savedInstanceState)

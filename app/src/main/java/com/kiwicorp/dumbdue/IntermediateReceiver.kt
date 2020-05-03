@@ -16,7 +16,7 @@ class IntermediateReceiver : BroadcastReceiver() {
 
         notificationReceiverIntent = Intent(context,NotificationReceiver::class.java)
         val reminderDataBundle = intent.getBundleExtra("ReminderDataBundle")
-        val reminderData = reminderDataBundle.getParcelable<Reminder.ReminderData>("ReminderData")
+        val reminderData = reminderDataBundle.getParcelable<OldReminder.ReminderData>("ReminderData")
         val requestCode = reminderData!!.requestCode
         val autoSnoozeVal = reminderData.autoSnoozeVal
         val remindCalendar = reminderData.remindCalendar
@@ -29,12 +29,12 @@ class IntermediateReceiver : BroadcastReceiver() {
             PendingIntent.FLAG_UPDATE_CURRENT)
 
         val interval: Long? = when(autoSnoozeVal) {
-            Reminder.AUTO_SNOOZE_NONE -> null
-            Reminder.AUTO_SNOOZE_MINUTE -> 60000
-            Reminder.AUTO_SNOOZE_5_MINUTES -> 5 * 60000
-            Reminder.AUTO_SNOOZE_10_MINUTES -> 10 * 60000
-            Reminder.AUTO_SNOOZE_15_MINUTES -> 15 * 60000
-            Reminder.AUTO_SNOOZE_30_MINUTES -> 30 * 60000
+            OldReminder.AUTO_SNOOZE_NONE -> null
+            OldReminder.AUTO_SNOOZE_MINUTE -> 60000
+            OldReminder.AUTO_SNOOZE_5_MINUTES -> 5 * 60000
+            OldReminder.AUTO_SNOOZE_10_MINUTES -> 10 * 60000
+            OldReminder.AUTO_SNOOZE_15_MINUTES -> 15 * 60000
+            OldReminder.AUTO_SNOOZE_30_MINUTES -> 30 * 60000
             else -> 60 * 60000
         }
 

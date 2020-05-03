@@ -11,7 +11,7 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 
-class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: Int,val autoSnoozeVal: Int, @Transient var context: Context) {
+class OldReminder(val text: String, val remindCalendar: Calendar, val repeatVal: Int, val autoSnoozeVal: Int, @Transient var context: Context) {
 
     companion object {
         //ints used to determine the user's desired repeat frequency
@@ -34,7 +34,7 @@ class Reminder(val text: String, val remindCalendar: Calendar, val repeatVal: In
         var globalRequestCode: Int = 0
     }
     var requestCode: Int //reminder's unique requestCode for pending intent
-    @Transient var list: LinkedList<Reminder>//contains one of companion lists
+    @Transient var list: LinkedList<OldReminder>//contains one of companion lists
     @Transient lateinit var section: ReminderSection
 
     @Transient lateinit var intermediateReceiverIntent: Intent

@@ -1,13 +1,12 @@
 package com.kiwicorp.dumbdue
 
-
+import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import com.kiwicorp.dumbdue.ui.reminder.ReminderRepository
 
-
-class NotificationChannel : android.app.Application() {
-
+class DumbDueApplication : Application() {
     companion object { const val CHANNEL_1_ID = "Channel1" }
 
     override fun onCreate() {
@@ -23,5 +22,4 @@ class NotificationChannel : android.app.Application() {
         val manager : NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         manager.createNotificationChannel(channel1)
     }
-
 }

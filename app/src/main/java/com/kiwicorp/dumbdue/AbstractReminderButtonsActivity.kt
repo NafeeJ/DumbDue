@@ -122,12 +122,12 @@ abstract class AbstractReminderButtonsActivity : AppCompatActivity() {
         val time = dueDateCalendar.time
 
         repeatTextView.text = when(repeatVal) {
-            Reminder.REPEAT_DAILY -> "Daily ".plus(timeFormatter.format(time))
-            Reminder.REPEAT_WEEKDAYS -> "Weekdays ".plus(timeFormatter.format(time))
-            Reminder.REPEAT_WEEKLY -> dayOfWeekFormatter.format(time)
+            OldReminder.REPEAT_DAILY -> "Daily ".plus(timeFormatter.format(time))
+            OldReminder.REPEAT_WEEKDAYS -> "Weekdays ".plus(timeFormatter.format(time))
+            OldReminder.REPEAT_WEEKLY -> dayOfWeekFormatter.format(time)
                 .plus("s ")
                 .plus(timeFormatter.format(time))
-            Reminder.REPEAT_MONTHLY -> dayOfWeekFormatter.format(time)
+            OldReminder.REPEAT_MONTHLY -> dayOfWeekFormatter.format(time)
                 .plus("s ")
                 .plus(timeFormatter.format(time))
             else -> ""

@@ -3,7 +3,6 @@ package com.kiwicorp.dumbdue
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.renderscript.ScriptGroup
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -28,8 +26,8 @@ open class ScheduleReminderFragment : Fragment(),
     lateinit var navController: NavController
 
     protected lateinit var reminderCalendar: Calendar
-    protected var repeatVal: Int = Reminder.REPEAT_NONE
-    protected var autoSnoozeVal: Int = Reminder.AUTO_SNOOZE_MINUTE
+    protected var repeatVal: Int = OldReminder.REPEAT_NONE
+    protected var autoSnoozeVal: Int = OldReminder.AUTO_SNOOZE_MINUTE
     protected lateinit var dateTextView: TextView
     protected lateinit var repeatTextView: TextView
 
@@ -74,7 +72,7 @@ open class ScheduleReminderFragment : Fragment(),
         addButton = view.findViewById(R.id.addButton)
         //set auto snooze based off of default value
         val sharedPreferences = android.preference.PreferenceManager.getDefaultSharedPreferences(activity!!.applicationContext)
-        val autoSnoozeString: String = sharedPreferences.getString("default_auto_snooze",Reminder.AUTO_SNOOZE_MINUTE.toString()) as String
+        val autoSnoozeString: String = sharedPreferences.getString("default_auto_snooze",OldReminder.AUTO_SNOOZE_MINUTE.toString()) as String
         autoSnoozeVal = autoSnoozeString.toInt()
         updateSnoozeButtonImage()
         //set click listeners
@@ -97,7 +95,7 @@ open class ScheduleReminderFragment : Fragment(),
         addButton.setOnClickListener {
             closeKeyboard()
             titleEditText.clearFocus()
-            Reminder(titleEditText.text.toString(),reminderCalendar,repeatVal,autoSnoozeVal,context!!)
+            OldReminder(titleEditText.text.toString(),reminderCalendar,repeatVal,autoSnoozeVal,context!!)
             navController.navigate(R.id.action_schedule_reminders_to_main_reminder)
 
         }
@@ -223,37 +221,37 @@ open class ScheduleReminderFragment : Fragment(),
         //set click listeners
         //todo make a loop of this?
         repeatOffTextView.setOnClickListener {
-            repeatVal = Reminder.REPEAT_NONE
+            repeatVal = OldReminder.REPEAT_NONE
             repeatTextView.visibility = View.GONE
             dialog.dismiss()
         }
         repeatDailyTextView.setOnClickListener {
-            repeatVal = Reminder.REPEAT_DAILY
+            repeatVal = OldReminder.REPEAT_DAILY
             updateTextViews()
             repeatTextView.visibility = View.VISIBLE
             dialog.dismiss()
         }
         repeatWeekdaysTextView.setOnClickListener {
-            repeatVal = Reminder.REPEAT_WEEKDAYS
+            repeatVal = OldReminder.REPEAT_WEEKDAYS
             updateTextViews()
             repeatTextView.visibility = View.VISIBLE
             dialog.dismiss()
         }
         repeatWeeklyTextView.setOnClickListener {
-            repeatVal = Reminder.REPEAT_WEEKLY
+            repeatVal = OldReminder.REPEAT_WEEKLY
             updateTextViews()
             repeatTextView.visibility = View.VISIBLE
             dialog.dismiss()
         }
         repeatMonthlyTextView.setOnClickListener {
-            repeatVal = Reminder.REPEAT_MONTHLY
+            repeatVal = OldReminder.REPEAT_MONTHLY
             updateTextViews()
             repeatTextView.visibility = View.VISIBLE
             dialog.dismiss()
         }
         //todo implement this
         repeatCustomTextView.setOnClickListener {
-            repeatVal = Reminder.REPEAT_CUSTOM
+            repeatVal = OldReminder.REPEAT_CUSTOM
             updateTextViews()
             repeatTextView.visibility = View.VISIBLE
         }
@@ -274,13 +272,13 @@ open class ScheduleReminderFragment : Fragment(),
         val every30MinutesTextView: TextView = dialogView.findViewById(R.id.every30MinutesTextView)
         val everyHourTextView: TextView = dialogView.findViewById(R.id.everyHourTextView)
 
-        noneTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_NONE; dialog.dismiss(); updateSnoozeButtonImage() }
-        everyMinuteTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_MINUTE; dialog.dismiss(); updateSnoozeButtonImage() }
-        every5MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_5_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
-        every10MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_10_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
-        every15MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_15_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
-        every30MinutesTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_30_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
-        everyHourTextView.setOnClickListener { autoSnoozeVal = Reminder.AUTO_SNOOZE_HOUR; dialog.dismiss(); updateSnoozeButtonImage() }
+        noneTextView.setOnClickListener { autoSnoozeVal = OldReminder.AUTO_SNOOZE_NONE; dialog.dismiss(); updateSnoozeButtonImage() }
+        everyMinuteTextView.setOnClickListener { autoSnoozeVal = OldReminder.AUTO_SNOOZE_MINUTE; dialog.dismiss(); updateSnoozeButtonImage() }
+        every5MinutesTextView.setOnClickListener { autoSnoozeVal = OldReminder.AUTO_SNOOZE_5_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
+        every10MinutesTextView.setOnClickListener { autoSnoozeVal = OldReminder.AUTO_SNOOZE_10_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
+        every15MinutesTextView.setOnClickListener { autoSnoozeVal = OldReminder.AUTO_SNOOZE_15_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
+        every30MinutesTextView.setOnClickListener { autoSnoozeVal = OldReminder.AUTO_SNOOZE_30_MINUTES; dialog.dismiss(); updateSnoozeButtonImage() }
+        everyHourTextView.setOnClickListener { autoSnoozeVal = OldReminder.AUTO_SNOOZE_HOUR; dialog.dismiss(); updateSnoozeButtonImage() }
 
         dialog.show()
     }
@@ -295,13 +293,13 @@ open class ScheduleReminderFragment : Fragment(),
     }
     protected fun updateSnoozeButtonImage() {
         val image = when(autoSnoozeVal) {
-            Reminder.AUTO_SNOOZE_NONE -> R.drawable.white_none_square
-            Reminder.AUTO_SNOOZE_MINUTE -> R.drawable.one_white
-            Reminder.AUTO_SNOOZE_5_MINUTES -> R.drawable.five_white
-            Reminder.AUTO_SNOOZE_10_MINUTES -> R.drawable.ten_white
-            Reminder.AUTO_SNOOZE_15_MINUTES -> R.drawable.fifteen_white
-            Reminder.AUTO_SNOOZE_30_MINUTES -> R.drawable.thirty_white
-            Reminder.AUTO_SNOOZE_HOUR -> R.drawable.one_hour_white
+            OldReminder.AUTO_SNOOZE_NONE -> R.drawable.white_none_square
+            OldReminder.AUTO_SNOOZE_MINUTE -> R.drawable.one_white
+            OldReminder.AUTO_SNOOZE_5_MINUTES -> R.drawable.five_white
+            OldReminder.AUTO_SNOOZE_10_MINUTES -> R.drawable.ten_white
+            OldReminder.AUTO_SNOOZE_15_MINUTES -> R.drawable.fifteen_white
+            OldReminder.AUTO_SNOOZE_30_MINUTES -> R.drawable.thirty_white
+            OldReminder.AUTO_SNOOZE_HOUR -> R.drawable.one_hour_white
             else -> 0
         }
         snoozeButton.setImageResource(image)
@@ -314,17 +312,17 @@ open class ScheduleReminderFragment : Fragment(),
         val fromNowMins = MainFragment.findTimeFromNowMins(reminderCalendar)
         val time = reminderCalendar.time
         repeatTextView.text = when(repeatVal) {
-            Reminder.REPEAT_DAILY -> "Daily ".plus(timeFormatter.format(time))
-            Reminder.REPEAT_WEEKDAYS -> "Weekdays ".plus(timeFormatter.format(time))
-            Reminder.REPEAT_WEEKLY -> dayOfWeekFormatter.format(time)
+            OldReminder.REPEAT_DAILY -> "Daily ".plus(timeFormatter.format(time))
+            OldReminder.REPEAT_WEEKDAYS -> "Weekdays ".plus(timeFormatter.format(time))
+            OldReminder.REPEAT_WEEKLY -> dayOfWeekFormatter.format(time)
                 .plus("s ")
                 .plus(timeFormatter.format(time))
-            Reminder.REPEAT_MONTHLY -> reminderCalendar.get(Calendar.DAY_OF_MONTH).toString()
+            OldReminder.REPEAT_MONTHLY -> reminderCalendar.get(Calendar.DAY_OF_MONTH).toString()
                 .plus(MainFragment.daySuffixFinder(reminderCalendar))
                 .plus(" each month at ")
                 .plus(timeFormatter.format(time))
-            Reminder.REPEAT_YEARLY -> "Every ".plus(dateFormatter2.format(reminderCalendar.time))
-            Reminder.REPEAT_CUSTOM -> "Custom"
+            OldReminder.REPEAT_YEARLY -> "Every ".plus(dateFormatter2.format(reminderCalendar.time))
+            OldReminder.REPEAT_CUSTOM -> "Custom"
             else -> ""
         }
         /**

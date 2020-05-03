@@ -1,6 +1,5 @@
 package com.kiwicorp.dumbdue
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,22 +10,15 @@ class EditReminderFragment : ScheduleReminderFragment(),
     TimeDatePickerDialogFragment.OnDateChangedListener,
     TimeDatePickerSpinnerDialogFragment.OnDateChangedListener {
 
-    lateinit var onReminderEditListener: OnReminderEditListener
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        onReminderEditListener = context as OnReminderEditListener
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        isEditReminderFragment = true
+//        isEditReminderFragment = true
         //get reminder data and set vals
-        val reminderData: Reminder.ReminderData =
-            arguments!!.getParcelable("ReminderData") as Reminder.ReminderData
+        val reminderData: OldReminder.ReminderData =
+            arguments!!.getParcelable("ReminderData") as OldReminder.ReminderData
         reminderCalendar.timeInMillis = reminderData.remindCalendar.timeInMillis
         titleEditText.setText(reminderData.text)
         autoSnoozeVal = reminderData.autoSnoozeVal
@@ -36,9 +28,9 @@ class EditReminderFragment : ScheduleReminderFragment(),
         updateSnoozeButtonImage()
 
         addButton.setOnClickListener {
-            onReminderEditListener.onReminderEdited(titleEditText.text.toString(),
-                reminderCalendar,repeatVal,autoSnoozeVal,reminderData.sectionTitle,reminderData.positionInSection)
-            activity!!.supportFragmentManager.popBackStack()
+//            onReminderEditListener.onReminderEdited(titleEditText.text.toString(),
+//                reminderCalendar,repeatVal,autoSnoozeVal,reminderData.sectionTitle,reminderData.positionInSection)
+//            activity!!.supportFragmentManager.popBackStack()
             closeKeyboard()
         }
 
