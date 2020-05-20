@@ -37,10 +37,19 @@ interface ReminderDao  {
      * Update a reminder.
      *
      * @param reminder reminder to be updated
-     * @return the number of tasks updated (always should be 1).
+     * @return the number of reminders updated (always should be 1).
      */
     @Update
     suspend fun updateReminder(reminder: Reminder): Int
+
+    /**
+     * Delete a reminder.
+     *
+     * @param reminder reminder to be deleted
+     * @return the number of reminders deleted (always should be 1).
+     */
+    @Delete
+    suspend fun deleteReminder(reminder: Reminder): Int
 
     /**
      * Delete a reminder by id.

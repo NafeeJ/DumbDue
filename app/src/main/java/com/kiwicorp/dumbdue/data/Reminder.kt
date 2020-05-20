@@ -7,21 +7,21 @@ import java.util.*
 
 @Entity(tableName = "reminders")
 data class Reminder (
-    @PrimaryKey @ColumnInfo(name = "id")
-    var reminderId: String = UUID.randomUUID().toString(),
+    @ColumnInfo(name = "title")
+    var title: String = "",
 
     @ColumnInfo(name = "due_date_milli" )
     var dueDateMilli: Long = System.currentTimeMillis(),
-
-    @ColumnInfo(name = "title")
-    var title: String = "",
 
     @ColumnInfo(name = "repeat_val")
     var repeatVal: Int = REPEAT_NONE,
 
     @ColumnInfo(name = "auto_snooze_val")
-    var autoSnoozeVal: Int = AUTO_SNOOZE_MINUTE
-    ) {
+    var autoSnoozeVal: Int = AUTO_SNOOZE_MINUTE,
+
+    @PrimaryKey @ColumnInfo(name = "id")
+    var reminderId: String = UUID.randomUUID().toString()) {
+
     companion object {
         const val REPEAT_NONE: Int = 0
         const val REPEAT_DAILY: Int = 1
@@ -39,5 +39,6 @@ data class Reminder (
         const val AUTO_SNOOZE_30_MINUTES: Int = 5
         const val AUTO_SNOOZE_HOUR : Int = 6
     }
+
     fun isOverDue() = dueDateMilli < System.currentTimeMillis()
 }

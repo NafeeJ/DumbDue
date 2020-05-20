@@ -21,7 +21,7 @@ class EditQuickAccessTimesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.edit_quick_access_times_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_edit_quick_access_times, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

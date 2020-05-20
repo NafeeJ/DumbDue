@@ -21,7 +21,7 @@ class EditReminderFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.edit_reminder_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_edit_reminder, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

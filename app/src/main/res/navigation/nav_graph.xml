@@ -9,7 +9,7 @@
         android:id="@+id/reminders_fragment_dest"
         android:name="com.kiwicorp.dumbdue.ui.reminders.RemindersFragment"
         android:label="reminders_fragment"
-        tools:layout="@layout/reminders_fragment" />
+        tools:layout="@layout/fragment_reminders" />
     <fragment
         android:id="@+id/settings_fragment_dest"
         android:name="com.kiwicorp.dumbdue.ui.preferences.SettingsFragment"

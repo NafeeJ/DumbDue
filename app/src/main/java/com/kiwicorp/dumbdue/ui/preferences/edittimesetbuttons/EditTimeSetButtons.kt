@@ -21,7 +21,7 @@ class EditTimeSetButtons : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.edit_time_set_buttons_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_edit_time_set_buttons, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

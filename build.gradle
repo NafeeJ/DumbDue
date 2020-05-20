@@ -6,9 +6,10 @@ buildscript {
         archLifecycleVersion = '1.1.1'
         room_version = '2.2.5'
         coroutine_version = '1.0.0'
-        gradleVersion = '3.6.3'
-        navigationVersion = '2.2.0-rc02'
-        dataBindingCompilerVersion = gradleVersion // Always need to be the same.
+        gradle_version = '3.6.3'
+        navigation_version = '2.2.0-rc02'
+        fragment_version = '1.1.0-alpha09'
+        dataBindingCompilerVersion = gradle_version // Always need to be the same.
     }
     repositories {
         google()

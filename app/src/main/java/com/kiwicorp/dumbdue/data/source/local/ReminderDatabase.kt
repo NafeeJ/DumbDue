@@ -8,7 +8,7 @@ import com.kiwicorp.dumbdue.data.Reminder
 
 @Database(entities = [Reminder::class], version = 1, exportSchema = false)
 abstract class ReminderDatabase : RoomDatabase() {
-    abstract val reminderDao: ReminderDao
+    abstract fun reminderDao(): ReminderDao
 
     companion object {
         @Volatile
