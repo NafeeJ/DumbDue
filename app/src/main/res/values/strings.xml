@@ -1,53 +1,17 @@
 <resources>
-    <string name="app_name">DumbDue</string>
-    <string name="day_of_week">DumbDue</string>
-    <string name="title_activity_settings">Settings</string>
-
+    <string name="app_name">Dumb Due</string>
+    <string name="reminders">Reminders</string>
+    <string name="settings">Settings</string>
     <!-- Preference Titles -->
-    <string name="quick_acess_times_header">Quick Access Times</string>
-    <string name="themes_header">Theme</string>
+    <string name="editor_header">Editor</string>
+    <string name="defaults_header">Defaults For New Reminders</string>
 
-    <!-- Preset Times Preferences -->
-    <string name="quick_access_1_title">Quick Access 1</string>
-    <string name="quick_access_2_title">Quick Access 2</string>
-    <string name="quick_access_3_title">Quick Access 3</string>
-    <string name="quick_access_4_title">Quick Access 4</string>
+    <!-- Editor Preferences -->
+    <string name="quick_access_times_title">Quick Access Times</string>
+    <string name="time_picker_title">Time Picker</string>
 
-    <!-- Quick Access Times Default Values-->
-    <string name="quick_access_1_default">8:00</string>
-    <string name="quick_access_2_default">12:00</string>
-    <string name="quick_access_3_default">17:00</string>
-    <string name="quick_access_4_default">22:00</string>
-    <string name="Done">Done</string>
-
-    <!-- Content Descriptions -->
-    <string name="cancel_content_description">X icon</string>
-    <string name="check_content_description">Check mark icon</string>
-    <string name="delete_content_description">Trash can icon</string>
-    <string name="repeat_content_description">Cyclic arrows icon</string>
-    <string name="snooze_content_description">Alarm with Z in Middle</string>
-
-    <!-- Auto Snooze Text -->
-    <string name="auto_snooze_none">None</string>
-    <string name="auto_snooze_minute">Every Minute</string>
-    <string name="auto_snooze_5_minute">Every 5 Minutes</string>
-    <string name="auto_snooze_10_minutes">Every 10 Minutes</string>
-    <string name="auto_snooze_15_minutes">Every 15 Minutes</string>
-    <string name="auto_snooze_30_minutes">Every 30 minutes</string>
-    <string name="auto_snooze_hour">Every Hour</string>
-
-    <!-- Content Reminder Buttons Activity -->
-    <string name="mark_done">Mark Done</string>
-    <string name="plus_1_hr">+1 Hr</string>
-    <string name="plus_3_hr">+3 Hr</string>
-    <string name="plus_1_day">+1 Day</string>
-
-    <!-- Drawer Menu -->
-    <string name="menu_reminders">Reminders</string>
-    <string name="menu_timers">Timers</string>
-    <string name="menu_settings">Settings</string>
-    <!-- OK and CANCEL -->
-    <string name="ok">OK</string>
-    <string name="cancel">CANCEL</string>
+    <!-- Defaults Preferences -->
+    <string name="due_date_title">Due Date</string>
+    <string name="auto_snooze_title">Auto Snooze</string>
 
 </resources>

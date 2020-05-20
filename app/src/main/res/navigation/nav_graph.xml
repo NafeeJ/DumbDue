@@ -3,46 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/nav_main_reminder">
+    app:startDestination="@id/reminders_fragment_dest">
 
+    <fragment
+        android:id="@+id/reminders_fragment_dest"
+        android:name="com.kiwicorp.dumbdue.ui.reminders.RemindersFragment"
+        android:label="reminders_fragment"
+        tools:layout="@layout/reminders_fragment" />
+    <fragment
+        android:id="@+id/settings_fragment_dest"
+        android:name="com.kiwicorp.dumbdue.ui.preferences.SettingsFragment"
+        android:label="SettingsFragment" />
 
-    <fragment
-        android:id="@+id/nav_main_reminder"
-        android:name="com.kiwicorp.dumbdue.MainFragment"
-        android:label="MainFragment"
-        tools:layout="@layout/fragment_main_reminder">
-        <action
-            android:id="@+id/action_main_reminder_to_schedule_reminder"
-            app:destination="@id/nav_schedule_reminder" />
-        <action
-            android:id="@+id/action_main_reminder_to_edit_reminder"
-            app:destination="@id/nav_edit_reminder" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_edit_reminder"
-        android:name="com.kiwicorp.dumbdue.EditReminderFragment"
-        android:label="EditReminderFragment"
-        tools:layout="@layout/fragment_edit_reminder">
-        <action
-            android:id="@+id/action_edit_reminders_to_main_reminder"
-            app:destination="@id/nav_main_reminder" />
-    </fragment>
-    <fragment
-        android:id="@+id/nav_schedule_reminder"
-        android:name="com.kiwicorp.dumbdue.ScheduleReminderFragment"
-        android:label="ScheduleReminderFragment"
-        tools:layout="@layout/fragment_schedule_reminder">
-        <action
-            android:id="@+id/action_schedule_reminders_to_main_reminder"
-            app:destination="@id/nav_main_reminder" />
-    </fragment>
-    <activity
-        android:id="@+id/nav_settings"
-        android:name="com.kiwicorp.dumbdue.SettingsActivity"
-        android:label="SettingsActivity" />
-    <fragment
-        android:id="@+id/nav_timer"
-        android:name="com.kiwicorp.dumbdue.TimerFragment"
-        android:label="TimerFragment"
-        tools:layout="@layout/fragment_timer"/>
 </navigation>

@@ -28,19 +28,11 @@ class MainActivity: AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_main_reminder,R.id.nav_timer,R.id.nav_settings),drawerLayout)
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.reminders_fragment_dest,R.id.settings_fragment_dest),drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         //navigates to intending destination and if navigating to settings, item will not be checked
         //also allows for opening the fragment the user left off before navigating to settings activity
-        navView.setNavigationItemSelectedListener {
-            if (it.itemId == R.id.nav_settings) {
-                it.isChecked = false
-            }
-            navController.navigate(it.itemId)
-            drawerLayout.closeDrawer(GravityCompat.START,true)
-            true
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
