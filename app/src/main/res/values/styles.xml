@@ -7,10 +7,40 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="snackbarStyle">@style/MySnackBarStyle</item>
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialogStyle</item>
     </style>
 
     <style name="MySnackBarStyle" parent="Widget.MaterialComponents.Snackbar">
         <item name="android:windowBackground">@drawable/corners</item>
     </style>
+
+    <style name="ImageButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="backgroundTint">#000000</item>
+    </style>
+
+    <style name="TimeButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="backgroundTint">#000000</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+    <style name="BottomSheetDialogStyle" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:windowBackground">@drawable/corners</item>
+    </style>
+
+
 
 </resources>

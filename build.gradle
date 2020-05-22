@@ -7,7 +7,7 @@ buildscript {
         room_version = '2.2.5'
         coroutine_version = '1.0.0'
         gradle_version = '3.6.3'
-        navigation_version = '2.2.0-rc02'
+        nav_version = '2.3.0-beta01'
         fragment_version = '1.1.0-alpha09'
         dataBindingCompilerVersion = gradle_version // Always need to be the same.
     }

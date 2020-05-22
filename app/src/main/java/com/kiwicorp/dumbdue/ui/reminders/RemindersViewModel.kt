@@ -5,13 +5,8 @@ import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import kotlinx.coroutines.*
 
-class RemindersViewModel internal constructor(
-    private val reminderRepository: ReminderRepository) : ViewModel() {
+class RemindersViewModel internal constructor(reminderRepository: ReminderRepository) : ViewModel() {
 
-    //viewModelJob allows us to cancel all coroutines started by this ViewModel
-    private var viewModelJob = Job()
-
-    private var uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     val reminders: LiveData<List<Reminder>> = reminderRepository.reminders
 
@@ -23,35 +18,17 @@ class RemindersViewModel internal constructor(
         }
     }
 
-    private suspend fun insert(reminder: Reminder) {
-        withContext(Dispatchers.IO) {
-            reminderRepository.insertReminder(reminder)
-        }
-    }
-
-    private suspend fun update(reminder: Reminder) {
-        withContext(Dispatchers.IO) {
-            reminderRepository.updateReminder(reminder)
-        }
-    }
-
-    private suspend fun delete(reminder: Reminder) {
-        withContext(Dispatchers.IO) {
-            reminderRepository.deleteReminder(reminder)
-        }
-    }
-
-    private suspend fun deleteAll() {
-        withContext(Dispatchers.IO) {
-            reminderRepository.deleteReminders()
-        }
-    }
-
     fun onFabClicked() {
-        viewModelScope.launch {
-            reminderRepository.deleteReminders()
-            val titles = listOf("BUTT","MUNCH","APPLE","CANADA","STEVE")
-            reminderRepository.insertReminder(Reminder(title = titles.random()))
-        }
+        //navigate to add fragment when FAB is clicked
+        _onNavigateToAddFragment.value = true
     }
+
+    private val _onNavigateToAddFragment = MutableLiveData<Boolean>()
+    val onNavigateToAddFragment: LiveData<Boolean>
+        get() = _onNavigateToAddFragment
+
+    fun finishedNavigatingToAddFragment() {
+        _onNavigateToAddFragment.value = null
+    }
+
 }
