@@ -1,12 +1,11 @@
 package com.kiwicorp.dumbdue.data.source.local
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
 import com.kiwicorp.dumbdue.data.Reminder
 
 @Database(entities = [Reminder::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class ReminderDatabase : RoomDatabase() {
     abstract fun reminderDao(): ReminderDao
 

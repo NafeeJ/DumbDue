@@ -10,8 +10,8 @@ data class Reminder (
     @ColumnInfo(name = "title")
     var title: String = "",
 
-    @ColumnInfo(name = "due_date_milli" )
-    var dueDateMilli: Long = System.currentTimeMillis(),
+    @ColumnInfo(name = "calendar")
+    var calendar: Calendar = Calendar.getInstance(),
 
     @ColumnInfo(name = "repeat_val")
     var repeatVal: Int = REPEAT_NONE,
@@ -40,5 +40,5 @@ data class Reminder (
         const val AUTO_SNOOZE_HOUR : Int = 6
     }
 
-    fun isOverDue() = dueDateMilli < System.currentTimeMillis()
+    fun isOverDue() = calendar.timeInMillis < System.currentTimeMillis()
 }
