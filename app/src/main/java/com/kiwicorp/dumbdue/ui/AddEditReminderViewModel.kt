@@ -140,7 +140,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
     fun addReminder() {
         uiScope.launch {
             //todo make snackbar when title is empty and don't allow for reminder to be created
-            insert(Reminder(title = title.value ?: "",calendar = calendar.value!!))
+            insert(Reminder(title = title.value ?: "",calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!))
         }
     }
 
