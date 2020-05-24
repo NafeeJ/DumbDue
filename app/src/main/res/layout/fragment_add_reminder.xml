@@ -5,9 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
+        <import type="com.kiwicorp.dumbdue.data.Reminder"/>
+
         <variable
-            name="viewModel"
-            type="com.kiwicorp.dumbdue.ui.addreminder.AddReminderViewModel" />
+            name="viewmodel"
+            type="com.kiwicorp.dumbdue.ui.AddEditReminderViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -45,7 +48,8 @@
                 app:layout_constraintEnd_toStartOf="@+id/add"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/snooze"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:onClick="@{()->viewmodel.onOpenRepeatMenu()}"/>
 
             <ImageButton
                 android:id="@+id/add"
@@ -55,7 +59,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/repeat"
                 app:layout_constraintTop_toTopOf="parent"
-                android:onClick="@{()->viewModel.onAdd()}"/>
+                android:onClick="@{()->viewmodel.addReminder()}"/>
 
             <EditText
                 android:id="@+id/title_text"
@@ -68,7 +72,7 @@
                 android:inputType="textPersonName"
                 android:paddingStart="10dp"
                 android:paddingLeft="10dp"
-                android:text="@={viewModel.title}"
+                android:text="@={viewmodel.title}"
                 android:textColor="#FFFFFF" />
 
             <TextView
@@ -82,7 +86,7 @@
                 android:paddingLeft="10dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#FFFFFF"
-                android:text="@{viewModel.timeFromNow}"/>
+                app:timeFromNow="@{viewmodel.calendar}"/>
 
             <TextView
                 android:id="@+id/repeat_text"
@@ -94,7 +98,9 @@
                 android:paddingBottom="5dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#FFFFFF"
-                android:visibility="gone"/>
+                android:visibility="@{(viewmodel.repeatVal == Reminder.REPEAT_NONE)? View.GONE : View.VISIBLE}"
+                app:calendar="@{viewmodel.calendar}"
+                app:repeatVal="@{viewmodel.repeatVal}"/>
 
             <include
                 android:id="@+id/time_buttons"

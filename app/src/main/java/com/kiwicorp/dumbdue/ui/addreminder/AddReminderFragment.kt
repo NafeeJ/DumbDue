@@ -1,40 +1,57 @@
 package com.kiwicorp.dumbdue.ui.addreminder
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kiwicorp.dumbdue.R
-import com.kiwicorp.dumbdue.databinding.AddReminderFragmentBinding
+import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
+import com.kiwicorp.dumbdue.ui.AddEditReminderViewModel
 import com.kiwicorp.dumbdue.util.InjectorUtils
 
 
 class AddReminderFragment : BottomSheetDialogFragment() {
 
-    private lateinit var binding: AddReminderFragmentBinding
+    private lateinit var binding: FragmentAddReminderBinding
 
-    private val viewModel: AddReminderViewModel by viewModels {
-        InjectorUtils.provideAddRemindersViewModelFactory(requireContext())
+    private val viewModel: AddEditReminderViewModel by activityViewModels {
+        InjectorUtils.provideAddEditViewModelFactory(requireContext())
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater,R.layout.add_reminder_fragment,container,false)
+        val root = inflater.inflate(R.layout.fragment_add_reminder,container,false)
+        binding = FragmentAddReminderBinding.bind(root).apply {
+            viewmodel = viewModel
+            timeButtons.viewmodel = viewModel
+            lifecycleOwner = viewLifecycleOwner
+        }
+        return root
+    }
 
-        binding.viewModel = viewModel
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setupNavigation()
+    }
 
-        binding.timeButtons.timeSetter = viewModel.timeSetter
+    private fun setupNavigation() {
+        viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                navigateToRepeatMenu()
+                viewModel.onOpenRepeatMenuComplete()
+            }
+        })
+    }
 
-        binding.lifecycleOwner = viewLifecycleOwner //so the view can observe LiveData updates
-
-        return binding.root
+    private fun navigateToRepeatMenu() {
+        val action = AddReminderFragmentDirections.actionAddReminderFragmentDestToChooseRepeatFragment()
+        findNavController().navigate(action)
     }
 
 //todo

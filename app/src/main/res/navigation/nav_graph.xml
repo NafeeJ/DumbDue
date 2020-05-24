@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/reminders_fragment_dest"
         android:name="com.kiwicorp.dumbdue.ui.reminders.RemindersFragment"
-        android:label="reminders_fragment"
+        android:label="Reminders"
         tools:layout="@layout/fragment_reminders" >
         <action
             android:id="@+id/action_remindersFragment_to_addReminderFragment"
@@ -20,16 +20,25 @@
     <fragment
         android:id="@+id/settings_fragment_dest"
         android:name="com.kiwicorp.dumbdue.ui.preferences.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:label="Settings" />
     <dialog
         android:id="@+id/add_reminder_fragment_dest"
         android:name="com.kiwicorp.dumbdue.ui.addreminder.AddReminderFragment"
-        android:label="add_reminder_fragment"
-        tools:layout="@layout/add_reminder_fragment"/>
+        android:label="Add Reminder"
+        tools:layout="@layout/fragment_add_reminder">
+        <action
+            android:id="@+id/action_add_reminder_fragment_dest_to_chooseRepeatFragment"
+            app:destination="@id/choose_repeat_fragment_dest" />
+    </dialog>
     <fragment
         android:id="@+id/edit_reminder_fragment_dest"
         android:name="com.kiwicorp.dumbdue.ui.editreminder.EditReminderFragment"
-        android:label="fragment_edit_reminder"
+        android:label="Edit Reminder"
         tools:layout="@layout/fragment_edit_reminder" />
+    <dialog
+        android:id="@+id/choose_repeat_fragment_dest"
+        android:name="com.kiwicorp.dumbdue.ui.chooserepeat.ChooseRepeatFragment"
+        android:label="Choose Repeat Value" >
+    </dialog>
 
 </navigation>

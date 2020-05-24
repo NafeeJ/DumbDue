@@ -3,7 +3,6 @@ package com.kiwicorp.dumbdue.ui.reminders
 import androidx.lifecycle.*
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
-import kotlinx.coroutines.*
 
 class RemindersViewModel internal constructor(reminderRepository: ReminderRepository) : ViewModel() {
 
@@ -18,17 +17,19 @@ class RemindersViewModel internal constructor(reminderRepository: ReminderReposi
         }
     }
 
-    fun onFabClicked() {
-        //navigate to add fragment when FAB is clicked
-        _onNavigateToAddFragment.value = true
+    private val _eventAddReminder = MutableLiveData<Boolean>()
+    val eventAddReminder: LiveData<Boolean>
+        get() = _eventAddReminder
+
+    /**
+     * Called from data binding.
+     */
+    fun onAddReminder() {
+        _eventAddReminder.value = true
     }
 
-    private val _onNavigateToAddFragment = MutableLiveData<Boolean>()
-    val onNavigateToAddFragment: LiveData<Boolean>
-        get() = _onNavigateToAddFragment
-
-    fun finishedNavigatingToAddFragment() {
-        _onNavigateToAddFragment.value = null
+    fun onAddReminderComplete() {
+        _eventAddReminder.value = null
     }
 
 }

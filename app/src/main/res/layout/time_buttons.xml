@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="timeSetter"
-            type="com.kiwicorp.dumbdue.util.TimeSetter" />
+            name="viewmodel"
+            type="com.kiwicorp.dumbdue.ui.AddEditReminderViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,7 +22,7 @@
             app:layout_constraintEnd_toStartOf="@+id/quick_access_time_2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{(button)->timeSetter.onQuickAccess(button)}"
+            android:onClick="@{(button)->viewmodel.onQuickAccessClick(button)}"
             android:text="9:00 AM" />
 
         <Button
@@ -32,7 +32,7 @@
             app:layout_constraintEnd_toStartOf="@+id/quick_access_time_3"
             app:layout_constraintStart_toEndOf="@+id/quick_access_time_1"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{(button)->timeSetter.onQuickAccess(button)}"
+            android:onClick="@{(button)->viewmodel.onQuickAccessClick(button)}"
             android:text="12:00 PM"/>
 
         <Button
@@ -42,7 +42,7 @@
             app:layout_constraintEnd_toStartOf="@+id/quick_acess_time_4"
             app:layout_constraintStart_toEndOf="@+id/quick_access_time_2"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{(button)->timeSetter.onQuickAccess(button)}"
+            android:onClick="@{(button)->viewmodel.onQuickAccessClick(button)}"
             android:text="6:00 PM"/>
 
         <Button
@@ -52,7 +52,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/quick_access_time_3"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{(button)->timeSetter.onQuickAccess(button)}"
+            android:onClick="@{(button)->viewmodel.onQuickAccessClick(button)}"
             android:text="10:00 PM"/>
 
         <Button
@@ -62,7 +62,7 @@
             app:layout_constraintEnd_toStartOf="@+id/time_setter_2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/quick_access_time_1"
-            android:onClick="@{(button) -> timeSetter.onTimeSetter(button)}"
+            android:onClick="@{(button) -> viewmodel.onTimeSetterClick(button)}"
             android:text="+10 min"/>
 
         <Button
@@ -72,7 +72,7 @@
             app:layout_constraintEnd_toStartOf="@+id/time_setter_3"
             app:layout_constraintStart_toEndOf="@+id/time_setter_1"
             app:layout_constraintTop_toBottomOf="@+id/quick_access_time_1"
-            android:onClick="@{(button) -> timeSetter.onTimeSetter(button)}"
+            android:onClick="@{(button) -> viewmodel.onTimeSetterClick(button)}"
             android:text="+1 hr"/>
 
         <Button
@@ -82,7 +82,7 @@
             app:layout_constraintEnd_toStartOf="@+id/time_setter_4"
             app:layout_constraintStart_toEndOf="@+id/time_setter_2"
             app:layout_constraintTop_toBottomOf="@+id/quick_access_time_1"
-            android:onClick="@{(button) -> timeSetter.onTimeSetter(button)}"
+            android:onClick="@{(button) -> viewmodel.onTimeSetterClick(button)}"
             android:text="+3 hr"/>
 
         <Button
@@ -92,7 +92,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/time_setter_3"
             app:layout_constraintTop_toBottomOf="@+id/quick_access_time_1"
-            android:onClick="@{(button) -> timeSetter.onTimeSetter(button)}"
+            android:onClick="@{(button) -> viewmodel.onTimeSetterClick(button)}"
             android:text="+1 day"/>
 
         <Button
@@ -102,7 +102,7 @@
             app:layout_constraintEnd_toStartOf="@+id/time_setter_6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/time_setter_1"
-            android:onClick="@{(button) -> timeSetter.onTimeSetter(button)}"
+            android:onClick="@{(button) -> viewmodel.onTimeSetterClick(button)}"
             android:text="-10 min"/>
 
         <Button
@@ -112,7 +112,7 @@
             app:layout_constraintEnd_toStartOf="@+id/time_setter_7"
             app:layout_constraintStart_toEndOf="@+id/time_setter_5"
             app:layout_constraintTop_toBottomOf="@id/time_setter_1"
-            android:onClick="@{(button) -> timeSetter.onTimeSetter(button)}"
+            android:onClick="@{(button) -> viewmodel.onTimeSetterClick(button)}"
             android:text="-1 hr"/>
 
         <Button
@@ -122,7 +122,7 @@
             app:layout_constraintEnd_toStartOf="@+id/time_setter_8"
             app:layout_constraintStart_toEndOf="@+id/time_setter_6"
             app:layout_constraintTop_toBottomOf="@id/time_setter_1"
-            android:onClick="@{(button) -> timeSetter.onTimeSetter(button)}"
+            android:onClick="@{(button) -> viewmodel.onTimeSetterClick(button)}"
             android:text="-3 hr" />
 
         <Button
@@ -132,7 +132,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/time_setter_7"
             app:layout_constraintTop_toBottomOf="@id/time_setter_1"
-            android:onClick="@{(button) -> timeSetter.onTimeSetter(button)}"
+            android:onClick="@{(button) -> viewmodel.onTimeSetterClick(button)}"
             android:text="-1 day"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

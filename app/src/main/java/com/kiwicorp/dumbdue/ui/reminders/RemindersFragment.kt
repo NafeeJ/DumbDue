@@ -9,10 +9,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentRemindersBinding
-import com.kiwicorp.dumbdue.ui.addreminder.AddReminderFragment
 import com.kiwicorp.dumbdue.util.InjectorUtils
 
 class RemindersFragment : Fragment() {
@@ -27,21 +25,31 @@ class RemindersFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_reminders, container, false)
+        val root = inflater.inflate(R.layout.fragment_reminders,container,false)
+        binding = FragmentRemindersBinding.bind(root).apply {
+            viewmodel = viewModel
+            lifecycleOwner = viewLifecycleOwner
+        }
+        return root
+    }
 
-        binding.viewModel = viewModel
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setupNavigation()
+    }
 
-        binding.lifecycleOwner = this
-
-        viewModel.onNavigateToAddFragment.observe(viewLifecycleOwner, Observer {
-           if (it == true) {
-               findNavController().navigate(R.id.action_remindersFragment_to_addReminderFragment)
-               viewModel.finishedNavigatingToAddFragment()
-           }
+    private fun setupNavigation() {
+        viewModel.eventAddReminder.observe(viewLifecycleOwner, Observer {
+            if (it == true)  {
+                navigateToAddReminder()
+                viewModel.onAddReminderComplete()
+            }
         })
+    }
 
-        return binding.root
+    private fun navigateToAddReminder() {
+        val action = RemindersFragmentDirections.actionRemindersFragmentToAddReminderFragment()
+        findNavController().navigate(action)
     }
 
 }

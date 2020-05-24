@@ -3,7 +3,7 @@ package com.kiwicorp.dumbdue.util
 import android.content.Context
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.data.source.local.ReminderDatabase
-import com.kiwicorp.dumbdue.ui.addreminder.AddReminderViewModelFactory
+import com.kiwicorp.dumbdue.ui.AddEditViewModelFactory
 import com.kiwicorp.dumbdue.ui.reminders.RemindersViewModelFactory
 
 
@@ -21,8 +21,8 @@ object InjectorUtils {
         return RemindersViewModelFactory(repository)
     }
 
-    fun provideAddRemindersViewModelFactory(context: Context): AddReminderViewModelFactory {
+    fun provideAddEditViewModelFactory(context: Context): AddEditViewModelFactory {
         val repository = getReminderRepository(context)
-        return AddReminderViewModelFactory(repository)
+        return AddEditViewModelFactory(repository)
     }
 }

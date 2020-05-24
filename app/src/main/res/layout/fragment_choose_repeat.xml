@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+     <data>
+         <import type="com.kiwicorp.dumbdue.data.Reminder"/>
+         <variable
+             name="viewmodel"
+             type="com.kiwicorp.dumbdue.ui.AddEditReminderViewModel" />
+     </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#000000">
+
+        <TextView
+            android:id="@+id/repeat_off_text"
+            style="@style/MenuStyle"
+            tools:text="Repeat Off"
+            app:calendar="@{viewmodel.calendar}"
+            app:repeatVal="@{Reminder.REPEAT_NONE}"
+            android:onClick="@{()->viewmodel.onChooseRepeat(Reminder.REPEAT_NONE)}"/>
+
+        <TextView
+            android:id="@+id/repeat_daily_text"
+            style="@style/MenuStyle"
+            tools:text="Repeat Daily"
+            app:calendar="@{viewmodel.calendar}"
+            app:repeatVal="@{Reminder.REPEAT_DAILY}"
+            android:onClick="@{()->viewmodel.onChooseRepeat(Reminder.REPEAT_DAILY)}"/>
+
+        <TextView
+            android:id="@+id/repeat_weekdays"
+            style="@style/MenuStyle"
+            tools:text="Repeat Weekdays"
+            app:calendar="@{viewmodel.calendar}"
+            app:repeatVal="@{Reminder.REPEAT_WEEKDAYS}"
+            android:onClick="@{()->viewmodel.onChooseRepeat(Reminder.REPEAT_WEEKDAYS)}"/>
+
+        <TextView
+            android:id="@+id/repeat_weekly"
+            style="@style/MenuStyle"
+            tools:text="Repeat Weekly"
+            app:calendar="@{viewmodel.calendar}"
+            app:repeatVal="@{Reminder.REPEAT_WEEKLY}"
+            android:onClick="@{()->viewmodel.onChooseRepeat(Reminder.REPEAT_WEEKLY)}"/>
+
+        <TextView
+            android:id="@+id/repeat_monthly"
+            style="@style/MenuStyle"
+            tools:text="Repeat Montlhy"
+            app:calendar="@{viewmodel.calendar}"
+            app:repeatVal="@{Reminder.REPEAT_MONTHLY}"
+            android:onClick="@{()->viewmodel.onChooseRepeat(Reminder.REPEAT_MONTHLY)}"/>
+
+        <TextView
+            android:id="@+id/repeat_yearly"
+            style="@style/MenuStyle"
+            tools:text="Repeat Yearly"
+            app:calendar="@{viewmodel.calendar}"
+            app:repeatVal="@{Reminder.REPEAT_YEARLY}"
+            android:onClick="@{()->viewmodel.onChooseRepeat(Reminder.REPEAT_YEARLY)}"/>
+
+        <TextView
+            android:id="@+id/repeat_custom"
+            style="@style/MenuStyle"
+            tools:text="Repeat Custom"
+            app:calendar="@{viewmodel.calendar}"
+            app:repeatVal="@{Reminder.REPEAT_CUSTOM}"
+            android:onClick="@{()->viewmodel.onChooseRepeat(Reminder.REPEAT_CUSTOM)}"/>
+
+
+    </LinearLayout>
+
+</layout>
