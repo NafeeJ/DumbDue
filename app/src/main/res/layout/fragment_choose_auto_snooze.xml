@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <import type="com.kiwicorp.dumbdue.data.Reminder"/>
+        <variable
+            name="viewmodel"
+            type="com.kiwicorp.dumbdue.ui.AddEditReminderViewModel"/>
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black">
+
+        <TextView
+            android:id="@+id/none_text"
+            style="@style/MenuStyle"
+            android:text="@string/auto_snooze_none"
+            android:onClick="@{()->viewmodel.onChooseAutoSnooze(Reminder.AUTO_SNOOZE_NONE)}"/>
+        <TextView
+            android:id="@+id/minute_text"
+            style="@style/MenuStyle"
+            android:text="@string/auto_snooze_minute"
+            android:onClick="@{()->viewmodel.onChooseAutoSnooze(Reminder.AUTO_SNOOZE_MINUTE)}"/>
+        <TextView
+            android:id="@+id/five_minute_text"
+            style="@style/MenuStyle"
+            android:text="@string/auto_snooze_5_minute"
+            android:onClick="@{()->viewmodel.onChooseAutoSnooze(Reminder.AUTO_SNOOZE_5_MINUTES)}"/>
+        <TextView
+            android:id="@+id/ten_minute_text"
+            style="@style/MenuStyle"
+            android:text="@string/auto_snooze_10_minutes"
+            android:onClick="@{()->viewmodel.onChooseAutoSnooze(Reminder.AUTO_SNOOZE_10_MINUTES)}"/>
+        <TextView
+            android:id="@+id/fifteen_minute_text"
+            style="@style/MenuStyle"
+            android:text="@string/auto_snooze_15_minutes"
+            android:onClick="@{()->viewmodel.onChooseAutoSnooze(Reminder.AUTO_SNOOZE_15_MINUTES)}"/>
+        <TextView
+            android:id="@+id/thirty_minute_text"
+            style="@style/MenuStyle"
+            android:text="@string/auto_snooze_30_minutes"
+            android:onClick="@{()->viewmodel.onChooseAutoSnooze(Reminder.AUTO_SNOOZE_30_MINUTES)}"/>
+        <TextView
+            android:id="@+id/hour_text"
+            style="@style/MenuStyle"
+            android:text="@string/auto_snooze_hour"
+            android:onClick="@{()->viewmodel.onChooseAutoSnooze(Reminder.AUTO_SNOOZE_HOUR)}"/>
+    </LinearLayout>
+
+</layout>

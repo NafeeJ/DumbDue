@@ -47,11 +47,32 @@ class AddReminderFragment : BottomSheetDialogFragment() {
                 viewModel.onOpenRepeatMenuComplete()
             }
         })
+        viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                navigateToAutoSnoozeMenu()
+                viewModel.onOpenAutoSnoozeMenuComplete()
+            }
+        })
+        viewModel.eventCancel.observe(viewLifecycleOwner, Observer {
+            if (it == true) {
+                cancel()
+                viewModel.onCancelComplete()
+            }
+        })
     }
 
     private fun navigateToRepeatMenu() {
-        val action = AddReminderFragmentDirections.actionAddReminderFragmentDestToChooseRepeatFragment()
+        val action = AddReminderFragmentDirections.actionAddReminderFragmentToChooseRepeatFragment()
         findNavController().navigate(action)
+    }
+
+    private fun navigateToAutoSnoozeMenu() {
+        val action = AddReminderFragmentDirections.actionAddReminderFragmentToChooseAutoSnoozeFragment()
+        findNavController().navigate(action)
+    }
+
+    private fun cancel() {
+        findNavController().popBackStack()
     }
 
 //todo

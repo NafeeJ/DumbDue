@@ -1,7 +1,8 @@
 package com.kiwicorp.dumbdue.adapters
 
 import android.graphics.Color
-import android.opengl.Visibility
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
@@ -10,6 +11,7 @@ import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.util.daySuffix
 import com.kiwicorp.dumbdue.util.timeFromNowMins
 import com.kiwicorp.dumbdue.util.timeFromNowString
+import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -64,6 +66,22 @@ fun TextView.setRepeatText(calendar: Calendar, repeatVal: Int) {
             val dateTime = dateFormatter.format(calendar.time)
             resources.getString(R.string.repeat_yearly,dateTime)
         }
-        else -> resources.getString(R.string.repeat_custom)
+        Reminder.REPEAT_CUSTOM -> resources.getString(R.string.repeat_custom)
+        else -> throw IllegalArgumentException("Unknown Repeat Value: $repeatVal")
     }
+}
+
+@BindingAdapter("autoSnooze")
+fun ImageButton.setAutoSnooze(autoSnooze: Int) {
+    val resource = when(autoSnooze) {
+        Reminder.AUTO_SNOOZE_NONE -> R.drawable.white_none_square
+        Reminder.AUTO_SNOOZE_MINUTE -> R.drawable.one_white
+        Reminder.AUTO_SNOOZE_5_MINUTES -> R.drawable.five_white
+        Reminder.AUTO_SNOOZE_10_MINUTES -> R.drawable.ten_white
+        Reminder.AUTO_SNOOZE_15_MINUTES -> R.drawable.fifteen_white
+        Reminder.AUTO_SNOOZE_30_MINUTES -> R.drawable.thirty_white
+        Reminder.AUTO_SNOOZE_HOUR -> R.drawable.one_hour_white
+        else -> throw IllegalArgumentException("Unknown Auto Snooze Value: $autoSnooze")
+    }
+    setImageResource(resource)
 }

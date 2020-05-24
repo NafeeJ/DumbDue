@@ -47,6 +47,22 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
         _eventChooseRepeat.value = null
     }
 
+    /**
+     * Called by TextViews in ChooseAutoSnooze via DataBinding
+     */
+    private val _eventChooseAutoSnooze = MutableLiveData<Boolean>()
+    val eventChooseAutoSnooze: LiveData<Boolean>
+            get() = _eventChooseAutoSnooze
+
+    fun onChooseAutoSnooze(autoSnoozeVal: Int) {
+        _autoSnoozeVal.value = autoSnoozeVal
+        _eventChooseAutoSnooze.value = true
+    }
+
+    fun onChooseAutoSnoozeComplete() {
+        _eventChooseAutoSnooze.value = null
+    }
+
     //live data to allow for communication to fragment to open the repeat menu
     private val _eventOpenRepeatMenu = MutableLiveData<Boolean>()
     val eventOpenRepeatMenu: LiveData<Boolean>
@@ -58,6 +74,30 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
 
     fun onOpenRepeatMenuComplete() {
         _eventChooseRepeat.value = null
+    }
+
+    private val _eventOpenAutoSnoozeMenu = MutableLiveData<Boolean>()
+    val eventOpenAutoSnoozeMenu: LiveData<Boolean>
+        get() = _eventOpenAutoSnoozeMenu
+
+    fun onOpenAutoSnoozeMenu() {
+        _eventOpenAutoSnoozeMenu.value = true
+    }
+
+    fun onOpenAutoSnoozeMenuComplete() {
+        _eventOpenAutoSnoozeMenu.value = null
+    }
+
+    private val _eventCancel = MutableLiveData<Boolean>()
+    val eventCancel: LiveData<Boolean>
+        get() = _eventCancel
+
+    fun onCancel() {
+        _eventCancel.value = true
+    }
+
+    fun onCancelComplete() {
+        _eventCancel.value = false
     }
 
 

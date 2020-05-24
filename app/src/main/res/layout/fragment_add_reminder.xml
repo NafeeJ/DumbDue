@@ -30,16 +30,19 @@
                 app:layout_constraintEnd_toStartOf="@+id/snooze"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:onClick="@{()->viewmodel.onCancel()}"/>
 
             <ImageButton
                 android:id="@+id/snooze"
                 style="@style/ImageButtonStyle"
-                android:src="@drawable/snooze_white"
                 app:layout_constraintEnd_toStartOf="@+id/repeat"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/cancel"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:scaleType="fitCenter"
+                app:autoSnooze="@{viewmodel.autoSnoozeVal}"
+                android:onClick="@{()->viewmodel.onOpenAutoSnoozeMenu()}"/>
 
             <ImageButton
                 android:id="@+id/repeat"

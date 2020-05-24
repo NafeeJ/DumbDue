@@ -16,7 +16,7 @@
 
     <string name="time_from_now_past">%1s %2s ago</string>
     <string name="time_from_now_future">%1s in %2s</string>
-
+    <!-- Repeat Text -->
     <string name="repeat_off">Repeat Off</string>
     <string name="repeat_daily">Daily %s</string>
     <string name="repeat_weekdays">Weekdays %s</string>
@@ -24,5 +24,16 @@
     <string name="repeat_monthly">%1s each month at %2s</string>
     <string name="repeat_yearly">Every %s</string>
     <string name="repeat_custom">Repeat Custom</string>
+    <!-- Auto Snooze Text -->
+    <string name="auto_snooze_none">None</string>
+    <string name="auto_snooze_minute">Every Minute</string>
+    <string name="auto_snooze_5_minute">Every 5 Minutes</string>
+    <string name="auto_snooze_10_minutes">Every 10 Minutes</string>
+    <string name="auto_snooze_15_minutes">Every 15 Minutes</string>
+    <string name="auto_snooze_30_minutes">Every 30 minutes</string>
+    <string name="auto_snooze_hour">Every Hour</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

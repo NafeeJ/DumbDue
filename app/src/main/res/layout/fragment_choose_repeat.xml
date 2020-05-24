@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="#000000">
+        android:background="@android:color/black">
 
         <TextView
             android:id="@+id/repeat_off_text"
@@ -32,7 +32,7 @@
             android:onClick="@{()->viewmodel.onChooseRepeat(Reminder.REPEAT_DAILY)}"/>
 
         <TextView
-            android:id="@+id/repeat_weekdays"
+            android:id="@+id/repeat_weekdays_text"
             style="@style/MenuStyle"
             tools:text="Repeat Weekdays"
             app:calendar="@{viewmodel.calendar}"
@@ -40,7 +40,7 @@
             android:onClick="@{()->viewmodel.onChooseRepeat(Reminder.REPEAT_WEEKDAYS)}"/>
 
         <TextView
-            android:id="@+id/repeat_weekly"
+            android:id="@+id/repeat_weekly_text"
             style="@style/MenuStyle"
             tools:text="Repeat Weekly"
             app:calendar="@{viewmodel.calendar}"
@@ -48,7 +48,7 @@
             android:onClick="@{()->viewmodel.onChooseRepeat(Reminder.REPEAT_WEEKLY)}"/>
 
         <TextView
-            android:id="@+id/repeat_monthly"
+            android:id="@+id/repeat_monthly_text"
             style="@style/MenuStyle"
             tools:text="Repeat Montlhy"
             app:calendar="@{viewmodel.calendar}"
@@ -56,7 +56,7 @@
             android:onClick="@{()->viewmodel.onChooseRepeat(Reminder.REPEAT_MONTHLY)}"/>
 
         <TextView
-            android:id="@+id/repeat_yearly"
+            android:id="@+id/repeat_yearly_text"
             style="@style/MenuStyle"
             tools:text="Repeat Yearly"
             app:calendar="@{viewmodel.calendar}"
@@ -64,7 +64,7 @@
             android:onClick="@{()->viewmodel.onChooseRepeat(Reminder.REPEAT_YEARLY)}"/>
 
         <TextView
-            android:id="@+id/repeat_custom"
+            android:id="@+id/repeat_custom_text"
             style="@style/MenuStyle"
             tools:text="Repeat Custom"
             app:calendar="@{viewmodel.calendar}"
