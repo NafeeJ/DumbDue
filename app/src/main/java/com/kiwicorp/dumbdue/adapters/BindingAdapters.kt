@@ -33,6 +33,9 @@ fun TextView.setTimeFromNow(calendar: LiveData<Calendar>) {
     }
 }
 
+/**
+ * Updates the text for TextViews that displays a repeat frequency
+ */
 @BindingAdapter(value = ["calendar","repeatVal"], requireAll = true)
 fun TextView.setRepeatText(calendar: Calendar, repeatVal: Int) {
     val resources = context.resources
@@ -71,6 +74,9 @@ fun TextView.setRepeatText(calendar: Calendar, repeatVal: Int) {
     }
 }
 
+/**
+ * Updates the AutoSnooze image button in fragment_add_reminder.xml and fragment_edit_reminder.xml
+ */
 @BindingAdapter("autoSnooze")
 fun ImageButton.setAutoSnooze(autoSnooze: Int) {
     val resource = when(autoSnooze) {
