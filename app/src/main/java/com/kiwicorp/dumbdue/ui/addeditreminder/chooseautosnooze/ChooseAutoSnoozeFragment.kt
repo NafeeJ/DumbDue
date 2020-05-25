@@ -35,8 +35,15 @@ class ChooseAutoSnoozeFragment : BottomSheetDialogFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.eventChooseAutoSnooze.observe(viewLifecycleOwner, NavEventObserver {
-            findNavController().popBackStack()
+            close()
         })
+    }
+
+    /**
+     * Closes this dialog
+     */
+    private fun close() {
+        findNavController().popBackStack()
     }
 
 }

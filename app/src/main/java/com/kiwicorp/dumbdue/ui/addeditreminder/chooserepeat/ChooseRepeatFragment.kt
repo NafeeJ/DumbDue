@@ -35,10 +35,15 @@ class ChooseRepeatFragment : BottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         viewModel.eventChooseRepeat.observe(viewLifecycleOwner, NavEventObserver {
-            findNavController().popBackStack()
+            close()
         })
+    }
 
+    /**
+     * Closes this Dialog
+     */
+    private fun close() {
+        findNavController().popBackStack()
     }
 }

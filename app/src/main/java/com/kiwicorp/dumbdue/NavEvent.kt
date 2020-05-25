@@ -10,8 +10,7 @@ import androidx.lifecycle.Observer
  * needed for the navigation action, [navArg] should be [Unit].
  */
 class NavEvent<out T>(private val navArg: T) {
-    var hasBeenCompleted = false
-        private set //For external read only access
+    private var hasBeenCompleted = false
 
     /**
      * Returns the navArguments and prevents this event from being completed again.
