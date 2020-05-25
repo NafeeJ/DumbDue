@@ -8,6 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.kiwicorp.dumbdue.NavEventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseAutoSnoozeBinding
 import com.kiwicorp.dumbdue.ui.AddEditReminderViewModel
@@ -34,11 +35,8 @@ class ChooseAutoSnoozeFragment : BottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.eventChooseAutoSnooze.observe(viewLifecycleOwner, Observer {
-            if (it == true) {
-                findNavController().popBackStack()
-                viewModel.onChooseAutoSnoozeComplete()
-            }
+        viewModel.eventChooseAutoSnooze.observe(viewLifecycleOwner, NavEventObserver {
+            findNavController().popBackStack()
         })
     }
 

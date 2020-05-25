@@ -9,6 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.kiwicorp.dumbdue.NavEvent
+import com.kiwicorp.dumbdue.NavEventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseRepeatBinding
 import com.kiwicorp.dumbdue.ui.AddEditReminderViewModel
@@ -36,11 +38,10 @@ class ChooseRepeatFragment : BottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.eventChooseRepeat.observe(viewLifecycleOwner, Observer {
-            if (it == true) {
-                findNavController().popBackStack()
-                viewModel.onChooseRepeatComplete()
-            }
+
+        viewModel.eventChooseRepeat.observe(viewLifecycleOwner, NavEventObserver {
+            findNavController().popBackStack()
         })
+
     }
 }

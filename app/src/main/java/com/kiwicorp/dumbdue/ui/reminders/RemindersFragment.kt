@@ -40,10 +40,7 @@ class RemindersFragment : Fragment() {
 
     private fun setupNavigation() {
         viewModel.eventAddReminder.observe(viewLifecycleOwner, Observer {
-            if (it == true)  {
-                navigateToAddReminder()
-                viewModel.onAddReminderComplete()
-            }
+            navigateToAddReminder()
         })
     }
 

@@ -8,6 +8,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.kiwicorp.dumbdue.NavEvent
+import com.kiwicorp.dumbdue.NavEventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
 import com.kiwicorp.dumbdue.ui.AddEditReminderViewModel
@@ -41,23 +43,14 @@ class AddReminderFragment : BottomSheetDialogFragment() {
     }
 
     private fun setupNavigation() {
-        viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, Observer {
-            if (it == true) {
-                navigateToRepeatMenu()
-                viewModel.onOpenRepeatMenuComplete()
-            }
+        viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, NavEventObserver {
+            navigateToRepeatMenu()
         })
-        viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, Observer {
-            if (it == true) {
-                navigateToAutoSnoozeMenu()
-                viewModel.onOpenAutoSnoozeMenuComplete()
-            }
+        viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, NavEventObserver {
+            navigateToAutoSnoozeMenu()
         })
-        viewModel.eventCancel.observe(viewLifecycleOwner, Observer {
-            if (it == true) {
-                cancel()
-                viewModel.onCancelComplete()
-            }
+        viewModel.eventCancel.observe(viewLifecycleOwner, NavEventObserver {
+            cancel()
         })
     }
 

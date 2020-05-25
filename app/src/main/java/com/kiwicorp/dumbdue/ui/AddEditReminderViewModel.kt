@@ -5,146 +5,101 @@ import android.widget.Button
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.kiwicorp.dumbdue.NavEvent
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import kotlinx.coroutines.*
 import java.util.*
 
 class AddEditReminderViewModel internal constructor(private val reminderRepository: ReminderRepository) : ViewModel() {
-    //viewModelJob allows us to cancel all coroutines started by this ViewModel
+    /**
+     * viewModelJob allows us to cancel all coroutines started by this ViewModel
+     */
     private var viewModelJob = Job()
 
     private var uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    //for two way data-binding
+    //Public mutable for two-way data binding
     val title = MutableLiveData<String>()
 
     private val _calendar = MutableLiveData(Calendar.getInstance())
-    val calendar: LiveData<Calendar>
-        get() = _calendar
+    val calendar: LiveData<Calendar> = _calendar
 
     private val _repeatVal = MutableLiveData(Reminder.REPEAT_NONE)
-    val repeatVal: LiveData<Int>
-        get() = _repeatVal
+    val repeatVal: LiveData<Int> = _repeatVal
 
     private val _autoSnoozeVal = MutableLiveData(Reminder.AUTO_SNOOZE_MINUTE)
-    val autoSnoozeVal: LiveData<Int>
-        get() = _autoSnoozeVal
+    val autoSnoozeVal: LiveData<Int> = _autoSnoozeVal
+
+    private val _eventOpenRepeatMenu = MutableLiveData<NavEvent<Unit>>()
+    val eventOpenRepeatMenu: LiveData<NavEvent<Unit>> = _eventOpenRepeatMenu
+
+    private val _eventOpenAutoSnoozeMenu = MutableLiveData<NavEvent<Unit>>()
+    val eventOpenAutoSnoozeMenu: LiveData<NavEvent<Unit>> = _eventOpenAutoSnoozeMenu
+
+    private val _eventChooseRepeat = MutableLiveData<NavEvent<Unit>>()
+    val eventChooseRepeat: LiveData<NavEvent<Unit>> = _eventChooseRepeat
+
+    private val _eventChooseAutoSnooze = MutableLiveData<NavEvent<Unit>>()
+    val eventChooseAutoSnooze: LiveData<NavEvent<Unit>> = _eventChooseAutoSnooze
+
+    private val _eventCancel = MutableLiveData<NavEvent<Unit>>()
+    val eventCancel: LiveData<NavEvent<Unit>> = _eventCancel
 
     /**
-     * Communicates to ChooseRepeatFragment that a [repeatVal] has been chosen
-     */
-    private val _eventChooseRepeat = MutableLiveData<Boolean>()
-    val eventChooseRepeat: LiveData<Boolean>
-        get()=_eventChooseRepeat
-
-    /**
-     * Called by the TextViews in ChooseRepeatFragment via Listener Binding.
-     * Updates [_repeatVal] and updates [_eventChooseRepeat] to let ChooseRepeatFragment know that a
-     * [repeatVal] has been chosen.
-     */
-    fun onChooseRepeat(repeatVal: Int) {
-        _repeatVal.value = repeatVal
-        _eventChooseRepeat.value = true
-    }
-
-    /**
-     * Called by Fragment after repeat menu is opened to reset [_eventChooseRepeat] so it can be
-     * used again.
-     */
-    fun onChooseRepeatComplete() {
-        _eventChooseRepeat.value = null
-    }
-
-    /**
-     * Communicates to ChooseAutoSnoozeFragment that a [autoSnoozeVal] has been chosen.
-     */
-    private val _eventChooseAutoSnooze = MutableLiveData<Boolean>()
-    val eventChooseAutoSnooze: LiveData<Boolean>
-            get() = _eventChooseAutoSnooze
-
-    /**
-     * Called by the TextViews in ChooseAutoSnoozeFragment via Listener Binding.
-     * Updates [_autoSnoozeVal] and updates [_eventChooseAutoSnooze] to let ChooseAutoSnoozeFragment
-     * know that a [autoSnoozeVal] has been chosen.
-     */
-    fun onChooseAutoSnooze(autoSnoozeVal: Int) {
-        _autoSnoozeVal.value = autoSnoozeVal
-        _eventChooseAutoSnooze.value = true
-    }
-
-    /**
-     * Function that resets [_eventChooseAutoSnooze] so it can be used again.
-     */
-    fun onChooseAutoSnoozeComplete() {
-        _eventChooseAutoSnooze.value = null
-    }
-
-    /**
-     * Communicates to AddReminderFragment/EditReminderFragment that the users wants to open the
-     * repeat menu.
-     */
-    private val _eventOpenRepeatMenu = MutableLiveData<Boolean>()
-    val eventOpenRepeatMenu: LiveData<Boolean>
-        get() = _eventOpenRepeatMenu
-
-    /**
-     * Called by ImageButtons in AddReminderFragment and EditReminderFragment to communicate to the
-     * fragments that the user wants to open the repeat menu.
+     * Called by ImageButtons in AddReminderFragment/EditReminderFragment via listener binding.
      */
     fun onOpenRepeatMenu() {
-        _eventOpenRepeatMenu.value = true
+        _eventOpenRepeatMenu.value = NavEvent(Unit)
     }
-
-    /**
-     * Called by Fragment after the repeat menu is opened to reset [_eventChooseRepeat] so it can be
-     * used again.
-     */
-    fun onOpenRepeatMenuComplete() {
-        _eventChooseRepeat.value = null
-    }
-
-    /**
-     * Indicate to the fragment that the user wants to open the auto snooze menu.
-     */
-    private val _eventOpenAutoSnoozeMenu = MutableLiveData<Boolean>()
-    val eventOpenAutoSnoozeMenu: LiveData<Boolean>
-        get() = _eventOpenAutoSnoozeMenu
 
     /**
      * Called by ImageButton in AddReminderFragment/EditReminderButton via listener binding.
      */
     fun onOpenAutoSnoozeMenu() {
-        _eventOpenAutoSnoozeMenu.value = true
+        _eventOpenAutoSnoozeMenu.value = NavEvent(Unit)
     }
 
     /**
-     * Called by fragment after the AutoSnoozeMenu is opened so [_eventOpenAutoSnoozeMenu] can be used
-     * again.
+     * Called by the TextViews in ChooseRepeatFragment via Listener Binding.
      */
-    fun onOpenAutoSnoozeMenuComplete() {
-        _eventOpenAutoSnoozeMenu.value = null
+    fun onChooseRepeat(repeatVal: Int) {
+        _repeatVal.value = repeatVal
+        _eventChooseRepeat.value = NavEvent(Unit)
     }
 
     /**
-     * Communicates to fragment that the user wishes to cancel adding/editing a reminder
+     * Called by the TextViews in ChooseAutoSnoozeFragment via Listener Binding.
      */
-    private val _eventCancel = MutableLiveData<Boolean>()
-    val eventCancel: LiveData<Boolean>
-        get() = _eventCancel
+    fun onChooseAutoSnooze(autoSnoozeVal: Int) {
+        _autoSnoozeVal.value = autoSnoozeVal
+        _eventChooseAutoSnooze.value = NavEvent(Unit)
+    }
 
     /**
      * Called by ImageButton in AddReminderFragment/EditReminderFragment
      */
     fun onCancel() {
-        _eventCancel.value = true
+        _eventCancel.value = NavEvent(Unit)
     }
 
     /**
-     * Called after adding/editing a reminder has been canceled
+     * Called by the ImageButton in AddReminderFragment via listener binding.
      */
-    fun onCancelComplete() {
-        _eventCancel.value = false
+    fun addReminder() {
+        uiScope.launch {
+            //todo make snackbar when title is empty and don't allow for reminder to be created
+            insert(Reminder(title = title.value ?: "",calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!))
+        }
+    }
+
+    /**
+     * Inserts Reminder into the repository
+     */
+    private suspend fun insert(reminder: Reminder) {
+        withContext(Dispatchers.IO) {
+            reminderRepository.insertReminder(reminder)
+        }
     }
 
     /**
@@ -185,25 +140,6 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
             var number: Int = numbers.toInt()
             if (notDigits[0] == '-') number *= -1
             add(unit,number)
-        }
-    }
-
-    /**
-     * Called by the ImageButton in AddReminderFragment/EditReminderFragment via listener binding.
-     */
-    fun addReminder() {
-        uiScope.launch {
-            //todo make snackbar when title is empty and don't allow for reminder to be created
-            insert(Reminder(title = title.value ?: "",calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!))
-        }
-    }
-
-    /**
-     * Inserts Reminder into the repository
-     */
-    private suspend fun insert(reminder: Reminder) {
-        withContext(Dispatchers.IO) {
-            reminderRepository.insertReminder(reminder)
         }
     }
 
