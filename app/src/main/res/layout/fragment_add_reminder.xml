@@ -10,7 +10,7 @@
 
         <variable
             name="viewmodel"
-            type="com.kiwicorp.dumbdue.ui.AddEditReminderViewModel" />
+            type="com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -20,7 +20,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ui.addreminder.AddReminderFragment"
+            tools:context=".ui.addeditreminder.addreminder.AddReminderFragment"
             android:background="#000000">
 
             <ImageButton

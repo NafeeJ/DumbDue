@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui
+package com.kiwicorp.dumbdue.ui.addeditreminder
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,7 +10,9 @@ class AddEditViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AddEditReminderViewModel::class.java)) {
-            return AddEditReminderViewModel(repository) as T
+            return AddEditReminderViewModel(
+                repository
+            ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

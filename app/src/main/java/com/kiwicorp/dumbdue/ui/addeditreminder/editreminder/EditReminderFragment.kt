@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui.editreminder
+package com.kiwicorp.dumbdue.ui.addeditreminder.editreminder
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle

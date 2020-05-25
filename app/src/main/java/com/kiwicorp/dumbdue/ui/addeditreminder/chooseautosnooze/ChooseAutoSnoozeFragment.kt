@@ -1,17 +1,16 @@
-package com.kiwicorp.dumbdue.ui.chooseautosnooze
+package com.kiwicorp.dumbdue.ui.addeditreminder.chooseautosnooze
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kiwicorp.dumbdue.NavEventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseAutoSnoozeBinding
-import com.kiwicorp.dumbdue.ui.AddEditReminderViewModel
+import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
 import com.kiwicorp.dumbdue.util.InjectorUtils
 
 class ChooseAutoSnoozeFragment : BottomSheetDialogFragment() {

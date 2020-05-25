@@ -6,7 +6,7 @@
          <import type="com.kiwicorp.dumbdue.data.Reminder"/>
          <variable
              name="viewmodel"
-             type="com.kiwicorp.dumbdue.ui.AddEditReminderViewModel" />
+             type="com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel" />
      </data>
 
     <LinearLayout

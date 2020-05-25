@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui
+package com.kiwicorp.dumbdue.ui.addeditreminder
 
 import android.view.View
 import android.widget.Button
@@ -88,7 +88,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
      */
     fun addReminder() {
         uiScope.launch {
-            //todo make snackbar when title is empty and don't allow for reminder to be created
+            //todo make snackbar when title is empty and don't allow for reminder to be created without title
             insert(Reminder(title = title.value ?: "",calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!))
         }
     }
