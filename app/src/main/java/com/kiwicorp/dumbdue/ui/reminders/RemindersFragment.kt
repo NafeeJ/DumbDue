@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import androidx.fragment.app.viewModels
 import android.view.View
 import android.view.ViewGroup
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentRemindersBinding
 import com.kiwicorp.dumbdue.util.InjectorUtils

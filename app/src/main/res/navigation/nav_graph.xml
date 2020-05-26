@@ -12,49 +12,62 @@
         tools:layout="@layout/fragment_reminders" >
         <action
             android:id="@+id/action_remindersFragment_to_addReminderFragment"
-            app:destination="@id/add_reminder_fragment_dest" />
+            app:destination="@id/nav_graph_add" />
         <action
             android:id="@+id/action_remindersFragment_to_editReminderFragment"
-            app:destination="@id/edit_reminder_fragment_dest" />
+            app:destination="@id/nav_graph_edit" />
     </fragment>
     <fragment
         android:id="@+id/settings_fragment_dest"
         android:name="com.kiwicorp.dumbdue.ui.preferences.SettingsFragment"
         android:label="Settings" />
-    <dialog
-        android:id="@+id/add_reminder_fragment_dest"
-        android:name="com.kiwicorp.dumbdue.ui.addeditreminder.addreminder.AddReminderFragment"
-        android:label="Add Reminder"
-        tools:layout="@layout/fragment_add_reminder">
-        <action
-            android:id="@+id/action_addReminderFragment_to_chooseRepeatFragment"
-            app:destination="@id/choose_repeat_fragment_dest" />
-        <action
-            android:id="@+id/action_addReminderFragment_to_chooseAutoSnoozeFragment"
-            app:destination="@id/choose_auto_snooze_fragment_dest" />
-    </dialog>
-    <fragment
-        android:id="@+id/edit_reminder_fragment_dest"
-        android:name="com.kiwicorp.dumbdue.ui.addeditreminder.editreminder.EditReminderFragment"
-        android:label="Edit Reminder"
-        tools:layout="@layout/fragment_edit_reminder" >
-        <action
-            android:id="@+id/action_editReminderFragment_to_chooseAutoSnoozeFragment"
-            app:destination="@id/choose_auto_snooze_fragment_dest" />
-        <action
-            android:id="@+id/action_editReminderFragment_to_chooseRepeatFragment_dest"
-            app:destination="@id/choose_repeat_fragment_dest" />
-    </fragment>
-    <dialog
-        android:id="@+id/choose_repeat_fragment_dest"
-        android:name="com.kiwicorp.dumbdue.ui.addeditreminder.chooserepeat.ChooseRepeatFragment"
-        android:label="Choose Repeat Value"
-        tools:layout="@layout/fragment_choose_repeat">
-    </dialog>
-    <dialog
-        android:id="@+id/choose_auto_snooze_fragment_dest"
-        android:name="com.kiwicorp.dumbdue.ui.addeditreminder.chooseautosnooze.ChooseAutoSnoozeFragment"
-        android:label="Choose Auto Snooze"
-        tools:layout="@layout/fragment_choose_auto_snooze"/>
+    <navigation
+        android:id="@+id/nav_graph_edit"
+        app:startDestination="@id/edit_reminder_fragment_dest" >
+        <fragment
+            android:id="@+id/edit_reminder_fragment_dest"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.editreminder.EditReminderFragment"
+            android:label="Edit Reminder"
+            tools:layout="@layout/fragment_edit_reminder" >
+            <action
+                android:id="@+id/action_editReminderFragment_to_chooseRepeatFragment"
+                app:destination="@id/chooseRepeatFragment" />
+            <action
+                android:id="@+id/action_editReminderFragment_to_chooseAutoSnoozeFragment"
+                app:destination="@id/chooseAutoSnoozeFragment" />
+        </fragment>
+        <dialog
+            android:id="@+id/chooseAutoSnoozeFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.chooseautosnooze.ChooseAutoSnoozeFragment"
+            android:label="ChooseAutoSnoozeFragment" />
+        <dialog
+            android:id="@+id/chooseRepeatFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.chooserepeat.ChooseRepeatFragment"
+            android:label="ChooseRepeatFragment" />
+    </navigation>
+    <navigation
+        android:id="@+id/nav_graph_add"
+        app:startDestination="@id/add_reminder_fragment_dest" >
+        <dialog
+            android:id="@+id/add_reminder_fragment_dest"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.addreminder.AddReminderFragment"
+            android:label="Add Reminder"
+            tools:layout="@layout/fragment_add_reminder" >
+            <action
+                android:id="@+id/action_addReminderFragment_to_chooseRepeatFragment"
+                app:destination="@id/chooseRepeatFragment2" />
+            <action
+                android:id="@+id/action_addReminderFragment_to_chooseAutoSnoozeFragment"
+                app:destination="@id/chooseAutoSnoozeFragment2" />
+        </dialog>
+        <dialog
+            android:id="@+id/chooseRepeatFragment2"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.chooserepeat.ChooseRepeatFragment"
+            android:label="ChooseRepeatFragment" />
+        <dialog
+            android:id="@+id/chooseAutoSnoozeFragment2"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.chooseautosnooze.ChooseAutoSnoozeFragment"
+            android:label="ChooseAutoSnoozeFragment" />
+    </navigation>
 
 </navigation>

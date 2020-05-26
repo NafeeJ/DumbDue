@@ -13,7 +13,7 @@ class NavEvent<out T>(private val navArg: T) {
     private var hasBeenCompleted = false
 
     /**
-     * Returns the navArguments and prevents this event from being completed again.
+     * Returns the navArg and prevents this event from being completed again.
      * This function is only used by [NavEventObserver].
      */
     fun getNavArgIfNotCompleted(): T? {

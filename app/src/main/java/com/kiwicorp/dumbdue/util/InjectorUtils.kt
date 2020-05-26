@@ -23,8 +23,6 @@ object InjectorUtils {
 
     fun provideAddEditViewModelFactory(context: Context): AddEditViewModelFactory {
         val repository = getReminderRepository(context)
-        return AddEditViewModelFactory(
-            repository
-        )
+        return AddEditViewModelFactory(repository)
     }
 }

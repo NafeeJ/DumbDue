@@ -1,17 +1,21 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder.addreminder
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.NavEventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
 import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
-import com.kiwicorp.dumbdue.ui.addreminder.AddReminderFragmentDirections
 import com.kiwicorp.dumbdue.util.InjectorUtils
 
 
@@ -19,7 +23,7 @@ class AddReminderFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentAddReminderBinding
 
-    private val viewModel: AddEditReminderViewModel by activityViewModels {
+    private val viewModel: AddEditReminderViewModel by navGraphViewModels(R.id.nav_graph_add) {
         InjectorUtils.provideAddEditViewModelFactory(requireContext())
     }
 
@@ -39,6 +43,7 @@ class AddReminderFragment : BottomSheetDialogFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
+        setupSnackbar()
     }
 
     private fun setupNavigation() {
@@ -54,14 +59,12 @@ class AddReminderFragment : BottomSheetDialogFragment() {
     }
 
     private fun navigateToRepeatMenu() {
-        val action =
-            AddReminderFragmentDirections.actionAddReminderFragmentToChooseRepeatFragment()
+        val action = AddReminderFragmentDirections.actionAddReminderFragmentToChooseRepeatFragment()
         findNavController().navigate(action)
     }
 
     private fun navigateToAutoSnoozeMenu() {
-        val action =
-            AddReminderFragmentDirections.actionAddReminderFragmentToChooseAutoSnoozeFragment()
+        val action = AddReminderFragmentDirections.actionAddReminderFragmentToChooseAutoSnoozeFragment()
         findNavController().navigate(action)
     }
 
@@ -69,11 +72,21 @@ class AddReminderFragment : BottomSheetDialogFragment() {
         findNavController().popBackStack()
     }
 
-//todo
-//    private fun showKeyboard() {
-//        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,InputMethodManager.HIDE_NOT_ALWAYS)
-//        binding.titleText.requestFocus()
-//    }
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("AddReminderFragment","Fragment Detached")
+    }
+
+    fun setupSnackbar() {
+//        viewModel.showSnackBarEvent.observe(viewLifecycleOwner, Observer {
+//            if (it == true) {
+//                Snackbar.make(binding.coordinatorLayout,getString(R.string.snackbar_add_error),Snackbar.LENGTH_SHORT).show()
+//                viewModel.doneShowingSnackbar()
+//            }
+//        })
+        viewModel.snackbarText.observe(viewLifecycleOwner, Observer { text ->
+            Snackbar.make(binding.coordinatorLayout,text,Snackbar.LENGTH_SHORT).show()
+        })
+    }
 
 }

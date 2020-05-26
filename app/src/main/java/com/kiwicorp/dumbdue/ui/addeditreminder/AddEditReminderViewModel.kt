@@ -46,6 +46,16 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
     private val _eventCancel = MutableLiveData<NavEvent<Unit>>()
     val eventCancel: LiveData<NavEvent<Unit>> = _eventCancel
 
+    private val _showSnackBarEvent = MutableLiveData<Boolean>()
+    val showSnackBarEvent: LiveData<Boolean> = _showSnackBarEvent
+
+    fun doneShowingSnackbar() {
+        _showSnackBarEvent.value = false
+    }
+
+    private val _snackbarText = MutableLiveData<String>()
+    val snackbarText: LiveData<String> = _snackbarText
+
     /**
      * Called by ImageButtons in AddReminderFragment/EditReminderFragment via listener binding.
      */
@@ -88,8 +98,15 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
      */
     fun addReminder() {
         uiScope.launch {
+            if (title.value == null || title.value == "") {
+//                _showSnackBarEvent.value = true
+                _snackbarText.value = "Title Cannot Be Empty."
+            } else {
+                insert(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!))
+                _eventCancel.value = NavEvent(Unit)
+            }
             //todo make snackbar when title is empty and don't allow for reminder to be created without title
-            insert(Reminder(title = title.value ?: "",calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!))
+
         }
     }
 

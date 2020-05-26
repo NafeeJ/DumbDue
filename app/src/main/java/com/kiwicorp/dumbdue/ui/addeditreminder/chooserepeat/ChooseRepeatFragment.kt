@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kiwicorp.dumbdue.NavEventObserver
 import com.kiwicorp.dumbdue.R
@@ -17,7 +20,7 @@ class ChooseRepeatFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentChooseRepeatBinding
     // Shares ViewModel with Add/Edit ReminderFragment to get access to calendar and repeatVal
-    private val viewModel: AddEditReminderViewModel by activityViewModels {
+    private val viewModel: AddEditReminderViewModel by navGraphViewModels(R.id.nav_graph_add) {
         InjectorUtils.provideAddEditViewModelFactory(requireContext())
     }
 

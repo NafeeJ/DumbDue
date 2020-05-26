@@ -1,11 +1,10 @@
 package com.kiwicorp.dumbdue.util
 
 import java.util.*
-import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.math.ceil
 
-//returns the suffix of number of the day based off the date of the calendar
+//returns the suffix of number of the day
 fun Calendar.daySuffix(): String {
     val dayOfMonth: Int = get(Calendar.DAY_OF_MONTH)
     return when {

@@ -14,105 +14,115 @@
     </data>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <!-- Layout must be wrapped in a coordinator layout for showing snackbars. -->
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/coordinator_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".ui.addeditreminder.addreminder.AddReminderFragment"
-            android:background="#000000">
+            android:layout_height="match_parent">
 
-            <ImageButton
-                android:id="@+id/cancel"
-                style="@style/ImageButtonStyle"
-                android:src="@drawable/cancel_white"
-                app:layout_constraintEnd_toStartOf="@+id/snooze"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:onClick="@{()->viewmodel.onCancel()}"/>
-
-            <ImageButton
-                android:id="@+id/snooze"
-                style="@style/ImageButtonStyle"
-                app:layout_constraintEnd_toStartOf="@+id/repeat"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/cancel"
-                app:layout_constraintTop_toTopOf="parent"
-                android:scaleType="fitCenter"
-                app:autoSnooze="@{viewmodel.autoSnoozeVal}"
-                android:onClick="@{()->viewmodel.onOpenAutoSnoozeMenu()}"/>
-
-            <ImageButton
-                android:id="@+id/repeat"
-                style="@style/ImageButtonStyle"
-                android:src="@drawable/repeat_white"
-                app:layout_constraintEnd_toStartOf="@+id/add"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/snooze"
-                app:layout_constraintTop_toTopOf="parent"
-                android:onClick="@{()->viewmodel.onOpenRepeatMenu()}"/>
-
-            <ImageButton
-                android:id="@+id/add"
-                style="@style/ImageButtonStyle"
-                android:src="@drawable/check_white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/repeat"
-                app:layout_constraintTop_toTopOf="parent"
-                android:onClick="@{()->viewmodel.addReminder()}"/>
-
-            <EditText
-                android:id="@+id/title_text"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                app:layout_constraintTop_toBottomOf="@id/cancel"
-                android:autofillHints="true"
-                android:background="@color/colorPrimaryDark"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:paddingStart="10dp"
-                android:paddingLeft="10dp"
-                android:text="@={viewmodel.title}"
-                android:textColor="#FFFFFF" />
+                android:layout_height="match_parent"
+                tools:context=".ui.addeditreminder.addreminder.AddReminderFragment"
+                android:background="#000000">
 
-            <TextView
-                android:id="@+id/date_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/title_text"
-                android:layout_alignParentEnd="true"
-                android:background="#303030"
-                android:paddingStart="10dp"
-                android:paddingLeft="10dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#FFFFFF"
-                app:timeFromNow="@{viewmodel.calendar}"/>
+                <ImageButton
+                    android:id="@+id/cancel"
+                    style="@style/ImageButtonStyle"
+                    android:src="@drawable/cancel_white"
+                    app:layout_constraintEnd_toStartOf="@+id/snooze"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:onClick="@{()->viewmodel.onCancel()}"/>
 
-            <TextView
-                android:id="@+id/repeat_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/date_text"
-                android:background="#303030"
-                android:paddingLeft="10dp"
-                android:paddingBottom="5dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#FFFFFF"
-                android:visibility="@{(viewmodel.repeatVal == Reminder.REPEAT_NONE)? View.GONE : View.VISIBLE}"
-                app:calendar="@{viewmodel.calendar}"
-                app:repeatVal="@{viewmodel.repeatVal}"/>
+                <ImageButton
+                    android:id="@+id/snooze"
+                    style="@style/ImageButtonStyle"
+                    app:layout_constraintEnd_toStartOf="@+id/repeat"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/cancel"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:scaleType="fitCenter"
+                    app:autoSnooze="@{viewmodel.autoSnoozeVal}"
+                    android:onClick="@{()->viewmodel.onOpenAutoSnoozeMenu()}"/>
 
-            <include
-                android:id="@+id/time_buttons"
-                layout="@layout/time_buttons"
-                app:layout_constraintTop_toBottomOf="@id/repeat_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <ImageButton
+                    android:id="@+id/repeat"
+                    style="@style/ImageButtonStyle"
+                    android:src="@drawable/repeat_white"
+                    app:layout_constraintEnd_toStartOf="@+id/add"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/snooze"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:onClick="@{()->viewmodel.onOpenRepeatMenu()}"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageButton
+                    android:id="@+id/add"
+                    style="@style/ImageButtonStyle"
+                    android:src="@drawable/check_white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/repeat"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:onClick="@{()->viewmodel.addReminder()}"/>
+
+                <EditText
+                    android:id="@+id/title_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    app:layout_constraintTop_toBottomOf="@id/cancel"
+                    android:autofillHints="true"
+                    android:background="@color/colorPrimaryDark"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:paddingStart="10dp"
+                    android:paddingLeft="10dp"
+                    android:text="@={viewmodel.title}"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:id="@+id/date_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/title_text"
+                    android:layout_alignParentEnd="true"
+                    android:background="#303030"
+                    android:paddingStart="10dp"
+                    android:paddingLeft="10dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="#FFFFFF"
+                    app:timeFromNow="@{viewmodel.calendar}"/>
+
+                <TextView
+                    android:id="@+id/repeat_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@id/date_text"
+                    android:background="#303030"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="5dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="#FFFFFF"
+                    android:visibility="@{(viewmodel.repeatVal == Reminder.REPEAT_NONE)? View.GONE : View.VISIBLE}"
+                    app:calendar="@{viewmodel.calendar}"
+                    app:repeatVal="@{viewmodel.repeatVal}"/>
+
+                <include
+                    android:id="@+id/time_buttons"
+                    layout="@layout/time_buttons"
+                    app:layout_constraintTop_toBottomOf="@id/repeat_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
 
     </androidx.core.widget.NestedScrollView>
 
