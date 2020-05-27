@@ -9,11 +9,11 @@ import com.kiwicorp.dumbdue.data.Reminder
 interface ReminderDao  {
 
     /**
-     * Observers list of reminders.
+     * Observers list of reminders ordered by their calendar.
      *
      * @return all reminders
      */
-    @Query("SELECT * FROM reminders")
+    @Query("SELECT * FROM reminders ORDER BY calendar")
     fun observeReminders(): LiveData<List<Reminder>>
 
     /**
