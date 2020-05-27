@@ -8,14 +8,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.NavEventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
 import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
+import com.kiwicorp.dumbdue.ui.addeditreminder.chooserepeat.ChooseRepeatFragment
 import com.kiwicorp.dumbdue.util.InjectorUtils
 
 
@@ -59,12 +64,12 @@ class AddReminderFragment : BottomSheetDialogFragment() {
     }
 
     private fun navigateToRepeatMenu() {
-        val action = AddReminderFragmentDirections.actionAddReminderFragmentToChooseRepeatFragment()
+        val action = AddReminderFragmentDirections.actionAddReminderFragmentToChooseRepeatFragment(R.id.nav_graph_add)
         findNavController().navigate(action)
     }
 
     private fun navigateToAutoSnoozeMenu() {
-        val action = AddReminderFragmentDirections.actionAddReminderFragmentToChooseAutoSnoozeFragment()
+        val action = AddReminderFragmentDirections.actionAddReminderFragmentToChooseAutoSnoozeFragment(R.id.nav_graph_add)
         findNavController().navigate(action)
     }
 
@@ -77,13 +82,7 @@ class AddReminderFragment : BottomSheetDialogFragment() {
         Log.d("AddReminderFragment","Fragment Detached")
     }
 
-    fun setupSnackbar() {
-//        viewModel.showSnackBarEvent.observe(viewLifecycleOwner, Observer {
-//            if (it == true) {
-//                Snackbar.make(binding.coordinatorLayout,getString(R.string.snackbar_add_error),Snackbar.LENGTH_SHORT).show()
-//                viewModel.doneShowingSnackbar()
-//            }
-//        })
+    private fun setupSnackbar() {
         viewModel.snackbarText.observe(viewLifecycleOwner, Observer { text ->
             Snackbar.make(binding.coordinatorLayout,text,Snackbar.LENGTH_SHORT).show()
         })

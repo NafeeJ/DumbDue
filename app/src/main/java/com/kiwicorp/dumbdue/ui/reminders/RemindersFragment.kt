@@ -47,7 +47,7 @@ class RemindersFragment : Fragment() {
     }
 
     private fun navigateToAddReminder() {
-        val action = RemindersFragmentDirections.actionRemindersFragmentToAddReminderFragment()
+        val action = RemindersFragmentDirections.actionRemindersFragmentDestToNavGraphAdd()
         findNavController().navigate(action)
     }
 
