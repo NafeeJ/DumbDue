@@ -1,17 +1,16 @@
 package com.kiwicorp.dumbdue.ui.reminders
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import androidx.fragment.app.viewModels
 import android.view.View
 import android.view.ViewGroup
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kiwicorp.dumbdue.R
+import com.kiwicorp.dumbdue.adapters.ReminderAdapter
 import com.kiwicorp.dumbdue.databinding.FragmentRemindersBinding
 import com.kiwicorp.dumbdue.util.InjectorUtils
 
@@ -22,6 +21,8 @@ class RemindersFragment : Fragment() {
     private val viewModel: RemindersViewModel by viewModels {
         InjectorUtils.provideRemindersViewModelFactory(requireContext())
     }
+
+    private lateinit var listAdapter: ReminderAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +38,7 @@ class RemindersFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        setupListAdapter()
         setupNavigation()
     }
 
@@ -49,6 +51,17 @@ class RemindersFragment : Fragment() {
     private fun navigateToAddReminder() {
         val action = RemindersFragmentDirections.actionRemindersFragmentDestToNavGraphAdd()
         findNavController().navigate(action)
+    }
+
+    private fun setupListAdapter() {
+        val viewModel = binding.viewmodel
+        if (viewModel != null)  {
+            listAdapter =
+                ReminderAdapter(viewModel)
+            binding.remindersRecyclerView.adapter = listAdapter
+        } else {
+            Log.d("RemindersFragment","ViewModel not initialized when attempting to set up adapter.")
+        }
     }
 
 }

@@ -1,57 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="wrap_content" android:background="#000000">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/reminderTextView"
-        android:layout_width="235dp"
+    <data>
+
+        <variable
+            name="reminder"
+            type="com.kiwicorp.dumbdue.data.Reminder"/>
+
+        <variable
+            name="viewmodel"
+            type="com.kiwicorp.dumbdue.ui.reminders.RemindersViewModel" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginBottom="2dp"
-        android:maxLines = "1"
-        android:ellipsize="end"
-        android:paddingStart="10dp"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        tools:ignore="RtlSymmetry" />
+        android:background="#000000">
 
-    <TextView
-        android:id="@+id/dateOrRepeatTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/reminderTextView"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginBottom="2dp"
-        android:paddingStart="10dp"
-        android:textColor="#525252"
-        tools:ignore="RtlSymmetry" />
+        <TextView
+            android:id="@+id/title_text"
+            android:layout_width="235dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:maxLines = "1"
+            android:ellipsize="end"
+            android:paddingStart="10dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:text="@{reminder.title}"
+            tools:text="Title"
+            tools:ignore="RtlSymmetry" />
 
-    <TextView
-        android:id="@+id/timeFromNowTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginBottom="2dp"
-        android:paddingEnd="10dp"
-        android:textColor="#525252"
-        tools:ignore="RtlSymmetry" />
+        <TextView
+            android:id="@+id/date_repeat_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title_text"
+            android:layout_alignParentStart="true"
+            android:layout_margin="2dp"
+            android:paddingStart="10dp"
+            android:textColor="#525252"
+            app:itemCalendar="@{reminder.calendar}"
+            app:itemRepeatVal="@{reminder.repeatVal}"
+            tools:text="Date/Repeat"
+            tools:ignore="RtlSymmetry" />
 
-    <View
-        android:id="@+id/colorBar"
-        android:layout_width="5dp"
-        android:layout_height="65dp"
-        android:background="#ff0000"/>
+        <TextView
+            android:id="@+id/time_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="2dp"
+            android:paddingEnd="10dp"
+            android:textColor="#525252"
+            app:timeFromNowAbbr="@{reminder.calendar}"
+            tools:text="time"
+            tools:ignore="RtlSymmetry" />
 
-</RelativeLayout>
+        <View
+            android:id="@+id/color_bar"
+            android:layout_width="5dp"
+            android:layout_height="65dp"
+            app:calendar="@{reminder.calendar}"/>
+
+    </RelativeLayout>
+
+</layout>
+

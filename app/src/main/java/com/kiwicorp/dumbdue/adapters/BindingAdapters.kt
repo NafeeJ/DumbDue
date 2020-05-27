@@ -2,10 +2,9 @@ package com.kiwicorp.dumbdue.adapters
 
 import android.graphics.Color
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.util.daySuffix
@@ -16,17 +15,17 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @BindingAdapter("timeFromNow")
-fun TextView.setTimeFromNow(calendar: LiveData<Calendar>) {
+fun TextView.setTimeFromNow(calendar: Calendar) {
     val dateFormatter = SimpleDateFormat("EEE, d MMM, h:mm a", Locale.US)
-    val dateTime = dateFormatter.format(calendar.value!!.time)
-    val timeFromNow = calendar.value!!.timeFromNowString()
+    val dateTime = dateFormatter.format(calendar.time)
+    val timeFromNow = calendar.timeFromNowString()
 
     text = context.resources.getString(
         R.string.time_from_now_future,
         dateTime,
         timeFromNow)
 
-    if (calendar.value!!.timeFromNowMins() < 0) {
+    if (calendar.timeFromNowMins() < 0) {
         setBackgroundColor(Color.RED)
     } else {
         setBackgroundColor(Color.parseColor("#303030"))

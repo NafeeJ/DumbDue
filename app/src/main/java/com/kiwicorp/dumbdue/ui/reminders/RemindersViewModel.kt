@@ -10,14 +10,6 @@ class RemindersViewModel internal constructor(reminderRepository: ReminderReposi
 
     val reminders: LiveData<List<Reminder>> = reminderRepository.reminders
 
-    val test: LiveData<String> = Transformations.map(reminders) { reminders ->
-        if (reminders.isEmpty()) {
-            return@map "nothing here yet"
-        } else {
-            reminders[0].title
-        }
-    }
-
     private val _eventAddReminder = MutableLiveData<NavEvent<Unit>>()
     val eventAddReminder: LiveData<NavEvent<Unit>> = _eventAddReminder
     /**

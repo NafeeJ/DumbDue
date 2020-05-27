@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.kiwicorp.dumbdue.NavEvent
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
+import com.kiwicorp.dumbdue.util.timeFromNowMins
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -22,7 +23,10 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
     //Public mutable for two-way data binding
     val title = MutableLiveData<String>()
 
-    private val _calendar = MutableLiveData(Calendar.getInstance())
+    private val _calendar = MutableLiveData(Calendar.getInstance().apply {
+        set(Calendar.MILLISECOND,0)
+        set(Calendar.SECOND,0)
+    })
     val calendar: LiveData<Calendar> = _calendar
 
     private val _repeatVal = MutableLiveData(Reminder.REPEAT_NONE)
@@ -99,13 +103,13 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
     fun addReminder() {
         uiScope.launch {
             if (title.value == null || title.value == "") {
-//                _showSnackBarEvent.value = true
                 _snackbarText.value = "Title Cannot Be Empty."
+            } else if (calendar.value!!.timeFromNowMins() < 0) {
+                _snackbarText.value = "Due date cannot be in the past"
             } else {
                 insert(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!))
                 _eventCancel.value = NavEvent(Unit)
             }
-            //todo make snackbar when title is empty and don't allow for reminder to be created without title
 
         }
     }
