@@ -4,13 +4,11 @@ import android.graphics.Color
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.util.daySuffix
 import com.kiwicorp.dumbdue.util.timeFromNowMins
 import com.kiwicorp.dumbdue.util.timeFromNowString
-import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 

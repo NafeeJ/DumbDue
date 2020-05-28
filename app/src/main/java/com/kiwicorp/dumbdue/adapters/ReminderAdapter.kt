@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.kiwicorp.dumbdue.adapters.ReminderAdapter.ViewHolder
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.databinding.ItemReminderBinding
-import com.kiwicorp.dumbdue.adapters.ReminderAdapter.ViewHolder
 import com.kiwicorp.dumbdue.ui.reminders.RemindersViewModel
 
 class ReminderAdapter(private val viewModel: RemindersViewModel):

@@ -37,33 +37,6 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
 
     private var reminderId: String? = null
 
-    /**
-     * Populates the properties of the reminder that corresponds to the reminderId.
-     * Used only for editing reminders.
-     */
-    fun loadReminder(reminderId: String) {
-        uiScope.launch {
-            val reminder = getReminderFromDatabase(reminderId)
-            if (reminder != null) {
-                onReminderLoaded(reminder)
-            }
-        }
-    }
-
-    private suspend fun getReminderFromDatabase(reminderId: String): Reminder? {
-        return withContext(Dispatchers.IO) {
-            reminderRepository.getReminder(reminderId)
-        }
-    }
-
-    private fun onReminderLoaded(reminder: Reminder) {
-        title.value = reminder.title
-        _calendar.value = reminder.calendar
-        _repeatVal.value = reminder.repeatVal
-        _autoSnoozeVal.value = reminder.autoSnoozeVal
-        reminderId = reminder.reminderId
-    }
-
     private val _eventOpenRepeatMenu = MutableLiveData<NavEvent<Unit>>()
     val eventOpenRepeatMenu: LiveData<NavEvent<Unit>> = _eventOpenRepeatMenu
 
@@ -78,13 +51,6 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
 
     private val _eventCancel = MutableLiveData<NavEvent<Unit>>()
     val eventCancel: LiveData<NavEvent<Unit>> = _eventCancel
-
-    private val _showSnackBarEvent = MutableLiveData<Boolean>()
-    val showSnackBarEvent: LiveData<Boolean> = _showSnackBarEvent
-
-    fun doneShowingSnackbar() {
-        _showSnackBarEvent.value = false
-    }
 
     private val _snackbarText = MutableLiveData<String>()
     val snackbarText: LiveData<String> = _snackbarText
@@ -144,7 +110,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
     }
 
     /**
-     * Inserts Reminder into the repository
+     * Inserts the given reminder into the repository
      */
     private suspend fun insert(reminder: Reminder) {
         withContext(Dispatchers.IO) {
@@ -152,6 +118,9 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
         }
     }
 
+    /**
+     * Called by ImageButton in EditReminderFragment via listener binding.
+     */
     fun onUpdateReminder() {
         uiScope.launch {
             update(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,reminderId = reminderId!!))
@@ -159,11 +128,68 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
         _eventCancel.value = NavEvent(Unit)
     }
 
+    /**
+     * Updates the given reminder in the repository
+     */
     private suspend fun update(reminder: Reminder) {
         withContext(Dispatchers.IO) {
             reminderRepository.updateReminder(reminder)
         }
     }
+
+    /**
+     * Called by ImageButton in EditReminderFragment vis listener binding.
+     */
+    fun onDeleteReminder() {
+        uiScope.launch {
+            delete(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,reminderId = reminderId!!))
+        }
+        _eventCancel.value = NavEvent(Unit)
+    }
+
+    /**
+     * Deletes the given reminder in the repository
+     */
+    private suspend fun delete(reminder: Reminder) {
+        withContext(Dispatchers.IO) {
+            reminderRepository.deleteReminder(reminder)
+        }
+    }
+
+    /**
+     * Populates the properties of the reminder that corresponds to the reminderId.
+     *
+     * Used only by EditReminderFragment.
+     */
+    fun loadReminder(reminderId: String) {
+        uiScope.launch {
+            val reminder = getReminderFromDatabase(reminderId)
+            if (reminder != null) {
+                onReminderLoaded(reminder)
+            }
+        }
+    }
+
+    /**
+     * Gets the reminder that corresponds to reminderId from the repository
+     */
+    private suspend fun getReminderFromDatabase(reminderId: String): Reminder? {
+        return withContext(Dispatchers.IO) {
+            reminderRepository.getReminder(reminderId)
+        }
+    }
+
+    /**
+     * sets  this ViewModel's properties to the reminder's properties
+     */
+    private fun onReminderLoaded(reminder: Reminder) {
+        title.value = reminder.title
+        _calendar.value = reminder.calendar
+        _repeatVal.value = reminder.repeatVal
+        _autoSnoozeVal.value = reminder.autoSnoozeVal
+        reminderId = reminder.reminderId
+    }
+
 
     /**
      * Called by the QuickAccess buttons in time_button.xml via listener binding to update the calendar.
