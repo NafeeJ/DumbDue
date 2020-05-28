@@ -12,10 +12,17 @@ class RemindersViewModel internal constructor(reminderRepository: ReminderReposi
 
     private val _eventAddReminder = MutableLiveData<NavEvent<Unit>>()
     val eventAddReminder: LiveData<NavEvent<Unit>> = _eventAddReminder
+
+    private val _eventEditReminder = MutableLiveData<NavEvent<String>>()
+    val eventEditReminder: LiveData<NavEvent<String>> = _eventEditReminder
     /**
      * Called via listener binding.
      */
     fun onAddReminder() {
         _eventAddReminder.value = NavEvent(Unit)
+    }
+
+    fun onEditReminder(id: String) {
+        _eventEditReminder.value = NavEvent(id)
     }
 }

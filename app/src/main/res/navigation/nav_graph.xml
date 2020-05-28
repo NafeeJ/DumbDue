@@ -14,10 +14,9 @@
             android:id="@+id/action_reminders_fragment_dest_to_nav_graph_add"
             app:destination="@id/nav_graph_add" />
         <action
-            android:id="@+id/action_reminders_fragment_dest_to_nav_graph_edi"
+            android:id="@+id/action_reminders_fragment_dest_to_nav_graph_edit"
             app:destination="@id/nav_graph_edit" />
     </fragment>
-
     <fragment
         android:id="@+id/settings_fragment_dest"
         android:name="com.kiwicorp.dumbdue.ui.preferences.SettingsFragment"
@@ -58,12 +57,15 @@
     </navigation>
     <navigation
         android:id="@+id/nav_graph_edit"
-        app:startDestination="@id/edit_reminder_fragment" >
+        app:startDestination="@id/edit_reminder_fragment">
+        <argument
+            android:name="reminderId"
+            app:argType="string" />
 
         <fragment
             android:id="@+id/edit_reminder_fragment"
             android:name="com.kiwicorp.dumbdue.ui.addeditreminder.editreminder.EditReminderFragment"
-            android:label="fragment_edit_reminder"
+            android:label="Edit Reminder"
             tools:layout="@layout/fragment_edit_reminder">
             <action
                 android:id="@+id/action_editReminderFragment_to_chooseRepeatFragment"
@@ -71,6 +73,9 @@
             <action
                 android:id="@+id/action_editReminderFragment_to_chooseAutoSnoozeFragment"
                 app:destination="@id/choose_autosnooze_fragment" />
+            <argument
+                android:name="reminderId"
+                app:argType="string" />
         </fragment>
 
         <dialog

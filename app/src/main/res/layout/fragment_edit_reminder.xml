@@ -1,13 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.addeditreminder.editreminder.EditReminderFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.kiwicorp.dumbdue.data.Reminder"/>
+
+        <variable
+            name="viewmodel"
+            type="com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel" />
+    </data>
+
+    <!-- Layout must be wrapped in a coordinator layout for showing snackbars. -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".ui.addeditreminder.addreminder.AddReminderFragment"
+            android:background="@android:color/black">
+
+            <ImageButton
+                android:id="@+id/snooze"
+                style="@style/ImageButtonStyle"
+                app:layout_constraintEnd_toStartOf="@+id/repeat"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:scaleType="fitCenter"
+                app:autoSnooze="@{viewmodel.autoSnoozeVal}"
+                android:onClick="@{()->viewmodel.onOpenAutoSnoozeMenu()}"/>
+
+            <ImageButton
+                android:id="@+id/repeat"
+                style="@style/ImageButtonStyle"
+                android:src="@drawable/repeat_white"
+                app:layout_constraintEnd_toStartOf="@+id/add"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/snooze"
+                app:layout_constraintTop_toTopOf="parent"
+                android:onClick="@{()->viewmodel.onOpenRepeatMenu()}"/>
+
+            <ImageButton
+                android:id="@+id/add"
+                style="@style/ImageButtonStyle"
+                android:src="@drawable/check_white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/repeat"
+                app:layout_constraintTop_toTopOf="parent"
+                android:onClick="@{()->viewmodel.onUpdateReminder()}"/>
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/title_text"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:autofillHints="true"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:paddingStart="10dp"
+                android:text="@={viewmodel.title}"
+                android:textColor="#FFFFFF"
+                app:layout_constraintTop_toBottomOf="@id/add" />
+
+            <TextView
+                android:id="@+id/date_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/title_text"
+                android:layout_alignParentEnd="true"
+                android:paddingStart="10dp"
+                android:paddingLeft="10dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#FFFFFF"
+                app:timeFromNow="@{viewmodel.calendar}"/>
+
+            <TextView
+                android:id="@+id/repeat_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/date_text"
+                android:paddingLeft="10dp"
+                android:paddingBottom="5dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#FFFFFF"
+                android:visibility="@{(viewmodel.repeatVal == Reminder.REPEAT_NONE)? View.GONE : View.VISIBLE}"
+                app:calendar="@{viewmodel.calendar}"
+                app:repeatVal="@{viewmodel.repeatVal}"/>
+
+            <include
+                android:id="@+id/time_buttons"
+                layout="@layout/time_buttons"
+                app:layout_constraintTop_toBottomOf="@id/repeat_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

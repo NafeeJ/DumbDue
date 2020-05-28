@@ -3,21 +3,20 @@ package com.kiwicorp.dumbdue.data.source
 import androidx.lifecycle.LiveData
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.local.ReminderDao
-import com.kiwicorp.dumbdue.data.source.local.ReminderDatabase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class ReminderRepository private constructor(private val reminderDao: ReminderDao) {
     val reminders: LiveData<List<Reminder>> = reminderDao.observeReminders()
 
-    fun getReminder(reminderId: String) = reminderDao.observeTaskById(reminderId)
+    fun observeReminder(reminderId: String) = reminderDao.observeReminderById(reminderId)
+
+    fun getReminder(reminderId: String) = reminderDao.getReminder(reminderId)
 
     suspend fun insertReminder(reminder: Reminder) {
         reminderDao.insertReminder(reminder)
     }
 
-    suspend fun updateReminder(reminder: Reminder) {
-        reminderDao.updateReminder(reminder)
+    suspend fun updateReminder(reminder: Reminder): Int {
+        return reminderDao.updateReminder(reminder)
     }
 
     suspend fun deleteReminder(reminder: Reminder) {

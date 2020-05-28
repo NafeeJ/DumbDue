@@ -77,11 +77,6 @@ class AddReminderFragment : BottomSheetDialogFragment() {
         findNavController().popBackStack()
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        Log.d("AddReminderFragment","Fragment Detached")
-    }
-
     private fun setupSnackbar() {
         viewModel.snackbarText.observe(viewLifecycleOwner, Observer { text ->
             Snackbar.make(binding.coordinatorLayout,text,Snackbar.LENGTH_SHORT).show()

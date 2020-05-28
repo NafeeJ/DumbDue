@@ -25,11 +25,7 @@ fun TextView.setTimeFromNow(calendar: Calendar) {
         dateTime,
         timeFromNow)
 
-    if (calendar.timeFromNowMins() < 0) {
-        setBackgroundColor(Color.RED)
-    } else {
-        setBackgroundColor(Color.parseColor("#303030"))
-    }
+    setTextColor(Color.parseColor(if (calendar.timeFromNowMins() < 0) "#f54242" else "#FFFFFF"))
 }
 
 /**
@@ -78,7 +74,7 @@ fun TextView.setRepeatText(calendar: Calendar, repeatVal: Int) {
  */
 @BindingAdapter("autoSnooze")
 fun ImageButton.setAutoSnooze(autoSnooze: Int) {
-    val resource = when(autoSnooze) {
+    setImageResource(when(autoSnooze) {
         Reminder.AUTO_SNOOZE_NONE -> R.drawable.white_none_square
         Reminder.AUTO_SNOOZE_MINUTE -> R.drawable.one_white
         Reminder.AUTO_SNOOZE_5_MINUTES -> R.drawable.five_white
@@ -87,6 +83,5 @@ fun ImageButton.setAutoSnooze(autoSnooze: Int) {
         Reminder.AUTO_SNOOZE_30_MINUTES -> R.drawable.thirty_white
         Reminder.AUTO_SNOOZE_HOUR -> R.drawable.one_hour_white
         else -> throw IllegalArgumentException("Unknown Auto Snooze Value: $autoSnooze")
-    }
-    setImageResource(resource)
+    })
 }

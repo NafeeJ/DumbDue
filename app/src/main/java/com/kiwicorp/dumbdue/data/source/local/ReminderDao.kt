@@ -20,10 +20,19 @@ interface ReminderDao  {
      * Observe a single task.
      *
      * @param reminderId the reminder id.
-     * @return the task corresponding to the reminder id.
+     * @return the reminder corresponding to the reminder id.
      */
     @Query("SELECT * FROM reminders WHERE id = :reminderId")
-    fun observeTaskById(reminderId: String): LiveData<Reminder>
+    fun observeReminderById(reminderId: String): LiveData<Reminder>
+
+    /**
+     * get a single reminder
+     *
+     * @param reminderId the reminder id.
+     * @return the reminder corresponding to the reminder id
+     */
+    @Query("SELECT * FROM reminders WHERE id = :reminderId")
+    fun getReminder(reminderId: String): Reminder?
 
     /**
      * Insert a reminder in the database. If the reminder already exists, replace it.

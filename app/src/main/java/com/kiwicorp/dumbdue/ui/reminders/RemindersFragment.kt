@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.kiwicorp.dumbdue.NavEventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.adapters.ReminderAdapter
 import com.kiwicorp.dumbdue.databinding.FragmentRemindersBinding
@@ -43,13 +44,21 @@ class RemindersFragment : Fragment() {
     }
 
     private fun setupNavigation() {
-        viewModel.eventAddReminder.observe(viewLifecycleOwner, Observer {
+        viewModel.eventAddReminder.observe(viewLifecycleOwner, NavEventObserver {
             navigateToAddReminder()
+        })
+        viewModel.eventEditReminder.observe(viewLifecycleOwner, NavEventObserver {
+            navigateToEditReminder(it)
         })
     }
 
     private fun navigateToAddReminder() {
         val action = RemindersFragmentDirections.actionRemindersFragmentDestToNavGraphAdd()
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToEditReminder(reminderId: String) {
+        val action = RemindersFragmentDirections.actionRemindersFragmentDestToNavGraphEdit(reminderId)
         findNavController().navigate(action)
     }
 

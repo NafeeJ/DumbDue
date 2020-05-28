@@ -17,7 +17,6 @@ fun Calendar.daySuffix(): String {
 
 fun Calendar.timeFromNowMins() = ceil((timeInMillis - System.currentTimeMillis()).div(60000.0)).toInt()
 
-
 fun Calendar.timeFromNowString(): String {
     val absTime = timeFromNowMins().absoluteValue
     return when {

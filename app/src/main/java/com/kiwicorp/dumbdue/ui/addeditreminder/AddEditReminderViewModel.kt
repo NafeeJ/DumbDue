@@ -35,6 +35,35 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
     private val _autoSnoozeVal = MutableLiveData(Reminder.AUTO_SNOOZE_MINUTE)
     val autoSnoozeVal: LiveData<Int> = _autoSnoozeVal
 
+    private var reminderId: String? = null
+
+    /**
+     * Populates the properties of the reminder that corresponds to the reminderId.
+     * Used only for editing reminders.
+     */
+    fun loadReminder(reminderId: String) {
+        uiScope.launch {
+            val reminder = getReminderFromDatabase(reminderId)
+            if (reminder != null) {
+                onReminderLoaded(reminder)
+            }
+        }
+    }
+
+    private suspend fun getReminderFromDatabase(reminderId: String): Reminder? {
+        return withContext(Dispatchers.IO) {
+            reminderRepository.getReminder(reminderId)
+        }
+    }
+
+    private fun onReminderLoaded(reminder: Reminder) {
+        title.value = reminder.title
+        _calendar.value = reminder.calendar
+        _repeatVal.value = reminder.repeatVal
+        _autoSnoozeVal.value = reminder.autoSnoozeVal
+        reminderId = reminder.reminderId
+    }
+
     private val _eventOpenRepeatMenu = MutableLiveData<NavEvent<Unit>>()
     val eventOpenRepeatMenu: LiveData<NavEvent<Unit>> = _eventOpenRepeatMenu
 
@@ -120,6 +149,19 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
     private suspend fun insert(reminder: Reminder) {
         withContext(Dispatchers.IO) {
             reminderRepository.insertReminder(reminder)
+        }
+    }
+
+    fun onUpdateReminder() {
+        uiScope.launch {
+            update(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,reminderId = reminderId!!))
+        }
+        _eventCancel.value = NavEvent(Unit)
+    }
+
+    private suspend fun update(reminder: Reminder) {
+        withContext(Dispatchers.IO) {
+            reminderRepository.updateReminder(reminder)
         }
     }
 
