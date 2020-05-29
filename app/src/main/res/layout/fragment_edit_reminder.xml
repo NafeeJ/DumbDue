@@ -25,26 +25,6 @@
             tools:context=".ui.addeditreminder.AddReminderFragment"
             android:background="@android:color/black">
 
-            <ImageButton
-                android:id="@+id/delete"
-                style="@style/ImageButtonStyle"
-                android:src="@drawable/delete_white"
-                app:layout_constraintEnd_toStartOf="@+id/add"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:onClick="@{()->viewmodel.onDeleteReminder()}"/>
-
-            <ImageButton
-                android:id="@+id/add"
-                style="@style/ImageButtonStyle"
-                android:src="@drawable/check_white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/delete"
-                app:layout_constraintTop_toTopOf="parent"
-                android:onClick="@{()->viewmodel.onUpdateReminder()}"/>
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/title_text"
                 android:layout_width="match_parent"
@@ -59,7 +39,7 @@
                 android:text="@={viewmodel.title}"
                 android:textColor="#FFFFFF"
                 android:background="#000000"
-                app:layout_constraintTop_toBottomOf="@id/add"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Title"/>
 
             <TextView
@@ -113,6 +93,30 @@
                 app:layout_constraintTop_toBottomOf="@id/auto_snooze_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:id="@+id/delete"
+                android:layout_height="70dp"
+                style="@style/ImageButtonStyle"
+                android:src="@drawable/delete_white"
+                android:layout_marginBottom="15dp"
+                app:layout_constraintEnd_toStartOf="@+id/add"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:onClick="@{()->viewmodel.onDeleteReminder()}"/>
+
+            <ImageButton
+                android:id="@+id/add"
+                android:layout_height="70dp"
+                style="@style/ImageButtonStyle"
+                android:src="@drawable/check_white"
+                android:layout_marginBottom="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/delete"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:onClick="@{()->viewmodel.onUpdateReminder()}"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

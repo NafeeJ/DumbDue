@@ -58,6 +58,7 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
     }
 
     private fun addHeaders(list: List<Reminder>): List<Item> {
+        if (list.isEmpty()) return listOf()
         //calendar with date at 23:59:59 today
         val endOfTodayCalendar = Calendar.getInstance().apply {
             set(Calendar.MILLISECOND,59)
@@ -88,30 +89,37 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
             timeInMillis = Long.MAX_VALUE
         }
 
-        val calendarToTitle: Map<Calendar,String> = mapOf(
-            calendarNow to "today",
-            endOfTodayCalendar to "tomorrow",
-            endOfTomorrowCalendar to "next 7 days",
-            endOfNext7daysCalendar to "future",
-            calendarMax to "far far future")
+        val calendarAndTitle: List<Pair<Calendar,String>> = listOf(
+            Pair(calendarNow,""),
+            Pair(endOfTodayCalendar,"today"),
+            Pair(endOfTomorrowCalendar,"tomorrow"),
+            Pair(endOfNext7daysCalendar,"next 7 days"),
+            Pair(calendarMax,"future"))
 
-        val iter = calendarToTitle.iterator()
+        val iter = calendarAndTitle.listIterator()
 
         val result = mutableListOf<Item>()
-        var currpair = iter.next()
+        var currPair = iter.next()
         //check if overdue header needs to be added
         if (list[0].calendar < calendarNow) {
             result.add(Item.Header("overdue"))
-            result.add(Item.ReminderItem(list[0]))
         }
         //for rest, add header and switch calendar if current reminder.calendar > currCalendar
-        for (i in 1 until list.size) {
-           if (list[i].calendar > currpair.key) {
-               result.add(Item.Header(currpair.value))
-               result.add(Item.ReminderItem(list[i]))
-               currpair = iter.next()
+        for (reminder in list) {
+           if (reminder.calendar > currPair.first) {
+               //check if this calendar is greater than any of the next calendars
+                while(iter.hasNext()) {
+                    currPair = iter.next()
+                    if (reminder.calendar <= currPair.first) {
+                        currPair = iter.previous()
+                        break
+                    }
+                }
+               result.add(Item.Header(currPair.second))
+               result.add(Item.ReminderItem(reminder))
+               currPair = iter.next()
            } else {
-               result.add(Item.ReminderItem(list[i]))
+               result.add(Item.ReminderItem(reminder))
            }
         }
         return result

@@ -47,8 +47,8 @@ class RemindersFragment : Fragment() {
         viewModel.eventAddReminder.observe(viewLifecycleOwner, NavEventObserver {
             navigateToAddReminder()
         })
-        viewModel.eventEditReminder.observe(viewLifecycleOwner, NavEventObserver {
-            navigateToEditReminder(it)
+        viewModel.eventEditReminder.observe(viewLifecycleOwner, NavEventObserver {id ->
+            navigateToEditReminder(id)
         })
     }
 
