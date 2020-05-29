@@ -73,16 +73,17 @@
                 <EditText
                     android:id="@+id/title_text"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/cancel"
                     android:autofillHints="true"
-                    android:background="@android:color/black"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:paddingStart="10dp"
-                    android:paddingLeft="10dp"
+                    android:paddingVertical="8dp"
+                    android:paddingHorizontal="10dp"
                     android:hint="@string/new_reminder_hint"
                     android:text="@={viewmodel.title}"
+                    android:textColorHint="#bababa"
+                    android:background="#000000"
                     android:textColor="#FFFFFF" />
 
                 <TextView
@@ -91,8 +92,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/title_text"
                     android:layout_alignParentEnd="true"
-                    android:paddingStart="10dp"
-                    android:paddingLeft="10dp"
+                    android:padding="10dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="#FFFFFF"
                     app:timeFromNow="@{viewmodel.calendar}"/>
@@ -102,8 +102,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@id/date_text"
-                    android:paddingLeft="10dp"
-                    android:paddingBottom="5dp"
+                    android:paddingHorizontal="10dp"
+                    android:paddingBottom="10dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="#FFFFFF"
                     android:visibility="@{(viewmodel.repeatVal == Reminder.REPEAT_NONE)? View.GONE : View.VISIBLE}"

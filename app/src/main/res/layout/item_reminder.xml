@@ -25,7 +25,7 @@
             android:id="@+id/title_text"
             android:layout_width="235dp"
             android:layout_height="wrap_content"
-            android:layout_margin="2dp"
+            android:layout_margin="4dp"
             android:maxLines = "1"
             android:ellipsize="end"
             android:paddingStart="10dp"
@@ -41,7 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/title_text"
             android:layout_alignParentStart="true"
-            android:layout_margin="2dp"
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginBottom="4dp"
             android:paddingStart="10dp"
             android:textColor="#525252"
             app:itemCalendar="@{reminder.calendar}"
@@ -66,7 +67,8 @@
             android:id="@+id/color_bar"
             android:layout_width="5dp"
             android:layout_height="65dp"
-            app:calendar="@{reminder.calendar}"/>
+            app:calendar="@{reminder.calendar}"
+            tools:background="@android:color/holo_red_light"/>
 
     </RelativeLayout>
 

@@ -83,3 +83,17 @@ fun ImageButton.setAutoSnooze(autoSnooze: Int) {
         else -> throw IllegalArgumentException("Unknown Auto Snooze Value: $autoSnooze")
     })
 }
+
+@BindingAdapter("autoSnooze")
+fun TextView.setAutoSnooze(autoSnooze: Int) {
+    text = when(autoSnooze) {
+        Reminder.AUTO_SNOOZE_NONE -> resources.getString(R.string.auto_snooze_none)
+        Reminder.AUTO_SNOOZE_MINUTE -> resources.getString(R.string.auto_snooze_minute)
+        Reminder.AUTO_SNOOZE_5_MINUTES -> resources.getString(R.string.auto_snooze_5_minute)
+        Reminder.AUTO_SNOOZE_10_MINUTES -> resources.getString(R.string.auto_snooze_10_minutes)
+        Reminder.AUTO_SNOOZE_15_MINUTES -> resources.getString(R.string.auto_snooze_15_minutes)
+        Reminder.AUTO_SNOOZE_30_MINUTES -> resources.getString(R.string.auto_snooze_30_minutes)
+        Reminder.AUTO_SNOOZE_HOUR -> resources.getString(R.string.auto_snooze_hour)
+        else -> throw IllegalArgumentException("Unknown Auto Snooze value: $autoSnooze")
+    }
+}

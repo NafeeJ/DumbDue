@@ -89,11 +89,11 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
         }
 
         val calendarToTitle: Map<Calendar,String> = mapOf(
-            calendarNow to "Today",
-            endOfTodayCalendar to "Tomorrow",
-            endOfTomorrowCalendar to "Next 7 Days",
-            endOfNext7daysCalendar to "Future",
-            calendarMax to "Far Far Future")
+            calendarNow to "today",
+            endOfTodayCalendar to "tomorrow",
+            endOfTomorrowCalendar to "next 7 days",
+            endOfNext7daysCalendar to "future",
+            calendarMax to "far far future")
 
         val iter = calendarToTitle.iterator()
 
@@ -101,7 +101,7 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
         var currpair = iter.next()
         //check if overdue header needs to be added
         if (list[0].calendar < calendarNow) {
-            result.add(Item.Header("Overdue"))
+            result.add(Item.Header("overdue"))
             result.add(Item.ReminderItem(list[0]))
         }
         //for rest, add header and switch calendar if current reminder.calendar > currCalendar

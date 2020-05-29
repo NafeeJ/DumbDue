@@ -26,25 +26,14 @@
             android:background="@android:color/black">
 
             <ImageButton
-                android:id="@+id/snooze"
+                android:id="@+id/delete"
                 style="@style/ImageButtonStyle"
-                app:layout_constraintEnd_toStartOf="@+id/repeat"
+                android:src="@drawable/delete_white"
+                app:layout_constraintEnd_toStartOf="@+id/add"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:scaleType="fitCenter"
-                app:autoSnooze="@{viewmodel.autoSnoozeVal}"
-                android:onClick="@{()->viewmodel.onOpenAutoSnoozeMenu()}"/>
-
-            <ImageButton
-                android:id="@+id/repeat"
-                style="@style/ImageButtonStyle"
-                android:src="@drawable/repeat_white"
-                app:layout_constraintEnd_toStartOf="@+id/add"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/snooze"
-                app:layout_constraintTop_toTopOf="parent"
-                android:onClick="@{()->viewmodel.onOpenRepeatMenu()}"/>
+                android:onClick="@{()->viewmodel.onDeleteReminder()}"/>
 
             <ImageButton
                 android:id="@+id/add"
@@ -52,70 +41,76 @@
                 android:src="@drawable/check_white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/repeat"
+                app:layout_constraintStart_toEndOf="@+id/delete"
                 app:layout_constraintTop_toTopOf="parent"
                 android:onClick="@{()->viewmodel.onUpdateReminder()}"/>
-
-            <ImageButton
-                android:id="@+id/delete"
-                style="@style/ImageButtonStyle"
-                android:src="@drawable/delete_white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/delete_text"
-                android:onClick="@{()->viewmodel.onDeleteReminder()}"/>
-
-            <TextView
-                android:id="@+id/delete_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:textSize="16sp"
-                android:text="@string/delete"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:onClick="@{()->viewmodel.onDeleteReminder()}"/>
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/title_text"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:autofillHints="true"
+                app:fontFamily="@font/open_sans_bold"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:paddingStart="10dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:textSize="32sp"
                 android:text="@={viewmodel.title}"
                 android:textColor="#FFFFFF"
-                app:layout_constraintTop_toBottomOf="@id/add" />
+                android:background="#000000"
+                app:layout_constraintTop_toBottomOf="@id/add"
+                tools:text="Title"/>
 
             <TextView
                 android:id="@+id/date_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawableStart="@drawable/calendar_white"
+                android:drawablePadding="10dp"
                 app:layout_constraintTop_toBottomOf="@id/title_text"
                 android:layout_alignParentEnd="true"
-                android:paddingStart="10dp"
-                android:paddingLeft="10dp"
+                android:padding="14sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#FFFFFF"
-                app:timeFromNow="@{viewmodel.calendar}"/>
+                app:timeFromNow="@{viewmodel.calendar}"
+                tools:text="Fri, May 29, 10:05 AM in 4 Hours"/>
 
             <TextView
                 android:id="@+id/repeat_text"
+                android:drawableStart="@drawable/repeat_white"
+                android:drawablePadding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/date_text"
-                android:paddingLeft="10dp"
-                android:paddingBottom="5dp"
+                android:paddingHorizontal="14dp"
+                android:paddingBottom="10dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#FFFFFF"
-                android:visibility="@{(viewmodel.repeatVal == Reminder.REPEAT_NONE)? View.GONE : View.VISIBLE}"
+                android:onClick="@{()->viewmodel.onOpenRepeatMenu()}"
                 app:calendar="@{viewmodel.calendar}"
-                app:repeatVal="@{viewmodel.repeatVal}"/>
+                app:repeatVal="@{viewmodel.repeatVal}"
+                tools:text="Weekdays 10:05 AM"/>
+
+            <TextView
+                android:id="@+id/auto_snooze_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableStart="@drawable/snooze_white"
+                app:layout_constraintTop_toBottomOf="@id/repeat_text"
+                android:paddingHorizontal="14dp"
+                android:paddingBottom="10dp"
+                android:drawablePadding="10dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="#FFFFFF"
+                app:autoSnooze="@{viewmodel.autoSnoozeVal}"
+                android:onClick="@{()->viewmodel.onOpenAutoSnoozeMenu()}"
+                tools:text="Every Minute"/>
 
             <include
                 android:id="@+id/time_buttons"
                 layout="@layout/time_buttons"
-                app:layout_constraintTop_toBottomOf="@id/repeat_text"
+                app:layout_constraintTop_toBottomOf="@id/auto_snooze_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
