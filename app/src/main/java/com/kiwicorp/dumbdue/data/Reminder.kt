@@ -20,7 +20,7 @@ data class Reminder (
     var autoSnoozeVal: Int = AUTO_SNOOZE_MINUTE,
 
     @PrimaryKey @ColumnInfo(name = "id")
-    var reminderId: String = UUID.randomUUID().toString()) {
+    var id: String = UUID.randomUUID().toString()) {
 
     companion object {
         const val REPEAT_NONE: Int = 0

@@ -16,7 +16,7 @@ import kotlin.math.roundToInt
 @BindingAdapter("items")
 fun RecyclerView.setItems(items: List<Reminder>?) {
     items?.let {
-        (adapter as ReminderAdapter).submitList(items)
+        (adapter as ReminderAdapter).addHeadersAndSubmitList(it)
     }
 }
 
