@@ -27,7 +27,7 @@
 
         <dialog
             android:id="@+id/add_reminder_fragment_dest"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.addreminder.AddReminderFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.AddReminderFragment"
             android:label="AddReminderFragment">
             <action
                 android:id="@+id/action_addReminderFragment_to_chooseRepeatFragment"
@@ -39,7 +39,7 @@
 
         <dialog
             android:id="@+id/choose_repeat_fragment"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.chooserepeat.ChooseRepeatFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.ChooseRepeatFragment"
             android:label="ChooseRepeatFragment" >
             <argument
                 android:name="graphId"
@@ -48,7 +48,7 @@
 
         <dialog
             android:id="@+id/choose_autosnooze_fragment"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.chooseautosnooze.ChooseAutoSnoozeFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.ChooseAutoSnoozeFragment"
             android:label="ChooseAutoSnoozeFragment" >
             <argument
                 android:name="graphId"
@@ -64,7 +64,7 @@
 
         <fragment
             android:id="@+id/edit_reminder_fragment"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.editreminder.EditReminderFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragment"
             android:label="Edit Reminder"
             tools:layout="@layout/fragment_edit_reminder">
             <action
@@ -80,7 +80,7 @@
 
         <dialog
             android:id="@+id/choose_repeat_fragment"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.chooserepeat.ChooseRepeatFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.ChooseRepeatFragment"
             android:label="ChooseRepeatFragment" >
             <argument
                 android:name="graphId"
@@ -89,7 +89,7 @@
 
         <dialog
             android:id="@+id/choose_autosnooze_fragment"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.chooseautosnooze.ChooseAutoSnoozeFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.ChooseAutoSnoozeFragment"
             android:label="ChooseAutoSnoozeFragment" >
             <argument
                 android:name="graphId"

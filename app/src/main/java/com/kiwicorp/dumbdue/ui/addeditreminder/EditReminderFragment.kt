@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui.addeditreminder.editreminder
+package com.kiwicorp.dumbdue.ui.addeditreminder
 
 import android.content.Context
 import android.os.Bundle
@@ -13,7 +13,8 @@ import androidx.navigation.navGraphViewModels
 import com.kiwicorp.dumbdue.NavEventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditReminderBinding
-import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
+import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentArgs
+import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections
 import com.kiwicorp.dumbdue.util.InjectorUtils
 
 class EditReminderFragment : Fragment() {
@@ -60,12 +61,18 @@ class EditReminderFragment : Fragment() {
     }
 
     private fun navigateToRepeatMenu() {
-        val action = EditReminderFragmentDirections.actionEditReminderFragmentToChooseRepeatFragment(R.id.nav_graph_edit)
+        val action =
+            EditReminderFragmentDirections.actionEditReminderFragmentToChooseRepeatFragment(
+                R.id.nav_graph_edit
+            )
         findNavController().navigate(action)
     }
 
     private fun navigateToAutoSnoozeMenu() {
-        val action = EditReminderFragmentDirections.actionEditReminderFragmentToChooseAutoSnoozeFragment(R.id.nav_graph_edit)
+        val action =
+            EditReminderFragmentDirections.actionEditReminderFragmentToChooseAutoSnoozeFragment(
+                R.id.nav_graph_edit
+            )
         findNavController().navigate(action)
     }
 

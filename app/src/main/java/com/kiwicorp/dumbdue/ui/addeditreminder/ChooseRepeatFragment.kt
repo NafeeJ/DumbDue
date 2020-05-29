@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui.addeditreminder.chooserepeat
+package com.kiwicorp.dumbdue.ui.addeditreminder
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,7 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kiwicorp.dumbdue.NavEventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseRepeatBinding
-import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
+import com.kiwicorp.dumbdue.ui.addeditreminder.ChooseRepeatFragmentArgs
 import com.kiwicorp.dumbdue.util.InjectorUtils
 
 class ChooseRepeatFragment : BottomSheetDialogFragment() {

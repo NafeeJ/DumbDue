@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.kiwicorp.dumbdue.NavEventObserver
 import com.kiwicorp.dumbdue.R
@@ -64,8 +65,7 @@ class RemindersFragment : Fragment() {
     private fun setupListAdapter() {
         val viewModel = binding.viewmodel
         if (viewModel != null)  {
-            listAdapter =
-                ReminderAdapter(viewModel)
+            listAdapter = ReminderAdapter(viewModel)
             binding.remindersRecyclerView.adapter = listAdapter
         } else {
             Log.d("RemindersFragment","ViewModel not initialized when attempting to set up adapter.")

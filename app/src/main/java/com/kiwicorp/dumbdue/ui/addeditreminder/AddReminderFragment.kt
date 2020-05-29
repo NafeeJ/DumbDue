@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui.addeditreminder.addreminder
+package com.kiwicorp.dumbdue.ui.addeditreminder
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.NavEventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
-import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
+import com.kiwicorp.dumbdue.ui.addeditreminder.AddReminderFragmentDirections
 import com.kiwicorp.dumbdue.util.InjectorUtils
 
 
@@ -56,12 +56,18 @@ class AddReminderFragment : BottomSheetDialogFragment() {
     }
 
     private fun navigateToRepeatMenu() {
-        val action = AddReminderFragmentDirections.actionAddReminderFragmentToChooseRepeatFragment(R.id.nav_graph_add)
+        val action =
+            AddReminderFragmentDirections.actionAddReminderFragmentToChooseRepeatFragment(
+                R.id.nav_graph_add
+            )
         findNavController().navigate(action)
     }
 
     private fun navigateToAutoSnoozeMenu() {
-        val action = AddReminderFragmentDirections.actionAddReminderFragmentToChooseAutoSnoozeFragment(R.id.nav_graph_add)
+        val action =
+            AddReminderFragmentDirections.actionAddReminderFragmentToChooseAutoSnoozeFragment(
+                R.id.nav_graph_add
+            )
         findNavController().navigate(action)
     }
 

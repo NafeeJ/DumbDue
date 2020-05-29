@@ -123,7 +123,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
      */
     fun onUpdateReminder() {
         uiScope.launch {
-            update(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,reminderId = reminderId!!))
+            update(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,id = reminderId!!))
         }
         _eventCancel.value = NavEvent(Unit)
     }
@@ -142,7 +142,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
      */
     fun onDeleteReminder() {
         uiScope.launch {
-            delete(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,reminderId = reminderId!!))
+            delete(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,id = reminderId!!))
         }
         _eventCancel.value = NavEvent(Unit)
     }
@@ -187,7 +187,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
         _calendar.value = reminder.calendar
         _repeatVal.value = reminder.repeatVal
         _autoSnoozeVal.value = reminder.autoSnoozeVal
-        reminderId = reminder.reminderId
+        reminderId = reminder.id
     }
 
 
