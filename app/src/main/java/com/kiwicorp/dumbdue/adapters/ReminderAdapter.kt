@@ -16,8 +16,8 @@ import kotlinx.coroutines.withContext
 import java.lang.ClassCastException
 import java.util.*
 
-private val ITEM_VIEW_TYPE_HEADER = 0
-private val ITEM_VIEW_TYPE_ITEM = 1
+private const val ITEM_VIEW_TYPE_HEADER = 0
+private const val ITEM_VIEW_TYPE_ITEM = 1
 
 class ReminderAdapter(private val viewModel: RemindersViewModel):
     ListAdapter<Item, RecyclerView.ViewHolder>(ReminderDiffCallback()) {
@@ -153,7 +153,6 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
     class HeaderViewHolder private constructor(val binding: ItemHeaderBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(title: String) {
             binding.title = title
-//            binding.executePendingBindings()
         }
 
         companion object {

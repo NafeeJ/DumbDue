@@ -1,14 +1,21 @@
 package com.kiwicorp.dumbdue.ui.reminders
 
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.NavEventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.adapters.ReminderAdapter
@@ -41,6 +48,7 @@ class RemindersFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         setupListAdapter()
         setupNavigation()
+        setupRecyclerViewSwiping()
     }
 
     private fun setupNavigation() {
@@ -70,6 +78,70 @@ class RemindersFragment : Fragment() {
         } else {
             Log.d("RemindersFragment","ViewModel not initialized when attempting to set up adapter.")
         }
+    }
+
+    private fun setupRecyclerViewSwiping() {
+        //create an item touch helper to allow for reminders to be able to be swiped
+        val itemTouchHelperCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            //doesn't allow reminders to be moved
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean { return false }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                if (viewHolder is ReminderAdapter.HeaderViewHolder) return
+                //if user swipes right, delete reminder
+                if (direction == ItemTouchHelper.RIGHT) {
+                    viewModel.onDeleteReminder((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
+                    //if user swipes left, complete reminder
+                } else if ( direction == ItemTouchHelper.LEFT) {
+                    viewModel.onCompleteReminder((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
+                }
+            }
+            //allows for color and icons in the background when reminders are swiped
+            override fun onChildDraw(
+                c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+                //do nothing if
+                if (viewHolder is ReminderAdapter.HeaderViewHolder) return
+
+                val deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.delete_white) as Drawable
+                val checkIcon = ContextCompat.getDrawable(requireContext(),R.drawable.check_white) as Drawable
+                lateinit var swipeBackground: ColorDrawable
+
+                val itemView = viewHolder.itemView
+                val iconMarginVertical = (viewHolder.itemView.height - deleteIcon.intrinsicHeight) / 2
+
+                if (dX > 0) {//if user swiped right
+                    swipeBackground = ColorDrawable(Color.parseColor("#ff6961"))//sets swipe background to red
+                    swipeBackground.setBounds(itemView.left, itemView.top, dX.toInt(), itemView.bottom)
+                    deleteIcon.setBounds(itemView.left + iconMarginVertical, itemView.top + iconMarginVertical,
+                        itemView.left + iconMarginVertical + deleteIcon.intrinsicWidth, itemView.bottom - iconMarginVertical)
+                    //draw background and delete icon
+                    swipeBackground.draw(c)
+                    //stops icon from being shown outside of the background
+                    c.save()
+                    c.clipRect(itemView.left, itemView.top, dX.toInt(), itemView.bottom)
+                    deleteIcon.draw(c)
+                    c.restore()
+
+                } else {//if user swiped left
+                    swipeBackground = ColorDrawable(Color.parseColor("#77dd77"))//sets swipe background to green
+                    swipeBackground.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+                    checkIcon.setBounds(itemView.right - iconMarginVertical - deleteIcon.intrinsicWidth, itemView.top + iconMarginVertical,
+                        itemView.right - iconMarginVertical, itemView.bottom - iconMarginVertical)
+                    checkIcon.level = 0
+                    //draw background and check mark icon
+                    swipeBackground.draw(c)
+                    //stops icon from being shown outside of the background
+                    c.save()
+                    c.clipRect(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
+                    checkIcon.draw(c)
+                    c.restore()
+                }
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(binding.remindersRecyclerView)
     }
 
 }

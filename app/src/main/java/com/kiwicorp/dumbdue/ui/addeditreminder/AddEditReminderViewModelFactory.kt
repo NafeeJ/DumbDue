@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 
-class AddEditViewModelFactory(
+class AddEditReminderViewModelFactory(
     private val repository: ReminderRepository
 ): ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")

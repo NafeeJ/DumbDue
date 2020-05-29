@@ -3,6 +3,7 @@ package com.kiwicorp.dumbdue.data.source
 import androidx.lifecycle.LiveData
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.local.ReminderDao
+import java.util.*
 
 class ReminderRepository private constructor(private val reminderDao: ReminderDao) {
     val reminders: LiveData<List<Reminder>> = reminderDao.observeReminders()
@@ -25,6 +26,37 @@ class ReminderRepository private constructor(private val reminderDao: ReminderDa
 
     suspend fun deleteReminders() {
         reminderDao.deleteReminders()
+    }
+
+    suspend fun completeReminder(reminder: Reminder) {
+        reminderDao.deleteReminder(reminder)
+        if (reminder.repeatVal != Reminder.REPEAT_NONE) {
+
+            val newReminder = Reminder(
+                title = reminder.title,
+                calendar = reminder.calendar,
+                repeatVal = reminder.repeatVal,
+                autoSnoozeVal = reminder.autoSnoozeVal)
+
+            when (reminder.repeatVal) {
+                Reminder.REPEAT_DAILY -> newReminder.calendar.add(Calendar.DAY_OF_YEAR,1)
+                Reminder.REPEAT_WEEKDAYS -> {
+                    when (newReminder.calendar.get(Calendar.DAY_OF_WEEK)) {
+                        Calendar.FRIDAY -> newReminder.calendar.add(Calendar.DAY_OF_YEAR,3)
+                        Calendar.SATURDAY -> newReminder.calendar.add(Calendar.DAY_OF_YEAR,2)
+                        else -> newReminder.calendar.add(Calendar.DAY_OF_YEAR,1)
+                    }
+                }
+                Reminder.REPEAT_WEEKLY -> newReminder.calendar.add(Calendar.WEEK_OF_YEAR,1)
+                Reminder.REPEAT_MONTHLY -> newReminder.calendar.add(Calendar.MONTH, 1)
+                Reminder.REPEAT_YEARLY -> newReminder.calendar.add(Calendar.YEAR,1)
+                Reminder.REPEAT_CUSTOM -> return //todo
+                else -> return
+            }
+
+            reminderDao.insertReminder(newReminder)
+        }
+
     }
 
     companion object {

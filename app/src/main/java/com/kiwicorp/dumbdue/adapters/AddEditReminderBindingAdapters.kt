@@ -23,7 +23,7 @@ fun TextView.setTimeFromNow(calendar: Calendar) {
         dateTime,
         timeFromNow)
 
-    setTextColor(Color.parseColor(if (calendar.timeFromNowMins() < 0) "#f54242" else "#FFFFFF"))
+    setTextColor(Color.parseColor(if (calendar.timeFromNowMins() <= 0) "#f54242" else "#FFFFFF"))
 }
 
 /**

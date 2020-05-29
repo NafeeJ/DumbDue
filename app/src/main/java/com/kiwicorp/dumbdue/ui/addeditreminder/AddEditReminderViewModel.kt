@@ -99,7 +99,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
         uiScope.launch {
             if (title.value == null || title.value == "") {
                 _snackbarText.value = "Title Cannot Be Empty."
-            } else if (calendar.value!!.timeFromNowMins() < 0) {
+            } else if (calendar.value!!.timeFromNowMins() <= 0) {
                 _snackbarText.value = "Due date cannot be in the past"
             } else {
                 insert(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!))
