@@ -1,21 +1,18 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
 import android.app.Dialog
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
-import com.kiwicorp.dumbdue.NavEventObserver
+import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
 import com.kiwicorp.dumbdue.util.InjectorUtils
@@ -64,14 +61,14 @@ class AddReminderFragment : BottomSheetDialogFragment() {
     }
 
     private fun setupNavigation() {
-        viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, NavEventObserver {
+        viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, EventObserver {
             navigateToRepeatMenu()
 
         })
-        viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, NavEventObserver {
+        viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, EventObserver {
             navigateToAutoSnoozeMenu()
         })
-        viewModel.eventCancel.observe(viewLifecycleOwner, NavEventObserver {
+        viewModel.eventCancel.observe(viewLifecycleOwner, EventObserver {
             cancel()
         })
     }
@@ -97,8 +94,12 @@ class AddReminderFragment : BottomSheetDialogFragment() {
     }
 
     private fun setupSnackbar() {
-        viewModel.snackbarText.observe(viewLifecycleOwner, Observer { text ->
-            Snackbar.make(binding.coordinatorLayout,text,Snackbar.LENGTH_SHORT).show()
+        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { snackbarData ->
+            val snackbar = Snackbar.make(binding.coordinatorLayout,snackbarData.text,snackbarData.duration)
+            if (snackbarData.action != null) {
+                snackbar.setAction(snackbarData.actionText,snackbarData.action)
+            }
+            snackbar.show()
         })
     }
 

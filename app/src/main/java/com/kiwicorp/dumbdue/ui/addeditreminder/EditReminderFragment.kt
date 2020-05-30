@@ -10,11 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
-import com.kiwicorp.dumbdue.NavEventObserver
+import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditReminderBinding
-import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentArgs
-import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections
 import com.kiwicorp.dumbdue.util.InjectorUtils
 
 class EditReminderFragment : Fragment() {
@@ -48,13 +46,13 @@ class EditReminderFragment : Fragment() {
     }
 
     private fun setupNavigation() {
-        viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, NavEventObserver {
+        viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, EventObserver {
             navigateToRepeatMenu()
         })
-        viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, NavEventObserver {
+        viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, EventObserver {
             navigateToAutoSnoozeMenu()
         })
-        viewModel.eventCancel.observe(viewLifecycleOwner, NavEventObserver {
+        viewModel.eventCancel.observe(viewLifecycleOwner, EventObserver {
             cancel()
             closeKeyboard()
         })

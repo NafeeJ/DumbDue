@@ -10,10 +10,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.kiwicorp.dumbdue.NavEventObserver
+import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseRepeatBinding
-import com.kiwicorp.dumbdue.ui.addeditreminder.ChooseRepeatFragmentArgs
 import com.kiwicorp.dumbdue.util.InjectorUtils
 
 class ChooseRepeatFragment : BottomSheetDialogFragment() {
@@ -39,7 +38,7 @@ class ChooseRepeatFragment : BottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.eventChooseRepeat.observe(viewLifecycleOwner, NavEventObserver {
+        viewModel.eventChooseRepeat.observe(viewLifecycleOwner, EventObserver {
             close()
         })
     }

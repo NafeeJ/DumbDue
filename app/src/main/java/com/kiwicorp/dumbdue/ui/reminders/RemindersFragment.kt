@@ -12,11 +12,11 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.kiwicorp.dumbdue.NavEventObserver
+import com.google.android.material.snackbar.Snackbar
+import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.adapters.ReminderAdapter
 import com.kiwicorp.dumbdue.databinding.FragmentRemindersBinding
@@ -48,14 +48,15 @@ class RemindersFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         setupListAdapter()
         setupNavigation()
+        setupSnackbar()
         setupRecyclerViewSwiping()
     }
 
     private fun setupNavigation() {
-        viewModel.eventAddReminder.observe(viewLifecycleOwner, NavEventObserver {
+        viewModel.eventAddReminder.observe(viewLifecycleOwner, EventObserver {
             navigateToAddReminder()
         })
-        viewModel.eventEditReminder.observe(viewLifecycleOwner, NavEventObserver {id ->
+        viewModel.eventEditReminder.observe(viewLifecycleOwner, EventObserver { id ->
             navigateToEditReminder(id)
         })
     }
@@ -80,6 +81,16 @@ class RemindersFragment : Fragment() {
         }
     }
 
+    private fun setupSnackbar() {
+        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { snackbarData ->
+            val snackbar = Snackbar.make(binding.coordinatorLayout,snackbarData.text,snackbarData.duration)
+            if (snackbarData.action != null) {
+                snackbar.setAction(snackbarData.actionText,snackbarData.action)
+            }
+            snackbar.show()
+        })
+    }
+
     private fun setupRecyclerViewSwiping() {
         //create an item touch helper to allow for reminders to be able to be swiped
         val itemTouchHelperCallback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
@@ -88,11 +99,10 @@ class RemindersFragment : Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 if (viewHolder is ReminderAdapter.HeaderViewHolder) return
-                //if user swipes right, delete reminder
-                if (direction == ItemTouchHelper.RIGHT) {
+
+                if (direction == ItemTouchHelper.RIGHT) { //if user swipes right, delete reminder
                     viewModel.onDeleteReminder((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
-                    //if user swipes left, complete reminder
-                } else if ( direction == ItemTouchHelper.LEFT) {
+                } else if ( direction == ItemTouchHelper.LEFT) {//if user swipes left, complete reminder
                     viewModel.onCompleteReminder((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
                 }
             }

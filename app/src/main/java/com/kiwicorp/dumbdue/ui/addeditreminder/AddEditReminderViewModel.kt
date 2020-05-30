@@ -5,14 +5,16 @@ import android.widget.Button
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.kiwicorp.dumbdue.NavEvent
+import com.google.android.material.snackbar.Snackbar
+import com.kiwicorp.dumbdue.Event
+import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.util.timeFromNowMins
 import kotlinx.coroutines.*
 import java.util.*
 
-class AddEditReminderViewModel internal constructor(private val reminderRepository: ReminderRepository) : ViewModel() {
+class AddEditReminderViewModel internal constructor(private val repository: ReminderRepository) : ViewModel() {
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel
      */
@@ -37,36 +39,36 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
 
     private var reminderId: String? = null
 
-    private val _eventOpenRepeatMenu = MutableLiveData<NavEvent<Unit>>()
-    val eventOpenRepeatMenu: LiveData<NavEvent<Unit>> = _eventOpenRepeatMenu
+    private val _eventOpenRepeatMenu = MutableLiveData<Event<Unit>>()
+    val eventOpenRepeatMenu: LiveData<Event<Unit>> = _eventOpenRepeatMenu
 
-    private val _eventOpenAutoSnoozeMenu = MutableLiveData<NavEvent<Unit>>()
-    val eventOpenAutoSnoozeMenu: LiveData<NavEvent<Unit>> = _eventOpenAutoSnoozeMenu
+    private val _eventOpenAutoSnoozeMenu = MutableLiveData<Event<Unit>>()
+    val eventOpenAutoSnoozeMenu: LiveData<Event<Unit>> = _eventOpenAutoSnoozeMenu
 
-    private val _eventChooseRepeat = MutableLiveData<NavEvent<Unit>>()
-    val eventChooseRepeat: LiveData<NavEvent<Unit>> = _eventChooseRepeat
+    private val _eventChooseRepeat = MutableLiveData<Event<Unit>>()
+    val eventChooseRepeat: LiveData<Event<Unit>> = _eventChooseRepeat
 
-    private val _eventChooseAutoSnooze = MutableLiveData<NavEvent<Unit>>()
-    val eventChooseAutoSnooze: LiveData<NavEvent<Unit>> = _eventChooseAutoSnooze
+    private val _eventChooseAutoSnooze = MutableLiveData<Event<Unit>>()
+    val eventChooseAutoSnooze: LiveData<Event<Unit>> = _eventChooseAutoSnooze
 
-    private val _eventCancel = MutableLiveData<NavEvent<Unit>>()
-    val eventCancel: LiveData<NavEvent<Unit>> = _eventCancel
+    private val _eventCancel = MutableLiveData<Event<Unit>>()
+    val eventCancel: LiveData<Event<Unit>> = _eventCancel
 
-    private val _snackbarText = MutableLiveData<String>()
-    val snackbarText: LiveData<String> = _snackbarText
+    private val _snackbarData = MutableLiveData<Event<SnackbarMessage>>()
+    val snackbarMessage: LiveData<Event<SnackbarMessage>> = _snackbarData
 
     /**
      * Called by ImageButtons in AddReminderFragment/EditReminderFragment via listener binding.
      */
     fun onOpenRepeatMenu() {
-        _eventOpenRepeatMenu.value = NavEvent(Unit)
+        _eventOpenRepeatMenu.value = Event(Unit)
     }
 
     /**
      * Called by ImageButton in AddReminderFragment/EditReminderButton via listener binding.
      */
     fun onOpenAutoSnoozeMenu() {
-        _eventOpenAutoSnoozeMenu.value = NavEvent(Unit)
+        _eventOpenAutoSnoozeMenu.value = Event(Unit)
     }
 
     /**
@@ -74,7 +76,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
      */
     fun onChooseRepeat(repeatVal: Int) {
         _repeatVal.value = repeatVal
-        _eventChooseRepeat.value = NavEvent(Unit)
+        _eventChooseRepeat.value = Event(Unit)
     }
 
     /**
@@ -82,14 +84,14 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
      */
     fun onChooseAutoSnooze(autoSnoozeVal: Int) {
         _autoSnoozeVal.value = autoSnoozeVal
-        _eventChooseAutoSnooze.value = NavEvent(Unit)
+        _eventChooseAutoSnooze.value = Event(Unit)
     }
 
     /**
      * Called by ImageButton in AddReminderFragment/EditReminderFragment
      */
     fun onCancel() {
-        _eventCancel.value = NavEvent(Unit)
+        _eventCancel.value = Event(Unit)
     }
 
     /**
@@ -98,12 +100,12 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
     fun addReminder() {
         uiScope.launch {
             if (title.value == null || title.value == "") {
-                _snackbarText.value = "Title Cannot Be Empty."
+                _snackbarData.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
             } else if (calendar.value!!.timeFromNowMins() <= 0) {
-                _snackbarText.value = "Due date cannot be in the past"
+                _snackbarData.value = Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
             } else {
                 insert(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!))
-                _eventCancel.value = NavEvent(Unit)
+                _eventCancel.value = Event(Unit)
             }
 
         }
@@ -114,7 +116,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
      */
     private suspend fun insert(reminder: Reminder) {
         withContext(Dispatchers.IO) {
-            reminderRepository.insertReminder(reminder)
+            repository.insertReminder(reminder)
         }
     }
 
@@ -125,7 +127,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
         uiScope.launch {
             update(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,id = reminderId!!))
         }
-        _eventCancel.value = NavEvent(Unit)
+        _eventCancel.value = Event(Unit)
     }
 
     /**
@@ -133,7 +135,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
      */
     private suspend fun update(reminder: Reminder) {
         withContext(Dispatchers.IO) {
-            reminderRepository.updateReminder(reminder)
+            repository.updateReminder(reminder)
         }
     }
 
@@ -144,7 +146,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
         uiScope.launch {
             delete(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,id = reminderId!!))
         }
-        _eventCancel.value = NavEvent(Unit)
+        _eventCancel.value = Event(Unit)
     }
 
     /**
@@ -152,7 +154,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
      */
     private suspend fun delete(reminder: Reminder) {
         withContext(Dispatchers.IO) {
-            reminderRepository.deleteReminder(reminder)
+            repository.deleteReminder(reminder)
         }
     }
 
@@ -175,7 +177,7 @@ class AddEditReminderViewModel internal constructor(private val reminderReposito
      */
     private suspend fun getReminderFromDatabase(reminderId: String): Reminder? {
         return withContext(Dispatchers.IO) {
-            reminderRepository.getReminder(reminderId)
+            repository.getReminder(reminderId)
         }
     }
 

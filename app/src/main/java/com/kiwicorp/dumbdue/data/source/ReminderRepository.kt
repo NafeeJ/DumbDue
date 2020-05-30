@@ -1,5 +1,6 @@
 package com.kiwicorp.dumbdue.data.source
 
+import android.view.View
 import androidx.lifecycle.LiveData
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.local.ReminderDao
@@ -28,13 +29,16 @@ class ReminderRepository private constructor(private val reminderDao: ReminderDa
         reminderDao.deleteReminders()
     }
 
-    suspend fun completeReminder(reminder: Reminder) {
+    /**
+     * Returns a the newly created reminder if the reminder is repeating. Returns null otherwise.
+     * (This is so this action can be undone).
+     */
+    suspend fun completeReminder(reminder: Reminder): Reminder? {
         reminderDao.deleteReminder(reminder)
         if (reminder.repeatVal != Reminder.REPEAT_NONE) {
-
             val newReminder = Reminder(
                 title = reminder.title,
-                calendar = reminder.calendar,
+                calendar = Calendar.getInstance().apply { timeInMillis = reminder.calendar.timeInMillis },
                 repeatVal = reminder.repeatVal,
                 autoSnoozeVal = reminder.autoSnoozeVal)
 
@@ -50,13 +54,14 @@ class ReminderRepository private constructor(private val reminderDao: ReminderDa
                 Reminder.REPEAT_WEEKLY -> newReminder.calendar.add(Calendar.WEEK_OF_YEAR,1)
                 Reminder.REPEAT_MONTHLY -> newReminder.calendar.add(Calendar.MONTH, 1)
                 Reminder.REPEAT_YEARLY -> newReminder.calendar.add(Calendar.YEAR,1)
-                Reminder.REPEAT_CUSTOM -> return //todo
-                else -> return
+                Reminder.REPEAT_CUSTOM -> return null//todo
+                else -> throw IllegalArgumentException("Unknown Repeat Val")
             }
 
             reminderDao.insertReminder(newReminder)
+            return newReminder
         }
-
+        return null
     }
 
     companion object {
