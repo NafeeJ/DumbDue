@@ -45,6 +45,12 @@ class EditReminderFragment : Fragment() {
         setupNavigation()
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        closeKeyboard()
+        viewModel.onUpdateReminder()
+    }
+
     private fun setupNavigation() {
         viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, EventObserver {
             navigateToRepeatMenu()
