@@ -13,11 +13,14 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
+import com.kiwicorp.dumbdue.REQUEST_COMPLETE
+import com.kiwicorp.dumbdue.REQUEST_DELETE
 import com.kiwicorp.dumbdue.adapters.ReminderAdapter
 import com.kiwicorp.dumbdue.databinding.FragmentRemindersBinding
 import com.kiwicorp.dumbdue.util.InjectorUtils
@@ -25,6 +28,8 @@ import com.kiwicorp.dumbdue.util.InjectorUtils
 class RemindersFragment : Fragment() {
 
     private lateinit var binding: FragmentRemindersBinding
+
+    private val args : RemindersFragmentArgs by navArgs()
 
     private val viewModel: RemindersViewModel by viewModels {
         InjectorUtils.provideRemindersViewModelFactory(requireContext())
@@ -46,9 +51,9 @@ class RemindersFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        setupSnackbar()
         setupListAdapter()
         setupNavigation()
-        setupSnackbar()
         setupRecyclerViewSwiping()
     }
 
@@ -82,13 +87,23 @@ class RemindersFragment : Fragment() {
     }
 
     private fun setupSnackbar() {
-        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { snackbarData ->
-            val snackbar = Snackbar.make(binding.coordinatorLayout,snackbarData.text,snackbarData.duration)
-            if (snackbarData.action != null) {
-                snackbar.setAction(snackbarData.actionText,snackbarData.action)
+        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { snackbarMessage ->
+            val snackbar = Snackbar.make(binding.coordinatorLayout,snackbarMessage.text,snackbarMessage.duration)
+            if (snackbarMessage.action != null) {
+                snackbar.setAction(snackbarMessage.actionText,snackbarMessage.action)
             }
             snackbar.show()
         })
+        arguments?.let {
+            with(args) {
+                if (userMessage != 0 && reminderId != "") {
+                    when (userMessage) {
+                        REQUEST_COMPLETE -> viewModel.onCompleteReminder(reminderId)
+                        REQUEST_DELETE -> viewModel.onDeleteReminder(reminderId)
+                    }
+                }
+            }
+        }
     }
 
     private fun setupRecyclerViewSwiping() {

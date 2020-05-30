@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
+import com.kiwicorp.dumbdue.CompleteDeleteReminderRequest
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditReminderBinding
@@ -59,8 +60,11 @@ class EditReminderFragment : Fragment() {
             navigateToAutoSnoozeMenu()
         })
         viewModel.eventClose.observe(viewLifecycleOwner, EventObserver {
-            cancel()
-            closeKeyboard()
+            close()
+
+        })
+        viewModel.eventCompleteDelete.observe(viewLifecycleOwner, EventObserver {request ->
+            close(request)
         })
     }
 
@@ -80,8 +84,10 @@ class EditReminderFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun cancel() {
-        findNavController().popBackStack()
+    private fun close(request: CompleteDeleteReminderRequest = CompleteDeleteReminderRequest()) {
+        closeKeyboard()
+        val action = EditReminderFragmentDirections.actionGlobalRemindersFragmentDest(request.request,request.reminderId)
+        findNavController().navigate(action)
     }
 
     //closes keyboard if the current focus is not the edit text

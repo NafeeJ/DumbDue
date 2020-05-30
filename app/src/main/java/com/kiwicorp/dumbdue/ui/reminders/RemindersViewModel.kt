@@ -27,8 +27,8 @@ class RemindersViewModel internal constructor(private val repository: ReminderRe
     private val _eventEditReminder = MutableLiveData<Event<String>>()
     val eventEditReminder: LiveData<Event<String>> = _eventEditReminder
 
-    private val _snackbarData = MutableLiveData<Event<SnackbarMessage>>()
-    val snackbarMessage: LiveData<Event<SnackbarMessage>> = _snackbarData
+    private val _snackbarMessage = MutableLiveData<Event<SnackbarMessage>>()
+    val snackbarMessage: LiveData<Event<SnackbarMessage>> = _snackbarMessage
     /**
      * Called via listener binding.
      */
@@ -47,7 +47,7 @@ class RemindersViewModel internal constructor(private val repository: ReminderRe
     fun onDeleteReminder(reminder: Reminder) {
         uiScope.launch {
             delete(reminder)
-            _snackbarData.value = Event(SnackbarMessage("Bye-Bye ${reminder.title}", Snackbar.LENGTH_LONG, "Undo") {
+            _snackbarMessage.value = Event(SnackbarMessage("Bye-Bye ${reminder.title}", Snackbar.LENGTH_LONG, "Undo") {
                 undoDelete(reminder)
             })
         }
@@ -74,9 +74,33 @@ class RemindersViewModel internal constructor(private val repository: ReminderRe
     fun onCompleteReminder(reminder: Reminder) {
         uiScope.launch {
             val newReminder = complete(reminder)
-            _snackbarData.value = Event(SnackbarMessage("Completed ${reminder.title} :)", Snackbar.LENGTH_LONG,"Undo") {
+            _snackbarMessage.value = Event(SnackbarMessage("Completed ${reminder.title} :)", Snackbar.LENGTH_LONG,"Undo") {
                 undoComplete(reminder, newReminder)
             })
+        }
+    }
+
+    fun onCompleteReminder(reminderId: String) {
+        uiScope.launch {
+            val reminder = getReminder(reminderId)
+            if (reminder != null) {
+                onCompleteReminder(reminder)
+            }
+        }
+    }
+
+    fun onDeleteReminder(reminderId: String) {
+        uiScope.launch {
+            val reminder = getReminder(reminderId)
+            if (reminder != null) {
+                onDeleteReminder(reminder)
+            }
+        }
+    }
+
+    private suspend fun getReminder(reminderId: String): Reminder? {
+        return withContext(Dispatchers.IO) {
+            repository.getReminder(reminderId)
         }
     }
 

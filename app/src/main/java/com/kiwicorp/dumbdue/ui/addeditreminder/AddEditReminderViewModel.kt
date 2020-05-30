@@ -6,8 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.material.snackbar.Snackbar
-import com.kiwicorp.dumbdue.Event
-import com.kiwicorp.dumbdue.SnackbarMessage
+import com.kiwicorp.dumbdue.*
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.util.timeFromNowMins
@@ -53,6 +52,9 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
 
     private val _eventClose = MutableLiveData<Event<Unit>>()
     val eventClose: LiveData<Event<Unit>> = _eventClose
+
+    private val _eventCompleteDelete = MutableLiveData<Event<CompleteDeleteReminderRequest>>()
+    val eventCompleteDelete: LiveData<Event<CompleteDeleteReminderRequest>> = _eventCompleteDelete
 
     private val _snackbarData = MutableLiveData<Event<SnackbarMessage>>()
     val snackbarMessage: LiveData<Event<SnackbarMessage>> = _snackbarData
@@ -143,38 +145,14 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
      * Called by TextView in EditReminderFragment vis listener binding.
      */
     fun onDeleteReminder() {
-        uiScope.launch {
-            delete(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,id = reminderId!!))
-        }
-        _eventClose.value = Event(Unit)
-    }
-
-    /**
-     * Deletes the given reminder in the repository
-     */
-    private suspend fun delete(reminder: Reminder) {
-        withContext(Dispatchers.IO) {
-            repository.deleteReminder(reminder)
-        }
+        _eventCompleteDelete.value = Event(CompleteDeleteReminderRequest(REQUEST_DELETE,reminderId!!))
     }
 
     /**
      * Called by TextView in EditReminderFragment vis listener binding.
      */
     fun onCompleteReminder() {
-        uiScope.launch {
-            val newReminder = complete(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,id = reminderId!!))
-        }
-        _eventClose.value = Event(Unit)
-    }
-
-    /**
-     * Completes the reminder in the repository
-     */
-    private suspend fun complete(reminder: Reminder): Reminder? {
-        return withContext(Dispatchers.IO) {
-            repository.completeReminder(reminder)
-        }
+        _eventCompleteDelete.value = Event(CompleteDeleteReminderRequest(REQUEST_COMPLETE,reminderId!!))
     }
 
     /**
@@ -184,7 +162,7 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
      */
     fun loadReminder(reminderId: String) {
         uiScope.launch {
-            val reminder = getReminderFromDatabase(reminderId)
+            val reminder = getReminder(reminderId)
             if (reminder != null) {
                 onReminderLoaded(reminder)
             }
@@ -194,7 +172,7 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
     /**
      * Gets the reminder that corresponds to reminderId from the repository
      */
-    private suspend fun getReminderFromDatabase(reminderId: String): Reminder? {
+    private suspend fun getReminder(reminderId: String): Reminder? {
         return withContext(Dispatchers.IO) {
             repository.getReminder(reminderId)
         }

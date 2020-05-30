@@ -16,6 +16,14 @@
         <action
             android:id="@+id/action_reminders_fragment_dest_to_nav_graph_edit"
             app:destination="@id/nav_graph_edit" />
+        <argument
+            android:name="userMessage"
+            app:argType="integer"
+            android:defaultValue="0"/>
+        <argument
+            android:name="reminderId"
+            app:argType="string"
+            android:defaultValue="" />
     </fragment>
     <fragment
         android:id="@+id/settings_fragment_dest"
@@ -95,6 +103,9 @@
                 android:name="graphId"
                 app:argType="integer"/>
         </dialog>
+        <action
+            android:id="@+id/action_global_reminders_fragment_dest"
+            app:destination="@id/reminders_fragment_dest" />
     </navigation>
 
 </navigation>

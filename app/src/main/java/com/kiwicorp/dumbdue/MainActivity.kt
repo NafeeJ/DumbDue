@@ -1,5 +1,6 @@
 package com.kiwicorp.dumbdue
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -38,3 +39,7 @@ class MainActivity: AppCompatActivity() {
     }
 
 }
+
+// Keys for navigation
+const val REQUEST_DELETE = Activity.RESULT_FIRST_USER + 1
+const val REQUEST_COMPLETE = Activity.RESULT_FIRST_USER + 2
