@@ -96,11 +96,8 @@ class RemindersFragment : Fragment() {
         })
         arguments?.let {
             with(args) {
-                if (userMessage != 0 && reminderId != "") {
-                    when (userMessage) {
-                        REQUEST_COMPLETE -> viewModel.onCompleteReminder(reminderId)
-                        REQUEST_DELETE -> viewModel.onDeleteReminder(reminderId)
-                    }
+                if (request != 0 && reminderId != "") {
+                    viewModel.handleRequest(request,reminderId)
                 }
             }
         }

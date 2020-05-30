@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.Event
+import com.kiwicorp.dumbdue.REQUEST_COMPLETE
+import com.kiwicorp.dumbdue.REQUEST_DELETE
 import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
@@ -29,6 +31,19 @@ class RemindersViewModel internal constructor(private val repository: ReminderRe
 
     private val _snackbarMessage = MutableLiveData<Event<SnackbarMessage>>()
     val snackbarMessage: LiveData<Event<SnackbarMessage>> = _snackbarMessage
+
+    private var argsRequestHandled = false
+    /**
+     * Handles the request provided by [RemindersFragmentArgs]
+     */
+    fun handleRequest(request: Int, reminderId: String) {
+        if (argsRequestHandled) return
+        when (request) {
+            REQUEST_COMPLETE -> onCompleteReminder(reminderId)
+            REQUEST_DELETE -> onDeleteReminder(reminderId)
+        }
+        argsRequestHandled = true
+    }
     /**
      * Called via listener binding.
      */

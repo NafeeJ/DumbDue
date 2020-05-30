@@ -17,7 +17,7 @@
             android:id="@+id/action_reminders_fragment_dest_to_nav_graph_edit"
             app:destination="@id/nav_graph_edit" />
         <argument
-            android:name="userMessage"
+            android:name="request"
             app:argType="integer"
             android:defaultValue="0"/>
         <argument
