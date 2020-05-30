@@ -96,7 +96,7 @@
 
             <ImageButton
                 android:id="@+id/delete"
-                android:layout_height="70dp"
+                android:layout_height="50dp"
                 style="@style/ImageButtonStyle"
                 android:src="@drawable/delete_white"
                 android:layout_marginBottom="15dp"
@@ -108,7 +108,7 @@
 
             <ImageButton
                 android:id="@+id/add"
-                android:layout_height="70dp"
+                android:layout_height="50dp"
                 style="@style/ImageButtonStyle"
                 android:src="@drawable/check_white"
                 android:layout_marginBottom="15dp"

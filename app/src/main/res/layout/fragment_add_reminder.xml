@@ -13,15 +13,10 @@
             type="com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel" />
     </data>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <!-- Layout must be wrapped in a coordinator layout for showing snackbars. -->
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/coordinator_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -120,8 +115,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    </androidx.core.widget.NestedScrollView>
 
 </layout>
 
