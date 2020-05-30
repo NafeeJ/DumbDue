@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
-import com.kiwicorp.dumbdue.CompleteDeleteReminderRequest
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditReminderBinding
@@ -64,7 +63,7 @@ class EditReminderFragment : Fragment() {
 
         })
         viewModel.eventCompleteDelete.observe(viewLifecycleOwner, EventObserver {request ->
-            close(request)
+            close(request, viewModel.reminderId!!)
         })
     }
 
@@ -84,9 +83,9 @@ class EditReminderFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun close(request: CompleteDeleteReminderRequest = CompleteDeleteReminderRequest()) {
+    private fun close(request: Int = 0, reminderId: String = "") {
         closeKeyboard()
-        val action = EditReminderFragmentDirections.actionGlobalRemindersFragmentDest(request.request,request.reminderId)
+        val action = EditReminderFragmentDirections.actionGlobalRemindersFragmentDest(request,reminderId)
         findNavController().navigate(action)
     }
 

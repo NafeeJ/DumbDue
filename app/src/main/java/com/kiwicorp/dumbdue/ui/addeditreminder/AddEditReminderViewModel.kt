@@ -36,7 +36,8 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
     private val _autoSnoozeVal = MutableLiveData(Reminder.AUTO_SNOOZE_MINUTE)
     val autoSnoozeVal: LiveData<Int> = _autoSnoozeVal
 
-    private var reminderId: String? = null
+    var reminderId: String? = null
+        private set //makes value read only externally
 
     private val _eventOpenRepeatMenu = MutableLiveData<Event<Unit>>()
     val eventOpenRepeatMenu: LiveData<Event<Unit>> = _eventOpenRepeatMenu
@@ -53,8 +54,8 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
     private val _eventClose = MutableLiveData<Event<Unit>>()
     val eventClose: LiveData<Event<Unit>> = _eventClose
 
-    private val _eventCompleteDelete = MutableLiveData<Event<CompleteDeleteReminderRequest>>()
-    val eventCompleteDelete: LiveData<Event<CompleteDeleteReminderRequest>> = _eventCompleteDelete
+    private val _eventCompleteDelete = MutableLiveData<Event<Int>>()
+    val eventCompleteDelete: LiveData<Event<Int>> = _eventCompleteDelete
 
     private val _snackbarData = MutableLiveData<Event<SnackbarMessage>>()
     val snackbarMessage: LiveData<Event<SnackbarMessage>> = _snackbarData
@@ -145,14 +146,14 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
      * Called by TextView in EditReminderFragment vis listener binding.
      */
     fun onDeleteReminder() {
-        _eventCompleteDelete.value = Event(CompleteDeleteReminderRequest(REQUEST_DELETE,reminderId!!))
+        _eventCompleteDelete.value = Event(REQUEST_DELETE)
     }
 
     /**
      * Called by TextView in EditReminderFragment vis listener binding.
      */
     fun onCompleteReminder() {
-        _eventCompleteDelete.value = Event(CompleteDeleteReminderRequest(REQUEST_COMPLETE,reminderId!!))
+        _eventCompleteDelete.value = Event(REQUEST_COMPLETE)
     }
 
     /**
