@@ -68,7 +68,7 @@ class AddReminderFragment : BottomSheetDialogFragment() {
         viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, EventObserver {
             navigateToAutoSnoozeMenu()
         })
-        viewModel.eventCancel.observe(viewLifecycleOwner, EventObserver {
+        viewModel.eventClose.observe(viewLifecycleOwner, EventObserver {
             cancel()
         })
     }

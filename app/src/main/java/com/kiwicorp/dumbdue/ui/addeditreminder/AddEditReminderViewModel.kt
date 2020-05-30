@@ -51,8 +51,8 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
     private val _eventChooseAutoSnooze = MutableLiveData<Event<Unit>>()
     val eventChooseAutoSnooze: LiveData<Event<Unit>> = _eventChooseAutoSnooze
 
-    private val _eventCancel = MutableLiveData<Event<Unit>>()
-    val eventCancel: LiveData<Event<Unit>> = _eventCancel
+    private val _eventClose = MutableLiveData<Event<Unit>>()
+    val eventClose: LiveData<Event<Unit>> = _eventClose
 
     private val _snackbarData = MutableLiveData<Event<SnackbarMessage>>()
     val snackbarMessage: LiveData<Event<SnackbarMessage>> = _snackbarData
@@ -91,7 +91,7 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
      * Called by ImageButton in AddReminderFragment/EditReminderFragment
      */
     fun onCancel() {
-        _eventCancel.value = Event(Unit)
+        _eventClose.value = Event(Unit)
     }
 
     /**
@@ -105,7 +105,7 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
                 _snackbarData.value = Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
             } else {
                 insert(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!))
-                _eventCancel.value = Event(Unit)
+                _eventClose.value = Event(Unit)
             }
 
         }
@@ -127,7 +127,7 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
         uiScope.launch {
             update(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,id = reminderId!!))
         }
-        _eventCancel.value = Event(Unit)
+        _eventClose.value = Event(Unit)
     }
 
     /**
@@ -140,13 +140,13 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
     }
 
     /**
-     * Called by ImageButton in EditReminderFragment vis listener binding.
+     * Called by TextView in EditReminderFragment vis listener binding.
      */
     fun onDeleteReminder() {
         uiScope.launch {
             delete(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,id = reminderId!!))
         }
-        _eventCancel.value = Event(Unit)
+        _eventClose.value = Event(Unit)
     }
 
     /**
@@ -155,6 +155,25 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
     private suspend fun delete(reminder: Reminder) {
         withContext(Dispatchers.IO) {
             repository.deleteReminder(reminder)
+        }
+    }
+
+    /**
+     * Called by TextView in EditReminderFragment vis listener binding.
+     */
+    fun onCompleteReminder() {
+        uiScope.launch {
+            val newReminder = complete(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,id = reminderId!!))
+        }
+        _eventClose.value = Event(Unit)
+    }
+
+    /**
+     * Completes the reminder in the repository
+     */
+    private suspend fun complete(reminder: Reminder): Reminder? {
+        return withContext(Dispatchers.IO) {
+            repository.completeReminder(reminder)
         }
     }
 
