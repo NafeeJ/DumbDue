@@ -36,28 +36,43 @@
         <dialog
             android:id="@+id/add_reminder_fragment_dest"
             android:name="com.kiwicorp.dumbdue.ui.addeditreminder.AddReminderFragment"
-            android:label="AddReminderFragment">
+            android:label="AddReminderFragment"
+            tools:layout="@layout/fragment_add_reminder">
             <action
                 android:id="@+id/action_addReminderFragment_to_chooseRepeatFragment"
-                app:destination="@id/choose_repeat_fragment" />
+                app:destination="@id/choose_repeat_fragment_dest" />
             <action
                 android:id="@+id/action_addReminderFragment_to_chooseAutoSnoozeFragment"
-                app:destination="@id/choose_autosnooze_fragment" />
+                app:destination="@id/choose_autosnooze_fragment_dest" />
+            <action
+                android:id="@+id/action_addReminderFragment_to_timePickerFragment"
+                app:destination="@id/time_picker_fragment_dest" />
         </dialog>
 
         <dialog
-            android:id="@+id/choose_repeat_fragment"
+            android:id="@+id/choose_repeat_fragment_dest"
             android:name="com.kiwicorp.dumbdue.ui.addeditreminder.ChooseRepeatFragment"
-            android:label="ChooseRepeatFragment" >
+            android:label="ChooseRepeatFragment"
+            tools:layout="@layout/fragment_choose_repeat">
             <argument
                 android:name="graphId"
                 app:argType="integer" />
         </dialog>
 
         <dialog
-            android:id="@+id/choose_autosnooze_fragment"
+            android:id="@+id/choose_autosnooze_fragment_dest"
             android:name="com.kiwicorp.dumbdue.ui.addeditreminder.ChooseAutoSnoozeFragment"
-            android:label="ChooseAutoSnoozeFragment" >
+            android:label="ChooseAutoSnoozeFragment"
+            tools:layout="@layout/fragment_choose_auto_snooze">
+            <argument
+                android:name="graphId"
+                app:argType="integer" />
+        </dialog>
+        <dialog
+            android:id="@+id/time_picker_fragment_dest"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.TimePickerFragment"
+            android:label="TimePickerFragment"
+            tools:layout="@layout/fragment_time_picker">
             <argument
                 android:name="graphId"
                 app:argType="integer" />
@@ -65,47 +80,60 @@
     </navigation>
     <navigation
         android:id="@+id/nav_graph_edit"
-        app:startDestination="@id/edit_reminder_fragment">
+        app:startDestination="@id/edit_reminder_fragment_dest">
         <argument
             android:name="reminderId"
             app:argType="string" />
-
+        <action
+            android:id="@+id/action_global_reminders_fragment_dest"
+            app:destination="@id/reminders_fragment_dest" />
         <fragment
-            android:id="@+id/edit_reminder_fragment"
+            android:id="@+id/edit_reminder_fragment_dest"
             android:name="com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragment"
             android:label="Edit Reminder"
             tools:layout="@layout/fragment_edit_reminder">
             <action
                 android:id="@+id/action_editReminderFragment_to_chooseRepeatFragment"
-                app:destination="@id/choose_repeat_fragment" />
+                app:destination="@id/choose_repeat_fragment_dest" />
             <action
                 android:id="@+id/action_editReminderFragment_to_chooseAutoSnoozeFragment"
-                app:destination="@id/choose_autosnooze_fragment" />
+                app:destination="@id/choose_autosnooze_fragment_dest" />
             <argument
                 android:name="reminderId"
                 app:argType="string" />
+            <action
+                android:id="@+id/action_editReminderFragment_to_timePickerFragment"
+                app:destination="@id/time_picker_fragment_dest" />
         </fragment>
 
         <dialog
-            android:id="@+id/choose_repeat_fragment"
+            android:id="@+id/choose_repeat_fragment_dest"
             android:name="com.kiwicorp.dumbdue.ui.addeditreminder.ChooseRepeatFragment"
-            android:label="ChooseRepeatFragment" >
+            android:label="ChooseRepeatFragment"
+            tools:layout="@layout/fragment_choose_repeat">
             <argument
                 android:name="graphId"
                 app:argType="integer"/>
         </dialog>
 
         <dialog
-            android:id="@+id/choose_autosnooze_fragment"
+            android:id="@+id/choose_autosnooze_fragment_dest"
             android:name="com.kiwicorp.dumbdue.ui.addeditreminder.ChooseAutoSnoozeFragment"
-            android:label="ChooseAutoSnoozeFragment" >
+            android:label="ChooseAutoSnoozeFragment"
+            tools:layout="@layout/fragment_choose_auto_snooze">
             <argument
                 android:name="graphId"
                 app:argType="integer"/>
         </dialog>
-        <action
-            android:id="@+id/action_global_reminders_fragment_dest"
-            app:destination="@id/reminders_fragment_dest" />
+        <dialog
+            android:id="@+id/time_picker_fragment_dest"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.TimePickerFragment"
+            android:label="TimePickerFragment"
+            tools:layout="@layout/fragment_time_picker">
+            <argument
+                android:name="graphId"
+                app:argType="integer" />
+        </dialog>
     </navigation>
 
 </navigation>

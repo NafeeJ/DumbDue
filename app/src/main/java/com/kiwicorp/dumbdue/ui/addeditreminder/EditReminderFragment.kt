@@ -58,9 +58,11 @@ class EditReminderFragment : Fragment() {
         viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, EventObserver {
             navigateToAutoSnoozeMenu()
         })
+        viewModel.eventOpenTimePicker.observe(viewLifecycleOwner, EventObserver {
+            navigateToTimePicker()
+        })
         viewModel.eventClose.observe(viewLifecycleOwner, EventObserver {
             close()
-
         })
         viewModel.eventCompleteDelete.observe(viewLifecycleOwner, EventObserver {request ->
             close(request, viewModel.reminderId!!)
@@ -80,6 +82,11 @@ class EditReminderFragment : Fragment() {
             EditReminderFragmentDirections.actionEditReminderFragmentToChooseAutoSnoozeFragment(
                 R.id.nav_graph_edit
             )
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToTimePicker() {
+        val action = EditReminderFragmentDirections.actionEditReminderFragmentToTimePickerFragment(R.id.nav_graph_edit)
         findNavController().navigate(action)
     }
 

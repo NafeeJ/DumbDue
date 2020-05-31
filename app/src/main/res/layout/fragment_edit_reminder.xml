@@ -54,6 +54,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#FFFFFF"
                 app:timeFromNow="@{viewmodel.calendar}"
+                android:onClick="@{()->viewmodel.onOpenTimePicker()}"
                 tools:text="Fri, May 29, 10:05 AM in 4 Hours"/>
 
             <TextView

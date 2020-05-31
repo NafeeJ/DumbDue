@@ -63,10 +63,12 @@ class AddReminderFragment : BottomSheetDialogFragment() {
     private fun setupNavigation() {
         viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, EventObserver {
             navigateToRepeatMenu()
-
         })
         viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, EventObserver {
             navigateToAutoSnoozeMenu()
+        })
+        viewModel.eventOpenTimePicker.observe(viewLifecycleOwner, EventObserver {
+            navigateToTimePicker()
         })
         viewModel.eventClose.observe(viewLifecycleOwner, EventObserver {
             cancel()
@@ -86,6 +88,11 @@ class AddReminderFragment : BottomSheetDialogFragment() {
             AddReminderFragmentDirections.actionAddReminderFragmentToChooseAutoSnoozeFragment(
                 R.id.nav_graph_add
             )
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToTimePicker() {
+        val action = AddReminderFragmentDirections.actionAddReminderFragmentToTimePickerFragment(R.id.nav_graph_add)
         findNavController().navigate(action)
     }
 

@@ -90,7 +90,8 @@
                     android:padding="10dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="#FFFFFF"
-                    app:timeFromNow="@{viewmodel.calendar}"/>
+                    app:timeFromNow="@{viewmodel.calendar}"
+                    android:onClick="@{()->viewmodel.onOpenTimePicker()}"/>
 
                 <TextView
                     android:id="@+id/repeat_text"

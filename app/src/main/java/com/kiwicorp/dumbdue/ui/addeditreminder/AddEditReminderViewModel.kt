@@ -1,5 +1,6 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.lifecycle.LiveData
@@ -10,6 +11,7 @@ import com.kiwicorp.dumbdue.*
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.util.timeFromNowMins
+import com.shawnlin.numberpicker.NumberPicker
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -45,6 +47,9 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
     private val _eventOpenAutoSnoozeMenu = MutableLiveData<Event<Unit>>()
     val eventOpenAutoSnoozeMenu: LiveData<Event<Unit>> = _eventOpenAutoSnoozeMenu
 
+    private val _eventOpenTimePicker = MutableLiveData<Event<Unit>>()
+    val eventOpenTimePicker: LiveData<Event<Unit>> = _eventOpenTimePicker
+
     private val _eventChooseRepeat = MutableLiveData<Event<Unit>>()
     val eventChooseRepeat: LiveData<Event<Unit>> = _eventChooseRepeat
 
@@ -68,10 +73,17 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
     }
 
     /**
-     * Called by ImageButton in AddReminderFragment/EditReminderButton via listener binding.
+     * Called by ImageButton in AddReminderFragment/EditReminderFragment via listener binding.
      */
     fun onOpenAutoSnoozeMenu() {
         _eventOpenAutoSnoozeMenu.value = Event(Unit)
+    }
+
+    /**
+     * Called by TextView in AddReminderFragment/EditReminderFragment via listener binding.
+     */
+    fun onOpenTimePicker() {
+        _eventOpenTimePicker.value = Event(Unit)
     }
 
     /**
@@ -217,7 +229,7 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
     fun onTimeSetterClick(view: View) {
         _calendar.value = _calendar.value!!.apply {
             // number is the actual number of how much to increment/decrement, notDigits contains "+ unit"
-            val (numbers,notDigits)= ((view as Button).text as String).partition { it.isDigit() }
+            var (number,notDigits)= ((view as Button).text as String).partition { it.isDigit() }
             val unit: Int = when (notDigits.substring(2)) {
                 "min" -> Calendar.MINUTE
                 "hr" -> Calendar.HOUR
@@ -226,10 +238,13 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
                 "mo" -> Calendar.MONTH
                 else -> Calendar.YEAR
             }
-            var number: Int = numbers.toInt()
-            if (notDigits[0] == '-') number *= -1
-            add(unit,number)
+            if (notDigits[0] == '-') number = "-$number"
+            add(unit,number.toInt())
         }
+    }
+
+    fun onCalendarUpdated(calendar: Calendar) {
+        _calendar.value = _calendar.value!!.apply { timeInMillis = calendar.timeInMillis }
     }
 
 }
