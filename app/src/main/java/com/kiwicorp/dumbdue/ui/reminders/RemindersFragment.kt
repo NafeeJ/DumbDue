@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,10 @@ import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.adapters.ReminderAdapter
 import com.kiwicorp.dumbdue.databinding.FragmentRemindersBinding
 import dagger.android.support.DaggerFragment
+import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
+import kotlin.concurrent.fixedRateTimer
 
 class RemindersFragment : DaggerFragment() {
 
@@ -33,9 +35,7 @@ class RemindersFragment : DaggerFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: RemindersViewModel by viewModels {
-        viewModelFactory
-    }
+    private val viewModel: RemindersViewModel by viewModels { viewModelFactory }
 
     private lateinit var listAdapter: ReminderAdapter
 
@@ -57,6 +57,7 @@ class RemindersFragment : DaggerFragment() {
         setupListAdapter()
         setupNavigation()
         setupRecyclerViewSwiping()
+        setupRefreshTimer()
     }
 
     private fun setupNavigation() {
@@ -84,7 +85,7 @@ class RemindersFragment : DaggerFragment() {
             listAdapter = ReminderAdapter(viewModel)
             binding.remindersRecyclerView.adapter = listAdapter
         } else {
-            Log.d("RemindersFragment","ViewModel not initialized when attempting to set up adapter.")
+            Timber.d("ViewModel not initialized when attempting to set up adapter.")
         }
     }
 
@@ -166,6 +167,23 @@ class RemindersFragment : DaggerFragment() {
         }
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(binding.remindersRecyclerView)
+    }
+
+    /**
+     * Sets up a timer that updates the recycler view every minute on the minute
+     */
+    private fun setupRefreshTimer() {
+        val thisMinuteCalendar = Calendar.getInstance().apply {
+            set(Calendar.MILLISECOND, 0)
+            set(Calendar.SECOND, 0)
+        }
+        fixedRateTimer("RefreshTimer", false, thisMinuteCalendar.time, 60000) {
+            requireActivity().runOnUiThread {
+                Timber.d("Recycler View Updated")
+                listAdapter.addHeadersAndSubmitList(viewModel.reminders.value)
+                listAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
 }
