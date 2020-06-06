@@ -15,24 +15,27 @@ fun Calendar.daySuffix(): String {
     }
 }
 
-fun Calendar.timeFromNowMins() = ceil((timeInMillis - System.currentTimeMillis()).div(60000.0)).toInt()
+fun Calendar.minsFromNow() = ceil((timeInMillis - System.currentTimeMillis()).div(60000.0)).toInt().absoluteValue
 
 fun Calendar.timeFromNowString(): String {
-    val absTime = timeFromNowMins().absoluteValue
+    val minsFromNow = minsFromNow()
     return when {
-        absTime == 0 -> { "0 Minutes" } //less than 1 minute
-        absTime == 1 -> { "$absTime Minute" } //equal to 1 minute
-        absTime < 60 -> { "$absTime Minutes" } //less than 1 hour
-        absTime / 60 == 1 -> { "${absTime / 60} Hour"}//equal to 1 hour
-        absTime / 60 < 24 -> { "${absTime / 60} Hours" } //less than 1 day
-        absTime / 60 / 24 == 1 -> { "${absTime / 60 / 24} Day" } //equal to 1 day
-        absTime / 60 / 24 < 7 -> { "${absTime / 60 / 24} Days" } //less than 1 week
-        absTime / 60 / 24 / 7 == 1 -> { "${absTime / 60 / 24 / 7} Week" } //equal to 1 week
-        absTime / 60 / 24 / 7 < 4 -> { "${absTime / 60 / 24 / 7} Weeks"  } //less than 1 month
-        absTime / 60 / 24 / 7 / 4 == 1 -> { "${absTime / 60 / 24 / 7 / 4} Month" } //equal to 1 month
-        absTime / 60 / 24 / 7 / 4 < 12 -> { "${absTime / 60 / 24 / 7 / 4} Months" } //less than one year
-        absTime / 60 / 24 / 7 / 4 / 12 == 1 -> { "${absTime / 60 / 24 / 7 / 4 / 12} Year" } //equal to 1 year
-        else -> "${absTime / 60 / 24 / 7 / 4 / 12} Years"
+        minsFromNow == 0 -> { "0 Minutes" } //less than 1 minute
+        minsFromNow == 1 -> { "$minsFromNow Minute" } //equal to 1 minute
+        minsFromNow < 60 -> { "$minsFromNow Minutes" } //less than 1 hour
+        minsFromNow / 60 == 1 -> { "${minsFromNow / 60} Hour"}//equal to 1 hour
+        minsFromNow / 60 < 24 -> { "${minsFromNow / 60} Hours" } //less than 1 day
+        minsFromNow / 60 / 24 == 1 -> { "${minsFromNow / 60 / 24} Day" } //equal to 1 day
+        minsFromNow / 60 / 24 < 7 -> { "${minsFromNow / 60 / 24} Days" } //less than 1 week
+        minsFromNow / 60 / 24 / 7 == 1 -> { "${minsFromNow / 60 / 24 / 7} Week" } //equal to 1 week
+        minsFromNow / 60 / 24 / 7 < 4 -> { "${minsFromNow / 60 / 24 / 7} Weeks"  } //less than 1 month
+        minsFromNow / 60 / 24 / 7 / 4 == 1 -> { "${minsFromNow / 60 / 24 / 7 / 4} Month" } //equal to 1 month
+        minsFromNow / 60 / 24 / 7 / 4 < 12 -> { "${minsFromNow / 60 / 24 / 7 / 4} Months" } //less than one year
+        minsFromNow / 60 / 24 / 7 / 4 / 12 == 1 -> { "${minsFromNow / 60 / 24 / 7 / 4 / 12} Year" } //equal to 1 year
+        else -> "${minsFromNow / 60 / 24 / 7 / 4 / 12} Years"
     }
+}
 
+fun Calendar.hasPassed(): Boolean {
+    return timeInMillis - System.currentTimeMillis() < 0
 }
