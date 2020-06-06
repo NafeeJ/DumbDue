@@ -6,6 +6,8 @@ import androidx.lifecycle.Observer
  * A wrapper class for events that are exposed via LiveData. (Most common events are navigation and
  * displaying snackbar messages)
  *
+ * Note: Very slightly modified from https://github.com/android/architecture-samples/blob/master/app/src/main/java/com/example/android/architecture/blueprints/todoapp/Event.kt
+ *
  * [content] will be passed the handler that completes this event. If no arguments are
  * needed for the handler, [content] should be [Unit].
  */
