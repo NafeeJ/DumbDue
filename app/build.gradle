@@ -83,4 +83,7 @@ dependencies {
 
     // Number Picker
     implementation 'com.shawnlin:number-picker:2.4.8'
+
+    // Timber
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 }
