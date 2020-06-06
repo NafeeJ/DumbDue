@@ -11,8 +11,9 @@ import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class RemindersViewModel internal constructor(private val repository: ReminderRepository) : ViewModel() {
+class RemindersViewModel @Inject constructor(private val repository: ReminderRepository) : ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel
@@ -95,7 +96,7 @@ class RemindersViewModel internal constructor(private val repository: ReminderRe
         }
     }
 
-    fun onCompleteReminder(reminderId: String) {
+    private fun onCompleteReminder(reminderId: String) {
         uiScope.launch {
             val reminder = getReminder(reminderId)
             if (reminder != null) {
@@ -104,7 +105,7 @@ class RemindersViewModel internal constructor(private val repository: ReminderRe
         }
     }
 
-    fun onDeleteReminder(reminderId: String) {
+    private fun onDeleteReminder(reminderId: String) {
         uiScope.launch {
             val reminder = getReminder(reminderId)
             if (reminder != null) {

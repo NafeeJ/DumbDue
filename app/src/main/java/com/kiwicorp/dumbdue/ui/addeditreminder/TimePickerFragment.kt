@@ -4,24 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavArgs
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentTimePickerBinding
+import com.kiwicorp.dumbdue.util.DaggerBottomSheetDialogFragment
+import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import com.shawnlin.numberpicker.NumberPicker
-import com.kiwicorp.dumbdue.util.InjectorUtils
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class TimePickerFragment : BottomSheetDialogFragment() {
+class TimePickerFragment : DaggerBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentTimePickerBinding
 
     private val args: TimePickerFragmentArgs by navArgs()
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: AddEditReminderViewModel
 
@@ -29,7 +32,7 @@ class TimePickerFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initViewModel()
+        viewModel = getNavGraphViewModel(args.graphId) { viewModelFactory }
         val root = inflater.inflate(R.layout.fragment_time_picker, container, false)
         binding = FragmentTimePickerBinding.bind(root).apply {
             viewmodel = viewModel
@@ -41,27 +44,8 @@ class TimePickerFragment : BottomSheetDialogFragment() {
         super.onActivityCreated(savedInstanceState)
         setupDatePicker(binding.datePicker, viewModel.calendar.value!!)
         setupHourPicker(binding.hourPicker, viewModel.calendar.value!!)
-        setupMinutePicker(binding.minutePicker,viewModel.calendar.value!!)
-        setupAmpmPicker(binding.ampmPicker,viewModel.calendar.value!!)
-    }
-
-    /**
-     * Initializes [viewModel].
-     *
-     * This fragment doesn't use delegation because [args.graphId] won't be initialized in time to
-     * pass to [navGraphViewModels] and doing it this way seemed easier and more readable than
-     * creating another overly specific extension function and an [NavArgs] abstract class that has
-     * a graphId.
-     */
-    private fun initViewModel() {
-        val backStackEntry = findNavController().getBackStackEntry(args.graphId)
-
-        val viewModelProvider = ViewModelProvider(
-            backStackEntry.viewModelStore,
-            InjectorUtils.provideAddEditViewModelFactory(requireContext())
-        )
-
-        viewModel = viewModelProvider.get(AddEditReminderViewModel::class.java)
+        setupMinutePicker(binding.minutePicker, viewModel.calendar.value!!)
+        setupAmpmPicker(binding.ampmPicker, viewModel.calendar.value!!)
     }
 
     private fun setupDatePicker(datePicker: NumberPicker, calendar: Calendar) {

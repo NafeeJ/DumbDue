@@ -1,12 +1,14 @@
 package com.kiwicorp.dumbdue.data.source
 
-import android.view.View
 import androidx.lifecycle.LiveData
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.local.ReminderDao
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ReminderRepository private constructor(private val reminderDao: ReminderDao) {
+@Singleton
+class ReminderRepository @Inject constructor(private val reminderDao: ReminderDao) {
     val reminders: LiveData<List<Reminder>> = reminderDao.observeReminders()
 
     fun observeReminder(reminderId: String) = reminderDao.observeReminderById(reminderId)
@@ -64,13 +66,4 @@ class ReminderRepository private constructor(private val reminderDao: ReminderDa
         return null
     }
 
-    companion object {
-        //For singleton purposes
-        @Volatile private var instance: ReminderRepository? = null
-
-        fun getInstance(reminderDao: ReminderDao) =
-            instance ?: synchronized(this) {
-                instance ?: ReminderRepository(reminderDao).also { instance = it }
-            }
-    }
 }

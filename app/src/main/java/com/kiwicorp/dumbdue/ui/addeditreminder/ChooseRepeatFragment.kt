@@ -5,21 +5,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavArgs
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.navGraphViewModels
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseRepeatBinding
-import com.kiwicorp.dumbdue.util.InjectorUtils
+import com.kiwicorp.dumbdue.util.DaggerBottomSheetDialogFragment
+import com.kiwicorp.dumbdue.util.getNavGraphViewModel
+import javax.inject.Inject
 
-class ChooseRepeatFragment : BottomSheetDialogFragment() {
+class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentChooseRepeatBinding
 
     private val args: ChooseRepeatFragmentArgs by navArgs()
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     // Shares ViewModel with Add/Edit ReminderFragment
     private lateinit var viewModel: AddEditReminderViewModel
 
@@ -28,7 +31,7 @@ class ChooseRepeatFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initViewModel()
+        viewModel = getNavGraphViewModel(args.graphId) { viewModelFactory }
         val root = inflater.inflate(R.layout.fragment_choose_repeat,container,false)
         binding = FragmentChooseRepeatBinding.bind(root).apply {
             viewmodel = viewModel
@@ -48,24 +51,5 @@ class ChooseRepeatFragment : BottomSheetDialogFragment() {
      */
     private fun close() {
         findNavController().popBackStack()
-    }
-
-    /**
-     * Initializes [viewModel].
-     *
-     * This fragment doesn't use delegation because [args.graphId] won't be initialized in time to
-     * pass to [navGraphViewModels] and doing it this way seemed easier and more readable than
-     * creating another overly specific extension function and an [NavArgs] abstract class that has
-     * a graphId.
-     */
-    private fun initViewModel() {
-        val backStackEntry = findNavController().getBackStackEntry(args.graphId)
-
-        val viewModelProvider = ViewModelProvider(
-            backStackEntry.viewModelStore,
-            InjectorUtils.provideAddEditViewModelFactory(requireContext())
-        )
-
-        viewModel = viewModelProvider.get(AddEditReminderViewModel::class.java)
     }
 }

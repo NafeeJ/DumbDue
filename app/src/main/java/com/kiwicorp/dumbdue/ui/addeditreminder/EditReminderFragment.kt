@@ -6,23 +6,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditReminderBinding
-import com.kiwicorp.dumbdue.util.InjectorUtils
+import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
-class EditReminderFragment : Fragment() {
+class EditReminderFragment : DaggerFragment() {
 
     lateinit var binding: FragmentEditReminderBinding
 
     private val args: EditReminderFragmentArgs by navArgs()
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val viewModel: AddEditReminderViewModel by navGraphViewModels(R.id.nav_graph_edit) {
-        InjectorUtils.provideAddEditViewModelFactory(requireContext())
+        viewModelFactory
     }
 
     override fun onCreateView(

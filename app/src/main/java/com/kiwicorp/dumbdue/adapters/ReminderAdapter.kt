@@ -13,7 +13,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.ClassCastException
 import java.util.*
 
 private const val ITEM_VIEW_TYPE_HEADER = 0

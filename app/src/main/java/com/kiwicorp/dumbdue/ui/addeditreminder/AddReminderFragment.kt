@@ -6,25 +6,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
-import com.kiwicorp.dumbdue.util.InjectorUtils
+import com.kiwicorp.dumbdue.util.DaggerBottomSheetDialogFragment
+import javax.inject.Inject
 
-
-class AddReminderFragment : BottomSheetDialogFragment() {
+class AddReminderFragment : DaggerBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentAddReminderBinding
 
-    private val viewModel: AddEditReminderViewModel by navGraphViewModels(R.id.nav_graph_add) {
-        InjectorUtils.provideAddEditViewModelFactory(requireContext())
-    }
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: AddEditReminderViewModel by navGraphViewModels(R.id.nav_graph_add) { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

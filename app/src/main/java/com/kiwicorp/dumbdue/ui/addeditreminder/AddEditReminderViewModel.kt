@@ -1,21 +1,23 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.material.snackbar.Snackbar
-import com.kiwicorp.dumbdue.*
+import com.kiwicorp.dumbdue.Event
+import com.kiwicorp.dumbdue.REQUEST_COMPLETE
+import com.kiwicorp.dumbdue.REQUEST_DELETE
+import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.util.timeFromNowMins
-import com.shawnlin.numberpicker.NumberPicker
 import kotlinx.coroutines.*
 import java.util.*
+import javax.inject.Inject
 
-class AddEditReminderViewModel internal constructor(private val repository: ReminderRepository) : ViewModel() {
+class AddEditReminderViewModel @Inject constructor(private val repository: ReminderRepository) : ViewModel() {
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel
      */
@@ -30,6 +32,7 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
         set(Calendar.MILLISECOND,0)
         set(Calendar.SECOND,0)
     })
+
     val calendar: LiveData<Calendar> = _calendar
 
     private val _repeatVal = MutableLiveData(Reminder.REPEAT_NONE)
@@ -119,7 +122,11 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
             } else if (calendar.value!!.timeFromNowMins() <= 0) {
                 _snackbarData.value = Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
             } else {
-                insert(Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!))
+                insert(Reminder(title.value!!,
+                    calendar.value!!,
+                    repeatVal.value!!,
+                    autoSnoozeVal.value!!))
+
                 _eventClose.value = Event(Unit)
             }
 
@@ -208,7 +215,7 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
      * Sets [calendar] to the hour and minute of the invoking Button's text.
      */
     fun onQuickAccessClick(view: View) {
-        _calendar.value = _calendar.value!!.apply {
+        _calendar.value = _calendar.value?.apply {
             val text = (view as Button).text as String
             val minute: Int = text.substringAfter(':').substringBefore(' ').toInt()
             var hour: Int = text.substringBefore(':').toInt()
@@ -227,7 +234,7 @@ class AddEditReminderViewModel internal constructor(private val repository: Remi
      * Increments/Decrements [calendar] by the number and unit that the invoking Button's text indicates.
      */
     fun onTimeSetterClick(view: View) {
-        _calendar.value = _calendar.value!!.apply {
+        _calendar.value = _calendar.value?.apply {
             // number is the actual number of how much to increment/decrement, notDigits contains "+ unit"
             var (number,notDigits)= ((view as Button).text as String).partition { it.isDigit() }
             val unit: Int = when (notDigits.substring(2)) {

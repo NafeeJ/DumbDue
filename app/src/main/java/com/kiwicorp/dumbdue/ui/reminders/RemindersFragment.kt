@@ -10,8 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -19,20 +19,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
-import com.kiwicorp.dumbdue.REQUEST_COMPLETE
-import com.kiwicorp.dumbdue.REQUEST_DELETE
 import com.kiwicorp.dumbdue.adapters.ReminderAdapter
 import com.kiwicorp.dumbdue.databinding.FragmentRemindersBinding
-import com.kiwicorp.dumbdue.util.InjectorUtils
+import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
-class RemindersFragment : Fragment() {
+class RemindersFragment : DaggerFragment() {
 
     private lateinit var binding: FragmentRemindersBinding
 
     private val args : RemindersFragmentArgs by navArgs()
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private val viewModel: RemindersViewModel by viewModels {
-        InjectorUtils.provideRemindersViewModelFactory(requireContext())
+        viewModelFactory
     }
 
     private lateinit var listAdapter: ReminderAdapter

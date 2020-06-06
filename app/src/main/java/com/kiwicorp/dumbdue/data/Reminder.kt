@@ -40,5 +40,4 @@ data class Reminder (
         const val AUTO_SNOOZE_HOUR : Int = 6
     }
 
-    fun isOverDue() = calendar.timeInMillis < System.currentTimeMillis()
 }
