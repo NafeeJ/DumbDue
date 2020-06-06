@@ -7,10 +7,10 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.util.daySuffix
-import com.kiwicorp.dumbdue.util.timeFromNowMins
+import com.kiwicorp.dumbdue.util.hasPassed
+import com.kiwicorp.dumbdue.util.minsFromNow
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
 @BindingAdapter("items")
@@ -22,24 +22,23 @@ fun RecyclerView.setItems(items: List<Reminder>?) {
 
 @BindingAdapter("timeFromNowAbbr")
 fun TextView.setTimeFromNowAbbr(calendar: Calendar) {
-    val fromNowMins = calendar.timeFromNowMins()
-    val absMins = fromNowMins.absoluteValue
+    val minsFromnow = calendar.minsFromNow()
 
     //sets timeFromNow to the greatest whole unit of time + that unit
     text = when {
-        absMins == 0 -> { "0m" } //less than 1 minute
-        absMins == 1 -> { "${absMins}m" } //equal to 1 minute
-        absMins < 60 -> { "${absMins}m" } //less than 1 hour
-        absMins / 60 == 1 -> { "${(absMins / 60.0).roundToInt()}h" } //equal to 1 hour
-        absMins / 60 < 24 -> { "${(absMins / 60.0).roundToInt()}h"  } //less than 1 day
-        absMins / 60 / 24 == 1 -> { "${(absMins / 60 / 24.0).roundToInt()}d" } //equal to 1 day
-        absMins / 60 / 24 < 7 -> { "${(absMins / 60 / 24.0).roundToInt()}d" } //less than 1 week
-        absMins / 60 / 24 / 7 == 1 -> { "${(absMins / 60 / 24 / 7.0).roundToInt()}w" } //equal to 1 week
-        absMins / 60 / 24 / 7 < 4 -> { "${(absMins / 60 / 24 / 7.0).roundToInt()}w" } //less than 1 month
-        absMins / 60 / 24 / 7 / 4 == 1 -> { "${(absMins / 60 / 24 / 7 / 4.0).roundToInt()}mo" } //equal to 1 month
-        absMins / 60 / 24 / 7 / 4 < 12 -> { "${(absMins / 60 / 24 / 7 / 4.0).roundToInt()}mo" } //less than one year
-        absMins / 60 / 24 / 7 / 4 / 12 == 1 ->{ "${(absMins / 60 / 24 / 7 / 4 / 12.0).roundToInt()}yr" } //equal to 1 year
-        else -> "${(absMins / 60 / 24 / 7 / 4 / 12.0).roundToInt()}yr"
+        minsFromnow == 0 -> { "0m" } //less than 1 minute
+        minsFromnow == 1 -> { "${minsFromnow}m" } //equal to 1 minute
+        minsFromnow < 60 -> { "${minsFromnow}m" } //less than 1 hour
+        minsFromnow / 60 == 1 -> { "${(minsFromnow / 60.0).roundToInt()}h" } //equal to 1 hour
+        minsFromnow / 60 < 24 -> { "${(minsFromnow / 60.0).roundToInt()}h"  } //less than 1 day
+        minsFromnow / 60 / 24 == 1 -> { "${(minsFromnow / 60 / 24.0).roundToInt()}d" } //equal to 1 day
+        minsFromnow / 60 / 24 < 7 -> { "${(minsFromnow / 60 / 24.0).roundToInt()}d" } //less than 1 week
+        minsFromnow / 60 / 24 / 7 == 1 -> { "${(minsFromnow / 60 / 24 / 7.0).roundToInt()}w" } //equal to 1 week
+        minsFromnow / 60 / 24 / 7 < 4 -> { "${(minsFromnow / 60 / 24 / 7.0).roundToInt()}w" } //less than 1 month
+        minsFromnow / 60 / 24 / 7 / 4 == 1 -> { "${(minsFromnow / 60 / 24 / 7 / 4.0).roundToInt()}mo" } //equal to 1 month
+        minsFromnow / 60 / 24 / 7 / 4 < 12 -> { "${(minsFromnow / 60 / 24 / 7 / 4.0).roundToInt()}mo" } //less than one year
+        minsFromnow / 60 / 24 / 7 / 4 / 12 == 1 ->{ "${(minsFromnow / 60 / 24 / 7 / 4 / 12.0).roundToInt()}yr" } //equal to 1 year
+        else -> "${(minsFromnow / 60 / 24 / 7 / 4 / 12.0).roundToInt()}yr"
     }
 
     //calendar with date at 23:59:59 tomorrow
@@ -63,26 +62,28 @@ fun TextView.setTimeFromNowAbbr(calendar: Calendar) {
     val day = SimpleDateFormat("EEE", Locale.US).format(calendar.time)
 
     text = when {
+        calendar.hasPassed() -> {
+            "$text ago"
+        }
         //add "in" to time from now string if within 3 hours or more than a week
-        fromNowMins >= 0 && ((absMins / 60.0).roundToInt() <= 3) || calendar.timeInMillis > endOfNext7daysCalendar.timeInMillis -> {
+        ((minsFromnow / 60.0).roundToInt() <= 3) || calendar.timeInMillis > endOfNext7daysCalendar.timeInMillis -> {
             "in $text"
         }
         //set time from now string to be the time if less than 2 days from today
-        fromNowMins > 0 && calendar.timeInMillis < endOfTomorrowCalendar.timeInMillis -> {
+        calendar.timeInMillis < endOfTomorrowCalendar.timeInMillis -> {
             time
         }
         //set time from now string to be the day if less than a week from today
-        fromNowMins > 0 && calendar.timeInMillis < endOfNext7daysCalendar.timeInMillis -> {
+        calendar.timeInMillis < endOfNext7daysCalendar.timeInMillis -> {
             day
         }
-        //if time from now is negative add "ago"
-        else -> { "$text ago" }
+        else -> { "" }
     }
 }
 //itemCalendar and itemRepeatVal are used because function parameters conflict with [TextView.setRepeatText()]
 @BindingAdapter(value = ["itemCalendar","itemRepeatVal"], requireAll = true)
 fun TextView.setDateOrRepeatText(calendar: Calendar,repeatVal: Int) {
-    if (calendar.timeFromNowMins() < 0) {
+    if (calendar.hasPassed()) {
         setTextColor(Color.parseColor("#f54242"))
     } else {
         setTextColor(Color.parseColor("#525252"))

@@ -7,7 +7,8 @@ import androidx.databinding.BindingAdapter
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.util.daySuffix
-import com.kiwicorp.dumbdue.util.timeFromNowMins
+import com.kiwicorp.dumbdue.util.hasPassed
+import com.kiwicorp.dumbdue.util.minsFromNow
 import com.kiwicorp.dumbdue.util.timeFromNowString
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,7 +24,7 @@ fun TextView.setTimeFromNow(calendar: Calendar) {
         dateTime,
         timeFromNow)
 
-    setTextColor(Color.parseColor(if (calendar.timeFromNowMins() <= 0) "#f54242" else "#FFFFFF"))
+    setTextColor(Color.parseColor(if (calendar.hasPassed()) "#f54242" else "#FFFFFF"))
 }
 
 /**

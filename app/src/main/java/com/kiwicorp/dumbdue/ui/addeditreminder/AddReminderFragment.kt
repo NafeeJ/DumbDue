@@ -16,6 +16,7 @@ import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
 import com.kiwicorp.dumbdue.util.DaggerBottomSheetDialogFragment
+import timber.log.Timber
 import javax.inject.Inject
 
 class AddReminderFragment : DaggerBottomSheetDialogFragment() {

@@ -10,10 +10,14 @@ import com.kiwicorp.dumbdue.REQUEST_DELETE
 import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
+import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-class RemindersViewModel @Inject constructor(private val repository: ReminderRepository) : ViewModel() {
+class RemindersViewModel @Inject constructor(
+    private val repository: ReminderRepository,
+    private val reminderAlarmManager: ReminderAlarmManager
+) : ViewModel() {
 
     /**
      * viewModelJob allows us to cancel all coroutines started by this ViewModel
@@ -63,6 +67,7 @@ class RemindersViewModel @Inject constructor(private val repository: ReminderRep
     fun onDeleteReminder(reminder: Reminder) {
         uiScope.launch {
             delete(reminder)
+            reminderAlarmManager.cancelAlarm(reminder)
             _snackbarMessage.value = Event(SnackbarMessage("Bye-Bye ${reminder.title}", Snackbar.LENGTH_LONG, "Undo") {
                 undoDelete(reminder)
             })
@@ -73,6 +78,7 @@ class RemindersViewModel @Inject constructor(private val repository: ReminderRep
      * Deletes the given reminder in the repository
      */
     private suspend fun delete(reminder: Reminder) {
+        reminderAlarmManager.cancelAlarm(reminder)
         withContext(Dispatchers.IO) {
             repository.deleteReminder(reminder)
         }
@@ -84,6 +90,7 @@ class RemindersViewModel @Inject constructor(private val repository: ReminderRep
     private fun undoDelete(reminder: Reminder) {
         uiScope.launch {
             insert(reminder)
+            reminderAlarmManager.setAlarm(reminder)
         }
     }
 
@@ -96,6 +103,9 @@ class RemindersViewModel @Inject constructor(private val repository: ReminderRep
         }
     }
 
+    /**
+     * Only used to complete reminder in [handleRequest]
+     */
     private fun onCompleteReminder(reminderId: String) {
         uiScope.launch {
             val reminder = getReminder(reminderId)
@@ -105,6 +115,9 @@ class RemindersViewModel @Inject constructor(private val repository: ReminderRep
         }
     }
 
+    /**
+     * Only used to delete reminder in [handleRequest]
+     */
     private fun onDeleteReminder(reminderId: String) {
         uiScope.launch {
             val reminder = getReminder(reminderId)
@@ -124,6 +137,7 @@ class RemindersViewModel @Inject constructor(private val repository: ReminderRep
      * Completes the reminder in the repository
      */
     private suspend fun complete(reminder: Reminder): Reminder? {
+        reminderAlarmManager.cancelAlarm(reminder)
         return withContext(Dispatchers.IO) {
             repository.completeReminder(reminder)
         }
@@ -148,6 +162,7 @@ class RemindersViewModel @Inject constructor(private val repository: ReminderRep
      * Inserts the given reminder into the repository
      */
     private suspend fun insert(reminder: Reminder) {
+        reminderAlarmManager.setAlarm(reminder)
         withContext(Dispatchers.IO) {
             repository.insertReminder(reminder)
         }
