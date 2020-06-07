@@ -36,6 +36,4 @@ fun Calendar.timeFromNowString(): String {
     }
 }
 
-fun Calendar.hasPassed(): Boolean {
-    return timeInMillis - System.currentTimeMillis() < 0
-}
+fun Calendar.isOverdue() = timeInMillis - System.currentTimeMillis() < 0

@@ -7,8 +7,7 @@ import androidx.databinding.BindingAdapter
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.util.daySuffix
-import com.kiwicorp.dumbdue.util.hasPassed
-import com.kiwicorp.dumbdue.util.minsFromNow
+import com.kiwicorp.dumbdue.util.isOverdue
 import com.kiwicorp.dumbdue.util.timeFromNowString
 import java.text.SimpleDateFormat
 import java.util.*
@@ -24,7 +23,7 @@ fun TextView.setTimeFromNow(calendar: Calendar) {
         dateTime,
         timeFromNow)
 
-    setTextColor(Color.parseColor(if (calendar.hasPassed()) "#f54242" else "#FFFFFF"))
+    setTextColor(Color.parseColor(if (calendar.isOverdue()) "#f54242" else "#FFFFFF"))
 }
 
 /**
@@ -72,7 +71,7 @@ fun TextView.setRepeatText(calendar: Calendar, repeatVal: Int) {
  * Updates the AutoSnooze image button in fragment_add_reminder.xml and fragment_edit_reminder.xml
  */
 @BindingAdapter("autoSnooze")
-fun ImageButton.setAutoSnooze(autoSnooze: Int) {
+fun ImageButton.setAutoSnooze(autoSnooze: Long) {
     setImageResource(when(autoSnooze) {
         Reminder.AUTO_SNOOZE_NONE -> R.drawable.white_none_square
         Reminder.AUTO_SNOOZE_MINUTE -> R.drawable.one_white
@@ -86,7 +85,7 @@ fun ImageButton.setAutoSnooze(autoSnooze: Int) {
 }
 
 @BindingAdapter("autoSnooze")
-fun TextView.setAutoSnooze(autoSnooze: Int) {
+fun TextView.setAutoSnooze(autoSnooze: Long) {
     text = when(autoSnooze) {
         Reminder.AUTO_SNOOZE_NONE -> resources.getString(R.string.auto_snooze_none)
         Reminder.AUTO_SNOOZE_MINUTE -> resources.getString(R.string.auto_snooze_minute)

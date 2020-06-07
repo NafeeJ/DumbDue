@@ -13,8 +13,7 @@ import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
-import com.kiwicorp.dumbdue.util.hasPassed
-import com.kiwicorp.dumbdue.util.minsFromNow
+import com.kiwicorp.dumbdue.util.isOverdue
 import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
@@ -44,7 +43,7 @@ class AddEditReminderViewModel @Inject constructor(
     val repeatVal: LiveData<Int> = _repeatVal
 
     private val _autoSnoozeVal = MutableLiveData(Reminder.AUTO_SNOOZE_MINUTE)
-    val autoSnoozeVal: LiveData<Int> = _autoSnoozeVal
+    val autoSnoozeVal: LiveData<Long> = _autoSnoozeVal
 
     var reminderId: String? = null
         private set //makes value read only externally
@@ -105,7 +104,7 @@ class AddEditReminderViewModel @Inject constructor(
     /**
      * Called by the TextViews in ChooseAutoSnoozeFragment via Listener Binding.
      */
-    fun onChooseAutoSnooze(autoSnoozeVal: Int) {
+    fun onChooseAutoSnooze(autoSnoozeVal: Long) {
         _autoSnoozeVal.value = autoSnoozeVal
         _eventChooseAutoSnooze.value = Event(Unit)
     }
@@ -124,7 +123,7 @@ class AddEditReminderViewModel @Inject constructor(
         uiScope.launch {
             if (title.value == null || title.value == "") {
                 _snackbarData.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
-            } else if (calendar.value!!.hasPassed()) {
+            } else if (calendar.value!!.isOverdue()) {
                 _snackbarData.value = Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
             } else {
                 val reminder = Reminder(title.value!!,

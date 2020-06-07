@@ -7,7 +7,7 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.util.daySuffix
-import com.kiwicorp.dumbdue.util.hasPassed
+import com.kiwicorp.dumbdue.util.isOverdue
 import com.kiwicorp.dumbdue.util.minsFromNow
 import java.text.SimpleDateFormat
 import java.util.*
@@ -62,7 +62,7 @@ fun TextView.setTimeFromNowAbbr(calendar: Calendar) {
     val day = SimpleDateFormat("EEE", Locale.US).format(calendar.time)
 
     text = when {
-        calendar.hasPassed() -> {
+        calendar.isOverdue() -> {
             "$text ago"
         }
         //add "in" to time from now string if within 3 hours or more than a week
@@ -83,7 +83,7 @@ fun TextView.setTimeFromNowAbbr(calendar: Calendar) {
 //itemCalendar and itemRepeatVal are used because function parameters conflict with [TextView.setRepeatText()]
 @BindingAdapter(value = ["itemCalendar","itemRepeatVal"], requireAll = true)
 fun TextView.setDateOrRepeatText(calendar: Calendar,repeatVal: Int) {
-    if (calendar.hasPassed()) {
+    if (calendar.isOverdue()) {
         setTextColor(Color.parseColor("#f54242"))
     } else {
         setTextColor(Color.parseColor("#525252"))
