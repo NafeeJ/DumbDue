@@ -7,10 +7,10 @@ import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
+import androidx.core.app.AlarmManagerCompat
 import androidx.core.content.getSystemService
 import com.kiwicorp.dumbdue.data.Reminder
-import com.kiwicorp.dumbdue.util.hasPassed
-import com.kiwicorp.dumbdue.util.minsFromNow
+import com.kiwicorp.dumbdue.util.isOverdue
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,12 +30,22 @@ class ReminderAlarmManager @Inject constructor(private val context: Context) {
 
         notificationIntent?.let {
             Timber.d("Setting alarm for ${reminder.id}")
-            systemAlarmManager?.setRepeating(
-                RTC_WAKEUP,
-                reminder.calendar.timeInMillis,
-                60000,
-                notificationIntent
-            )
+
+            if (reminder.autoSnoozeVal == Reminder.AUTO_SNOOZE_NONE) {
+                systemAlarmManager?.let {
+                    AlarmManagerCompat.setExactAndAllowWhileIdle(
+                        systemAlarmManager,
+                        RTC_WAKEUP,
+                        reminder.calendar.timeInMillis,
+                        notificationIntent) }
+            } else {
+                systemAlarmManager?.setRepeating(
+                    RTC_WAKEUP,
+                    reminder.calendar.timeInMillis,
+                    reminder.autoSnoozeVal,
+                    notificationIntent)
+            }
+
         }
     }
 
@@ -52,14 +62,7 @@ class ReminderAlarmManager @Inject constructor(private val context: Context) {
             systemAlarmManager?.cancel(notificationIntent)
         }
 
-        if (reminder.calendar.hasPassed()) {
-            for (i in 0..reminder.calendar.minsFromNow()) {
-                val id = reminder.id.hashCode() + i
-                Timber.d("Cancelling notification $id")
-                notificationManager.cancel(id)
-            }
-        }
-
+        notificationManager.cancel(reminder.id.hashCode())
     }
 
     /**
@@ -76,8 +79,7 @@ class ReminderAlarmManager @Inject constructor(private val context: Context) {
             reminder.id.hashCode(),
             Intent(context,NotificationBroadcastReceiver::class.java)
                 .putExtra(NotificationBroadcastReceiver.REMINDER_TITLE,reminder.title)
-                .putExtra(NotificationBroadcastReceiver.REMINDER_ID, reminder.id)
-                .putExtra(NotificationBroadcastReceiver.REMINDER_TIME_IN_MILLIS, reminder.calendar.timeInMillis),
+                .putExtra(NotificationBroadcastReceiver.REMINDER_ID, reminder.id),
             FLAG_UPDATE_CURRENT
         )
     }
