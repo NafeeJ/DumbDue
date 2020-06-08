@@ -2,6 +2,7 @@ package com.kiwicorp.dumbdue.di
 
 import android.content.Context
 import com.kiwicorp.dumbdue.DumbDueApplication
+import com.kiwicorp.dumbdue.notifications.BroadcastReceiverModule
 import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderModule
 import com.kiwicorp.dumbdue.ui.reminders.RemindersModule
 import dagger.BindsInstance
@@ -18,7 +19,8 @@ import javax.inject.Singleton
     ApplicationModule::class,
     AndroidSupportInjectionModule::class,
     AddEditReminderModule::class,
-    RemindersModule::class
+    RemindersModule::class,
+    BroadcastReceiverModule::class
 ])
 interface AppComponent : AndroidInjector<DumbDueApplication> {
 

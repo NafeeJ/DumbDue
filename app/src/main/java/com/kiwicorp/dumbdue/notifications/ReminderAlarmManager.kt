@@ -10,7 +10,6 @@ import android.content.Intent
 import androidx.core.app.AlarmManagerCompat
 import androidx.core.content.getSystemService
 import com.kiwicorp.dumbdue.data.Reminder
-import com.kiwicorp.dumbdue.util.isOverdue
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,26 +25,28 @@ class ReminderAlarmManager @Inject constructor(private val context: Context) {
      * Schedules an alarm for a reminder
      */
     fun setAlarm(reminder: Reminder) {
-        val notificationIntent = makePendingIntent(reminder)
+        setAlarm(reminder.title,reminder.id,reminder.calendar.timeInMillis, reminder.autoSnoozeVal)
+    }
+    /**
+     * Schedules an alarm.
+     *
+     * We do not use set repeating because [AlarmManager]'s setRepeating() does will not fire when
+     * device is idle
+     */
+    fun setAlarm(title: String, id: String, timeInMillis: Long, autoSnooze: Long) {
+        val notificationIntent = makePendingIntent(title,id,timeInMillis, autoSnooze)
 
         notificationIntent?.let {
-            Timber.d("Setting alarm for ${reminder.id}")
+            Timber.d("Setting alarm for $id")
 
-            if (reminder.autoSnoozeVal == Reminder.AUTO_SNOOZE_NONE) {
-                systemAlarmManager?.let {
-                    AlarmManagerCompat.setExactAndAllowWhileIdle(
-                        systemAlarmManager,
-                        RTC_WAKEUP,
-                        reminder.calendar.timeInMillis,
-                        notificationIntent) }
-            } else {
-                systemAlarmManager?.setRepeating(
+            systemAlarmManager?.let {
+                AlarmManagerCompat.setExactAndAllowWhileIdle(
+                    systemAlarmManager,
                     RTC_WAKEUP,
-                    reminder.calendar.timeInMillis,
-                    reminder.autoSnoozeVal,
-                    notificationIntent)
+                    timeInMillis,
+                    notificationIntent
+                )
             }
-
         }
     }
 
@@ -56,7 +57,7 @@ class ReminderAlarmManager @Inject constructor(private val context: Context) {
         val notificationManager: NotificationManager = context.getSystemService()
             ?: throw Exception("Notification Manager not found.")
 
-        val notificationIntent = makePendingIntent(reminder)
+        val notificationIntent = makePendingIntent(reminder.title,reminder.id,reminder.calendar.timeInMillis,reminder.autoSnoozeVal)
 
         notificationIntent?.let {
             systemAlarmManager?.cancel(notificationIntent)
@@ -73,13 +74,15 @@ class ReminderAlarmManager @Inject constructor(private val context: Context) {
         setAlarm(reminder)
     }
 
-    private fun makePendingIntent(reminder: Reminder): PendingIntent? {
+    private fun makePendingIntent(title: String, id: String, timeInMillis: Long, autoSnooze: Long): PendingIntent? {
         return PendingIntent.getBroadcast(
             context,
-            reminder.id.hashCode(),
+            id.hashCode(),
             Intent(context,NotificationBroadcastReceiver::class.java)
-                .putExtra(NotificationBroadcastReceiver.REMINDER_TITLE,reminder.title)
-                .putExtra(NotificationBroadcastReceiver.REMINDER_ID, reminder.id),
+                .putExtra(NotificationBroadcastReceiver.REMINDER_TITLE,title)
+                .putExtra(NotificationBroadcastReceiver.REMINDER_ID, id)
+                .putExtra(NotificationBroadcastReceiver.REMINDER_TIME_IN_MILLIS, timeInMillis)
+                .putExtra(NotificationBroadcastReceiver.REMINDER_AUTO_SNOOZE, autoSnooze),
             FLAG_UPDATE_CURRENT
         )
     }
