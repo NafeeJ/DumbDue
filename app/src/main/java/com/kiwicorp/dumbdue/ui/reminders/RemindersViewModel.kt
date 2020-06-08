@@ -3,6 +3,7 @@ package com.kiwicorp.dumbdue.ui.reminders
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.Event
 import com.kiwicorp.dumbdue.REQUEST_COMPLETE
@@ -18,14 +19,6 @@ class RemindersViewModel @Inject constructor(
     private val repository: ReminderRepository,
     private val reminderAlarmManager: ReminderAlarmManager
 ) : ViewModel() {
-
-    /**
-     * viewModelJob allows us to cancel all coroutines started by this ViewModel
-     */
-    private var viewModelJob = Job()
-
-    private var uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
-
     val reminders: LiveData<List<Reminder>> = repository.reminders
 
     private val _eventAddReminder = MutableLiveData<Event<Unit>>()
@@ -54,7 +47,7 @@ class RemindersViewModel @Inject constructor(
     }
 
     fun onDeleteReminder(reminder: Reminder) {
-        uiScope.launch {
+        viewModelScope.launch {
             delete(reminder)
             reminderAlarmManager.cancelAlarm(reminder)
             _snackbarMessage.value = Event(SnackbarMessage("Bye-Bye ${reminder.title}", Snackbar.LENGTH_LONG, "Undo") {
@@ -67,7 +60,7 @@ class RemindersViewModel @Inject constructor(
      * Only used to delete reminder in [handleRequest]
      */
     private fun onDeleteReminder(reminderId: String) {
-        uiScope.launch {
+        viewModelScope.launch {
             val reminder = getReminder(reminderId)
             if (reminder != null) {
                 onDeleteReminder(reminder)
@@ -76,7 +69,7 @@ class RemindersViewModel @Inject constructor(
     }
 
     fun onCompleteReminder(reminder: Reminder) {
-        uiScope.launch {
+        viewModelScope.launch {
             val newReminder = complete(reminder)
             _snackbarMessage.value = Event(SnackbarMessage("Completed ${reminder.title} :)", Snackbar.LENGTH_LONG,"Undo") {
                 undoComplete(reminder, newReminder)
@@ -88,7 +81,7 @@ class RemindersViewModel @Inject constructor(
      * Only used to complete reminder in [handleRequest]
      */
     private fun onCompleteReminder(reminderId: String) {
-        uiScope.launch {
+        viewModelScope.launch {
             val reminder = getReminder(reminderId)
             if (reminder != null) {
                 onCompleteReminder(reminder)
@@ -100,7 +93,7 @@ class RemindersViewModel @Inject constructor(
      * Reinserts the deleted reminder
      */
     private fun undoDelete(reminder: Reminder) {
-        uiScope.launch {
+        viewModelScope.launch {
             insert(reminder)
             reminderAlarmManager.setAlarm(reminder)
         }
@@ -113,7 +106,7 @@ class RemindersViewModel @Inject constructor(
      * null.
      */
     private fun undoComplete(reminder: Reminder, newReminder: Reminder?) {
-        uiScope.launch {
+        viewModelScope.launch {
             if (newReminder != null) {
                 delete(newReminder)
             }

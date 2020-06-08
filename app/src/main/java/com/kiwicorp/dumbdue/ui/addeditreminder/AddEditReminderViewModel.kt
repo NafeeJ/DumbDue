@@ -5,6 +5,7 @@ import android.widget.Button
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.Event
 import com.kiwicorp.dumbdue.REQUEST_COMPLETE
@@ -22,13 +23,6 @@ class AddEditReminderViewModel @Inject constructor(
     private val repository: ReminderRepository,
     private val reminderAlarmManager: ReminderAlarmManager
 ) : ViewModel() {
-    /**
-     * viewModelJob allows us to cancel all coroutines started by this ViewModel
-     */
-    private var viewModelJob = Job()
-
-    private var uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
-
     //Public mutable for two-way data binding
     val title = MutableLiveData<String>()
 
@@ -134,7 +128,7 @@ class AddEditReminderViewModel @Inject constructor(
      * Called by the ImageButton in AddReminderFragment via listener binding.
      */
     fun addReminder() {
-        uiScope.launch {
+        viewModelScope.launch {
             if (title.value == null || title.value == "") {
                 _snackbarData.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
             } else if (calendar.value!!.isOverdue()) {
@@ -157,7 +151,7 @@ class AddEditReminderViewModel @Inject constructor(
      * Called by ImageButton in EditReminderFragment via listener binding.
      */
     fun onUpdateReminder() {
-        uiScope.launch {
+        viewModelScope.launch {
             val reminder = Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,id = reminderId!!)
             update(reminder)
         }
@@ -170,7 +164,7 @@ class AddEditReminderViewModel @Inject constructor(
      * Used only by EditReminderFragment.
      */
     fun loadReminder(reminderId: String) {
-        uiScope.launch {
+        viewModelScope.launch {
             val reminder = getReminder(reminderId)
             if (reminder != null) {
                 onReminderLoaded(reminder)
