@@ -38,6 +38,8 @@ class RemindersFragment : DaggerFragment() {
 
     private lateinit var listAdapter: ReminderAdapter
 
+    private lateinit var refreshTimer: Timer
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -57,6 +59,16 @@ class RemindersFragment : DaggerFragment() {
         setupNavigation()
         setupRecyclerViewSwiping()
         setupRefreshTimer()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        // Cancels RefreshTimer because, otherwise, the timer will still be running when the user
+        // navigates to from RemindersFragment to SettingsFragment and then back to RemindersFragment
+        // using the NavigationDrawer. This will cause the app to crash because a new instance of
+        // RemindersFragment will be attached the activity while the old one will be detached with
+        // the timer still running and thus calling requireActivity() will crash the app.
+        cancelRefreshTimer()
     }
 
     private fun setupNavigation() {
@@ -177,13 +189,19 @@ class RemindersFragment : DaggerFragment() {
             set(Calendar.MILLISECOND, 0)
             set(Calendar.SECOND, 0)
         }
-        fixedRateTimer("RefreshTimer", false, thisMinuteCalendar.time, 60000) {
+        refreshTimer = fixedRateTimer("RefreshTimer", false, thisMinuteCalendar.time, 60000) {
             requireActivity().runOnUiThread {
                 Timber.d("Recycler View Updated")
                 listAdapter.addHeadersAndSubmitList(viewModel.reminders.value)
                 listAdapter.notifyDataSetChanged()
             }
         }
+    }
+    /**
+     * Cancels timer
+     */
+    private fun cancelRefreshTimer() {
+        refreshTimer.cancel()
     }
 
 }
