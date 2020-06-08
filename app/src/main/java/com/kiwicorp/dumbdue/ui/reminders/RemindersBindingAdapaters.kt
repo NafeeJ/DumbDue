@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.adapters
+package com.kiwicorp.dumbdue.ui.reminders
 
 import android.graphics.Color
 import android.view.View
@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.data.Reminder
+import com.kiwicorp.dumbdue.ui.reminders.ReminderAdapter
 import com.kiwicorp.dumbdue.util.daySuffix
 import com.kiwicorp.dumbdue.util.isOverdue
 import com.kiwicorp.dumbdue.util.minsFromNow

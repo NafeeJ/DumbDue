@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.adapters
+package com.kiwicorp.dumbdue.ui.reminders
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.databinding.ItemHeaderBinding
 import com.kiwicorp.dumbdue.databinding.ItemReminderBinding
-import com.kiwicorp.dumbdue.ui.reminders.RemindersViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,7 +18,9 @@ private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_ITEM = 1
 
 class ReminderAdapter(private val viewModel: RemindersViewModel):
-    ListAdapter<Item, RecyclerView.ViewHolder>(ReminderDiffCallback()) {
+    ListAdapter<Item, RecyclerView.ViewHolder>(
+        ReminderDiffCallback()
+    ) {
 
     private val adapterScope = CoroutineScope(Dispatchers.Default)
 
@@ -38,8 +39,12 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            ITEM_VIEW_TYPE_HEADER -> HeaderViewHolder.from(parent)
-            ITEM_VIEW_TYPE_ITEM -> ReminderViewHolder.from(parent)
+            ITEM_VIEW_TYPE_HEADER -> HeaderViewHolder.from(
+                parent
+            )
+            ITEM_VIEW_TYPE_ITEM -> ReminderViewHolder.from(
+                parent
+            )
             else -> throw ClassCastException("Unknown viewType $viewType")
         }
     }
@@ -115,10 +120,18 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
                     }
                 }
                result.add(Item.Header(currPair.second))
-               result.add(Item.ReminderItem(reminder))
+               result.add(
+                   Item.ReminderItem(
+                       reminder
+                   )
+               )
                currPair = iter.next()
            } else {
-               result.add(Item.ReminderItem(reminder))
+               result.add(
+                   Item.ReminderItem(
+                       reminder
+                   )
+               )
            }
         }
         return result
@@ -144,7 +157,9 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ItemReminderBinding.inflate(layoutInflater, parent, false)
 
-                return ReminderViewHolder(binding)
+                return ReminderViewHolder(
+                    binding
+                )
             }
         }
     }
@@ -159,7 +174,9 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ItemHeaderBinding.inflate(layoutInflater, parent,false)
 
-                return HeaderViewHolder(binding)
+                return HeaderViewHolder(
+                    binding
+                )
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.adapters
+package com.kiwicorp.dumbdue.ui.addeditreminder
 
 import android.graphics.Color
 import android.widget.ImageButton

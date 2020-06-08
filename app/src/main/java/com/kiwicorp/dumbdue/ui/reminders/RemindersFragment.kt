@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
-import com.kiwicorp.dumbdue.adapters.ReminderAdapter
 import com.kiwicorp.dumbdue.databinding.FragmentRemindersBinding
 import dagger.android.support.DaggerFragment
 import timber.log.Timber
@@ -82,7 +81,8 @@ class RemindersFragment : DaggerFragment() {
     private fun setupListAdapter() {
         val viewModel = binding.viewmodel
         if (viewModel != null)  {
-            listAdapter = ReminderAdapter(viewModel)
+            listAdapter =
+                ReminderAdapter(viewModel)
             binding.remindersRecyclerView.adapter = listAdapter
         } else {
             Timber.d("ViewModel not initialized when attempting to set up adapter.")
