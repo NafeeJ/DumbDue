@@ -39,17 +39,6 @@ class RemindersViewModel @Inject constructor(
 
     private var argsRequestHandled = false
     /**
-     * Handles the request provided by [RemindersFragmentArgs]
-     */
-    fun handleRequest(request: Int, reminderId: String) {
-        if (argsRequestHandled) return
-        when (request) {
-            REQUEST_COMPLETE -> onCompleteReminder(reminderId)
-            REQUEST_DELETE -> onDeleteReminder(reminderId)
-        }
-        argsRequestHandled = true
-    }
-    /**
      * Called via listener binding.
      */
     fun onAddReminder() {
@@ -75,22 +64,14 @@ class RemindersViewModel @Inject constructor(
     }
 
     /**
-     * Deletes the given reminder in the repository
+     * Only used to delete reminder in [handleRequest]
      */
-    private suspend fun delete(reminder: Reminder) {
-        reminderAlarmManager.cancelAlarm(reminder)
-        withContext(Dispatchers.IO) {
-            repository.deleteReminder(reminder)
-        }
-    }
-
-    /**
-     * Reinserts the deleted reminder
-     */
-    private fun undoDelete(reminder: Reminder) {
+    private fun onDeleteReminder(reminderId: String) {
         uiScope.launch {
-            insert(reminder)
-            reminderAlarmManager.setAlarm(reminder)
+            val reminder = getReminder(reminderId)
+            if (reminder != null) {
+                onDeleteReminder(reminder)
+            }
         }
     }
 
@@ -116,30 +97,12 @@ class RemindersViewModel @Inject constructor(
     }
 
     /**
-     * Only used to delete reminder in [handleRequest]
+     * Reinserts the deleted reminder
      */
-    private fun onDeleteReminder(reminderId: String) {
+    private fun undoDelete(reminder: Reminder) {
         uiScope.launch {
-            val reminder = getReminder(reminderId)
-            if (reminder != null) {
-                onDeleteReminder(reminder)
-            }
-        }
-    }
-
-    private suspend fun getReminder(reminderId: String): Reminder? {
-        return withContext(Dispatchers.IO) {
-            repository.getReminder(reminderId)
-        }
-    }
-
-    /**
-     * Completes the reminder in the repository
-     */
-    private suspend fun complete(reminder: Reminder): Reminder? {
-        reminderAlarmManager.cancelAlarm(reminder)
-        return withContext(Dispatchers.IO) {
-            repository.completeReminder(reminder)
+            insert(reminder)
+            reminderAlarmManager.setAlarm(reminder)
         }
     }
 
@@ -155,6 +118,44 @@ class RemindersViewModel @Inject constructor(
                 delete(newReminder)
             }
             insert(reminder)
+        }
+    }
+
+    /**
+     * Deletes the given reminder in the repository
+     */
+    private suspend fun delete(reminder: Reminder) {
+        reminderAlarmManager.cancelAlarm(reminder)
+        withContext(Dispatchers.IO) {
+            repository.deleteReminder(reminder)
+        }
+    }
+
+    /**
+     * Handles the request provided by [RemindersFragmentArgs]
+     */
+    fun handleRequest(request: Int, reminderId: String) {
+        if (argsRequestHandled) return
+        when (request) {
+            REQUEST_COMPLETE -> onCompleteReminder(reminderId)
+            REQUEST_DELETE -> onDeleteReminder(reminderId)
+        }
+        argsRequestHandled = true
+    }
+
+    /**
+     * Completes the reminder in the repository
+     */
+    private suspend fun complete(reminder: Reminder): Reminder? {
+        reminderAlarmManager.cancelAlarm(reminder)
+        return withContext(Dispatchers.IO) {
+            repository.completeReminder(reminder)
+        }
+    }
+
+    private suspend fun getReminder(reminderId: String): Reminder? {
+        return withContext(Dispatchers.IO) {
+            repository.getReminder(reminderId)
         }
     }
 

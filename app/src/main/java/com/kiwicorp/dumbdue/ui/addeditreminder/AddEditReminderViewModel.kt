@@ -117,6 +117,20 @@ class AddEditReminderViewModel @Inject constructor(
     }
 
     /**
+     * Called by TextView in EditReminderFragment vis listener binding.
+     */
+    fun onDeleteReminder() {
+        _eventCompleteDelete.value = Event(REQUEST_DELETE)
+    }
+
+    /**
+     * Called by TextView in EditReminderFragment vis listener binding.
+     */
+    fun onCompleteReminder() {
+        _eventCompleteDelete.value = Event(REQUEST_COMPLETE)
+    }
+
+    /**
      * Called by the ImageButton in AddReminderFragment via listener binding.
      */
     fun addReminder() {
@@ -140,16 +154,6 @@ class AddEditReminderViewModel @Inject constructor(
     }
 
     /**
-     * Inserts the given reminder into the repository
-     */
-    private suspend fun insert(reminder: Reminder) {
-        reminderAlarmManager.setAlarm(reminder)
-        withContext(Dispatchers.IO) {
-            repository.insertReminder(reminder)
-        }
-    }
-
-    /**
      * Called by ImageButton in EditReminderFragment via listener binding.
      */
     fun onUpdateReminder() {
@@ -158,30 +162,6 @@ class AddEditReminderViewModel @Inject constructor(
             update(reminder)
         }
         _eventClose.value = Event(Unit)
-    }
-
-    /**
-     * Updates the given reminder in the repository
-     */
-    private suspend fun update(reminder: Reminder) {
-        reminderAlarmManager.updateAlarm(reminder)
-        withContext(Dispatchers.IO) {
-            repository.updateReminder(reminder)
-        }
-    }
-
-    /**
-     * Called by TextView in EditReminderFragment vis listener binding.
-     */
-    fun onDeleteReminder() {
-        _eventCompleteDelete.value = Event(REQUEST_DELETE)
-    }
-
-    /**
-     * Called by TextView in EditReminderFragment vis listener binding.
-     */
-    fun onCompleteReminder() {
-        _eventCompleteDelete.value = Event(REQUEST_COMPLETE)
     }
 
     /**
@@ -195,6 +175,26 @@ class AddEditReminderViewModel @Inject constructor(
             if (reminder != null) {
                 onReminderLoaded(reminder)
             }
+        }
+    }
+
+    /**
+     * Inserts the given reminder into the repository
+     */
+    private suspend fun insert(reminder: Reminder) {
+        reminderAlarmManager.setAlarm(reminder)
+        withContext(Dispatchers.IO) {
+            repository.insertReminder(reminder)
+        }
+    }
+
+    /**
+     * Updates the given reminder in the repository
+     */
+    private suspend fun update(reminder: Reminder) {
+        reminderAlarmManager.updateAlarm(reminder)
+        withContext(Dispatchers.IO) {
+            repository.updateReminder(reminder)
         }
     }
 
@@ -217,7 +217,6 @@ class AddEditReminderViewModel @Inject constructor(
         _autoSnoozeVal.value = reminder.autoSnoozeVal
         reminderId = reminder.id
     }
-
 
     /**
      * Called by the QuickAccess buttons in time_button.xml via listener binding to update the calendar.
