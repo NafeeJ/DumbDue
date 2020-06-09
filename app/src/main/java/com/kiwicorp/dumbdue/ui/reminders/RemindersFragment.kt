@@ -43,6 +43,7 @@ class RemindersFragment : DaggerFragment() {
 
     private val onDestinationChangedListener =
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
+            Timber.d("Destination Changed ${this.hashCode()}")
             if (destination.id == R.id.add_reminder_fragment_dest) {
                 binding.fab.isClickable = false
                 binding.fab.hide()
@@ -56,7 +57,6 @@ class RemindersFragment : DaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Timber.d("onCreateView ${this.hashCode()}")
         val root = inflater.inflate(R.layout.fragment_reminders,container,false)
         binding = FragmentRemindersBinding.bind(root).apply {
             viewmodel = viewModel
@@ -66,32 +66,29 @@ class RemindersFragment : DaggerFragment() {
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
-        Timber.d("onActivityCreated ${this.hashCode()}")
         super.onActivityCreated(savedInstanceState)
         setupSnackbar()
         setupListAdapter()
         setupNavigation()
         setupRecyclerViewSwiping()
         setupRefreshTimer()
-        setupNavControllerAndFAB()
+        findNavController().addOnDestinationChangedListener(onDestinationChangedListener)
     }
 
     override fun onResume() {
         super.onResume()
         setupRefreshTimer()
-        Timber.d("onResume ${this.hashCode()}")
     }
 
     override fun onPause() {
         super.onPause()
         cancelRefreshTimer()
-        removeNavControllerListener()
+        findNavController().removeOnDestinationChangedListener(onDestinationChangedListener)
         // Cancels RefreshTimer because, otherwise, the timer will still be running when the user
         // navigates to from RemindersFragment to SettingsFragment and then back to RemindersFragment
         // using the NavigationDrawer. This will cause the app to crash because a new instance of
         // RemindersFragment will be attached the activity while the old one will be detached with
         // the timer still running and thus calling requireActivity() will crash the app.
-        Timber.d("onPause ${this.hashCode()}")
     }
 
     private fun setupNavigation() {
@@ -228,14 +225,6 @@ class RemindersFragment : DaggerFragment() {
     private fun cancelRefreshTimer() {
         refreshTimer?.cancel()
         refreshTimer = null
-    }
-
-    private fun setupNavControllerAndFAB() {
-        findNavController().addOnDestinationChangedListener(onDestinationChangedListener)
-    }
-
-    private fun removeNavControllerListener() {
-        findNavController().removeOnDestinationChangedListener(onDestinationChangedListener)
     }
 
 }
