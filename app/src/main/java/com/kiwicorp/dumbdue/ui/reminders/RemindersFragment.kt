@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -38,12 +39,24 @@ class RemindersFragment : DaggerFragment() {
 
     private lateinit var listAdapter: ReminderAdapter
 
-    private lateinit var refreshTimer: Timer
+    private var refreshTimer: Timer? = null
+
+    private val onDestinationChangedListener =
+        NavController.OnDestinationChangedListener { controller, destination, arguments ->
+            if (destination.id == R.id.add_reminder_fragment_dest) {
+                binding.fab.isClickable = false
+                binding.fab.hide()
+            } else if (destination.id == R.id.reminders_fragment_dest) {
+                binding.fab.isClickable = true
+                binding.fab.show()
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Timber.d("onCreateView ${this.hashCode()}")
         val root = inflater.inflate(R.layout.fragment_reminders,container,false)
         binding = FragmentRemindersBinding.bind(root).apply {
             viewmodel = viewModel
@@ -53,22 +66,32 @@ class RemindersFragment : DaggerFragment() {
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        Timber.d("onActivityCreated ${this.hashCode()}")
         super.onActivityCreated(savedInstanceState)
         setupSnackbar()
         setupListAdapter()
         setupNavigation()
         setupRecyclerViewSwiping()
         setupRefreshTimer()
+        setupNavControllerAndFAB()
     }
 
-    override fun onDetach() {
-        super.onDetach()
+    override fun onResume() {
+        super.onResume()
+        setupRefreshTimer()
+        Timber.d("onResume ${this.hashCode()}")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        cancelRefreshTimer()
+        removeNavControllerListener()
         // Cancels RefreshTimer because, otherwise, the timer will still be running when the user
         // navigates to from RemindersFragment to SettingsFragment and then back to RemindersFragment
         // using the NavigationDrawer. This will cause the app to crash because a new instance of
         // RemindersFragment will be attached the activity while the old one will be detached with
         // the timer still running and thus calling requireActivity() will crash the app.
-        cancelRefreshTimer()
+        Timber.d("onPause ${this.hashCode()}")
     }
 
     private fun setupNavigation() {
@@ -189,11 +212,13 @@ class RemindersFragment : DaggerFragment() {
             set(Calendar.MILLISECOND, 0)
             set(Calendar.SECOND, 0)
         }
-        refreshTimer = fixedRateTimer("RefreshTimer", false, thisMinuteCalendar.time, 60000) {
-            requireActivity().runOnUiThread {
-                Timber.d("Recycler View Updated")
-                listAdapter.addHeadersAndSubmitList(viewModel.reminders.value)
-                listAdapter.notifyDataSetChanged()
+        if (refreshTimer == null) {
+            refreshTimer = fixedRateTimer("RefreshTimer", false, thisMinuteCalendar.time, 60000) {
+                requireActivity().runOnUiThread {
+                    Timber.d("Recycler View Updated id: ${this.hashCode()}")
+                    listAdapter.addHeadersAndSubmitList(viewModel.reminders.value)
+                    listAdapter.notifyDataSetChanged()
+                }
             }
         }
     }
@@ -201,7 +226,16 @@ class RemindersFragment : DaggerFragment() {
      * Cancels timer
      */
     private fun cancelRefreshTimer() {
-        refreshTimer.cancel()
+        refreshTimer?.cancel()
+        refreshTimer = null
+    }
+
+    private fun setupNavControllerAndFAB() {
+        findNavController().addOnDestinationChangedListener(onDestinationChangedListener)
+    }
+
+    private fun removeNavControllerListener() {
+        findNavController().removeOnDestinationChangedListener(onDestinationChangedListener)
     }
 
 }
