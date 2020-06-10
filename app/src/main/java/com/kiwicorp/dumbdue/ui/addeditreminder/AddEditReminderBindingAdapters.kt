@@ -18,12 +18,22 @@ fun TextView.setTimeFromNow(calendar: Calendar) {
     val dateTime = dateFormatter.format(calendar.time)
     val timeFromNow = calendar.timeFromNowString()
 
+    val stringId: Int
+    val colorString: String
+    if (calendar.isOverdue()) {
+        stringId = R.string.time_from_now_past
+        colorString = "#f54242"
+    } else {
+        stringId = R.string.time_from_now_future
+        colorString = "#FFFFFF"
+    }
+
     text = context.resources.getString(
-        R.string.time_from_now_future,
+        stringId,
         dateTime,
         timeFromNow)
 
-    setTextColor(Color.parseColor(if (calendar.isOverdue()) "#f54242" else "#FFFFFF"))
+    setTextColor(Color.parseColor(colorString))
 }
 
 /**
