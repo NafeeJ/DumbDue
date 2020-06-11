@@ -38,6 +38,7 @@ class EditReminderFragment : DaggerFragment() {
         binding = FragmentEditReminderBinding.bind(root).apply {
             viewmodel = viewModel
             timeButtons.onTimeSetButtonsClickImpl = viewModel
+            timeButtons.preferencesStorage = viewModel.preferencesStorage
             lifecycleOwner = viewLifecycleOwner
         }
         return root
@@ -47,12 +48,6 @@ class EditReminderFragment : DaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel.loadReminder(args.reminderId)
         setupNavigation()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        closeKeyboard()
-        viewModel.onUpdateReminder()
     }
 
     private fun setupNavigation() {

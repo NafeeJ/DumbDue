@@ -42,6 +42,7 @@
     <string name="new_reminder_hint">New Reminder</string>
     <string name="delete">Delete</string>
     <string name="complete">Complete</string>
+    <string name="confirm">Confirm</string>
     <string name="done">Done</string>
 
     <string name="preference_edit_timer_setters">Edit Time Setter Buttons</string>
