@@ -124,9 +124,9 @@ class IncrementalTimeSetter {
 }
 
 class QuickAccessTimeSetter {
-    val min: Int
+    var min: Int
 
-    val hourOfDay: Int
+    var hourOfDay: Int
 
     val text: String
         get() {

@@ -70,7 +70,7 @@ class EditIncrementalTimeSetterViewModel @Inject constructor(
         }
     }
 
-    fun onConfirm() {
+    fun onDone() {
         preferencesStorage.updateIncrementalTimeSetter(key, incrementalTimeSetter)
         _eventDone.value = Event(Unit)
     }

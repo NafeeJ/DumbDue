@@ -49,7 +49,8 @@ class EditTimeSetButtonsFragment : DaggerFragment() {
     }
 
     private fun navigateToEditQuickAccessTimerSetterFragment(key: String) {
-
+        val action = EditTimeSetButtonsFragmentDirections.actionEditTimeSetButtonsFragmentToEditQuickAccessTimeSetterFragment(key)
+        findNavController().navigate(action)
     }
 
     private fun navigateToEditIncrementalTimeSetterFragment(key: String) {

@@ -7,6 +7,7 @@ import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderModule
 import com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSetButtonsModule
 import com.kiwicorp.dumbdue.ui.reminders.RemindersModule
 import com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editincrementaltimesetter.EditIncrementalTimeSetterModule
+import com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editquickaccesstimesetter.EditQuickAccessTimeSetterModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
@@ -24,6 +25,7 @@ import javax.inject.Singleton
     RemindersModule::class,
     EditTimeSetButtonsModule::class,
     EditIncrementalTimeSetterModule::class,
+    EditQuickAccessTimeSetterModule::class,
     BroadcastReceiverModule::class
 ])
 interface AppComponent : AndroidInjector<DumbDueApplication> {

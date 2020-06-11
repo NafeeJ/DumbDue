@@ -69,7 +69,7 @@
             android:layout_alignParentBottom="true"
             android:textColor="@android:color/white"
             android:text="@string/done"
-            android:onClick="@{() -> viewmodel.onConfirm()}"/>
+            android:onClick="@{() -> viewmodel.onDone()}"/>
 
     </RelativeLayout>
 

@@ -147,11 +147,23 @@
         <action
             android:id="@+id/action_editTimeSetButtonsFragment_to_editIncrementalTimeSetter"
             app:destination="@id/editIncrementalTimeSetter" />
+        <action
+            android:id="@+id/action_editTimeSetButtonsFragment_to_editQuickAccessTimeSetterFragment"
+            app:destination="@id/editQuickAccessTimeSetterFragment" />
     </fragment>
     <fragment
         android:id="@+id/editIncrementalTimeSetter"
         android:name="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editincrementaltimesetter.EditIncrementalTimeSetterFragment"
-        android:label="EditIncrementalTimeSetter" >
+        android:label="Edit Incremental Time Setter" >
+        <argument
+            android:name="key"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/editQuickAccessTimeSetterFragment"
+        android:name="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editquickaccesstimesetter.EditQuickAccessTimeSetterFragment"
+        android:label="Edit Quick Access Time Setter"
+        tools:layout="@layout/fragment_edit_quick_access_time_setter" >
         <argument
             android:name="key"
             app:argType="string" />
