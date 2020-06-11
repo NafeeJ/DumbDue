@@ -156,11 +156,11 @@ class QuickAccessTimeSetter {
         get() {
             val hour: Int
             val ampm: String
-            if (hourOfDay > 12) {
-                hour = hourOfDay - 12
+            if (hourOfDay >= 12) {
+                hour = if (hourOfDay == 12) hourOfDay else hourOfDay - 12
                 ampm = "PM"
             } else {
-                hour = hourOfDay
+                hour = if (hourOfDay == 0) 12 else hourOfDay
                 ampm = "AM"
             }
             val min: String = if (min < 10) "0$min" else "$min"
