@@ -1,13 +1,11 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory app:title="@string/editor_header">
-        <!-- TODO -->
-
+        <Preference app:title="@string/preference_edit_timer_setters"/>
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/defaults_header">
-        <!-- TODO -->
-
+        <Preference app:title="Auto Snooze"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

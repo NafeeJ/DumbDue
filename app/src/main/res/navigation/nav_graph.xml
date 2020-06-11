@@ -27,8 +27,12 @@
     </fragment>
     <fragment
         android:id="@+id/settings_fragment_dest"
-        android:name="com.kiwicorp.dumbdue.ui.preferences.SettingsFragment"
-        android:label="Settings" />
+        android:name="com.kiwicorp.dumbdue.ui.settings.SettingsFragment"
+        android:label="Settings" >
+        <action
+            android:id="@+id/action_settings_fragment_dest_to_editTimeSetButtonsFragment"
+            app:destination="@id/editTimeSetButtonsFragment" />
+    </fragment>
     <navigation
         android:id="@+id/nav_graph_add"
         app:startDestination="@id/add_reminder_fragment_dest" >
@@ -135,5 +139,22 @@
                 app:argType="integer" />
         </dialog>
     </navigation>
+    <fragment
+        android:id="@+id/editTimeSetButtonsFragment"
+        android:name="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSetButtonsFragment"
+        android:label="Edit Time Setter Buttons"
+        tools:layout="@layout/fragment_edit_time_set_buttons" >
+        <action
+            android:id="@+id/action_editTimeSetButtonsFragment_to_editIncrementalTimeSetter"
+            app:destination="@id/editIncrementalTimeSetter" />
+    </fragment>
+    <fragment
+        android:id="@+id/editIncrementalTimeSetter"
+        android:name="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editincrementaltimesetter.EditIncrementalTimeSetterFragment"
+        android:label="EditIncrementalTimeSetter" >
+        <argument
+            android:name="key"
+            app:argType="string" />
+    </fragment>
 
 </navigation>
