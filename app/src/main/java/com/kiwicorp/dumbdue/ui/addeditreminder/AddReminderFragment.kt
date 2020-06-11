@@ -104,12 +104,8 @@ class AddReminderFragment : DaggerBottomSheetDialogFragment() {
     }
 
     private fun setupSnackbar() {
-        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { snackbarData ->
-            val snackbar = Snackbar.make(binding.coordinatorLayout,snackbarData.text,snackbarData.duration)
-            if (snackbarData.action != null) {
-                snackbar.setAction(snackbarData.actionText,snackbarData.action)
-            }
-            snackbar.show()
+        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { snackbar ->
+            snackbar.show(binding.coordinatorLayout)
         })
     }
 
