@@ -41,6 +41,11 @@ class RemindersFragment : DaggerFragment() {
 
     private var refreshTimer: Timer? = null
 
+    /**
+     * Prevents FAB from being clicked twice. (Clicking twice will cause the app to crash since
+     * the NavController will have changed and won't have an action of navigating to
+     * AddReminderFragment)
+     */
     private val onDestinationChangedListener =
         NavController.OnDestinationChangedListener { controller, destination, arguments ->
             Timber.d("Destination Changed ${this.hashCode()}")
@@ -82,13 +87,13 @@ class RemindersFragment : DaggerFragment() {
 
     override fun onPause() {
         super.onPause()
-        cancelRefreshTimer()
-        findNavController().removeOnDestinationChangedListener(onDestinationChangedListener)
         // Cancels RefreshTimer because, otherwise, the timer will still be running when the user
         // navigates to from RemindersFragment to SettingsFragment and then back to RemindersFragment
         // using the NavigationDrawer. This will cause the app to crash because a new instance of
         // RemindersFragment will be attached the activity while the old one will be detached with
         // the timer still running and thus calling requireActivity() will crash the app.
+        cancelRefreshTimer()
+        findNavController().removeOnDestinationChangedListener(onDestinationChangedListener)
     }
 
     private fun setupNavigation() {
