@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
+import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditReminderBinding
@@ -48,6 +49,7 @@ class EditReminderFragment : DaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel.loadReminder(args.reminderId)
         setupNavigation()
+        setupSnackbar()
     }
 
     private fun setupNavigation() {
@@ -103,5 +105,11 @@ class EditReminderFragment : DaggerFragment() {
             val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.hideSoftInputFromWindow(it.windowToken, 0)
         }
+    }
+
+    private fun setupSnackbar() {
+        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver {snackbar ->
+            snackbar.show(binding.coordinatorLayout)
+        })
     }
 }

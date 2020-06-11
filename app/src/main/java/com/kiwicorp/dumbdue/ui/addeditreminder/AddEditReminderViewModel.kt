@@ -145,14 +145,21 @@ class AddEditReminderViewModel @Inject constructor(
     }
 
     /**
-     * Called by ImageButton in EditReminderFragment via listener binding.
+     * Called by Confirm button in EditReminderFragment via listener binding.
      */
     fun onUpdateReminder() {
-        viewModelScope.launch {
-            val reminder = Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,id = reminderId!!)
-            update(reminder)
+        if (title.value == null || title.value == "") {
+            _snackbarData.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
+        } else if (calendar.value!!.isOverdue()) {
+            _snackbarData.value =
+                Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
+        } else {
+            viewModelScope.launch {
+                val reminder = Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,id = reminderId!!)
+                update(reminder)
+            }
+            _eventClose.value = Event(Unit)
         }
-        _eventClose.value = Event(Unit)
     }
 
     /**
