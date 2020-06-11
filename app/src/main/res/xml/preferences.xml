@@ -5,7 +5,13 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/defaults_header">
-        <Preference app:title="Auto Snooze"/>
+        <ListPreference
+            app:key="default_auto_snooze"
+            app:title="Default Auto Snooze Value"
+            app:useSimpleSummaryProvider="true"
+            app:entries="@array/auto_snooze_entries"
+            app:entryValues="@array/auto_snooze_values"
+            app:defaultValue="60000"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

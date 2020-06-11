@@ -2,12 +2,16 @@ package com.kiwicorp.dumbdue.ui.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
+import com.kiwicorp.dumbdue.R
+import com.kiwicorp.dumbdue.data.Reminder
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PreferencesStorage @Inject constructor(context: Context) {
+class PreferencesStorage @Inject constructor(val context: Context) {
     companion object{
         const val PREF_NAME = "dumb_due"
 
@@ -44,7 +48,7 @@ class PreferencesStorage @Inject constructor(context: Context) {
         PREFS_QUICK_ACCESS_4 to "10:00 PM"
     )
 
-    private val prefs = context.getSharedPreferences(PREF_NAME,Context.MODE_PRIVATE)
+    private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
 
     private val prefsEditor: SharedPreferences.Editor = prefs.edit()
 
@@ -83,6 +87,14 @@ class PreferencesStorage @Inject constructor(context: Context) {
         }
         prefsEditor.apply()
     }
+
+    val defaultAutoSnooze: Long
+        get() {
+            return prefs.getString(
+                context.getString(R.string.default_auto_snooze),
+                Reminder.AUTO_SNOOZE_MINUTE.toString()
+            )!!.toLong()
+        }
 }
 
 class IncrementalTimeSetter {

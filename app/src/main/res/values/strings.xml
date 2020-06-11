@@ -45,5 +45,8 @@
     <string name="done">Done</string>
 
     <string name="preference_edit_timer_setters">Edit Time Setter Buttons</string>
+    <string name="reset">reset</string>
+
+    <string name="default_auto_snooze">default_auto_snooze</string>
 
 </resources>

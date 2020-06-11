@@ -33,7 +33,7 @@ class AddEditReminderViewModel @Inject constructor(
     private val _repeatVal = MutableLiveData(Reminder.REPEAT_NONE)
     val repeatVal: LiveData<Int> = _repeatVal
 
-    private val _autoSnoozeVal = MutableLiveData(Reminder.AUTO_SNOOZE_MINUTE)
+    private val _autoSnoozeVal = MutableLiveData(preferencesStorage.defaultAutoSnooze)
     val autoSnoozeVal: LiveData<Long> = _autoSnoozeVal
 
     var reminderId: String? = null

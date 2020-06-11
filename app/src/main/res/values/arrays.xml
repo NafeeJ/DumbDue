@@ -1,14 +1,24 @@
 <resources>
 
 
-    <!-- Reply Preference -->
-    <string-array name="reply_entries">
-        <item>Reply</item>
-        <item>Reply to all</item>
+    <!-- Auto Snooze Preference -->
+    <string-array name="auto_snooze_entries">
+        <item>@string/auto_snooze_none</item>
+        <item>@string/auto_snooze_minute</item>
+        <item>@string/auto_snooze_5_minute</item>
+        <item>@string/auto_snooze_10_minutes</item>
+        <item>@string/auto_snooze_15_minutes</item>
+        <item>@string/auto_snooze_30_minutes</item>
+        <item>@string/auto_snooze_hour</item>
     </string-array>
 
-    <string-array name="reply_values">
-        <item>reply</item>
-        <item>reply_all</item>
+    <string-array name="auto_snooze_values">
+        <item>0</item>
+        <item>60000</item>
+        <item>300000</item>
+        <item>600000</item>
+        <item>900000</item>
+        <item>1800000</item>
+        <item>3600000</item>
     </string-array>
 </resources>

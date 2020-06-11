@@ -18,11 +18,11 @@ class SettingsFragment : PreferenceFragmentCompat(){
                 getString(R.string.preference_edit_timer_setters) -> {
                     SettingsFragmentDirections.actionSettingsFragmentDestToEditTimeSetButtonsFragment()
                 }
-                else -> return false
+                else -> return super.onPreferenceTreeClick(preference)
             }
             findNavController().navigate(action)
             return true
         }
-        return false
+        return super.onPreferenceTreeClick(preference)
     }
 }
