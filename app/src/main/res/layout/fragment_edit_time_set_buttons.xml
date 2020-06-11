@@ -5,7 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.settings.edittimesetbuttons.EditTimeSetButtonsFragment">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSetButtonsViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black" >
@@ -15,8 +21,23 @@
             layout="@layout/time_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reset"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time_buttons"
+            android:onClick="@{() -> viewmodel.onReset()}"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

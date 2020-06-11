@@ -39,6 +39,7 @@ class EditTimeSetButtonsFragment : DaggerFragment() {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
         viewModel.eventReset.observe(viewLifecycleOwner, EventObserver {
+            //tells view to redraw
             binding.invalidateAll()
         })
     }
