@@ -37,7 +37,7 @@ class EditReminderFragment : DaggerFragment() {
         val root = inflater.inflate(R.layout.fragment_edit_reminder,container,false)
         binding = FragmentEditReminderBinding.bind(root).apply {
             viewmodel = viewModel
-            timeButtons.viewmodel = viewModel
+            timeButtons.onTimeSetButtonsClickImpl = viewModel
             lifecycleOwner = viewLifecycleOwner
         }
         return root

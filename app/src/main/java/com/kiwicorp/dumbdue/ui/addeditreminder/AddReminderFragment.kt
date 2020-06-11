@@ -35,7 +35,8 @@ class AddReminderFragment : DaggerBottomSheetDialogFragment() {
         val root = inflater.inflate(R.layout.fragment_add_reminder,container,false)
         binding = FragmentAddReminderBinding.bind(root).apply {
             viewmodel = viewModel
-            timeButtons.viewmodel = viewModel
+            timeButtons.onTimeSetButtonsClickImpl = viewModel
+            timeButtons.preferencesStorage = viewModel.preferencesStorage
             lifecycleOwner = viewLifecycleOwner
             titleText.requestFocus() //open keyboard
         }

@@ -1,19 +1,15 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
-import android.view.View
-import android.widget.Button
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.snackbar.Snackbar
-import com.kiwicorp.dumbdue.Event
-import com.kiwicorp.dumbdue.REQUEST_COMPLETE
-import com.kiwicorp.dumbdue.REQUEST_DELETE
-import com.kiwicorp.dumbdue.SnackbarMessage
+import com.kiwicorp.dumbdue.*
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
+import com.kiwicorp.dumbdue.ui.settings.PreferencesStorage
 import com.kiwicorp.dumbdue.util.isOverdue
 import kotlinx.coroutines.*
 import java.util.*
@@ -21,8 +17,9 @@ import javax.inject.Inject
 
 class AddEditReminderViewModel @Inject constructor(
     private val repository: ReminderRepository,
-    private val reminderAlarmManager: ReminderAlarmManager
-) : ViewModel() {
+    private val reminderAlarmManager: ReminderAlarmManager,
+    val preferencesStorage: PreferencesStorage
+) : ViewModel(), OnTimeSetButtonClick {
     //Public mutable for two-way data binding
     val title = MutableLiveData<String>()
 
@@ -215,40 +212,26 @@ class AddEditReminderViewModel @Inject constructor(
     /**
      * Called by the QuickAccess buttons in time_button.xml via listener binding to update the calendar.
      * Sets [calendar] to the hour and minute of the invoking Button's text.
+     *
+     * _calendar.value must be reassigned in order for Observers to be notified the calendar has
+     * changed
      */
-    fun onQuickAccessClick(view: View) {
+    override fun onQuickAccessTimeSetterClick(key: String) {
         _calendar.value = _calendar.value?.apply {
-            val text = (view as Button).text as String
-            val minute: Int = text.substringAfter(':').substringBefore(' ').toInt()
-            var hour: Int = text.substringBefore(':').toInt()
-            if (text.takeLast(2) == "PM") {
-                if (hour < 12) hour += 12
-            } else {
-                if (hour == 12) hour = 0
-            }
-            set(Calendar.HOUR_OF_DAY,hour)
-            set(Calendar.MINUTE,minute)
+            preferencesStorage.getQuickAccessTimeSetter(key).setTime(this)
         }
     }
 
     /**
      * Called by the TimeSetter buttons in time_button.xml via listener binding to update the calendar.
      * Increments/Decrements [calendar] by the number and unit that the invoking Button's text indicates.
+     *
+     * _calendar.value must be reassigned in order for Observers to be notified the calendar has
+     * changed
      */
-    fun onTimeSetterClick(view: View) {
+    override fun onIncrementalTimeSetterClick(key: String) {
         _calendar.value = _calendar.value?.apply {
-            // number is the actual number of how much to increment/decrement, notDigits contains "+ unit"
-            var (number,notDigits)= ((view as Button).text as String).partition { it.isDigit() }
-            val unit: Int = when (notDigits.substring(2)) {
-                "min" -> Calendar.MINUTE
-                "hr" -> Calendar.HOUR
-                "day" -> Calendar.DAY_OF_YEAR
-                "wk" -> Calendar.WEEK_OF_YEAR
-                "mo" -> Calendar.MONTH
-                else -> Calendar.YEAR
-            }
-            if (notDigits[0] == '-') number = "-$number"
-            add(unit,number.toInt())
+            preferencesStorage.getIncrementalTimeSetter(key).incrementTime(this)
         }
     }
 
