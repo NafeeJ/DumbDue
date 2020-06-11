@@ -18,12 +18,20 @@ class EditTimeSetButtonsViewModel @Inject constructor(
     private val _eventEditIncrementalTimeSetter = MutableLiveData<Event<String>>()
     val eventEditIncrementalTimeSetter : LiveData<Event<String>> = _eventEditIncrementalTimeSetter
 
+    private val _eventReset = MutableLiveData<Event<Unit>>()
+    val eventReset: LiveData<Event<Unit>> = _eventReset
+
     override fun onQuickAccessTimeSetterClick(key: String) {
         _eventEditQuickAccessTimeSetter.value = Event(key)
     }
 
     override fun onIncrementalTimeSetterClick(key: String) {
         _eventEditIncrementalTimeSetter.value = Event(key)
+    }
+
+    fun onReset() {
+        preferencesStorage.resetTimeSetters()
+        _eventReset.value = Event(Unit)
     }
 
 }

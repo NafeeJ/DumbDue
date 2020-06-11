@@ -30,6 +30,7 @@ class EditTimeSetButtonsFragment : DaggerFragment() {
         binding = FragmentEditTimeSetButtonsBinding.bind(root).apply {
             timeButtons.onTimeSetButtonsClickImpl = viewModel
             timeButtons.preferencesStorage = viewModel.preferencesStorage
+            viewmodel = viewModel
         }
         return root
     }
@@ -37,6 +38,9 @@ class EditTimeSetButtonsFragment : DaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
+        viewModel.eventReset.observe(viewLifecycleOwner, EventObserver {
+            binding.invalidateAll()
+        })
     }
 
     private fun setupNavigation() {

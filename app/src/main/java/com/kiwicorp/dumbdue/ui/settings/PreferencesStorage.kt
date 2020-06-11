@@ -71,6 +71,18 @@ class PreferencesStorage @Inject constructor(context: Context) {
     fun getQuickAccessTimeSetter(key: String): QuickAccessTimeSetter {
         return QuickAccessTimeSetter(prefs.getString(key, timeSetterKeyToDefaultValue[key])!!)
     }
+
+    /**
+     * Resets all the Time Setters to their default values
+     *
+     * Only uses the map to simply gain iterative access to the keys
+     */
+    fun resetTimeSetters() {
+        for (keyToDefaultValue in timeSetterKeyToDefaultValue) {
+            prefsEditor.remove(keyToDefaultValue.key)
+        }
+        prefsEditor.apply()
+    }
 }
 
 class IncrementalTimeSetter {
