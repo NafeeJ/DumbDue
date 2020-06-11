@@ -67,6 +67,8 @@ class EditIncrementalTimeSetterViewModel @Inject constructor(
                     numberPicker.maxValue = 100
                 }
             }
+            //update number in case numberPicker's new maxValue was less than numberPicker's value
+            incrementalTimeSetter.number = numberPicker.value
         }
     }
 
