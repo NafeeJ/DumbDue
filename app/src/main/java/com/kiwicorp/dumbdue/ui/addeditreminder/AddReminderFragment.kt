@@ -11,12 +11,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
-import com.kiwicorp.dumbdue.util.DaggerBottomSheetDialogFragment
-import timber.log.Timber
+import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import javax.inject.Inject
 
 class AddReminderFragment : DaggerBottomSheetDialogFragment() {
@@ -35,8 +33,7 @@ class AddReminderFragment : DaggerBottomSheetDialogFragment() {
         val root = inflater.inflate(R.layout.fragment_add_reminder,container,false)
         binding = FragmentAddReminderBinding.bind(root).apply {
             viewmodel = viewModel
-            timeButtons.onTimeSetButtonsClickImpl = viewModel
-            timeButtons.preferencesStorage = viewModel.preferencesStorage
+            timeSetters.onTimeSetterClickImpl = viewModel
             lifecycleOwner = viewLifecycleOwner
             titleText.requestFocus() //open keyboard
         }

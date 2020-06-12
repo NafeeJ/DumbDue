@@ -4,15 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="com.kiwicorp.dumbdue.ui.settings.PreferencesStorage"/>
+        <import type="com.kiwicorp.dumbdue.preferences.PreferencesStorage"/>
 
         <variable
-            name="preferencesStorage"
-            type="com.kiwicorp.dumbdue.ui.settings.PreferencesStorage" />
-
-        <variable
-            name="onTimeSetButtonsClickImpl"
-            type="com.kiwicorp.dumbdue.OnTimeSetButtonClick" />
+            name="onTimeSetterClickImpl"
+            type="com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,8 +24,8 @@
             app:layout_constraintEnd_toStartOf="@+id/quick_access_time_2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{() -> onTimeSetButtonsClickImpl.onQuickAccessTimeSetterClick(PreferencesStorage.PREFS_QUICK_ACCESS_1)}"
-            android:text="@{preferencesStorage.getQuickAccessTimeSetter(PreferencesStorage.PREFS_QUICK_ACCESS_1).text}" />
+            app:key="@{PreferencesStorage.PREFS_QUICK_ACCESS_1}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onQuickAccessTimeSetterClick(PreferencesStorage.PREFS_QUICK_ACCESS_1)}" />
 
         <Button
             android:id="@+id/quick_access_time_2"
@@ -38,8 +34,8 @@
             app:layout_constraintEnd_toStartOf="@+id/quick_access_time_3"
             app:layout_constraintStart_toEndOf="@+id/quick_access_time_1"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{() -> onTimeSetButtonsClickImpl.onQuickAccessTimeSetterClick(PreferencesStorage.PREFS_QUICK_ACCESS_2)}"
-            android:text="@{preferencesStorage.getQuickAccessTimeSetter(PreferencesStorage.PREFS_QUICK_ACCESS_2).text}"/>
+            app:key="@{PreferencesStorage.PREFS_QUICK_ACCESS_2}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onQuickAccessTimeSetterClick(PreferencesStorage.PREFS_QUICK_ACCESS_2)}" />
 
         <Button
             android:id="@+id/quick_access_time_3"
@@ -48,8 +44,8 @@
             app:layout_constraintEnd_toStartOf="@+id/quick_access_time_4"
             app:layout_constraintStart_toEndOf="@+id/quick_access_time_2"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{() -> onTimeSetButtonsClickImpl.onQuickAccessTimeSetterClick(PreferencesStorage.PREFS_QUICK_ACCESS_3)}"
-            android:text="@{preferencesStorage.getQuickAccessTimeSetter(PreferencesStorage.PREFS_QUICK_ACCESS_3).text}"/>
+            app:key="@{PreferencesStorage.PREFS_QUICK_ACCESS_3}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onQuickAccessTimeSetterClick(PreferencesStorage.PREFS_QUICK_ACCESS_3)}" />
 
         <Button
             android:id="@+id/quick_access_time_4"
@@ -58,8 +54,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/quick_access_time_3"
             app:layout_constraintTop_toTopOf="parent"
-            android:onClick="@{() -> onTimeSetButtonsClickImpl.onQuickAccessTimeSetterClick(PreferencesStorage.PREFS_QUICK_ACCESS_4)}"
-            android:text="@{preferencesStorage.getQuickAccessTimeSetter(PreferencesStorage.PREFS_QUICK_ACCESS_4).text}"/>
+            app:key="@{PreferencesStorage.PREFS_QUICK_ACCESS_4}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onQuickAccessTimeSetterClick(PreferencesStorage.PREFS_QUICK_ACCESS_4)}" />
 
         <Button
             android:id="@+id/time_setter_1"
@@ -68,8 +64,8 @@
             app:layout_constraintEnd_toStartOf="@+id/time_setter_2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/quick_access_time_1"
-            android:onClick="@{() -> onTimeSetButtonsClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_1)}"
-            android:text="@{preferencesStorage.getIncrementalTimeSetter(PreferencesStorage.PREFS_TIME_SETTER_1).text}"/>
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_1}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_1)}" />
 
         <Button
             android:id="@+id/time_setter_2"
@@ -78,8 +74,8 @@
             app:layout_constraintEnd_toStartOf="@+id/time_setter_3"
             app:layout_constraintStart_toEndOf="@+id/time_setter_1"
             app:layout_constraintTop_toBottomOf="@+id/quick_access_time_1"
-            android:onClick="@{() -> onTimeSetButtonsClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_2)}"
-            android:text="@{preferencesStorage.getIncrementalTimeSetter(PreferencesStorage.PREFS_TIME_SETTER_2).text}"/>
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_2}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_2)}" />
 
         <Button
             android:id="@+id/time_setter_3"
@@ -88,8 +84,8 @@
             app:layout_constraintEnd_toStartOf="@+id/time_setter_4"
             app:layout_constraintStart_toEndOf="@+id/time_setter_2"
             app:layout_constraintTop_toBottomOf="@+id/quick_access_time_1"
-            android:onClick="@{() -> onTimeSetButtonsClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_3)}"
-            android:text="@{preferencesStorage.getIncrementalTimeSetter(PreferencesStorage.PREFS_TIME_SETTER_3).text}"/>
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_3}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_3)}" />
 
         <Button
             android:id="@+id/time_setter_4"
@@ -98,8 +94,8 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/time_setter_3"
             app:layout_constraintTop_toBottomOf="@+id/quick_access_time_1"
-            android:onClick="@{() -> onTimeSetButtonsClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_4)}"
-            android:text="@{preferencesStorage.getIncrementalTimeSetter(PreferencesStorage.PREFS_TIME_SETTER_4).text}"/>
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_4}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_4)}" />
 
         <Button
             android:id="@+id/time_setter_5"
@@ -108,8 +104,8 @@
             app:layout_constraintEnd_toStartOf="@+id/time_setter_6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/time_setter_1"
-            android:onClick="@{() -> onTimeSetButtonsClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_5)}"
-            android:text="@{preferencesStorage.getIncrementalTimeSetter(PreferencesStorage.PREFS_TIME_SETTER_5).text}"/>
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_5}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_5)}" />
 
         <Button
             android:id="@+id/time_setter_6"
@@ -118,8 +114,8 @@
             app:layout_constraintEnd_toStartOf="@+id/time_setter_7"
             app:layout_constraintStart_toEndOf="@+id/time_setter_5"
             app:layout_constraintTop_toBottomOf="@id/time_setter_1"
-            android:onClick="@{() -> onTimeSetButtonsClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_6)}"
-            android:text="@{preferencesStorage.getIncrementalTimeSetter(PreferencesStorage.PREFS_TIME_SETTER_6).text}"/>
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_6}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_6)}" />
 
         <Button
             android:id="@+id/time_setter_7"
@@ -128,8 +124,8 @@
             app:layout_constraintEnd_toStartOf="@+id/time_setter_8"
             app:layout_constraintStart_toEndOf="@+id/time_setter_6"
             app:layout_constraintTop_toBottomOf="@id/time_setter_1"
-            android:onClick="@{() -> onTimeSetButtonsClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_7)}"
-            android:text="@{preferencesStorage.getIncrementalTimeSetter(PreferencesStorage.PREFS_TIME_SETTER_7).text}"/>
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_7}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_7)}" />
 
         <Button
             android:id="@+id/time_setter_8"
@@ -138,8 +134,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/time_setter_7"
             app:layout_constraintTop_toBottomOf="@id/time_setter_1"
-            android:onClick="@{() -> onTimeSetButtonsClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_8)}"
-            android:text="@{preferencesStorage.getIncrementalTimeSetter(PreferencesStorage.PREFS_TIME_SETTER_8).text}"/>
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_8}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_8)}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

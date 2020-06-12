@@ -89,8 +89,8 @@
                 tools:text="Every Minute"/>
 
             <include
-                android:id="@+id/time_buttons"
-                layout="@layout/time_buttons"
+                android:id="@+id/time_setters"
+                layout="@layout/time_setters"
                 app:layout_constraintTop_toBottomOf="@id/auto_snooze_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

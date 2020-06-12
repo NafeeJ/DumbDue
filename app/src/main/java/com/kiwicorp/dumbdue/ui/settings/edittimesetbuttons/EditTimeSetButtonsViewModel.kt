@@ -4,13 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kiwicorp.dumbdue.Event
-import com.kiwicorp.dumbdue.OnTimeSetButtonClick
-import com.kiwicorp.dumbdue.ui.settings.PreferencesStorage
+import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
+import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import javax.inject.Inject
 
 class EditTimeSetButtonsViewModel @Inject constructor(
     val preferencesStorage: PreferencesStorage
-) : ViewModel(), OnTimeSetButtonClick {
+) : ViewModel(), OnTimeSetterClick {
 
     private val _eventEditQuickAccessTimeSetter = MutableLiveData<Event<String>>()
     val eventEditQuickAccessTimeSetter: LiveData<Event<String>> = _eventEditQuickAccessTimeSetter

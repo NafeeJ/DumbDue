@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kiwicorp.dumbdue.Event
-import com.kiwicorp.dumbdue.ui.settings.IncrementalTimeSetter
-import com.kiwicorp.dumbdue.ui.settings.PreferencesStorage
+import com.kiwicorp.dumbdue.preferences.PreferencesStorage
+import com.kiwicorp.dumbdue.timesetters.IncrementalTimeSetter
 import com.shawnlin.numberpicker.NumberPicker
 import java.util.*
 import javax.inject.Inject

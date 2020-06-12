@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.util;
+package com.kiwicorp.dumbdue.util.daggerext;
 
 import android.content.Context;
 

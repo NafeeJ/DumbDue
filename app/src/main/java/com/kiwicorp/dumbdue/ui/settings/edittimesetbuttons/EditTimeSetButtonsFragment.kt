@@ -28,8 +28,7 @@ class EditTimeSetButtonsFragment : DaggerFragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_edit_time_set_buttons, container, false)
         binding = FragmentEditTimeSetButtonsBinding.bind(root).apply {
-            timeButtons.onTimeSetButtonsClickImpl = viewModel
-            timeButtons.preferencesStorage = viewModel.preferencesStorage
+            timeSetters.onTimeSetterClickImpl = viewModel
             viewmodel = viewModel
         }
         return root

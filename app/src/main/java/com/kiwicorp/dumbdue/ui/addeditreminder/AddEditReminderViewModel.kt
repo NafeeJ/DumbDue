@@ -9,7 +9,8 @@ import com.kiwicorp.dumbdue.*
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
-import com.kiwicorp.dumbdue.ui.settings.PreferencesStorage
+import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
+import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.util.isOverdue
 import kotlinx.coroutines.*
 import java.util.*
@@ -18,8 +19,8 @@ import javax.inject.Inject
 class AddEditReminderViewModel @Inject constructor(
     private val repository: ReminderRepository,
     private val reminderAlarmManager: ReminderAlarmManager,
-    val preferencesStorage: PreferencesStorage
-) : ViewModel(), OnTimeSetButtonClick {
+    private val preferencesStorage: PreferencesStorage
+) : ViewModel(), OnTimeSetterClick {
     //Public mutable for two-way data binding
     val title = MutableLiveData<String>()
 
@@ -238,7 +239,7 @@ class AddEditReminderViewModel @Inject constructor(
      */
     override fun onIncrementalTimeSetterClick(key: String) {
         _calendar.value = _calendar.value?.apply {
-            preferencesStorage.getIncrementalTimeSetter(key).incrementTime(this)
+            preferencesStorage.getIncrementalTimeSetter(key).setTime(this)
         }
     }
 

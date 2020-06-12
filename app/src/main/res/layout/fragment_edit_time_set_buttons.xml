@@ -17,8 +17,8 @@
         android:background="@android:color/black" >
 
         <include
-            android:id="@+id/time_buttons"
-            layout="@layout/time_buttons"
+            android:id="@+id/time_setters"
+            layout="@layout/time_setters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -35,7 +35,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/time_buttons"
+            app:layout_constraintTop_toBottomOf="@+id/time_setters"
             android:onClick="@{() -> viewmodel.onReset()}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

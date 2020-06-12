@@ -10,7 +10,7 @@ import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseRepeatBinding
-import com.kiwicorp.dumbdue.util.DaggerBottomSheetDialogFragment
+import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import javax.inject.Inject
 
