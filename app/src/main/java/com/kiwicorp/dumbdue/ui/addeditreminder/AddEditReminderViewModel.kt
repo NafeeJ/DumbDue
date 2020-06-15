@@ -49,6 +49,9 @@ class AddEditReminderViewModel @Inject constructor(
     private val _eventOpenTimePicker = MutableLiveData<Event<Unit>>()
     val eventOpenTimePicker: LiveData<Event<Unit>> = _eventOpenTimePicker
 
+    private val _eventOpenCustomRepeatMenu = MutableLiveData<Event<Unit>>()
+    val eventOpenCustomRepeatMenu: LiveData<Event<Unit>> = _eventOpenCustomRepeatMenu
+
     private val _eventChooseRepeat = MutableLiveData<Event<Unit>>()
     val eventChooseRepeat: LiveData<Event<Unit>> = _eventChooseRepeat
 
@@ -89,8 +92,12 @@ class AddEditReminderViewModel @Inject constructor(
      * Called by the TextViews in ChooseRepeatFragment via Listener Binding.
      */
     fun onChooseRepeat(repeatVal: Int) {
-        _repeatVal.value = repeatVal
-        _eventChooseRepeat.value = Event(Unit)
+        if (repeatVal == Reminder.REPEAT_CUSTOM) {
+            _eventOpenCustomRepeatMenu.value = Event(Unit)
+        } else {
+            _repeatVal.value = repeatVal
+            _eventChooseRepeat.value = Event(Unit)
+        }
     }
 
     /**

@@ -41,8 +41,15 @@ class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        setupNavigation()
+    }
+
+    private fun setupNavigation() {
         viewModel.eventChooseRepeat.observe(viewLifecycleOwner, EventObserver {
             close()
+        })
+        viewModel.eventOpenCustomRepeatMenu.observe(viewLifecycleOwner, EventObserver {
+            navigateToCustomRepeatMenu()
         })
     }
 
@@ -51,5 +58,10 @@ class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
      */
     private fun close() {
         findNavController().popBackStack()
+    }
+
+    private fun navigateToCustomRepeatMenu() {
+        val action = ChooseRepeatFragmentDirections.actionChooseRepeatFragmentDestToCustomRepeatFragment(args.graphId)
+        findNavController().navigate(action)
     }
 }

@@ -28,4 +28,3 @@ inline fun <reified VM : ViewModel> Fragment.getNavGraphViewModel(
 
     return viewModelProvider.get(VM::class.java)
 }
-

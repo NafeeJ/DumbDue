@@ -61,6 +61,9 @@
             <argument
                 android:name="graphId"
                 app:argType="integer" />
+            <action
+                android:id="@+id/action_choose_repeat_fragment_dest_to_customRepeatFragment"
+                app:destination="@id/customRepeatFragment" />
         </dialog>
 
         <dialog
@@ -81,6 +84,14 @@
                 android:name="graphId"
                 app:argType="integer" />
         </dialog>
+        <dialog
+            android:id="@+id/customRepeatFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.ChooseCustomRepeatFragment"
+            android:label="CustomRepeatFragment" >
+            <argument
+                android:name="graphId"
+                app:argType="integer" />
+        </dialog>
     </navigation>
     <navigation
         android:id="@+id/nav_graph_edit"
@@ -88,9 +99,6 @@
         <argument
             android:name="reminderId"
             app:argType="string" />
-        <action
-            android:id="@+id/action_global_reminders_fragment_dest"
-            app:destination="@id/reminders_fragment_dest" />
         <fragment
             android:id="@+id/edit_reminder_fragment_dest"
             android:name="com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragment"
@@ -118,6 +126,9 @@
             <argument
                 android:name="graphId"
                 app:argType="integer"/>
+            <action
+                android:id="@+id/action_choose_repeat_fragment_dest_to_customRepeatFragment"
+                app:destination="@id/customRepeatFragment" />
         </dialog>
 
         <dialog
@@ -138,6 +149,17 @@
                 android:name="graphId"
                 app:argType="integer" />
         </dialog>
+        <dialog
+            android:id="@+id/customRepeatFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.ChooseCustomRepeatFragment"
+            android:label="CustomRepeatFragment" >
+            <argument
+                android:name="graphId"
+                app:argType="integer" />
+        </dialog>
+        <action
+            android:id="@+id/action_global_reminders_fragment_dest"
+            app:destination="@id/reminders_fragment_dest" />
     </navigation>
     <fragment
         android:id="@+id/editTimeSetButtonsFragment"

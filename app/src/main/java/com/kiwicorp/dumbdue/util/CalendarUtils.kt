@@ -37,3 +37,9 @@ fun Calendar.timeFromNowString(): String {
 }
 
 fun Calendar.isOverdue() = timeInMillis - System.currentTimeMillis() < 0
+
+fun Calendar.isOnLastDayOfMonth() = getActualMaximum(Calendar.DAY_OF_MONTH) == get(Calendar.DAY_OF_MONTH)
+
+fun Calendar.isOnLastWeekOfMonth() = getActualMaximum(Calendar.WEEK_OF_MONTH) == get(Calendar.WEEK_OF_MONTH)
+
+fun Calendar.isOnLastDayOfWeekInTheMonth() = getActualMaximum(Calendar.DAY_OF_WEEK_IN_MONTH) == get(Calendar.DAY_OF_WEEK_IN_MONTH)

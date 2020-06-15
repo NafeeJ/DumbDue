@@ -21,6 +21,9 @@ abstract class AddEditReminderModule {
     internal abstract fun chooseRepeatFragment(): ChooseRepeatFragment
 
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
+    internal abstract fun chooseCustomRepeatFragment(): ChooseCustomRepeatFragment
+
+    @ContributesAndroidInjector(modules = [ViewModelModule::class])
     internal abstract fun chooseAutoSnoozeFragment(): ChooseAutoSnoozeFragment
 
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
