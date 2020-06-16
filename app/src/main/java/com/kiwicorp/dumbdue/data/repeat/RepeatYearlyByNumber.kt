@@ -1,5 +1,6 @@
 package com.kiwicorp.dumbdue.data.repeat
 
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -17,4 +18,8 @@ class RepeatYearlyByNumber(override val frequency: Int) : RepeatInterval {
         }
     }
 
+    override fun getText(calendar: Calendar): String {
+        val dateAndTime = SimpleDateFormat("MMMM d, h:mm a", Locale.US).format(calendar.time)
+        return if (frequency == 1) "Every $dateAndTime" else "$dateAndTime every $frequency years"
+    }
 }

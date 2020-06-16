@@ -1,5 +1,6 @@
 package com.kiwicorp.dumbdue.data.repeat
 
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -31,5 +32,52 @@ class RepeatWeekly(override val frequency: Int, val recurringDays: List<Int>): R
         }
 
         return returnCalendar
+    }
+
+    override fun getText(calendar: Calendar): String {
+        val time = SimpleDateFormat("h:mm a", Locale.US).format(calendar.time)
+
+        val weekdays = listOf(
+            Calendar.MONDAY,
+            Calendar.TUESDAY,
+            Calendar.WEDNESDAY,
+            Calendar.THURSDAY,
+            Calendar.FRIDAY
+        )
+
+        if (recurringDays == weekdays) {
+            return if (frequency == 1) {
+                "Weekdays $time"
+            } else {
+                "Weekdays $time every $frequency weeks"
+            }
+        } else {
+            val dayConstantToString = mapOf(
+                Calendar.MONDAY to "Monday",
+                Calendar.TUESDAY to "Tuesday",
+                Calendar.WEDNESDAY to "Wednesday",
+                Calendar.THURSDAY to "Thursday",
+                Calendar.FRIDAY to "Friday",
+                Calendar.SATURDAY to "Saturday",
+                Calendar.SUNDAY to "Sunday"
+            )
+
+            var string = ""
+            when (recurringDays.size) {
+                1 -> string = "${dayConstantToString[recurringDays[0]]}s"
+                2 -> string = "${dayConstantToString[recurringDays[0]]}s and ${dayConstantToString[recurringDays[1]]}s"
+                else -> {
+                    for (i in 0..recurringDays.size - 2) {
+                        string += "${dayConstantToString[recurringDays[i]]}s, "
+                    }
+                    string += "and ${dayConstantToString[recurringDays.last()]}s"
+                }
+            }
+            string += " at $time"
+            if (frequency != 1) {
+                string += " every $frequency weeks"
+            }
+            return string
+        }
     }
 }

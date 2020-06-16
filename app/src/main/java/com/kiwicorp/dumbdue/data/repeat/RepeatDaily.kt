@@ -1,5 +1,6 @@
 package com.kiwicorp.dumbdue.data.repeat
 
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -14,6 +15,17 @@ class RepeatDaily(override val frequency: Int) : RepeatInterval {
             timeInMillis = calendar.timeInMillis
             add(Calendar.DAY_OF_YEAR,frequency)
         }
+    }
+
+    override fun getText(calendar: Calendar): String {
+        val time = SimpleDateFormat("h:mm a", Locale.US).format(calendar.time)
+
+        return if (frequency == 1) {
+            "Daily $time"
+        } else {
+            "Every $frequency days at $time"
+        }
+
     }
 
 }
