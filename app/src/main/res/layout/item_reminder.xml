@@ -46,7 +46,7 @@
             android:paddingStart="10dp"
             android:textColor="#525252"
             app:itemCalendar="@{reminder.calendar}"
-            app:itemRepeatVal="@{reminder.repeatVal}"
+            app:itemRepeatVal="@{reminder.repeatInterval}"
             tools:text="Date/Repeat"
             tools:ignore="RtlSymmetry" />
 

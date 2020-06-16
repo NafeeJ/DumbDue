@@ -3,10 +3,9 @@ package com.kiwicorp.dumbdue.data
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.kiwicorp.dumbdue.util.isOverdue
+import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
+import com.kiwicorp.dumbdue.data.repeat.RepeatNone
 import java.util.*
-import kotlin.math.absoluteValue
-import kotlin.math.ceil
 
 @Entity(tableName = "reminders")
 data class Reminder (
@@ -16,8 +15,8 @@ data class Reminder (
     @ColumnInfo(name = "calendar")
     var calendar: Calendar = Calendar.getInstance(),
 
-    @ColumnInfo(name = "repeat_val")
-    var repeatVal: Int = REPEAT_NONE,
+    @ColumnInfo(name = "repeat_interval")
+    var repeatInterval: RepeatInterval = RepeatNone(0),
 
     @ColumnInfo(name = "auto_snooze_val")
     var autoSnoozeVal: Long = AUTO_SNOOZE_MINUTE,

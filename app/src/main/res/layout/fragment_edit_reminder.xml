@@ -68,9 +68,9 @@
                 android:paddingBottom="10dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#FFFFFF"
-                android:onClick="@{()->viewmodel.onOpenRepeatMenu()}"
+                app:repeatInterval="@{viewmodel.repeatInterval}"
                 app:calendar="@{viewmodel.calendar}"
-                app:repeatVal="@{viewmodel.repeatVal}"
+                android:onClick="@{()->viewmodel.onOpenRepeatMenu()}"
                 tools:text="Weekdays 10:05 AM"/>
 
             <TextView

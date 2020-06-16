@@ -4,17 +4,6 @@ import java.util.*
 import kotlin.math.absoluteValue
 import kotlin.math.ceil
 
-//returns the suffix of number of the day
-fun Calendar.daySuffix(): String {
-    val dayOfMonth: Int = get(Calendar.DAY_OF_MONTH)
-    return when {
-        dayOfMonth.rem(10) == 1 && dayOfMonth != 11 -> "st"
-        dayOfMonth.rem(10) == 2 && dayOfMonth != 12 -> "nd"
-        dayOfMonth.rem(10) == 3 && dayOfMonth != 13 -> "rd"
-        else -> "th"
-    }
-}
-
 fun Calendar.minsFromNow() = ceil((timeInMillis - System.currentTimeMillis()).div(60000.0)).toInt().absoluteValue
 
 fun Calendar.timeFromNowString(): String {
@@ -40,6 +29,11 @@ fun Calendar.isOverdue() = timeInMillis - System.currentTimeMillis() < 0
 
 fun Calendar.isOnLastDayOfMonth() = getActualMaximum(Calendar.DAY_OF_MONTH) == get(Calendar.DAY_OF_MONTH)
 
-fun Calendar.isOnLastWeekOfMonth() = getActualMaximum(Calendar.WEEK_OF_MONTH) == get(Calendar.WEEK_OF_MONTH)
-
-fun Calendar.isOnLastDayOfWeekInTheMonth() = getActualMaximum(Calendar.DAY_OF_WEEK_IN_MONTH) == get(Calendar.DAY_OF_WEEK_IN_MONTH)
+fun getDaySuffix(dayOfMonth: Int): String {
+    return when {
+        dayOfMonth.rem(10) == 1 && dayOfMonth != 11 -> "st"
+        dayOfMonth.rem(10) == 2 && dayOfMonth != 12 -> "nd"
+        dayOfMonth.rem(10) == 3 && dayOfMonth != 13 -> "rd"
+        else -> "th"
+    }
+}

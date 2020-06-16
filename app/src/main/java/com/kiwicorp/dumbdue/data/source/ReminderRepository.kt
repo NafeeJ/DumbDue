@@ -37,33 +37,19 @@ class ReminderRepository @Inject constructor(private val reminderDao: ReminderDa
      */
     suspend fun completeReminder(reminder: Reminder): Reminder? {
         reminderDao.deleteReminder(reminder)
-        if (reminder.repeatVal != Reminder.REPEAT_NONE) {
+        val nextDueDate = reminder.repeatInterval.getNextDueDate(reminder.calendar)
+        return if (nextDueDate != null) {
             val newReminder = Reminder(
-                title = reminder.title,
-                calendar = Calendar.getInstance().apply { timeInMillis = reminder.calendar.timeInMillis },
-                repeatVal = reminder.repeatVal,
-                autoSnoozeVal = reminder.autoSnoozeVal)
-
-            when (reminder.repeatVal) {
-                Reminder.REPEAT_DAILY -> newReminder.calendar.add(Calendar.DAY_OF_YEAR,1)
-                Reminder.REPEAT_WEEKDAYS -> {
-                    when (newReminder.calendar.get(Calendar.DAY_OF_WEEK)) {
-                        Calendar.FRIDAY -> newReminder.calendar.add(Calendar.DAY_OF_YEAR,3)
-                        Calendar.SATURDAY -> newReminder.calendar.add(Calendar.DAY_OF_YEAR,2)
-                        else -> newReminder.calendar.add(Calendar.DAY_OF_YEAR,1)
-                    }
-                }
-                Reminder.REPEAT_WEEKLY -> newReminder.calendar.add(Calendar.WEEK_OF_YEAR,1)
-                Reminder.REPEAT_MONTHLY -> newReminder.calendar.add(Calendar.MONTH, 1)
-                Reminder.REPEAT_YEARLY -> newReminder.calendar.add(Calendar.YEAR,1)
-                Reminder.REPEAT_CUSTOM -> return null//todo
-                else -> throw IllegalArgumentException("Unknown Repeat Val")
-            }
-
+                reminder.title,
+                nextDueDate,
+                reminder.repeatInterval,
+                reminder.autoSnoozeVal
+            )
             reminderDao.insertReminder(newReminder)
-            return newReminder
+            newReminder
+        } else {
+            null
         }
-        return null
     }
 
 }

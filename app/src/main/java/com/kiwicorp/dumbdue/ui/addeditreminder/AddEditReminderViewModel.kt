@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.*
 import com.kiwicorp.dumbdue.data.Reminder
+import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
+import com.kiwicorp.dumbdue.data.repeat.RepeatNone
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
 import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
@@ -31,8 +33,8 @@ class AddEditReminderViewModel @Inject constructor(
 
     val calendar: LiveData<Calendar> = _calendar
 
-    private val _repeatVal = MutableLiveData(Reminder.REPEAT_NONE)
-    val repeatVal: LiveData<Int> = _repeatVal
+    private val _repeatInterval = MutableLiveData<RepeatInterval>(RepeatNone(0))
+    val repeatInterval: LiveData<RepeatInterval> = _repeatInterval
 
     private val _autoSnoozeVal = MutableLiveData(preferencesStorage.defaultAutoSnooze)
     val autoSnoozeVal: LiveData<Long> = _autoSnoozeVal
@@ -48,9 +50,6 @@ class AddEditReminderViewModel @Inject constructor(
 
     private val _eventOpenTimePicker = MutableLiveData<Event<Unit>>()
     val eventOpenTimePicker: LiveData<Event<Unit>> = _eventOpenTimePicker
-
-    private val _eventOpenCustomRepeatMenu = MutableLiveData<Event<Unit>>()
-    val eventOpenCustomRepeatMenu: LiveData<Event<Unit>> = _eventOpenCustomRepeatMenu
 
     private val _eventChooseRepeat = MutableLiveData<Event<Unit>>()
     val eventChooseRepeat: LiveData<Event<Unit>> = _eventChooseRepeat
@@ -89,15 +88,11 @@ class AddEditReminderViewModel @Inject constructor(
     }
 
     /**
-     * Called by the TextViews in ChooseRepeatFragment via Listener Binding.
+     * Called by the TextViews in ChooseRepeatFragment.
      */
-    fun onChooseRepeat(repeatVal: Int) {
-        if (repeatVal == Reminder.REPEAT_CUSTOM) {
-            _eventOpenCustomRepeatMenu.value = Event(Unit)
-        } else {
-            _repeatVal.value = repeatVal
-            _eventChooseRepeat.value = Event(Unit)
-        }
+    fun onChooseRepeatInterval(repeatInterval: RepeatInterval) {
+        _repeatInterval.value = repeatInterval
+        _eventChooseRepeat.value = Event(Unit)
     }
 
     /**
@@ -141,7 +136,7 @@ class AddEditReminderViewModel @Inject constructor(
             } else {
                 val reminder = Reminder(title.value!!,
                     calendar.value!!,
-                    repeatVal.value!!,
+                    repeatInterval.value!!,
                     autoSnoozeVal.value!!)
 
                 insert(reminder)
@@ -163,7 +158,7 @@ class AddEditReminderViewModel @Inject constructor(
                 Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
         } else {
             viewModelScope.launch {
-                val reminder = Reminder(title = title.value!!,calendar = calendar.value!!,repeatVal = repeatVal.value!!,autoSnoozeVal = autoSnoozeVal.value!!,id = reminderId!!)
+                val reminder = Reminder(title.value!!,calendar.value!!,repeatInterval.value!!,autoSnoozeVal.value!!,reminderId!!)
                 update(reminder)
             }
             _eventClose.value = Event(Unit)
@@ -219,7 +214,7 @@ class AddEditReminderViewModel @Inject constructor(
     private fun onReminderLoaded(reminder: Reminder) {
         title.value = reminder.title
         _calendar.value = reminder.calendar
-        _repeatVal.value = reminder.repeatVal
+        _repeatInterval.value = reminder.repeatInterval
         _autoSnoozeVal.value = reminder.autoSnoozeVal
         reminderId = reminder.id
     }

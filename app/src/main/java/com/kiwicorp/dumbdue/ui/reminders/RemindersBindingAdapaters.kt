@@ -6,8 +6,7 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.data.Reminder
-import com.kiwicorp.dumbdue.ui.reminders.ReminderAdapter
-import com.kiwicorp.dumbdue.util.daySuffix
+import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
 import com.kiwicorp.dumbdue.util.isOverdue
 import com.kiwicorp.dumbdue.util.minsFromNow
 import java.text.SimpleDateFormat
@@ -83,30 +82,13 @@ fun TextView.setTimeFromNowAbbr(calendar: Calendar) {
 }
 //itemCalendar and itemRepeatVal are used because function parameters conflict with [TextView.setRepeatText()]
 @BindingAdapter(value = ["itemCalendar","itemRepeatVal"], requireAll = true)
-fun TextView.setDateOrRepeatText(calendar: Calendar,repeatVal: Int) {
+fun TextView.setDateOrRepeatText(calendar: Calendar, repeatInterval: RepeatInterval) {
     if (calendar.isOverdue()) {
         setTextColor(Color.parseColor("#f54242"))
     } else {
         setTextColor(Color.parseColor("#525252"))
     }
-
-    val time = SimpleDateFormat("h:mm a", Locale.US).format(calendar.time)
-    val date = SimpleDateFormat("MMM d, h:mm a", Locale.US).format(calendar.time)
-    val dayOfWeek = SimpleDateFormat("EEEE", Locale.US).format(calendar.time)
-    val dayOfMonth = "${calendar.get(Calendar.DAY_OF_MONTH)}${calendar.daySuffix()}"
-
-    text = if (repeatVal != Reminder.REPEAT_NONE) {
-        when (repeatVal) {
-            Reminder.REPEAT_DAILY -> "Daily $time"
-            Reminder.REPEAT_WEEKDAYS -> "Weekdays $time"
-            Reminder.REPEAT_WEEKLY -> "${dayOfWeek}s $time"
-            Reminder.REPEAT_MONTHLY -> "$dayOfMonth each month at $time"
-            Reminder.REPEAT_YEARLY -> "Every $date"
-            else -> "Custom repeat at $time"
-        }
-    } else {
-        date
-    }
+    text = repeatInterval.getText(calendar)
 }
 
 @BindingAdapter("calendar")
