@@ -20,7 +20,7 @@ class RepeatMonthlyByCountTest {
             set(Calendar.MILLISECOND,0)
         }
 
-        val recurrence2ndMonday = listOf(Pair(Calendar.MONDAY,2))
+        val recurrence2ndMonday = listOf(Day(Calendar.MONDAY,2))
 
         val repeat = RepeatMonthlyByCount(1,recurrence2ndMonday)
         val result = repeat.getNextDueDate(june82020)
@@ -40,7 +40,7 @@ class RepeatMonthlyByCountTest {
             set(Calendar.MILLISECOND,0)
         }
 
-        val recurrence2ndMonday = listOf(Pair(Calendar.MONDAY,2))
+        val recurrence2ndMonday = listOf(Day(Calendar.MONDAY,2))
 
         val repeat = RepeatMonthlyByCount(2,recurrence2ndMonday)
         val result = repeat.getNextDueDate(june82020)
@@ -60,7 +60,7 @@ class RepeatMonthlyByCountTest {
             set(Calendar.MILLISECOND,0)
         }
 
-        val recurrence2ndMonday = listOf(Pair(Calendar.MONDAY,2))
+        val recurrence2ndMonday = listOf(Day(Calendar.MONDAY,2))
 
         val repeat = RepeatMonthlyByCount(8,recurrence2ndMonday)
         val result = repeat.getNextDueDate(june82020)
@@ -81,11 +81,11 @@ class RepeatMonthlyByCountTest {
         }
 
         val recurrence = listOf(
-            Pair(Calendar.TUESDAY,1),
-            Pair(Calendar.FRIDAY,1),
-            Pair(Calendar.MONDAY,2),
-            Pair(Calendar.FRIDAY,3),
-            Pair(Calendar.THURSDAY,4)
+            Day(Calendar.TUESDAY,1),
+            Day(Calendar.FRIDAY,1),
+            Day(Calendar.MONDAY,2),
+            Day(Calendar.FRIDAY,3),
+            Day(Calendar.THURSDAY,4)
         )
 
         val repeat = RepeatMonthlyByCount(1,recurrence)
@@ -106,7 +106,7 @@ class RepeatMonthlyByCountTest {
             set(Calendar.MILLISECOND,0)
         }
 
-        val recurrenceLastFriday = listOf(Pair(Calendar.FRIDAY,5))
+        val recurrenceLastFriday = listOf(Day(Calendar.FRIDAY,5))
 
         val repeat = RepeatMonthlyByCount(1,recurrenceLastFriday)
         val result = repeat.getNextDueDate(june262020)
@@ -127,8 +127,8 @@ class RepeatMonthlyByCountTest {
         }
 
         val recurrenceLastFriday = listOf(
-            Pair(Calendar.FRIDAY,4),
-            Pair(Calendar.THURSDAY,5)
+            Day(Calendar.FRIDAY,4),
+            Day(Calendar.THURSDAY,5)
         )
 
         val repeat = RepeatMonthlyByCount(1,recurrenceLastFriday)
