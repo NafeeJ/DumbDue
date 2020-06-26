@@ -32,7 +32,7 @@
         <item name="android:padding">0dp</item>
     </style>
 
-    <style name="BottomSheetDialogStyle" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+    <style name="BottomSheetDialogStyle" parent="Theme.MaterialComponents.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
@@ -49,6 +49,23 @@
         <item name="android:padding">12dp</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="DaysOfWeekChipStyle">
+        <item name="android:checkable">true</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_width">50dp</item>
+        <item name="chipIconVisible">false</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textAppearance">@style/chipText</item>
+        <item name="fontFamily">@font/roboto_mono</item>
+        <item name="font">@font/roboto_mono</item>
+        <item name="chipBackgroundColor">@color/mtrl_choice_chip_background_color</item>
+    </style>
+
+    <style name="chipText" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:fontFamily">@font/roboto_mono</item>
     </style>
 
 

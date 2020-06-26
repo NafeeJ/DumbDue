@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.getSystemService
+import com.jakewharton.threetenabp.AndroidThreeTen
 import com.kiwicorp.dumbdue.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
@@ -29,6 +30,8 @@ class DumbDueApplication : DaggerApplication() {
         }
 
         Timber.plant(Timber.DebugTree())
+
+        AndroidThreeTen.init(this)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

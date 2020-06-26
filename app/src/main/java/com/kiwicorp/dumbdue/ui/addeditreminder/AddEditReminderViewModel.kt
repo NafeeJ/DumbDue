@@ -8,7 +8,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.*
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
-import com.kiwicorp.dumbdue.data.repeat.RepeatNone
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
 import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
@@ -33,7 +32,7 @@ class AddEditReminderViewModel @Inject constructor(
 
     val calendar: LiveData<Calendar> = _calendar
 
-    private val _repeatInterval = MutableLiveData<RepeatInterval>(RepeatNone(0))
+    private val _repeatInterval = MutableLiveData<RepeatInterval>()
     val repeatInterval: LiveData<RepeatInterval> = _repeatInterval
 
     private val _autoSnoozeVal = MutableLiveData(preferencesStorage.defaultAutoSnooze)
@@ -90,7 +89,7 @@ class AddEditReminderViewModel @Inject constructor(
     /**
      * Called by the TextViews in ChooseRepeatFragment.
      */
-    fun onChooseRepeatInterval(repeatInterval: RepeatInterval) {
+    fun onChooseRepeatInterval(repeatInterval: RepeatInterval?) {
         _repeatInterval.value = repeatInterval
         _eventChooseRepeat.value = Event(Unit)
     }

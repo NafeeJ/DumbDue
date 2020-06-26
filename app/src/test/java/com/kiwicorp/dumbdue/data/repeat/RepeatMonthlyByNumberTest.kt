@@ -15,9 +15,9 @@ class RepeatMonthlyByNumberTest {
             set(2020, Calendar.JULY,15,3,3,0)
             set(Calendar.MILLISECOND,0)
         }
-        val recurrenceFifteenthOnly = List(32) { it == 15 }
+        val recurrenceFifteenthOnly = listOf(15)
 
-        val repeat = RepeatMonthlyByNumber(1, recurrenceFifteenthOnly)
+        val repeat = RepeatMonthlyByNumber(1,june152020,recurrenceFifteenthOnly)
         val result = repeat.getNextDueDate(june152020)
 
         assertEquals(result,july152020)
@@ -34,11 +34,9 @@ class RepeatMonthlyByNumberTest {
             set(Calendar.MILLISECOND,0)
         }
 
-        val recurrenceDays = List(32) {
-            it == 1 || it == 10 || it == 13 || it == 15 || it == 18 || it == 21|| it == 30
-        }
+        val recurrenceDays = listOf(1,10,13,15,18,21,30)
 
-        val repeat = RepeatMonthlyByNumber(1,recurrenceDays)
+        val repeat = RepeatMonthlyByNumber(1,june152020,recurrenceDays)
         val result = repeat.getNextDueDate(june152020)
 
         assertEquals(result,june182020)
@@ -55,11 +53,9 @@ class RepeatMonthlyByNumberTest {
             set(Calendar.MILLISECOND,0)
         }
 
-        val recurrenceDays = List(32) {
-            it == 1 || it == 10 || it == 13 || it == 15 || it == 18 || it == 21|| it == 30
-        }
+        val recurrenceDays = listOf(1,10,13,15,18,21,30)
 
-        val repeat = RepeatMonthlyByNumber(1,recurrenceDays)
+        val repeat = RepeatMonthlyByNumber(1,june302020,recurrenceDays)
         val result = repeat.getNextDueDate(june302020)
 
         assertEquals(result,july12020)
@@ -76,11 +72,9 @@ class RepeatMonthlyByNumberTest {
             set(Calendar.MILLISECOND,0)
         }
 
-        val recurrenceDays = List(32) {
-            it == 1 || it == 10 || it == 13 || it == 15 || it == 18 || it == 21|| it == 30
-        }
+        val recurrenceDays = listOf(1,10,13,15,18,21,30)
 
-        val repeat = RepeatMonthlyByNumber(3,recurrenceDays)
+        val repeat = RepeatMonthlyByNumber(3,june302020,recurrenceDays)
         val result = repeat.getNextDueDate(june302020)
 
         assertEquals(result,september12020)
@@ -97,9 +91,9 @@ class RepeatMonthlyByNumberTest {
             set(Calendar.MILLISECOND,0)
         }
 
-        val recurrenceDays = List(32) { it == 0 }
+        val recurrenceDays = listOf(32)
 
-        val repeat = RepeatMonthlyByNumber(1,recurrenceDays)
+        val repeat = RepeatMonthlyByNumber(1,june302020,recurrenceDays)
         val result = repeat.getNextDueDate(june302020)
 
         assertEquals(result,july312020)
@@ -116,13 +110,30 @@ class RepeatMonthlyByNumberTest {
             set(Calendar.MILLISECOND,0)
         }
 
-        val recurrenceDays = List(32) {
-            it == 0 ||it == 1 || it == 10 || it == 13 || it == 15 || it == 18 || it == 21
-        }
+        val recurrenceDays = listOf(1,10,13,15,18,21,32)
 
-        val repeat = RepeatMonthlyByNumber(3,recurrenceDays)
+        val repeat = RepeatMonthlyByNumber(3,june212020,recurrenceDays)
         val result = repeat.getNextDueDate(june212020)
 
         assertEquals(result,june302020)
+    }
+
+    @Test
+    fun getNextDueDate_frequency1ArbitraryRecurrenceJune232020_June302020() {
+        val june232020 = Calendar.getInstance().apply {
+            set(2020, Calendar.JUNE,23,3,3,0)
+            set(Calendar.MILLISECOND,0)
+        }
+        val june252020 = Calendar.getInstance().apply {
+            set(2020, Calendar.JUNE,25,3,3,0)
+            set(Calendar.MILLISECOND,0)
+        }
+
+        val recurrenceDays = listOf(1,10,13,15,18,21,25)
+
+        val repeat = RepeatMonthlyByNumber(3,june232020,recurrenceDays)
+        val result = repeat.getNextDueDate(june232020)
+
+        assertEquals(result,june252020)
     }
 }

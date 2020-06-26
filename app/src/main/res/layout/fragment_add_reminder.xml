@@ -85,13 +85,13 @@
                     android:id="@+id/date_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@id/title_text"
                     android:layout_alignParentEnd="true"
+                    android:onClick="@{()->viewmodel.onOpenTimePicker()}"
                     android:padding="10dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="#FFFFFF"
-                    app:timeFromNow="@{viewmodel.calendar}"
-                    android:onClick="@{()->viewmodel.onOpenTimePicker()}"/>
+                    app:layout_constraintTop_toBottomOf="@id/title_text"
+                    app:timeFromNow="@{viewmodel.calendar}" />
 
                 <TextView
                     android:id="@+id/repeat_text"
@@ -102,7 +102,8 @@
                     android:paddingBottom="10dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="#FFFFFF"
-                    android:text="@{viewmodel.repeatInterval.getText(viewmodel.calendar)}"/>
+                    android:visibility="@{(viewmodel.repeatInterval == null)? View.GONE : View.VISIBLE}"
+                    android:text="@{viewmodel.repeatInterval.toString()}"/>
 
                 <include
                     android:id="@+id/time_setters"

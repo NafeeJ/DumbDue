@@ -33,7 +33,8 @@ allprojects {
         maven {
             // For Room Persistence Library
             url "https://maven.google.com"
-        }
+            }
+        maven { url "https://jitpack.io" }
     }
 }
 

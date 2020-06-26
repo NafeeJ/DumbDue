@@ -70,9 +70,12 @@ class RemindersViewModel @Inject constructor(
 
     fun onCompleteReminder(reminder: Reminder) {
         viewModelScope.launch {
-            val newReminder = complete(reminder)
+            val reminderFromRecurrence = complete(reminder)
+            if (reminderFromRecurrence != null) {
+                insert(reminderFromRecurrence)
+            }
             _snackbarMessage.value = Event(SnackbarMessage("Completed ${reminder.title} :)", Snackbar.LENGTH_LONG,"Undo") {
-                undoComplete(reminder, newReminder)
+                undoComplete(reminder, reminderFromRecurrence)
             })
         }
     }
@@ -101,14 +104,14 @@ class RemindersViewModel @Inject constructor(
 
     /**
      * [reminder] is the reminder that was just completed.
-     * [newReminder] is the reminder that was just created by the repository if [reminder]'s repeat
-     * val was not [Reminder.REPEAT_NONE]. If it was [Reminder.REPEAT_NONE], [newReminder] should be
-     * null.
+     * [reminderFromRecurrence] is the reminder that was just created by the repository if [reminder]'s repeat
+     * val was not [Reminder.REPEAT_NONE]. If it was [Reminder.REPEAT_NONE], [reminderFromRecurrence] should be
+     * null. todo
      */
-    private fun undoComplete(reminder: Reminder, newReminder: Reminder?) {
+    private fun undoComplete(reminder: Reminder, reminderFromRecurrence: Reminder?) {
         viewModelScope.launch {
-            if (newReminder != null) {
-                delete(newReminder)
+            if (reminderFromRecurrence != null) {
+                delete(reminderFromRecurrence)
             }
             insert(reminder)
         }

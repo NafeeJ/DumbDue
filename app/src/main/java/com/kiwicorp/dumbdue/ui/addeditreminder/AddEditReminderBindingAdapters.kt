@@ -7,7 +7,6 @@ import androidx.databinding.BindingAdapter
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
-import com.kiwicorp.dumbdue.data.repeat.RepeatNone
 import com.kiwicorp.dumbdue.util.isOverdue
 import com.kiwicorp.dumbdue.util.timeFromNowString
 import java.text.SimpleDateFormat
@@ -67,11 +66,7 @@ fun TextView.setAutoSnooze(autoSnooze: Long) {
     }
 }
 
-@BindingAdapter(value = ["app:repeatInterval","app:calendar"], requireAll = true)
-fun TextView.repeatIntervalAndCalendar(repeatInterval: RepeatInterval, calendar: Calendar) {
-    text = if (repeatInterval is RepeatNone) {
-        context.getString(R.string.repeat_off)
-    } else {
-        repeatInterval.getText(calendar)
-    }
+@BindingAdapter("repeatInterval")
+fun TextView.repeatIntervalAndCalendar(repeatInterval: RepeatInterval?) {
+    text = repeatInterval?.toString() ?: context.getString(R.string.repeat_off)
 }

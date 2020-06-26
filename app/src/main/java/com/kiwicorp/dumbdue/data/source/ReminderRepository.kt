@@ -36,20 +36,13 @@ class ReminderRepository @Inject constructor(private val reminderDao: ReminderDa
      * (This is so this action can be undone).
      */
     suspend fun completeReminder(reminder: Reminder): Reminder? {
-        reminderDao.deleteReminder(reminder)
-        val nextDueDate = reminder.repeatInterval.getNextDueDate(reminder.calendar)
-        return if (nextDueDate != null) {
-            val newReminder = Reminder(
-                reminder.title,
-                nextDueDate,
-                reminder.repeatInterval,
-                reminder.autoSnoozeVal
-            )
-            reminderDao.insertReminder(newReminder)
-            newReminder
-        } else {
-            null
+        with(reminder) {
+            reminderDao.deleteReminder(this)
+            repeatInterval?.let {
+                return Reminder(title,it.getNextDueDate(calendar),it,autoSnoozeVal,id)
+            }
         }
+        return null
     }
 
 }

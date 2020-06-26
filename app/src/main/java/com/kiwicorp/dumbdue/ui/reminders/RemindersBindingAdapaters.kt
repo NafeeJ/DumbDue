@@ -82,13 +82,13 @@ fun TextView.setTimeFromNowAbbr(calendar: Calendar) {
 }
 //itemCalendar and itemRepeatVal are used because function parameters conflict with [TextView.setRepeatText()]
 @BindingAdapter(value = ["itemCalendar","itemRepeatVal"], requireAll = true)
-fun TextView.setDateOrRepeatText(calendar: Calendar, repeatInterval: RepeatInterval) {
+fun TextView.setDateOrRepeatText(calendar: Calendar, repeatInterval: RepeatInterval?) {
     if (calendar.isOverdue()) {
         setTextColor(Color.parseColor("#f54242"))
     } else {
         setTextColor(Color.parseColor("#525252"))
     }
-    text = repeatInterval.getText(calendar)
+    text = repeatInterval.toString()
 }
 
 @BindingAdapter("calendar")

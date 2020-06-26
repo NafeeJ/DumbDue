@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
-import com.kiwicorp.dumbdue.data.repeat.RepeatNone
 import java.util.*
 
 @Entity(tableName = "reminders")
@@ -16,7 +15,7 @@ data class Reminder (
     var calendar: Calendar = Calendar.getInstance(),
 
     @ColumnInfo(name = "repeat_interval")
-    var repeatInterval: RepeatInterval = RepeatNone(0),
+    var repeatInterval: RepeatInterval? = null,
 
     @ColumnInfo(name = "auto_snooze_val")
     var autoSnoozeVal: Long = AUTO_SNOOZE_MINUTE,
@@ -25,14 +24,6 @@ data class Reminder (
     var id: String = UUID.randomUUID().toString()) {
 
     companion object {
-        const val REPEAT_NONE: Int = 0
-        const val REPEAT_DAILY: Int = 1
-        const val REPEAT_WEEKDAYS: Int = 2
-        const val REPEAT_WEEKLY: Int = 3
-        const val REPEAT_MONTHLY: Int = 4
-        const val REPEAT_YEARLY: Int = 5
-        const val REPEAT_CUSTOM: Int = 6
-
         const val AUTO_SNOOZE_NONE: Long = 0
         const val AUTO_SNOOZE_MINUTE: Long = 60000
         const val AUTO_SNOOZE_5_MINUTES: Long = 5 * 60000

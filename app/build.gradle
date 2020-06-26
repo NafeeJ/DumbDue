@@ -64,9 +64,11 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     implementation 'androidx.preference:preference:1.1.1'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+
+    // Recycler View
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
@@ -89,4 +91,10 @@ dependencies {
 
     // Gson
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    // Calendar View
+    implementation 'com.github.kizitonwose:CalendarView:0.3.5'
+
+    // ThreeTenABP
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
 }

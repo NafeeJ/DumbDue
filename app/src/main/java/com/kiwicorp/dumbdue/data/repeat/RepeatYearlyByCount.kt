@@ -12,23 +12,31 @@ import java.util.*
  * [dayOfWeekInMonth] will be a number from 1 to 5. 1 indicates first, 2 indicates second, etc.
  * Since a given day of the week in a given month must occur at least 4 times but can go up to at
  * most 5 times, 5 represent the last occurrence of the day of the week in the month.
+ *
  */
-class RepeatYearlyByCount(override val frequency: Int, val dayOfWeekInMonth: Int): RepeatInterval {
-    override fun getNextDueDate(calendar: Calendar): Calendar? {
-        val returnCalendar = Calendar.getInstance().apply { timeInMillis = calendar.timeInMillis }
+data class RepeatYearlyByCount(override var frequency: Int, override var firstOccurrence: Calendar, var dayOfWeekInMonth: Int): RepeatInterval(frequency, firstOccurrence) {
 
-        val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+    override fun getNextOccurrence(): Calendar {
+        return if (prevOccurrence == null) {
+            prevOccurrence = firstOccurrence
+            firstOccurrence
+        } else {
+            val next = Calendar.getInstance().apply { timeInMillis = prevOccurrence!!.timeInMillis }
 
-        returnCalendar.add(Calendar.YEAR,frequency)
-        returnCalendar.set(Calendar.WEEK_OF_MONTH,2)//in case changing day of week moves month to next month
-        returnCalendar.set(Calendar.DAY_OF_WEEK,dayOfWeek)
-        returnCalendar.set(Calendar.DAY_OF_WEEK_IN_MONTH, if(dayOfWeekInMonth == 5) returnCalendar.getActualMaximum(Calendar.DAY_OF_WEEK_IN_MONTH) else dayOfWeekInMonth)
+            val dayOfWeek = prevOccurrence!!.get(Calendar.DAY_OF_WEEK)
 
-        return returnCalendar
+            next.add(Calendar.YEAR,frequency)
+            next.set(Calendar.WEEK_OF_MONTH,2)//in case changing day of week moves month to next month
+            next.set(Calendar.DAY_OF_WEEK,dayOfWeek)
+            next.set(Calendar.DAY_OF_WEEK_IN_MONTH, if(dayOfWeekInMonth == 5) next.getActualMaximum(Calendar.DAY_OF_WEEK_IN_MONTH) else dayOfWeekInMonth)
+
+            prevOccurrence = next
+            next
+        }
     }
 
-    override fun getText(calendar: Calendar): String {
-        val time = SimpleDateFormat("h:mm a", Locale.US).format(calendar.time)
+    override fun toString(): String {
+        val time = SimpleDateFormat("h:mm a", Locale.US).format(firstOccurrence.time)
 
         val week = when(dayOfWeekInMonth) {
             1 -> "1st"
@@ -38,7 +46,7 @@ class RepeatYearlyByCount(override val frequency: Int, val dayOfWeekInMonth: Int
             else -> "last"
         }
 
-        val month = when(calendar.get(Calendar.MONTH)) {
+        val monthStr = when(firstOccurrence.get(Calendar.MONTH)) {
             Calendar.JANUARY -> "January"
             Calendar.FEBRUARY -> "February"
             Calendar.MARCH -> "March"
@@ -53,7 +61,7 @@ class RepeatYearlyByCount(override val frequency: Int, val dayOfWeekInMonth: Int
             else -> "December"
         }
 
-        val dayOfWeek = when(calendar.get(Calendar.DAY_OF_WEEK)) {
+        val dayOfWeekStr = when(firstOccurrence.get(Calendar.DAY_OF_WEEK)) {
             Calendar.MONDAY -> "Monday"
             Calendar.TUESDAY -> "Tuesday"
             Calendar.WEDNESDAY -> "Wednesday"
@@ -63,6 +71,6 @@ class RepeatYearlyByCount(override val frequency: Int, val dayOfWeekInMonth: Int
             else -> "Sunday"
         }
 
-        return "On the $week $dayOfWeek of $month at $time ${if (frequency == 1) "every year" else "every $frequency years"}"
+        return "On the $week $dayOfWeekStr of $monthStr at $time ${if (frequency == 1) "every year" else "every $frequency years"}"
     }
 }

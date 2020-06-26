@@ -6,18 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
-import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
-import com.kiwicorp.dumbdue.data.repeat.RepeatNone
 import com.kiwicorp.dumbdue.databinding.FragmentEditReminderBinding
 import dagger.android.support.DaggerFragment
-import timber.log.Timber
 import javax.inject.Inject
 
 class EditReminderFragment : DaggerFragment() {
@@ -52,6 +48,11 @@ class EditReminderFragment : DaggerFragment() {
         viewModel.loadReminder(args.reminderId)
         setupNavigation()
         setupSnackbar()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        closeKeyboard()
     }
 
     private fun setupNavigation() {

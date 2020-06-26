@@ -11,7 +11,7 @@ class RepeatDailyTest {
             set(2020, Calendar.JUNE,15,3,3,0)
             set(Calendar.MILLISECOND,0)
         }
-        val repeat = RepeatDaily(1)
+        val repeat = RepeatDaily(1, june152020)
 
         val june162020 = Calendar.getInstance().apply {
             set(2020, Calendar.JUNE,16,3,3,0)
@@ -28,7 +28,7 @@ class RepeatDailyTest {
             set(2020, Calendar.JUNE,15,3,3,0)
             set(Calendar.MILLISECOND,0)
         }
-        val repeat = RepeatDaily(3)
+        val repeat = RepeatDaily(3,june152020)
 
         val june182020 = Calendar.getInstance().apply {
             set(2020, Calendar.JUNE,18,3,3,0)

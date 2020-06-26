@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/repeat_counts_first"
+        android:title="@string/first"/>
+    <item
+        android:id="@+id/repeat_counts_second"
+        android:title="@string/second"/>
+    <item
+        android:id="@+id/repeat_counts_third"
+        android:title="@string/third"/>
+    <item
+        android:id="@+id/repeat_counts_fourth"
+        android:title="@string/fourth"/>
+    <item
+        android:id="@+id/repeat_counts_last"
+        android:title="@string/last"/>
+</menu>

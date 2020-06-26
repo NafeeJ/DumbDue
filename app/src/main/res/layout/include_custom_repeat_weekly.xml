@@ -1,0 +1,60 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/week_chips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:chipSpacingHorizontal="0dp"
+            app:singleLine="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_sunday"
+                style="@style/DaysOfWeekChipStyle"
+                android:text="@string/s" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_monday"
+                style="@style/DaysOfWeekChipStyle"
+                android:text="@string/m" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_tuesday"
+                style="@style/DaysOfWeekChipStyle"
+                android:text="@string/t"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_wednesday"
+                style="@style/DaysOfWeekChipStyle"
+                android:text="@string/w"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_thursday"
+                style="@style/DaysOfWeekChipStyle"
+                android:text="@string/t"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_friday"
+                style="@style/DaysOfWeekChipStyle"
+                android:text="@string/f"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_saturday"
+                style="@style/DaysOfWeekChipStyle"
+                android:text="@string/s"/>
+
+        </com.google.android.material.chip.ChipGroup>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>

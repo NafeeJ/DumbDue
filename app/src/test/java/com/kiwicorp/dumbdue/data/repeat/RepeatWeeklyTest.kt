@@ -28,7 +28,7 @@ class RepeatWeeklyTest {
             Calendar.FRIDAY
         )
 
-        val repeat = RepeatWeekly(1,weekDays)
+        val repeat = RepeatWeekly(1,june152020,weekDays)
         val result = repeat.getNextDueDate(june152020)
 
         assertEquals(result,june162020)
@@ -55,7 +55,7 @@ class RepeatWeeklyTest {
             Calendar.FRIDAY
         )
 
-        val repeat = RepeatWeekly(2,weekDays)
+        val repeat = RepeatWeekly(2,june152020,weekDays)
         val result = repeat.getNextDueDate(june152020)
 
         assertEquals(result,june162020)
@@ -83,7 +83,7 @@ class RepeatWeeklyTest {
             Calendar.FRIDAY
         )
 
-        val repeat = RepeatWeekly(2,weekDays)
+        val repeat = RepeatWeekly(2,june122020,weekDays)
         val result = repeat.getNextDueDate(june122020)
 
         assertEquals(result,june152020)
@@ -111,7 +111,7 @@ class RepeatWeeklyTest {
             Calendar.SATURDAY
         )
 
-        val repeat = RepeatWeekly(3,everydayExceptWednesday)
+        val repeat = RepeatWeekly(3,june162020,everydayExceptWednesday)
         val result = repeat.getNextDueDate(june162020)
 
         assertEquals(result,june182020)
@@ -133,9 +133,31 @@ class RepeatWeeklyTest {
 
         val mondays = listOf(Calendar.MONDAY)
 
-        val repeat = RepeatWeekly(1,mondays)
+        val repeat = RepeatWeekly(1,june152020,mondays)
         val result = repeat.getNextDueDate(june152020)
 
         assertEquals(result,june222020)
+    }
+
+    @Test
+    fun getNextDueDate_frequency1MondaysJune112020_June152020() {
+        // a thursday
+        val june112020 = Calendar.getInstance().apply {
+            set(2020, Calendar.JUNE,11,3,3,0)
+            set(Calendar.MILLISECOND,0)
+        }
+
+        // next monday
+        val june152020 = Calendar.getInstance().apply {
+            set(2020, Calendar.JUNE,15,3,3,0)
+            set(Calendar.MILLISECOND,0)
+        }
+
+        val mondays = listOf(Calendar.MONDAY)
+
+        val repeat = RepeatWeekly(1,june112020,mondays)
+        val result = repeat.getNextDueDate(june112020)
+
+        assertEquals(result,june152020)
     }
 }

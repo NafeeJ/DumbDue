@@ -18,7 +18,6 @@ class Converters {
 
     private val repeatIntervalTypeAdapterFactory = RuntimeTypeAdapterFactory
         .of(RepeatInterval::class.java, "type")
-        .registerSubtype(RepeatNone::class.java, RepeatNone::class.java.name)
         .registerSubtype(RepeatDaily::class.java, RepeatDaily::class.java.name)
         .registerSubtype(RepeatWeekly::class.java, RepeatWeekly::class.java.name)
         .registerSubtype(RepeatMonthlyByCount::class.java, RepeatMonthlyByCount::class.java.name)

@@ -8,34 +8,38 @@ import java.util.*
  *
  * [frequency] will be which weeks users will receive reminders on
  *
- * [recurringDays] is a sorted list of [Calendar]'s constants eg: [Calendar.TUESDAY]. It represents
+ * [days] is a sorted list of [Calendar]'s constants eg: [Calendar.TUESDAY]. It represents
  * the days the user wishes to receive reminders on. The list should never have a size of more than 7.
  * Sunday is considered to be the first day.
  */
-class RepeatWeekly(override val frequency: Int, val recurringDays: List<Int>): RepeatInterval {
+data class RepeatWeekly(override var frequency: Int, override var firstOccurrence: Calendar, val days: List<Int>): RepeatInterval(frequency, firstOccurrence) {
 
-    override fun getNextDueDate(calendar: Calendar): Calendar? {
-        val returnCalendar = Calendar.getInstance().apply { timeInMillis = calendar.timeInMillis }
-        // get next day
-        val indexOfToday = recurringDays.indexOf(calendar.get(Calendar.DAY_OF_WEEK))
-        val indexOfNextDay = if (indexOfToday + 1 > recurringDays.lastIndex) 0 else indexOfToday + 1
-        val nextDay = recurringDays[indexOfNextDay]
+    override fun getNextOccurrence(): Calendar {
+        return if (prevOccurrence == null) {
+            prevOccurrence = firstOccurrence
+            firstOccurrence
+        } else {
+            val next = Calendar.getInstance().apply { timeInMillis = prevOccurrence!!.timeInMillis }
+            // get next day
+            val currentDay = prevOccurrence!!.get(Calendar.DAY_OF_WEEK)
+            val nextDay = days.firstOrNull { it > currentDay } ?: days.first()
 
-        returnCalendar.add(Calendar.DAY_OF_YEAR,1)
-        // add days to returnCalendar until returnCalendar's day of week is nextDay
-        while (returnCalendar.get(Calendar.DAY_OF_WEEK) != nextDay) {
-            returnCalendar.add(Calendar.DAY_OF_YEAR,1)
+            next.add(Calendar.DAY_OF_YEAR,1)
+            // add days to returnCalendar until returnCalendar's day of week is nextDay
+            while (next.get(Calendar.DAY_OF_WEEK) != nextDay) {
+                next.add(Calendar.DAY_OF_YEAR,1)
+            }
+            // if returnCalendar goes into a new week, account for the frequency
+            if (next.get(Calendar.DAY_OF_WEEK) == days[0]) {
+                next.add(Calendar.WEEK_OF_YEAR,frequency - 1)
+            }
+            prevOccurrence = next
+            next
         }
-        // if returnCalendar goes into a new week, account for the frequency
-        if (returnCalendar.get(Calendar.DAY_OF_WEEK) == recurringDays[0]) {
-            returnCalendar.add(Calendar.WEEK_OF_YEAR,frequency - 1)
-        }
-
-        return returnCalendar
     }
 
-    override fun getText(calendar: Calendar): String {
-        val time = SimpleDateFormat("h:mm a", Locale.US).format(calendar.time)
+    override fun toString(): String {
+        val time = SimpleDateFormat("h:mm a", Locale.US).format(firstOccurrence.time)
 
         val weekdays = listOf(
             Calendar.MONDAY,
@@ -45,7 +49,7 @@ class RepeatWeekly(override val frequency: Int, val recurringDays: List<Int>): R
             Calendar.FRIDAY
         )
 
-        if (recurringDays == weekdays) {
+        if (days == weekdays) {
             return if (frequency == 1) {
                 "Weekdays $time"
             } else {
@@ -63,14 +67,14 @@ class RepeatWeekly(override val frequency: Int, val recurringDays: List<Int>): R
             )
 
             var string = ""
-            when (recurringDays.size) {
-                1 -> string = "${dayConstantToString[recurringDays[0]]}s"
-                2 -> string = "${dayConstantToString[recurringDays[0]]}s and ${dayConstantToString[recurringDays[1]]}s"
+            when (days.size) {
+                1 -> string = "${dayConstantToString[days[0]]}s"
+                2 -> string = "${dayConstantToString[days[0]]}s and ${dayConstantToString[days[1]]}s"
                 else -> {
-                    for (i in 0..recurringDays.size - 2) {
-                        string += "${dayConstantToString[recurringDays[i]]}s, "
+                    for (i in 0..days.size - 2) {
+                        string += "${dayConstantToString[days[i]]}s, "
                     }
-                    string += "and ${dayConstantToString[recurringDays.last()]}s"
+                    string += "and ${dayConstantToString[days.last()]}s"
                 }
             }
             string += " at $time"

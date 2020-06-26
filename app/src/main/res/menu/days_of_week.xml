@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/days_of_week_monday"
+        android:title="@string/monday"/>
+    <item
+        android:id="@+id/days_of_week_tuesday"
+        android:title="@string/tuesday"/>
+    <item
+        android:id="@+id/days_of_week_wednesday"
+        android:title="@string/wednesday"/>
+    <item
+        android:id="@+id/days_of_week_thursday"
+        android:title="@string/thursday"/>
+    <item
+        android:id="@+id/days_of_week_friday"
+        android:title="@string/friday"/>
+    <item
+        android:id="@+id/days_of_week_saturday"
+        android:title="@string/saturday"/>
+    <item
+        android:id="@+id/days_of_week_sunday"
+        android:title="@string/sunday"/>
+</menu>

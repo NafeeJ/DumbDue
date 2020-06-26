@@ -1,7 +1,6 @@
 package com.kiwicorp.dumbdue.data.repeat
 
 import com.kiwicorp.dumbdue.util.getDaySuffix
-import com.kiwicorp.dumbdue.util.isOnLastDayOfMonth
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -11,76 +10,65 @@ import java.util.*
  *
  * [frequency] will be which months will be months users receive reminders on
  *
- * [recurrenceDays] will a list of 32 booleans with each boolean representing a day in a month.
- * There is an extra boolean to represent the last day of the month. That boolean will be at index 0.
- * If an index is true, it means the user wishes to receive a reminder on that day. For example, if
- * index 23 is true, it indicates the user wishes to receive a reminder on the 23rd day of the month.
+ * [days] will be a list of the days in the month that the reminder will repeat on
  */
-class RepeatMonthlyByNumber(override val frequency: Int, val recurrenceDays: List<Boolean>): RepeatInterval {
+data class RepeatMonthlyByNumber(override var frequency: Int, override var firstOccurrence: Calendar, val days: List<Int>): RepeatInterval(frequency, firstOccurrence) {
 
-    override fun getNextDueDate(calendar: Calendar): Calendar? {
-        val returnCalendar = Calendar.getInstance().apply { timeInMillis = calendar.timeInMillis }
-        returnCalendar.add(Calendar.DAY_OF_YEAR,1)
-        // add days until the returnCalendar's day of month corresponds to a day that is true
-        while(!recurrenceDays[returnCalendar.get(Calendar.DAY_OF_MONTH)]) {
-            // break if return calendar has reached the end of the month and if 0 index is true
-            if (returnCalendar.isOnLastDayOfMonth() && recurrenceDays[0]) {
-                break
+    override fun getNextOccurrence(): Calendar {
+        return if (prevOccurrence == null) {
+            prevOccurrence = firstOccurrence
+            firstOccurrence
+        } else {
+            prevOccurrence = Calendar.getInstance().apply {
+                timeInMillis = prevOccurrence!!.timeInMillis
+                // get next day
+                val currDay = prevOccurrence!!.get(Calendar.DAY_OF_MONTH)
+                var nextDay: Int = days.firstOrNull { it >  currDay} ?: days.first()
+                // if going to next month, account for frequency
+                if (nextDay == days.first()) {
+                    add(Calendar.MONTH, frequency)
+                    set(Calendar.DAY_OF_MONTH, 1)
+                }
+                // if next day is last day, set next day to the correct day
+                if (nextDay == 32) {
+                    nextDay = getActualMaximum(Calendar.DAY_OF_MONTH)
+                }
+                // add days until day of month is nextDay
+                while (get(Calendar.DAY_OF_MONTH) != nextDay) {
+                    add(Calendar.DAY_OF_YEAR,1)
+                }
             }
-            returnCalendar.add(Calendar.DAY_OF_YEAR,1)
+            prevOccurrence!!
         }
 
-        val firstDay: Int = getFirstDay(recurrenceDays)
-        // if the returnCalendar entered a new month, account for the frequency
-        if (returnCalendar.get(Calendar.DAY_OF_MONTH) == firstDay || (returnCalendar.isOnLastDayOfMonth() && firstDay == 0)) {
-            returnCalendar.add(Calendar.MONTH, frequency - 1)
-        }
-
-        return returnCalendar
     }
 
-    private fun getFirstDay(days: List<Boolean>): Int {
-        for (i in days.indices) {
-            if (days[i] && i != 0) {
-                return i
-            }
-        }
-        if (days[0]) return 0
-        return -1
-    }
-
-    override fun getText(calendar: Calendar): String {
-        val time = SimpleDateFormat("h:mm a", Locale.US).format(calendar.time)
+    override fun toString(): String {
+        val time = SimpleDateFormat("h:mm a", Locale.US).format(firstOccurrence.time)
 
         var string = "On the "
 
-        val daysOfMonth = mutableListOf<Int>()
-
-        for (i in recurrenceDays.indices) {
-            if (recurrenceDays[i]) {
-                daysOfMonth.add(i)
-            }
-        }
-
-        if (daysOfMonth.size == 1) {
-            string += if (daysOfMonth.first() == 0) {
-                "last day "
-            } else {
-                "${getDaySuffixString(daysOfMonth.first())} "
-            }
-        } else if (daysOfMonth.size == 2) {
-            string += "${getDaySuffixString(daysOfMonth[0])} and ${getDaySuffixString(daysOfMonth[1])} "
-        } else {
-            if (daysOfMonth[0] == 0) {
-                for (i in 1 until daysOfMonth.size) {
-                    string += "${getDaySuffixString(daysOfMonth[i])}, "
+        when (days.size) {
+            1 -> {
+                string += if (days.last() == 32) {
+                    "last day "
+                } else {
+                    "${getDaySuffixString(days.first())} "
                 }
-                string += "and last day "
-            } else {
-                for (i in 0..daysOfMonth.size - 2) {
-                    string += "${getDaySuffixString(daysOfMonth[i])}, "
+            }
+            2 -> {
+                string += "${getDaySuffixString(days[0])} and "
+                string += if (days.last() == 32) {
+                    "last day "
+                } else {
+                    "${getDaySuffixString(days[1])} "
                 }
-                string += "and ${getDaySuffixString(daysOfMonth.last())} "
+            }
+            else -> {
+                for (i in 0..days.size - 2) {
+                    string += "${getDaySuffixString(days[i])}, "
+                }
+                string += if (days.last() == 32) "and last day " else "and ${getDaySuffixString(days.last())} "
             }
         }
 

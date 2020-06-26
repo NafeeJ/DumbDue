@@ -8,24 +8,29 @@ import java.util.*
  *
  * [frequency] will be the days users receive a reminder on
  */
-class RepeatDaily(override val frequency: Int) : RepeatInterval {
+data class RepeatDaily(override var frequency: Int, override var firstOccurrence: Calendar) : RepeatInterval(frequency, firstOccurrence) {
 
-    override fun getNextDueDate(calendar: Calendar): Calendar? {
-        return Calendar.getInstance().apply {
-            timeInMillis = calendar.timeInMillis
-            add(Calendar.DAY_OF_YEAR,frequency)
+    override fun getNextOccurrence(): Calendar {
+        return if (prevOccurrence == null) {
+            prevOccurrence = firstOccurrence
+            firstOccurrence
+        } else {
+            prevOccurrence = Calendar.getInstance().apply {
+                timeInMillis = prevOccurrence!!.timeInMillis
+                add(Calendar.DAY_OF_YEAR,frequency)
+            }
+            prevOccurrence!!
         }
     }
-
-    override fun getText(calendar: Calendar): String {
-        val time = SimpleDateFormat("h:mm a", Locale.US).format(calendar.time)
+    
+    override fun toString(): String {
+        val time = SimpleDateFormat("h:mm a", Locale.US).format(firstOccurrence.time)
 
         return if (frequency == 1) {
             "Daily $time"
         } else {
             "Every $frequency days at $time"
         }
-
     }
-
+    
 }

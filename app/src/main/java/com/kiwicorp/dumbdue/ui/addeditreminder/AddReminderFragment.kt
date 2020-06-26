@@ -14,7 +14,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
-import com.kiwicorp.dumbdue.data.repeat.RepeatNone
 import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
 import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import javax.inject.Inject
@@ -58,13 +57,6 @@ class AddReminderFragment : DaggerBottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.repeatInterval.observe(viewLifecycleOwner, Observer {
-            if (it::class.java.isAssignableFrom(RepeatNone::class.java)) {
-                binding.repeatText.visibility = View.GONE
-            } else {
-                binding.repeatText.visibility = View.VISIBLE
-            }
-        })
         setupNavigation()
         setupSnackbar()
     }

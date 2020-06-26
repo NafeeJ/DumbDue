@@ -3,6 +3,7 @@ package com.kiwicorp.dumbdue.data.repeat
 import org.junit.Assert.*
 import org.junit.Test
 import java.text.SimpleDateFormat
+import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCount.Day
 import java.util.*
 
 class RepeatMonthlyByCountTest {
@@ -20,9 +21,9 @@ class RepeatMonthlyByCountTest {
             set(Calendar.MILLISECOND,0)
         }
 
-        val recurrence2ndMonday = listOf(Day(Calendar.MONDAY,2))
+        val recurrence2ndMonday = listOf(Day(Calendar.MONDAY, 2))
 
-        val repeat = RepeatMonthlyByCount(1,recurrence2ndMonday)
+        val repeat = RepeatMonthlyByCount(1,june82020,recurrence2ndMonday)
         val result = repeat.getNextDueDate(june82020)
 
         assertEquals(result,july132020)
@@ -42,7 +43,7 @@ class RepeatMonthlyByCountTest {
 
         val recurrence2ndMonday = listOf(Day(Calendar.MONDAY,2))
 
-        val repeat = RepeatMonthlyByCount(2,recurrence2ndMonday)
+        val repeat = RepeatMonthlyByCount(2,june82020,recurrence2ndMonday)
         val result = repeat.getNextDueDate(june82020)
 
         assertEquals(result,august102020)
@@ -62,7 +63,7 @@ class RepeatMonthlyByCountTest {
 
         val recurrence2ndMonday = listOf(Day(Calendar.MONDAY,2))
 
-        val repeat = RepeatMonthlyByCount(8,recurrence2ndMonday)
+        val repeat = RepeatMonthlyByCount(8,june82020,recurrence2ndMonday)
         val result = repeat.getNextDueDate(june82020)
 
         assertEquals(result,february82021)
@@ -88,7 +89,7 @@ class RepeatMonthlyByCountTest {
             Day(Calendar.THURSDAY,4)
         )
 
-        val repeat = RepeatMonthlyByCount(1,recurrence)
+        val repeat = RepeatMonthlyByCount(1,june82020,recurrence)
         val result = repeat.getNextDueDate(june82020)
 
         assertEquals(result,june192020)
@@ -108,7 +109,7 @@ class RepeatMonthlyByCountTest {
 
         val recurrenceLastFriday = listOf(Day(Calendar.FRIDAY,5))
 
-        val repeat = RepeatMonthlyByCount(1,recurrenceLastFriday)
+        val repeat = RepeatMonthlyByCount(1,june262020,recurrenceLastFriday)
         val result = repeat.getNextDueDate(june262020)
 
         assertEquals(result,july312020)
@@ -131,9 +132,29 @@ class RepeatMonthlyByCountTest {
             Day(Calendar.THURSDAY,5)
         )
 
-        val repeat = RepeatMonthlyByCount(1,recurrenceLastFriday)
+        val repeat = RepeatMonthlyByCount(1,may282020,recurrenceLastFriday)
         val result = repeat.getNextDueDate(may282020)
 
         assertEquals(result,june252020)
+    }
+
+    @Test
+    fun getNextDueDate_frequency1Recurrence4thFridayJune182020_June262020() {
+        val june182020 = Calendar.getInstance().apply {
+            set(2020, Calendar.JUNE,18,3,3,0)
+            set(Calendar.MILLISECOND,0)
+        }
+
+        val june262020 = Calendar.getInstance().apply {
+            set(2020, Calendar.JUNE,26,3,3,0)
+            set(Calendar.MILLISECOND,0)
+        }
+
+        val recurrenceLastFriday = listOf(Day(Calendar.FRIDAY,4))
+
+        val repeat = RepeatMonthlyByCount(1,june182020,recurrenceLastFriday)
+        val result = repeat.getNextDueDate(june182020)
+
+        assertEquals(result,june262020)
     }
 }

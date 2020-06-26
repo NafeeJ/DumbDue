@@ -2,8 +2,14 @@ package com.kiwicorp.dumbdue.data.repeat
 
 import java.util.*
 
-interface RepeatInterval {
-    val frequency: Int
-    fun getNextDueDate(calendar: Calendar): Calendar?
-    fun getText(calendar: Calendar): String
+abstract class RepeatInterval(open var frequency: Int, open var firstOccurrence: Calendar) {
+    fun getNextDueDate(calendar: Calendar): Calendar {
+        var nextOccurrence = getNextOccurrence()
+        while(calendar >= nextOccurrence) {
+            nextOccurrence = getNextOccurrence()
+        }
+        return nextOccurrence
+    }
+    protected var prevOccurrence: Calendar? = null
+    protected abstract fun getNextOccurrence(): Calendar
 }
