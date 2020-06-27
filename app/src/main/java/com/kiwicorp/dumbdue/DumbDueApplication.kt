@@ -3,6 +3,9 @@ package com.kiwicorp.dumbdue
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.ContentResolver
+import android.media.AudioAttributes
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.content.getSystemService
@@ -11,6 +14,7 @@ import com.kiwicorp.dumbdue.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import timber.log.Timber
+
 
 class DumbDueApplication : DaggerApplication() {
     /**
@@ -40,12 +44,17 @@ class DumbDueApplication : DaggerApplication() {
         val notificationManager: NotificationManager = getSystemService()
             ?: throw Exception("Notification Manager Not Found")
 
+        val attributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+            .build()
+
+        val soundUri = Uri.parse("${ContentResolver.SCHEME_ANDROID_RESOURCE}://${applicationContext.packageName}/${R.raw.pururin}")
+
         notificationManager.createNotificationChannel(
-            NotificationChannel(
-                CHANNEL_ID_REMINDER,
-                "Reminders",
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply { lockscreenVisibility = Notification.VISIBILITY_PRIVATE }
+            NotificationChannel(CHANNEL_ID_REMINDER, "Reminders", NotificationManager.IMPORTANCE_HIGH).apply {
+                lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+                setSound(soundUri,attributes)
+            }
         )
     }
 
