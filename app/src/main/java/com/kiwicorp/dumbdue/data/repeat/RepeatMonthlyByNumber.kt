@@ -1,7 +1,9 @@
 package com.kiwicorp.dumbdue.data.repeat
 
 import com.kiwicorp.dumbdue.util.getDaySuffix
-import java.text.SimpleDateFormat
+import org.threeten.bp.LocalTime
+import org.threeten.bp.YearMonth
+import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
 /**
@@ -12,12 +14,22 @@ import java.util.*
  *
  * [days] will be a list of the days in the month that the reminder will repeat on
  */
-data class RepeatMonthlyByNumber(override var frequency: Int, override var firstOccurrence: Calendar, val days: List<Int>): RepeatInterval(frequency, firstOccurrence) {
+data class RepeatMonthlyByNumber(override var frequency: Int, var startingYearMonth: YearMonth, var time: LocalTime, val days: List<Int>): RepeatInterval(frequency) {
 
     override fun getNextOccurrence(): Calendar {
         return if (prevOccurrence == null) {
-            prevOccurrence = firstOccurrence
-            firstOccurrence
+            prevOccurrence = Calendar.getInstance().apply {
+                set(startingYearMonth.year, startingYearMonth.monthValue - 1) // -1 because Calendar.JANUARY starts at 0
+                set(Calendar.HOUR_OF_DAY, this@RepeatMonthlyByNumber.time.hour)
+                set(Calendar.MINUTE, this@RepeatMonthlyByNumber.time.minute)
+
+                if (days[0] != 32) {
+                    set(Calendar.DAY_OF_MONTH, days[0])
+                } else {
+                    set(Calendar.DAY_OF_MONTH, getActualMaximum(Calendar.DAY_OF_MONTH))
+                }
+            }
+            prevOccurrence!!
         } else {
             prevOccurrence = Calendar.getInstance().apply {
                 timeInMillis = prevOccurrence!!.timeInMillis
@@ -44,7 +56,7 @@ data class RepeatMonthlyByNumber(override var frequency: Int, override var first
     }
 
     override fun toString(): String {
-        val time = SimpleDateFormat("h:mm a", Locale.US).format(firstOccurrence.time)
+        val time = this.time.format(DateTimeFormatter.ofPattern("h:mm a"))
 
         var string = "On the "
 
@@ -75,7 +87,7 @@ data class RepeatMonthlyByNumber(override var frequency: Int, override var first
         if (frequency == 1) {
             string += "every month at "
         } else if (frequency == 2) {
-            string += "every $frequency month at "
+            string += "every $frequency months at "
         }
         string += time
 

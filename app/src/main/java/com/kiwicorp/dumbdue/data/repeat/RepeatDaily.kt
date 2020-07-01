@@ -1,5 +1,8 @@
 package com.kiwicorp.dumbdue.data.repeat
 
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -8,12 +11,18 @@ import java.util.*
  *
  * [frequency] will be the days users receive a reminder on
  */
-data class RepeatDaily(override var frequency: Int, override var firstOccurrence: Calendar) : RepeatInterval(frequency, firstOccurrence) {
+data class RepeatDaily(override var frequency: Int, val startingDate: LocalDateTime) : RepeatInterval(frequency) {
 
     override fun getNextOccurrence(): Calendar {
         return if (prevOccurrence == null) {
-            prevOccurrence = firstOccurrence
-            firstOccurrence
+            prevOccurrence = Calendar.getInstance().apply {
+                set(startingDate.year,
+                    startingDate.monthValue - 1, // -1 because Calendar.JANUARY starts at 0
+                    startingDate.dayOfMonth,
+                    startingDate.hour,
+                    startingDate.minute)
+            }
+            prevOccurrence!!
         } else {
             prevOccurrence = Calendar.getInstance().apply {
                 timeInMillis = prevOccurrence!!.timeInMillis
@@ -24,7 +33,7 @@ data class RepeatDaily(override var frequency: Int, override var firstOccurrence
     }
     
     override fun toString(): String {
-        val time = SimpleDateFormat("h:mm a", Locale.US).format(firstOccurrence.time)
+        val time = startingDate.toLocalTime().format(DateTimeFormatter.ofPattern("h:mm a"))
 
         return if (frequency == 1) {
             "Daily $time"

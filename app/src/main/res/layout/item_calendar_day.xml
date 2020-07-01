@@ -1,53 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <import type="android.view.View"/>
 
         <variable
             name="dayItem"
-            type="com.kiwicorp.dumbdue.ui.addeditreminder.DayItem" />
+            type="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.DayItem" />
 
         <variable
             name="dayItemClickListener"
-            type="com.kiwicorp.dumbdue.ui.addeditreminder.DayItemClickListener" />
+            type="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.DayItemClickListener" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        xmlns:tools="http://schemas.android.com/tools"
         android:onClick="@{() -> dayItemClickListener.onDayItemClicked(dayItem)}">
 
-        <ImageView
-            android:id="@+id/circle"
-            android:layout_width="37sp"
-            android:layout_height="37sp"
-            android:src="@drawable/circle"
-            android:visibility="invisible"
-            app:layout_constraintStart_toStartOf="parent"
+        <include
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            app:layout_constraintDimensionRatio="H,1:1"
+            android:id="@+id/day_layout"
+            layout="@layout/calendar_day"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:visibility="visible"/>
-
-        <TextView
-            android:id="@+id/text_view"
-            android:layout_width="25sp"
-            android:layout_height="wrap_content"
-            android:maxLines="2"
-            app:layout_constraintStart_toStartOf="@id/circle"
-            app:layout_constraintBottom_toBottomOf="@id/circle"
-            app:layout_constraintTop_toTopOf="@id/circle"
-            app:layout_constraintEnd_toEndOf="@id/circle"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            tools:textSize="12sp"
-            tools:text="Last Day" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

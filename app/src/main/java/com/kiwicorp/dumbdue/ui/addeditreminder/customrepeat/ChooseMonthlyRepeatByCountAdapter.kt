@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui.addeditreminder
+package com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -19,7 +19,9 @@ class ChooseMonthlyRepeatByCountAdapter(private val onDayDeletedListener: OnDayD
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChooseMonthlyRepeatViewHolder {
-        return ChooseMonthlyRepeatViewHolder.from(parent)
+        return ChooseMonthlyRepeatViewHolder.from(
+            parent
+        )
     }
 
     override fun getItemCount(): Int = daysInMonth.size
@@ -82,7 +84,9 @@ class ChooseMonthlyRepeatViewHolder private constructor(val binding: ItemChooseM
         fun from(parent: ViewGroup): ChooseMonthlyRepeatViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = ItemChooseMonthlyRepeatByCountBinding.inflate(layoutInflater, parent, false)
-            return ChooseMonthlyRepeatViewHolder(binding)
+            return ChooseMonthlyRepeatViewHolder(
+                binding
+            )
         }
     }
 }

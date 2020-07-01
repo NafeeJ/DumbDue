@@ -28,12 +28,21 @@ class Converters {
     private val gson = GsonBuilder().registerTypeAdapterFactory(repeatIntervalTypeAdapterFactory).create()
 
     @TypeConverter
-    fun repeatIntervalToJsonString(repeatInterval: RepeatInterval): String {
-        return gson.toJson(repeatInterval)
+    fun repeatIntervalToJsonString(repeatInterval: RepeatInterval?): String? {
+        return if (repeatInterval != null) {
+            gson.toJson(repeatInterval)
+        } else {
+            null
+        }
+
     }
 
     @TypeConverter
-    fun jsonStringToRepeatInterval(jsonString: String): RepeatInterval {
-        return gson.fromJson(jsonString, RepeatInterval::class.java)
+    fun jsonStringToRepeatInterval(jsonString: String?): RepeatInterval? {
+        return if (jsonString != null) {
+            gson.fromJson(jsonString, RepeatInterval::class.java)
+        } else {
+            null
+        }
     }
 }

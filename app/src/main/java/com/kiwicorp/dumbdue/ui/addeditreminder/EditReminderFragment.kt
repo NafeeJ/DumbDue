@@ -111,7 +111,7 @@ class EditReminderFragment : DaggerFragment() {
     }
 
     private fun setupSnackbar() {
-        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver {snackbar ->
+        viewModel.eventSnackbar.observe(viewLifecycleOwner, EventObserver { snackbar ->
             snackbar.show(binding.coordinatorLayout)
         })
     }

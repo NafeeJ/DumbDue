@@ -63,7 +63,8 @@
                 app:argType="integer" />
             <action
                 android:id="@+id/action_choose_repeat_fragment_dest_to_customRepeatFragment"
-                app:destination="@id/customRepeatFragment" />
+                app:destination="@id/customRepeatFragment"
+                app:popUpTo="@id/add_reminder_fragment_dest" />
         </dialog>
 
         <dialog
@@ -86,8 +87,30 @@
         </dialog>
         <dialog
             android:id="@+id/customRepeatFragment"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.ChooseCustomRepeatFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatFragment"
             android:label="CustomRepeatFragment" >
+            <argument
+                android:name="graphId"
+                app:argType="integer" />
+            <action
+                android:id="@+id/action_customRepeatFragment_to_chooseDailyStartDateFragment"
+                app:destination="@id/chooseDailyStartDateFragment" />
+            <action
+                android:id="@+id/action_customRepeatFragment_to_chooseWeeklyStartDateFragment"
+                app:destination="@id/chooseWeeklyStartDateFragment" />
+        </dialog>
+        <dialog
+            android:id="@+id/chooseDailyStartDateFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseDailyStartDateFragment"
+            android:label="ChooseDailyStartDateFragment">
+            <argument
+                android:name="graphId"
+                app:argType="integer" />
+        </dialog>
+        <dialog
+            android:id="@+id/chooseWeeklyStartDateFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseWeeklyStartDateFragment"
+            android:label="ChooseWeeklyStartDateFragment" >
             <argument
                 android:name="graphId"
                 app:argType="integer" />
@@ -128,7 +151,8 @@
                 app:argType="integer"/>
             <action
                 android:id="@+id/action_choose_repeat_fragment_dest_to_customRepeatFragment"
-                app:destination="@id/customRepeatFragment" />
+                app:destination="@id/customRepeatFragment"
+                app:popUpTo="@id/edit_reminder_fragment_dest" />
         </dialog>
 
         <dialog
@@ -151,8 +175,31 @@
         </dialog>
         <dialog
             android:id="@+id/customRepeatFragment"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.ChooseCustomRepeatFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatFragment"
             android:label="CustomRepeatFragment" >
+            <argument
+                android:name="graphId"
+                app:argType="integer" />
+            <action
+                android:id="@+id/action_customRepeatFragment_to_chooseDailyStartDateFragment"
+                app:destination="@id/chooseDailyStartDateFragment" />
+            <action
+                android:id="@+id/action_customRepeatFragment_to_chooseWeeklyStartDateFragment"
+                app:destination="@id/chooseWeeklyStartDateFragment" />
+        </dialog>
+        <dialog
+            android:id="@+id/chooseDailyStartDateFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseDailyStartDateFragment"
+            android:label="ChooseDailyStartDateFragment">
+            <argument
+                android:name="graphId"
+                app:argType="integer" />
+        </dialog>
+
+        <dialog
+            android:id="@+id/chooseWeeklyStartDateFragment"
+            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseWeeklyStartDateFragment"
+            android:label="ChooseWeeklyStartDateFragment" >
             <argument
                 android:name="graphId"
                 app:argType="integer" />

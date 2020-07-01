@@ -1,7 +1,6 @@
-package com.kiwicorp.dumbdue.ui.addeditreminder
+package com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.R
@@ -29,7 +28,7 @@ class ChooseRepeatMonthlyByNumberCalendarAdapter(private val onDayItemClickListe
 
 class DayViewHolder private constructor(val binding: ItemCalendarDayBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(dayItem: DayItem, dayItemClickListener: DayItemClickListener) {
-        binding.textView.apply {
+        binding.dayLayout.calendarDayText.apply {
             if (dayItem.number == 32) {
                 text = context.getString(R.string.last_day)
                 textSize = 12f
@@ -38,7 +37,13 @@ class DayViewHolder private constructor(val binding: ItemCalendarDayBinding) : R
                 textSize = 20f
             }
         }
-        binding.circle.visibility = if (dayItem.isChecked) View.VISIBLE else View.INVISIBLE
+        with(binding.dayLayout.calendarDayBg) {
+            if (dayItem.isChecked) {
+                setBackgroundResource(R.drawable.calendar_selected)
+            } else {
+                background = null
+            }
+        }
         binding.dayItem = dayItem
         binding.dayItemClickListener = dayItemClickListener
     }

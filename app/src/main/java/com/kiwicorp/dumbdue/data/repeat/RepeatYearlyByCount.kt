@@ -1,5 +1,9 @@
 package com.kiwicorp.dumbdue.data.repeat
 
+import org.threeten.bp.DayOfWeek
+import org.threeten.bp.LocalTime
+import org.threeten.bp.Year
+import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -14,12 +18,24 @@ import java.util.*
  * most 5 times, 5 represent the last occurrence of the day of the week in the month.
  *
  */
-data class RepeatYearlyByCount(override var frequency: Int, override var firstOccurrence: Calendar, var dayOfWeekInMonth: Int): RepeatInterval(frequency, firstOccurrence) {
+data class RepeatYearlyByCount(override var frequency: Int, val startingYear: Int, val month: Int,var dayOfWeek: Int, var dayOfWeekInMonth: Int, val time: LocalTime): RepeatInterval(frequency) {
 
     override fun getNextOccurrence(): Calendar {
         return if (prevOccurrence == null) {
-            prevOccurrence = firstOccurrence
-            firstOccurrence
+            prevOccurrence = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, this@RepeatYearlyByCount.time.hour)
+                set(Calendar.MINUTE, this@RepeatYearlyByCount.time.minute)
+                set(Calendar.MONTH, month)
+                set(Calendar.YEAR, startingYear)
+                set(Calendar.WEEK_OF_MONTH,2)
+                set(Calendar.DAY_OF_WEEK, dayOfWeek)
+                if (dayOfWeekInMonth == 5) {
+                    set(Calendar.DAY_OF_WEEK_IN_MONTH, getActualMaximum(Calendar.DAY_OF_WEEK_IN_MONTH))
+                } else {
+                    dayOfWeekInMonth
+                }
+            }
+            prevOccurrence!!
         } else {
             val next = Calendar.getInstance().apply { timeInMillis = prevOccurrence!!.timeInMillis }
 
@@ -36,7 +52,7 @@ data class RepeatYearlyByCount(override var frequency: Int, override var firstOc
     }
 
     override fun toString(): String {
-        val time = SimpleDateFormat("h:mm a", Locale.US).format(firstOccurrence.time)
+        val time = this.time.format(DateTimeFormatter.ofPattern("h:mm a"))
 
         val week = when(dayOfWeekInMonth) {
             1 -> "1st"
@@ -46,7 +62,7 @@ data class RepeatYearlyByCount(override var frequency: Int, override var firstOc
             else -> "last"
         }
 
-        val monthStr = when(firstOccurrence.get(Calendar.MONTH)) {
+        val monthStr = when(month) {
             Calendar.JANUARY -> "January"
             Calendar.FEBRUARY -> "February"
             Calendar.MARCH -> "March"
@@ -61,7 +77,7 @@ data class RepeatYearlyByCount(override var frequency: Int, override var firstOc
             else -> "December"
         }
 
-        val dayOfWeekStr = when(firstOccurrence.get(Calendar.DAY_OF_WEEK)) {
+        val dayOfWeekStr = when(dayOfWeek) {
             Calendar.MONDAY -> "Monday"
             Calendar.TUESDAY -> "Tuesday"
             Calendar.WEDNESDAY -> "Wednesday"

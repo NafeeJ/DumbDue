@@ -61,50 +61,50 @@ class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
     }
 
     private fun setupTextViews() {
-        binding.repeatOffText.apply {
-            text = getString(R.string.repeat_off)
-            setOnClickListener { viewModel.onChooseRepeatInterval(null) }
-        }
-        binding.repeatDailyText.apply {
-            val repeatInterval = RepeatDaily(1,viewModel.calendar.value!!)
-            text = repeatInterval.toString()
-            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
-        }
-        binding.repeatWeekdaysText.apply {
-            val weekDays = listOf(
-                Calendar.MONDAY,
-                Calendar.TUESDAY,
-                Calendar.WEDNESDAY,
-                Calendar.THURSDAY,
-                Calendar.FRIDAY
-            )
-            val repeatInterval = RepeatWeekly(1,viewModel.calendar.value!!,weekDays)
-            text = repeatInterval.toString()
-            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
-        }
-        binding.repeatWeeklyText.apply {
-            val calendar = viewModel.calendar.value!!
-            val repeatInterval = RepeatWeekly(1,calendar, listOf(calendar.get(Calendar.DAY_OF_WEEK)))
-            text = repeatInterval.toString()
-            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
-        }
-        binding.repeatMonthlyText.apply {
-            val calendar = viewModel.calendar.value!!
-            val recurrenceDays = listOf(calendar.get(Calendar.DAY_OF_MONTH))
-            val repeatInterval = RepeatMonthlyByNumber(1,calendar,recurrenceDays)
-            text = repeatInterval.toString()
-            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
-        }
-        binding.repeatYearlyText.apply {
-            val calendar = viewModel.calendar.value!!
-            val repeatInterval = RepeatYearlyByNumber(1,calendar)
-            text = repeatInterval.toString()
-            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
-        }
+        //todo
+//        binding.repeatOffText.apply {
+//            text = getString(R.string.repeat_off)
+//            setOnClickListener { viewModel.onChooseRepeatInterval(null) }
+//        }
+//        binding.repeatDailyText.apply {
+//            val repeatInterval = RepeatDaily(1,viewModel.calendar.value!!)
+//            text = repeatInterval.toString()
+//            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
+//        }
+//        binding.repeatWeekdaysText.apply {
+//            val weekDays = listOf(
+//                Calendar.MONDAY,
+//                Calendar.TUESDAY,
+//                Calendar.WEDNESDAY,
+//                Calendar.THURSDAY,
+//                Calendar.FRIDAY
+//            )
+//            val repeatInterval = RepeatWeekly(1,viewModel.calendar.value!!,weekDays)
+//            text = repeatInterval.toString()
+//            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
+//        }
+//        binding.repeatWeeklyText.apply {
+//            val calendar = viewModel.calendar.value!!
+//            val repeatInterval = RepeatWeekly(1,calendar, listOf(calendar.get(Calendar.DAY_OF_WEEK)))
+//            text = repeatInterval.toString()
+//            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
+//        }
+//        binding.repeatMonthlyText.apply {
+//            val calendar = viewModel.calendar.value!!
+//            val recurrenceDays = listOf(calendar.get(Calendar.DAY_OF_MONTH))
+//            val repeatInterval = RepeatMonthlyByNumber(1,calendar,recurrenceDays)
+//            text = repeatInterval.toString()
+//            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
+//        }
+//        binding.repeatYearlyText.apply {
+//            val calendar = viewModel.calendar.value!!
+//            val repeatInterval = RepeatYearlyByNumber(1,calendar)
+//            text = repeatInterval.toString()
+//            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
+//        }
         binding.repeatCustomText.apply {
             text = getString(R.string.repeat_custom)
             setOnClickListener {
-                this@ChooseRepeatFragment.dismiss()
                 navigateToCustomRepeatMenu()
             }
         }

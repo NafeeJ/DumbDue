@@ -3,6 +3,7 @@ package com.kiwicorp.dumbdue.ui.addeditreminder
 import androidx.lifecycle.ViewModel
 import com.kiwicorp.dumbdue.di.ViewModelKey
 import com.kiwicorp.dumbdue.di.ViewModelModule
+import com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.*
 import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector

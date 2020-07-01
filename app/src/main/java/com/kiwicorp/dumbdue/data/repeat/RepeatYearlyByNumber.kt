@@ -1,6 +1,7 @@
 package com.kiwicorp.dumbdue.data.repeat
 
-import java.text.SimpleDateFormat
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
 /**
@@ -11,33 +12,36 @@ import java.util.*
  * [month] is the month to repeat on and will be on of [Calendar]'s constants eg: [Calendar.JUNE]
  * [day] is the day of the month to repeat on
  */
-class RepeatYearlyByNumber(override var frequency: Int, override var firstOccurrence: Calendar) : RepeatInterval(frequency, firstOccurrence) {
+class RepeatYearlyByNumber(override var frequency: Int, val startingDateTime: LocalDateTime) : RepeatInterval(frequency) {
 
     override fun getNextOccurrence(): Calendar {
         return if (prevOccurrence == null) {
-            prevOccurrence = firstOccurrence
-            firstOccurrence
+            prevOccurrence = Calendar.getInstance().apply {
+                set(Calendar.YEAR, startingDateTime.year)
+                set(Calendar.MONTH, startingDateTime.monthValue - 1)
+                set(Calendar.DAY_OF_MONTH, startingDateTime.dayOfMonth)
+                set(Calendar.HOUR_OF_DAY, startingDateTime.hour)
+                set(Calendar.MINUTE, startingDateTime.minute)
+            }
+            prevOccurrence!!
         } else {
             val next = Calendar.getInstance().apply { timeInMillis = prevOccurrence!!.timeInMillis }
 
-            val month = firstOccurrence.get(Calendar.MONTH)
-            val day = firstOccurrence.get(Calendar.DAY_OF_MONTH)
-
-            if (prevOccurrence!!.get(Calendar.MONTH) == month && prevOccurrence!!.get(Calendar.DAY_OF_MONTH) == day) {
+            if (prevOccurrence!!.get(Calendar.MONTH) == startingDateTime.dayOfMonth && prevOccurrence!!.get(Calendar.DAY_OF_MONTH) == startingDateTime.dayOfMonth) {
                 next.add(Calendar.YEAR,frequency)
             } else {
                 // calendar with the day the reminder is supposed to repeat on this year
                 val thisYearRepeatCalendar = Calendar.getInstance().apply {
                     timeInMillis = prevOccurrence!!.timeInMillis
-                    set(Calendar.MONTH,month)
-                    set(Calendar.DAY_OF_MONTH,day)
+                    set(Calendar.MONTH,startingDateTime.monthValue - 1)
+                    set(Calendar.DAY_OF_MONTH,startingDateTime.dayOfMonth)
                 }
                 if (thisYearRepeatCalendar.timeInMillis < next.timeInMillis) {
                     next.add(Calendar.YEAR,frequency)
                 }
                 next.apply {
-                    set(Calendar.MONTH,month)
-                    set(Calendar.DAY_OF_MONTH,day)
+                    set(Calendar.MONTH,startingDateTime.monthValue - 1)
+                    set(Calendar.DAY_OF_MONTH,startingDateTime.dayOfMonth)
                 }
             }
             prevOccurrence = next
@@ -46,7 +50,7 @@ class RepeatYearlyByNumber(override var frequency: Int, override var firstOccurr
     }
 
     override fun toString(): String {
-        val dateAndTime = SimpleDateFormat("MMMM d, h:mm a", Locale.US).format(firstOccurrence.time)
+        val dateAndTime = startingDateTime.format(DateTimeFormatter.ofPattern("MMMM d, h:mm a"))
         return if (frequency == 1) "Every $dateAndTime" else "$dateAndTime every $frequency years"
     }
 }

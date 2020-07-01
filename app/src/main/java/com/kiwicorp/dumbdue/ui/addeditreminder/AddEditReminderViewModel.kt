@@ -62,8 +62,8 @@ class AddEditReminderViewModel @Inject constructor(
     private val _eventCompleteDelete = MutableLiveData<Event<Int>>()
     val eventCompleteDelete: LiveData<Event<Int>> = _eventCompleteDelete
 
-    private val _snackbarData = MutableLiveData<Event<SnackbarMessage>>()
-    val snackbarMessage: LiveData<Event<SnackbarMessage>> = _snackbarData
+    private val _eventSnackbar = MutableLiveData<Event<SnackbarMessage>>()
+    val eventSnackbar: LiveData<Event<SnackbarMessage>> = _eventSnackbar
 
     /**
      * Called by ImageButtons in AddReminderFragment/EditReminderFragment via listener binding.
@@ -129,13 +129,13 @@ class AddEditReminderViewModel @Inject constructor(
     fun addReminder() {
         viewModelScope.launch {
             if (title.value == null || title.value == "") {
-                _snackbarData.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
+                _eventSnackbar.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
             } else if (calendar.value!!.isOverdue()) {
-                _snackbarData.value = Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
+                _eventSnackbar.value = Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
             } else {
                 val reminder = Reminder(title.value!!,
                     calendar.value!!,
-                    repeatInterval.value!!,
+                    repeatInterval.value,
                     autoSnoozeVal.value!!)
 
                 insert(reminder)
@@ -151,13 +151,13 @@ class AddEditReminderViewModel @Inject constructor(
      */
     fun onUpdateReminder() {
         if (title.value == null || title.value == "") {
-            _snackbarData.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
+            _eventSnackbar.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
         } else if (calendar.value!!.isOverdue()) {
-            _snackbarData.value =
+            _eventSnackbar.value =
                 Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
         } else {
             viewModelScope.launch {
-                val reminder = Reminder(title.value!!,calendar.value!!,repeatInterval.value!!,autoSnoozeVal.value!!,reminderId!!)
+                val reminder = Reminder(title.value!!,calendar.value!!,repeatInterval.value,autoSnoozeVal.value!!,reminderId!!)
                 update(reminder)
             }
             _eventClose.value = Event(Unit)
