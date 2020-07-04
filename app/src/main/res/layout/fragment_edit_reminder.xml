@@ -53,7 +53,7 @@
                 android:padding="14sp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#FFFFFF"
-                app:timeFromNow="@{viewmodel.calendar}"
+                dueDate="@{viewmodel.dueDate}"
                 android:onClick="@{()->viewmodel.onOpenTimePicker()}"
                 tools:text="Fri, May 29, 10:05 AM in 4 Hours"/>
 
@@ -69,7 +69,6 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#FFFFFF"
                 app:repeatInterval="@{viewmodel.repeatInterval}"
-                app:calendar="@{viewmodel.calendar}"
                 android:onClick="@{()->viewmodel.onOpenRepeatMenu()}"
                 tools:text="Weekdays 10:05 AM"/>
 

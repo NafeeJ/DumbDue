@@ -12,8 +12,9 @@ import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
 import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
-import com.kiwicorp.dumbdue.util.isOverdue
 import kotlinx.coroutines.*
+import org.threeten.bp.ZonedDateTime
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -25,12 +26,8 @@ class AddEditReminderViewModel @Inject constructor(
     //Public mutable for two-way data binding
     val title = MutableLiveData<String>()
 
-    private val _calendar = MutableLiveData(Calendar.getInstance().apply {
-        set(Calendar.MILLISECOND,0)
-        set(Calendar.SECOND,0)
-    })
-
-    val calendar: LiveData<Calendar> = _calendar
+    private val _dueDate = MutableLiveData(ZonedDateTime.now().withSecond(0).withNano(0))
+    val dueDate: LiveData<ZonedDateTime> = _dueDate
 
     private val _repeatInterval = MutableLiveData<RepeatInterval>()
     val repeatInterval: LiveData<RepeatInterval> = _repeatInterval
@@ -130,11 +127,11 @@ class AddEditReminderViewModel @Inject constructor(
         viewModelScope.launch {
             if (title.value == null || title.value == "") {
                 _eventSnackbar.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
-            } else if (calendar.value!!.isOverdue()) {
+            } else if (dueDate.value!!.isBefore(ZonedDateTime.now())) {
                 _eventSnackbar.value = Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
             } else {
                 val reminder = Reminder(title.value!!,
-                    calendar.value!!,
+                    dueDate.value!!,
                     repeatInterval.value,
                     autoSnoozeVal.value!!)
 
@@ -152,12 +149,12 @@ class AddEditReminderViewModel @Inject constructor(
     fun onUpdateReminder() {
         if (title.value == null || title.value == "") {
             _eventSnackbar.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
-        } else if (calendar.value!!.isOverdue()) {
+        } else if (dueDate.value!!.isBefore(ZonedDateTime.now())) {
             _eventSnackbar.value =
                 Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
         } else {
             viewModelScope.launch {
-                val reminder = Reminder(title.value!!,calendar.value!!,repeatInterval.value,autoSnoozeVal.value!!,reminderId!!)
+                val reminder = Reminder(title.value!!,dueDate.value!!,repeatInterval.value,autoSnoozeVal.value!!,reminderId!!)
                 update(reminder)
             }
             _eventClose.value = Event(Unit)
@@ -212,7 +209,7 @@ class AddEditReminderViewModel @Inject constructor(
      */
     private fun onReminderLoaded(reminder: Reminder) {
         title.value = reminder.title
-        _calendar.value = reminder.calendar
+        _dueDate.value = reminder.dueDate
         _repeatInterval.value = reminder.repeatInterval
         _autoSnoozeVal.value = reminder.autoSnoozeVal
         reminderId = reminder.id
@@ -221,31 +218,25 @@ class AddEditReminderViewModel @Inject constructor(
     /**
      * Called by the QuickAccess buttons in time_button.xml via listener binding to update the calendar.
      * Sets [calendar] to the hour and minute of the invoking Button's text.
-     *
-     * _calendar.value must be reassigned in order for Observers to be notified the calendar has
-     * changed
      */
     override fun onQuickAccessTimeSetterClick(key: String) {
-        _calendar.value = _calendar.value?.apply {
-            preferencesStorage.getQuickAccessTimeSetter(key).setTime(this)
-        }
+        Timber.d("Time Setter Clicked")
+        val timeSetter = preferencesStorage.getQuickAccessTimeSetter(key)
+        _dueDate.value = dueDate.value!!.with(timeSetter)
     }
 
     /**
      * Called by the TimeSetter buttons in time_button.xml via listener binding to update the calendar.
      * Increments/Decrements [calendar] by the number and unit that the invoking Button's text indicates.
-     *
-     * _calendar.value must be reassigned in order for Observers to be notified the calendar has
-     * changed
      */
     override fun onIncrementalTimeSetterClick(key: String) {
-        _calendar.value = _calendar.value?.apply {
-            preferencesStorage.getIncrementalTimeSetter(key).setTime(this)
-        }
+        Timber.d("Time Setter Clicked")
+        val timeSetter = preferencesStorage.getIncrementalTimeSetter(key)
+        _dueDate.value = dueDate.value!!.with(timeSetter)
     }
 
-    fun onCalendarUpdated(calendar: Calendar) {
-        _calendar.value = _calendar.value!!.apply { timeInMillis = calendar.timeInMillis }
+    fun updateDueDate(dueDate: ZonedDateTime) {
+        _dueDate.value = dueDate
     }
 
 }

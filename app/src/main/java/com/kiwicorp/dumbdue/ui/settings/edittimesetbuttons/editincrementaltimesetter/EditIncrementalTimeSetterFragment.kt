@@ -13,6 +13,8 @@ import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditIncrementalTimeSetterBinding
 import com.shawnlin.numberpicker.NumberPicker
 import dagger.android.support.DaggerFragment
+import org.threeten.bp.temporal.ChronoField
+import org.threeten.bp.temporal.ChronoUnit
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.absoluteValue
@@ -68,7 +70,7 @@ class EditIncrementalTimeSetterFragment : DaggerFragment() {
 
     private fun setupNumberPicker(numberPicker: NumberPicker) {
         with(numberPicker) {
-            value = viewModel.incrementalTimeSetter.number.absoluteValue
+            value = viewModel.incrementalTimeSetter.number.absoluteValue.toInt()
             setOnValueChangedListener(viewModel.numberPickerOnValueChangedListener)
         }
     }
@@ -78,11 +80,11 @@ class EditIncrementalTimeSetterFragment : DaggerFragment() {
         with(unitPicker) {
             displayedValues = units
             value = when(viewModel.incrementalTimeSetter.unit) {
-                Calendar.MINUTE -> 1
-                Calendar.HOUR -> 2
-                Calendar.DAY_OF_YEAR -> 3
-                Calendar.WEEK_OF_YEAR -> 4
-                Calendar.MONTH -> 5
+                ChronoUnit.MINUTES -> 1
+                ChronoUnit.HOURS -> 2
+                ChronoUnit.DAYS -> 3
+                ChronoUnit.WEEKS -> 4
+                ChronoUnit.MONTHS -> 5
                 else -> 6
             }
             setOnValueChangedListener(viewModel.getUnitPickerOnValueChangeListener(numberPicker))

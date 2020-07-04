@@ -10,9 +10,10 @@ import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentTimePickerBinding
 import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
-import com.shawnlin.numberpicker.NumberPicker
-import java.text.SimpleDateFormat
-import java.util.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.temporal.ChronoField
 import javax.inject.Inject
 
 class TimePickerFragment : DaggerBottomSheetDialogFragment() {
@@ -40,100 +41,94 @@ class TimePickerFragment : DaggerBottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setupDatePicker(binding.datePicker, viewModel.calendar.value!!)
-        setupHourPicker(binding.hourPicker, viewModel.calendar.value!!)
-        setupMinutePicker(binding.minutePicker, viewModel.calendar.value!!)
-        setupAmpmPicker(binding.ampmPicker, viewModel.calendar.value!!)
+        setupDatePicker()
+        setupHourPicker()
+        setupMinutePicker()
+        setupAmpmPicker()
+
     }
 
-    private fun setupDatePicker(datePicker: NumberPicker, calendar: Calendar) {
-        // a list of 5 calendars where each calendar is a day apart and the calendar at [2] is the
+    private fun setupDatePicker() {
+        // a list of 5 dates where each calendar is a day apart and the calendar at [2] is the
         // current due date
-        val calendars = List(5) { i ->
-            Calendar.getInstance().apply {
-                timeInMillis = calendar.timeInMillis
-                add(Calendar.DAY_OF_YEAR,i - 2)
-            }
-        }
+        val dates = MutableList(5) { LocalDate.from(viewModel.dueDate.value!!).plusDays( it - 2L) }
 
-        val today = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
-        val dateFormatter = SimpleDateFormat("EEE MMM d", Locale.US)
+        val dateFormatter = DateTimeFormatter.ofPattern("EEE MMM d")
         //return the date of the calendar formatted. If the calendar's date is today, return "Today"
-        fun format(calendar: Calendar): String {
-            return if (calendar.get(Calendar.DAY_OF_YEAR) == today) {
+        fun format(date: LocalDate): String {
+            return if (date.dayOfWeek == ZonedDateTime.now().dayOfWeek) {
                 "Today"
             } else {
-                dateFormatter.format(calendar.time)
+                dateFormatter.format(date)
             }
         }
 
         // a list of the 5 calendars from [calendars] formatted
-        val dates = Array(5) { i -> format(calendars[i]) }
+        val datesStr = Array(5) { format(dates[it]) }
+        with(binding.datePicker) {
+            displayedValues = datesStr
 
-        datePicker.displayedValues = dates
-
-        datePicker.setOnValueChangedListener { picker, oldVal, newVal ->
-            if (oldVal < newVal || (oldVal == 4 && newVal == 0)) { //if the date picker is increasing
-                //gets the proper index of the new val +1/+2
-                val indexPlus1: Int = if (newVal + 1 <= 4) newVal + 1 else 0
-                val indexPlus2: Int = if (newVal + 2 <= 4) newVal + 2 else newVal - 4 + 1
-                //increments the next two values of the picker to be +1/+2 days from the current val of the picker
-                calendars[indexPlus1].timeInMillis = calendars[newVal].timeInMillis + 8.64e+7.toLong()
-                calendars[indexPlus2].timeInMillis = calendars[newVal].timeInMillis + (2 * 8.64e+7).toLong()
-                //updates the date list to display the correct calendar dates
-                dates[indexPlus1] = format(calendars[indexPlus1])
-                dates[indexPlus2] = format(calendars[indexPlus2])
-            } else { //if the date picker is decreasing
-                //gets the proper index of the new val -1/-2
-                val indexMinus1: Int = if (newVal - 1 >= 0) newVal - 1 else 4
-                val indexMinus2: Int = if (newVal - 2 >= 0) newVal - 2 else newVal + 4 - 1
-                //decrements the last two values of the picker to be -1/-2 days from the current val of the picker
-                calendars[indexMinus1].timeInMillis = calendars[newVal].timeInMillis - 8.64e+7.toLong()
-                calendars[indexMinus2].timeInMillis = calendars[newVal].timeInMillis - (2 * 8.64e+7).toLong()
-                //updates the date list to display the correct dates
-                dates[indexMinus1] = format(calendars[indexMinus1])
-                dates[indexMinus2] = format(calendars[indexMinus2])
-            }
-            viewModel.onCalendarUpdated(calendars[newVal])
-        }
-    }
-
-    private fun setupHourPicker(hourPicker: NumberPicker, calendar: Calendar) {
-        with(hourPicker) {
-            value = calendar.get(Calendar.HOUR)
             setOnValueChangedListener { picker, oldVal, newVal ->
-                calendar.set(Calendar.HOUR, newVal)
-                viewModel.onCalendarUpdated(calendar)
+                if (oldVal < newVal || (oldVal == 4 && newVal == 0)) { //if the date picker is increasing
+                    //gets the proper index of the new val +1/+2
+                    val indexPlus1: Int = if (newVal + 1 <= 4) newVal + 1 else 0
+                    val indexPlus2: Int = if (newVal + 2 <= 4) newVal + 2 else newVal - 4 + 1
+                    //increments the next two values of the picker to be +1/+2 days from the current val of the picker
+                    dates[indexPlus1] = dates[newVal].plusDays(1)
+                    dates[indexPlus2] = dates[newVal].plusDays(2)
+                    //updates the date list to display the correct calendar dates
+                    datesStr[indexPlus1] = format(dates[indexPlus1])
+                    datesStr[indexPlus2] = format(dates[indexPlus2])
+                } else { //if the date picker is decreasing
+                    //gets the proper index of the new val -1/-2
+                    val indexMinus1: Int = if (newVal - 1 >= 0) newVal - 1 else 4
+                    val indexMinus2: Int = if (newVal - 2 >= 0) newVal - 2 else newVal + 4 - 1
+                    //decrements the last two values of the picker to be -1/-2 days from the current val of the picker
+                    dates[indexMinus1] = dates[newVal].minusDays(1)
+                    dates[indexMinus2] = dates[newVal].minusDays(2)
+                    //updates the date list to display the correct dates
+                    datesStr[indexMinus1] = format(dates[indexMinus1])
+                    datesStr[indexMinus2] = format(dates[indexMinus2])
+                }
+                viewModel.updateDueDate(viewModel.dueDate.value!!.with(dates[newVal]))
+            }
+        }
+
+    }
+
+    private fun setupHourPicker() {
+        with(binding.hourPicker) {
+            value = viewModel.dueDate.value!!.get(ChronoField.HOUR_OF_AMPM)
+            setOnValueChangedListener { picker, oldVal, newVal ->
+                viewModel.updateDueDate(ZonedDateTime.from(viewModel.dueDate.value!!).with(ChronoField.HOUR_OF_AMPM, if (newVal == 12) 0 else newVal.toLong()))
             }
         }
     }
 
-    private fun setupMinutePicker(minutePicker: NumberPicker, calendar: Calendar) {
+    private fun setupMinutePicker() {
         val minutes = Array(60) {i -> i.toString() }
         for (i in 0..9) {
             minutes[i] = "0${minutes[i]}"
         }
-        with(minutePicker) {
-            value = calendar.get(Calendar.MINUTE)
+        with(binding.minutePicker) {
+            value = viewModel.dueDate.value!!.minute
             displayedValues = minutes
             setOnValueChangedListener { picker, oldVal, newVal ->
-                calendar.set(Calendar.MINUTE, newVal)
-                viewModel.onCalendarUpdated(calendar)
+                viewModel.updateDueDate(ZonedDateTime.from(viewModel.dueDate.value!!).withMinute(newVal))
             }
         }
     }
 
-    private fun setupAmpmPicker(ampmPicker: NumberPicker, calendar: Calendar) {
+    private fun setupAmpmPicker() {
         val ampm = arrayOf("AM","PM")
-        with(ampmPicker) {
+        with(binding.ampmPicker) {
             displayedValues = ampm
-            value = when(calendar.get(Calendar.AM_PM)) {
-                Calendar.AM -> 1
-                else -> 2
+            value = when(viewModel.dueDate.value!!.get(ChronoField.AMPM_OF_DAY)) {
+                0 -> 1 // AM
+                else -> 2 // PM
             }
             setOnValueChangedListener { picker, oldVal, newVal ->
-                calendar.set(Calendar.AM_PM, if (newVal == 1) Calendar.AM else Calendar.PM)
-                viewModel.onCalendarUpdated(calendar)
+                viewModel.updateDueDate(ZonedDateTime.from(viewModel.dueDate.value!!).with(ChronoField.AMPM_OF_DAY,newVal - 1L))
             }
         }
     }

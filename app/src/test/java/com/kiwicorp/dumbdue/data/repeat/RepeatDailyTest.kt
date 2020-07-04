@@ -2,41 +2,33 @@ package com.kiwicorp.dumbdue.data.repeat
 
 import org.junit.Assert.*
 import org.junit.Test
-import java.util.*
+import org.threeten.bp.*
 
 class RepeatDailyTest {
     @Test
     fun getNextDueDate_frequency1june152020_june162020() {
-        val june152020: Calendar = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,15,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
-        val repeat = RepeatDaily(1, june152020)
+        val time = LocalTime.of(10,15)
+        val date = LocalDate.of(2020,Month.JUNE,15)
+        val june152020 = ZonedDateTime.of(date,time, ZoneId.systemDefault())
+        val repeat = RepeatDaily(1, june152020.toLocalDateTime())
 
-        val june162020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,16,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june162020 = ZonedDateTime.of(LocalDate.of(2020,Month.JUNE,16),time, ZoneId.systemDefault())
 
         val result = repeat.getNextDueDate(june152020)
-        assertEquals(result,june162020)
+        assertEquals(june162020,result)
     }
 
     @Test
     fun getNextDueDate_frequency3june152020_june182020() {
-        val june152020: Calendar = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,15,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
-        val repeat = RepeatDaily(3,june152020)
+        val time = LocalTime.of(10,15)
+        val date = LocalDate.of(2020,Month.JUNE,15)
+        val june152020 = ZonedDateTime.of(date,time, ZoneId.systemDefault())
+        val repeat = RepeatDaily(3, june152020.toLocalDateTime())
 
-        val june182020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,18,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june182020 = ZonedDateTime.of(LocalDate.of(2020,Month.JUNE,18),time, ZoneId.systemDefault())
 
         val result = repeat.getNextDueDate(june152020)
-        assertEquals(result,june182020)
+        assertEquals(june182020,result)
     }
 
 }

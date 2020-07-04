@@ -13,6 +13,11 @@ import com.kiwicorp.dumbdue.data.repeat.*
 import com.kiwicorp.dumbdue.databinding.FragmentChooseRepeatBinding
 import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
+import org.threeten.bp.DayOfWeek
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
+import org.threeten.bp.YearMonth
+import org.threeten.bp.temporal.TemporalAdjusters
 import java.util.*
 import javax.inject.Inject
 
@@ -61,53 +66,77 @@ class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
     }
 
     private fun setupTextViews() {
-        //todo
-//        binding.repeatOffText.apply {
-//            text = getString(R.string.repeat_off)
-//            setOnClickListener { viewModel.onChooseRepeatInterval(null) }
-//        }
-//        binding.repeatDailyText.apply {
-//            val repeatInterval = RepeatDaily(1,viewModel.calendar.value!!)
-//            text = repeatInterval.toString()
-//            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
-//        }
-//        binding.repeatWeekdaysText.apply {
-//            val weekDays = listOf(
-//                Calendar.MONDAY,
-//                Calendar.TUESDAY,
-//                Calendar.WEDNESDAY,
-//                Calendar.THURSDAY,
-//                Calendar.FRIDAY
-//            )
-//            val repeatInterval = RepeatWeekly(1,viewModel.calendar.value!!,weekDays)
-//            text = repeatInterval.toString()
-//            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
-//        }
-//        binding.repeatWeeklyText.apply {
-//            val calendar = viewModel.calendar.value!!
-//            val repeatInterval = RepeatWeekly(1,calendar, listOf(calendar.get(Calendar.DAY_OF_WEEK)))
-//            text = repeatInterval.toString()
-//            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
-//        }
-//        binding.repeatMonthlyText.apply {
-//            val calendar = viewModel.calendar.value!!
-//            val recurrenceDays = listOf(calendar.get(Calendar.DAY_OF_MONTH))
-//            val repeatInterval = RepeatMonthlyByNumber(1,calendar,recurrenceDays)
-//            text = repeatInterval.toString()
-//            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
-//        }
-//        binding.repeatYearlyText.apply {
-//            val calendar = viewModel.calendar.value!!
-//            val repeatInterval = RepeatYearlyByNumber(1,calendar)
-//            text = repeatInterval.toString()
-//            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
-//        }
+        val dueDate = viewModel.dueDate.value!!
+
+        binding.repeatOffText.apply {
+            text = getString(R.string.repeat_off)
+
+            setOnClickListener { viewModel.onChooseRepeatInterval(null) }
+        }
+
+        binding.repeatDailyText.apply {
+            val repeatInterval = RepeatDaily(
+                1,
+                viewModel.dueDate.value!!.toLocalDateTime())
+
+            text = repeatInterval.toString()
+
+            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
+        }
+
+        binding.repeatWeekdaysText.apply {
+            val weekDays = listOf(
+                DayOfWeek.MONDAY,
+                DayOfWeek.TUESDAY,
+                DayOfWeek.WEDNESDAY,
+                DayOfWeek.THURSDAY,
+                DayOfWeek.FRIDAY
+            )
+            val thisSunday = dueDate.toLocalDateTime()
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+            val repeatInterval = RepeatWeekly(1,thisSunday,weekDays)
+
+            text = repeatInterval.toString()
+
+            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
+        }
+
+        binding.repeatWeeklyText.apply {
+            val thisSunday = dueDate.toLocalDateTime()
+                .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+            val repeatInterval = RepeatWeekly(1,thisSunday,listOf(dueDate.dayOfWeek))
+
+            text = repeatInterval.toString()
+
+            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
+        }
+
+        binding.repeatMonthlyText.apply {
+            val repeatInterval = RepeatMonthlyByNumber(
+                1,
+                YearMonth.from(dueDate),
+                LocalTime.from(dueDate),
+                listOf(dueDate.dayOfMonth)
+            )
+
+            text = repeatInterval.toString()
+
+            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
+        }
+
+        binding.repeatYearlyText.apply {
+            val repeatInterval = RepeatYearlyByNumber(1, LocalDateTime.from(dueDate))
+            text = repeatInterval.toString()
+            setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
+        }
+
         binding.repeatCustomText.apply {
             text = getString(R.string.repeat_custom)
             setOnClickListener {
                 navigateToCustomRepeatMenu()
             }
         }
+
     }
 
     private fun navigateToCustomRepeatMenu() {

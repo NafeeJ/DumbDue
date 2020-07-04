@@ -97,4 +97,6 @@ dependencies {
 
     // ThreeTenABP
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.4'
+
+    testImplementation 'org.threeten:threetenbp:1.4.4'
 }

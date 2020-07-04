@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCount.Day
 import com.kiwicorp.dumbdue.databinding.ItemChooseMonthlyRepeatByCountBinding
+import com.kiwicorp.dumbdue.util.getFullName
+import com.kiwicorp.dumbdue.util.sortedSundayFirst
+import org.threeten.bp.DayOfWeek
 import java.util.*
 
 class ChooseMonthlyRepeatByCountAdapter(private val onDayDeletedListener: OnDayDeletedListener) : RecyclerView.Adapter<ChooseMonthlyRepeatViewHolder>() {
@@ -38,29 +41,20 @@ class ChooseMonthlyRepeatViewHolder private constructor(val binding: ItemChooseM
         binding.day = day
         binding.onDayDeletedListener = onDayDeletedListener
 
-        val daysOfTheWeek = listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+        val daysOfWeek = DayOfWeek.values().toList().sortedSundayFirst()
         val counts = listOf("First", "Second", "Third", "Fourth", "Last")
 
-        val dayOfWeekAdapter = ArrayAdapter(binding.root.context, R.layout.item_drop_down_menu, daysOfTheWeek)
+        val dayOfWeekAdapter = ArrayAdapter(binding.root.context, R.layout.item_drop_down_menu, List(7) { daysOfWeek[it].getFullName() })
         val countAdapter = ArrayAdapter(binding.root.context, R.layout.item_drop_down_menu, counts)
 
         (binding.dayOfWeekTextLayout.editText as? AutoCompleteTextView)?.apply {
             setAdapter(dayOfWeekAdapter)
             setOnItemClickListener { parent, view, position, id ->
-                day.dayOfWeek = when (position) {
-                    0 -> Calendar.SUNDAY
-                    1 -> Calendar.MONDAY
-                    2 -> Calendar.TUESDAY
-                    3 -> Calendar.WEDNESDAY
-                    4 -> Calendar.THURSDAY
-                    5 -> Calendar.FRIDAY
-                    6 -> Calendar.SATURDAY
-                    else -> 0
-                }
+                day.dayOfWeek = daysOfWeek[position]
             }
             // in case recycler view reuses view holder
             if (day.dayOfWeek != null) {
-                setText(daysOfTheWeek[day.dayOfWeek!!.minus(1)],false)
+                setText(day.dayOfWeek!!.getFullName(),false)
             } else {
                 setText("")
             }

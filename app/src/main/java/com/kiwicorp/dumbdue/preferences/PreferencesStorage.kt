@@ -49,7 +49,7 @@ class PreferencesStorage @Inject constructor(val context: Context) {
     private val prefsEditor: SharedPreferences.Editor = prefs.edit()
 
     fun updateIncrementalTimeSetter(key: String, incrementalTimeSetter: IncrementalTimeSetter) {
-        prefsEditor.putString(key, incrementalTimeSetter.text)
+        prefsEditor.putString(key, incrementalTimeSetter.toString())
         prefsEditor.apply()
     }
 
@@ -62,7 +62,7 @@ class PreferencesStorage @Inject constructor(val context: Context) {
 
 
     fun updateQuickAccessTimeSetter(key: String, quickAccess: QuickAccessTimeSetter) {
-        prefsEditor.putString(key, quickAccess.text)
+        prefsEditor.putString(key, quickAccess.toString())
         prefsEditor.apply()
     }
 

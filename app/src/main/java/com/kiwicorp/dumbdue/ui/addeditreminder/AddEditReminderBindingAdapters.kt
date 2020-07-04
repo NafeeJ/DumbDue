@@ -7,34 +7,10 @@ import androidx.databinding.BindingAdapter
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
-import com.kiwicorp.dumbdue.util.isOverdue
 import com.kiwicorp.dumbdue.util.timeFromNowString
-import java.text.SimpleDateFormat
-import java.util.*
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
-@BindingAdapter("timeFromNow")
-fun TextView.setTimeFromNow(calendar: Calendar) {
-    val dateFormatter = SimpleDateFormat("EEE, d MMM, h:mm a", Locale.US)
-    val dateTime = dateFormatter.format(calendar.time)
-    val timeFromNow = calendar.timeFromNowString()
-
-    val stringId: Int
-    val colorString: String
-    if (calendar.isOverdue()) {
-        stringId = R.string.time_from_now_past
-        colorString = "#f54242"
-    } else {
-        stringId = R.string.time_from_now_future
-        colorString = "#FFFFFF"
-    }
-
-    text = context.resources.getString(
-        stringId,
-        dateTime,
-        timeFromNow)
-
-    setTextColor(Color.parseColor(colorString))
-}
 /**
  * Updates the AutoSnooze image button in fragment_add_reminder.xml and fragment_edit_reminder.xml
  */
@@ -66,7 +42,26 @@ fun TextView.setAutoSnooze(autoSnooze: Long) {
     }
 }
 
+@BindingAdapter("dueDate")
+fun TextView.setDueDate(dueDate: ZonedDateTime) {
+    val dateTime = dueDate.format(DateTimeFormatter.ofPattern("EEE, d MMM, h:mm a"))
+    val timeFromNow = dueDate.timeFromNowString(false)
+
+    val stringId: Int
+    val colorString: String
+    if (dueDate.isBefore(ZonedDateTime.now())) {
+        stringId = R.string.time_from_now_past
+        colorString = "#f54242"
+    } else {
+        stringId = R.string.time_from_now_future
+        colorString = "#ffffff"
+    }
+
+    text = context.getString(stringId, dateTime, timeFromNow)
+    setTextColor(Color.parseColor(colorString))
+}
+
 @BindingAdapter("repeatInterval")
-fun TextView.repeatIntervalAndCalendar(repeatInterval: RepeatInterval?) {
+fun TextView.setRepeatInterval(repeatInterval: RepeatInterval?) {
     text = repeatInterval?.toString() ?: context.getString(R.string.repeat_off)
 }

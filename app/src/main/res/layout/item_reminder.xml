@@ -45,8 +45,6 @@
             android:layout_marginBottom="4dp"
             android:paddingStart="10dp"
             android:textColor="#525252"
-            app:itemCalendar="@{reminder.calendar}"
-            app:itemRepeatVal="@{reminder.repeatInterval}"
             tools:text="Date/Repeat"
             tools:ignore="RtlSymmetry" />
 
@@ -59,7 +57,6 @@
             android:layout_margin="2dp"
             android:paddingEnd="10dp"
             android:textColor="#525252"
-            app:timeFromNowAbbr="@{reminder.calendar}"
             tools:text="time"
             tools:ignore="RtlSymmetry" />
 
@@ -67,7 +64,6 @@
             android:id="@+id/color_bar"
             android:layout_width="5dp"
             android:layout_height="65dp"
-            app:calendar="@{reminder.calendar}"
             tools:background="@android:color/holo_red_light"/>
 
     </RelativeLayout>

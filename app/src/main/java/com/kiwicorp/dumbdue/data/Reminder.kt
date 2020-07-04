@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
+import org.threeten.bp.ZonedDateTime
 import java.util.*
 
 @Entity(tableName = "reminders")
@@ -12,7 +13,7 @@ data class Reminder (
     var title: String = "",
 
     @ColumnInfo(name = "calendar")
-    var calendar: Calendar = Calendar.getInstance(),
+    var dueDate: ZonedDateTime = ZonedDateTime.now(),
 
     @ColumnInfo(name = "repeat_interval")
     var repeatInterval: RepeatInterval? = null,

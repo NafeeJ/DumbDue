@@ -25,7 +25,7 @@ class ReminderAlarmManager @Inject constructor(private val context: Context) {
      * Schedules an alarm for a reminder
      */
     fun setAlarm(reminder: Reminder) {
-        setAlarm(reminder.title,reminder.id,reminder.calendar.timeInMillis, reminder.autoSnoozeVal)
+        setAlarm(reminder.title,reminder.id,reminder.dueDate.toInstant().toEpochMilli(), reminder.autoSnoozeVal)
     }
     /**
      * Schedules an alarm.
@@ -57,7 +57,7 @@ class ReminderAlarmManager @Inject constructor(private val context: Context) {
         val notificationManager: NotificationManager = context.getSystemService()
             ?: throw Exception("Notification Manager not found.")
 
-        val notificationIntent = makePendingIntent(reminder.title,reminder.id,reminder.calendar.timeInMillis,reminder.autoSnoozeVal)
+        val notificationIntent = makePendingIntent(reminder.title,reminder.id,reminder.dueDate.toInstant().toEpochMilli(),reminder.autoSnoozeVal)
 
         notificationIntent?.let {
             systemAlarmManager?.cancel(notificationIntent)

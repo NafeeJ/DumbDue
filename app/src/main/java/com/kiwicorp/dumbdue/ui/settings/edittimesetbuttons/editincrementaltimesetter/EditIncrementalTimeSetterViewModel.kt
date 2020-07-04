@@ -7,6 +7,8 @@ import com.kiwicorp.dumbdue.Event
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.timesetters.IncrementalTimeSetter
 import com.shawnlin.numberpicker.NumberPicker
+import org.threeten.bp.temporal.ChronoField
+import org.threeten.bp.temporal.ChronoUnit
 import java.util.*
 import javax.inject.Inject
 
@@ -33,7 +35,7 @@ class EditIncrementalTimeSetterViewModel @Inject constructor(
     }
 
     val numberPickerOnValueChangedListener = NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
-        incrementalTimeSetter.number = newVal
+        incrementalTimeSetter.number = newVal.toLong()
     }
 
     /**
@@ -43,32 +45,32 @@ class EditIncrementalTimeSetterViewModel @Inject constructor(
         return NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
             when (newVal) {
                 1 -> {
-                    incrementalTimeSetter.unit = Calendar.MINUTE
+                    incrementalTimeSetter.unit = ChronoUnit.MINUTES
                     numberPicker.maxValue = 59
                 }
                 2 -> {
-                    incrementalTimeSetter.unit = Calendar.HOUR
+                    incrementalTimeSetter.unit = ChronoUnit.HOURS
                     numberPicker.maxValue = 23
                 }
                 3 -> {
-                    incrementalTimeSetter.unit = Calendar.DAY_OF_YEAR
+                    incrementalTimeSetter.unit = ChronoUnit.DAYS
                     numberPicker.maxValue = 6
                 }
                 4 -> {
-                    incrementalTimeSetter.unit = Calendar.WEEK_OF_YEAR
+                    incrementalTimeSetter.unit = ChronoUnit.WEEKS
                     numberPicker.maxValue = 3
                 }
                 5 -> {
-                    incrementalTimeSetter.unit = Calendar.MONTH
+                    incrementalTimeSetter.unit = ChronoUnit.MONTHS
                     numberPicker.maxValue = 11
                 }
                 else -> {
-                    incrementalTimeSetter.unit = Calendar.YEAR
+                    incrementalTimeSetter.unit = ChronoUnit.YEARS
                     numberPicker.maxValue = 100
                 }
             }
             //update number in case numberPicker's new maxValue was less than numberPicker's value
-            incrementalTimeSetter.number = numberPicker.value
+            incrementalTimeSetter.number = numberPicker.value.toLong()
         }
     }
 

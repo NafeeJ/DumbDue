@@ -66,7 +66,7 @@ class EditQuickAccessTimeSetterFragment : DaggerFragment() {
     private fun setupMinutePicker(minutePicker: NumberPicker) {
         val minutes = Array(60) { if (it < 10) "0$it" else "$it" }
         minutePicker.displayedValues = minutes
-        minutePicker.value = viewModel.quickAccessTimeSetter.min
+        minutePicker.value = viewModel.quickAccessTimeSetter.minute
         minutePicker.setOnValueChangedListener(viewModel.minutePickerOnValueChangedListener)
     }
 

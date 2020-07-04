@@ -34,7 +34,7 @@ class EditQuickAccessTimeSetterViewModel @Inject constructor(
     }
 
     val minutePickerOnValueChangedListener = NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
-        quickAccessTimeSetter.min = newVal
+        quickAccessTimeSetter.minute = newVal
     }
 
     val hourPickerOnValueChangedListener = NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->

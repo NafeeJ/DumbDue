@@ -2,116 +2,83 @@ package com.kiwicorp.dumbdue.data.repeat
 
 import org.junit.Assert.*
 import org.junit.Test
-import java.text.SimpleDateFormat
-import java.util.*
+import org.threeten.bp.*
 
 class RepeatWeeklyTest {
+
+    private val time = LocalTime.of(10,15)
+
+    private val weekDays = listOf(
+        DayOfWeek.MONDAY,
+        DayOfWeek.TUESDAY,
+        DayOfWeek.WEDNESDAY,
+        DayOfWeek.THURSDAY,
+        DayOfWeek.FRIDAY
+    )
 
     @Test
     fun getNextDueDate_frequency1WeekdaysJune152020_june162020() {
         // a monday
-        val june152020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,15,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june152020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,15),time, ZoneId.systemDefault())
         // a tuesday
-        val june162020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,16,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june162020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,16),time, ZoneId.systemDefault())
 
-        val weekDays = listOf(
-            Calendar.MONDAY,
-            Calendar.TUESDAY,
-            Calendar.WEDNESDAY,
-            Calendar.THURSDAY,
-            Calendar.FRIDAY
-        )
-
-        val repeat = RepeatWeekly(1,june152020,weekDays)
+        val repeat = RepeatWeekly(1, LocalDateTime.of(2020,Month.JUNE,14,time.hour, time.minute),weekDays)
         val result = repeat.getNextDueDate(june152020)
 
-        assertEquals(result,june162020)
+        assertEquals(june162020,result)
     }
 
     @Test
     fun getNextDueDate_frequency2WeekdaysJune1502020_june162020() {
         // a monday
-        val june152020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,15,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june152020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,15),time, ZoneId.systemDefault())
         // a tuesday
-        val june162020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,16,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june162020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,16),time, ZoneId.systemDefault())
 
-        val weekDays = listOf(
-            Calendar.MONDAY,
-            Calendar.TUESDAY,
-            Calendar.WEDNESDAY,
-            Calendar.THURSDAY,
-            Calendar.FRIDAY
-        )
+        val firstDateTimeOfWeek = LocalDateTime.of(2020,Month.JUNE,14,time.hour, time.minute)
 
-        val repeat = RepeatWeekly(2,june152020,weekDays)
+        val repeat = RepeatWeekly(2, firstDateTimeOfWeek, weekDays)
         val result = repeat.getNextDueDate(june152020)
 
-        assertEquals(result,june162020)
+        assertEquals(june162020, result)
     }
 
     @Test
-    fun getNextDueDate_frequency2WeekdaysJune122020_june1502020() {
+    fun getNextDueDate_frequency1WeekdaysJune122020_june152020() {
         //a friday
-        val june122020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,12,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june122020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,12),time, ZoneId.systemDefault())
 
         // monday next week
-        val june152020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,22,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june152020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,15),time, ZoneId.systemDefault())
 
-        val weekDays = listOf(
-            Calendar.MONDAY,
-            Calendar.TUESDAY,
-            Calendar.WEDNESDAY,
-            Calendar.THURSDAY,
-            Calendar.FRIDAY
-        )
+        val firstDateTimeOfWeek = LocalDateTime.of(2020,Month.JUNE,7,time.hour, time.minute)
 
-        val repeat = RepeatWeekly(2,june122020,weekDays)
+        val repeat = RepeatWeekly(1,firstDateTimeOfWeek,weekDays)
         val result = repeat.getNextDueDate(june122020)
 
-        assertEquals(result,june152020)
+        assertEquals(june152020,result)
     }
 
     @Test
     fun getNextDueDate_frequency3EverydayExceptWednesdayJune162020_june182020() {
         // a tuesday
-        val june162020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,16,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june162020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,16),time, ZoneId.systemDefault())
         // a thursday
-        val june182020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,18,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june182020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,18),time, ZoneId.systemDefault())
 
         val everydayExceptWednesday = listOf(
-            Calendar.SUNDAY,
-            Calendar.MONDAY,
-            Calendar.TUESDAY,
-            Calendar.THURSDAY,
-            Calendar.FRIDAY,
-            Calendar.SATURDAY
+            DayOfWeek.SUNDAY,
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY,
+            DayOfWeek.SATURDAY
         )
 
-        val repeat = RepeatWeekly(3,june162020,everydayExceptWednesday)
+        val firstDateTimeOfWeek = LocalDateTime.of(2020,Month.JUNE,14,time.hour, time.minute)
+
+        val repeat = RepeatWeekly(3,firstDateTimeOfWeek,everydayExceptWednesday)
         val result = repeat.getNextDueDate(june162020)
 
         assertEquals(result,june182020)
@@ -120,20 +87,16 @@ class RepeatWeeklyTest {
     @Test
     fun getNextDueDate_frequency1MondaysJune152020_june222020() {
         // a monday
-        val june152020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,15,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june152020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,15),time, ZoneId.systemDefault())
 
         // next monday
-        val june222020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,22,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june222020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,22),time, ZoneId.systemDefault())
 
-        val mondays = listOf(Calendar.MONDAY)
+        val mondays = listOf(DayOfWeek.MONDAY)
 
-        val repeat = RepeatWeekly(1,june152020,mondays)
+        val firstDateTimeOfWeek = LocalDateTime.of(2020,Month.JUNE,14,time.hour, time.minute)
+
+        val repeat = RepeatWeekly(1,firstDateTimeOfWeek,mondays)
         val result = repeat.getNextDueDate(june152020)
 
         assertEquals(result,june222020)
@@ -142,22 +105,18 @@ class RepeatWeeklyTest {
     @Test
     fun getNextDueDate_frequency1MondaysJune112020_June152020() {
         // a thursday
-        val june112020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,11,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june112020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,11),time, ZoneId.systemDefault())
 
         // next monday
-        val june152020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,15,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june222020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,22),time, ZoneId.systemDefault())
 
-        val mondays = listOf(Calendar.MONDAY)
+        val mondays = listOf(DayOfWeek.MONDAY)
 
-        val repeat = RepeatWeekly(1,june112020,mondays)
+        val firstDateTimeOfWeek = LocalDateTime.of(2020,Month.JUNE,7,time.hour, time.minute)
+
+        val repeat = RepeatWeekly(2,firstDateTimeOfWeek,mondays)
         val result = repeat.getNextDueDate(june112020)
 
-        assertEquals(result,june152020)
+        assertEquals(result,june222020)
     }
 }

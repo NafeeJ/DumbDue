@@ -38,8 +38,8 @@ class ReminderRepository @Inject constructor(private val reminderDao: ReminderDa
     suspend fun completeReminder(reminder: Reminder): Reminder? {
         with(reminder) {
             reminderDao.deleteReminder(this)
-            repeatInterval?.let {
-                return Reminder(title,it.getNextDueDate(calendar),it,autoSnoozeVal,id)
+            repeatInterval?.let {repeatInterval ->
+                return Reminder(title,repeatInterval.getNextDueDate(dueDate),repeatInterval,autoSnoozeVal,id)
             }
         }
         return null

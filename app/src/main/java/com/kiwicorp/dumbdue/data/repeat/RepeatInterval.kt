@@ -1,15 +1,15 @@
 package com.kiwicorp.dumbdue.data.repeat
 
-import java.util.*
+import org.threeten.bp.ZonedDateTime
 
 abstract class RepeatInterval(open var frequency: Int) {
-    fun getNextDueDate(calendar: Calendar): Calendar {
+    fun getNextDueDate(currOccurrence: ZonedDateTime): ZonedDateTime{
         var nextOccurrence = getNextOccurrence()
-        while(calendar >= nextOccurrence) {
+        while(!nextOccurrence.isAfter(currOccurrence)) {
             nextOccurrence = getNextOccurrence()
         }
         return nextOccurrence
     }
-    protected var prevOccurrence: Calendar? = null
-    protected abstract fun getNextOccurrence(): Calendar
+    protected var prevOccurrence: ZonedDateTime? = null
+    protected abstract fun getNextOccurrence(): ZonedDateTime
 }

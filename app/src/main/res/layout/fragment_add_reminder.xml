@@ -86,12 +86,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    dueDate="@{viewmodel.dueDate}"
                     android:onClick="@{()->viewmodel.onOpenTimePicker()}"
                     android:padding="10dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="#FFFFFF"
-                    app:layout_constraintTop_toBottomOf="@id/title_text"
-                    app:timeFromNow="@{viewmodel.calendar}" />
+                    app:layout_constraintTop_toBottomOf="@id/title_text" />
 
                 <TextView
                     android:id="@+id/repeat_text"

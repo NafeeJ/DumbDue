@@ -1,49 +1,41 @@
 package com.kiwicorp.dumbdue.data.repeat
 
+import com.kiwicorp.dumbdue.util.getFullName
+import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
-import java.text.SimpleDateFormat
-import java.util.*
+import org.threeten.bp.temporal.TemporalAdjusters
 
 /**
  * A class that represents a repeat interval that's scoped in a week
  *
  * [frequency] will be which weeks users will receive reminders on
  *
- * [daysOfWeek] is a sorted list of [Calendar]'s constants eg: [Calendar.TUESDAY]. It represents
- * the days the user wishes to receive reminders on. The list should never have a size of more than 7.
- * Sunday is considered to be the first day.
+ * [daysOfWeek] is a sorted list of the days the user wishes to receive reminders on. The list
+ * should never have a size of more than 7. Sunday is considered to be the first day.
  */
-data class RepeatWeekly(override var frequency: Int, var dateTimeOfFirstDayOfStartingWeek: LocalDateTime, val daysOfWeek: List<Int>): RepeatInterval(frequency) {
+class RepeatWeekly(frequency: Int, var dateTimeOfFirstDayOfStartingWeek: LocalDateTime, val daysOfWeek: List<DayOfWeek>): RepeatInterval(frequency) {
 
-    override fun getNextOccurrence(): Calendar {
+    override fun getNextOccurrence(): ZonedDateTime {
         return if (prevOccurrence == null) {
-            prevOccurrence = Calendar.getInstance().apply {
-                set(dateTimeOfFirstDayOfStartingWeek.year,
-                    dateTimeOfFirstDayOfStartingWeek.monthValue - 1, // -1 cause Calendar.JANUARY starts at 0
-                    dateTimeOfFirstDayOfStartingWeek.dayOfMonth,
-                    dateTimeOfFirstDayOfStartingWeek.hour,
-                    dateTimeOfFirstDayOfStartingWeek.minute)
-                set(Calendar.DAY_OF_WEEK,daysOfWeek[0])
-            }
+            val firstOccurrence = dateTimeOfFirstDayOfStartingWeek.with(TemporalAdjusters.nextOrSame(daysOfWeek.first()))
+            prevOccurrence = ZonedDateTime.of(firstOccurrence, ZoneId.systemDefault())
             prevOccurrence!!
         } else {
-            val next = Calendar.getInstance().apply { timeInMillis = prevOccurrence!!.timeInMillis }
-            // get next day
-            val currentDay = prevOccurrence!!.get(Calendar.DAY_OF_WEEK)
-            val nextDay = daysOfWeek.firstOrNull { it > currentDay } ?: daysOfWeek.first()
+            val currIndex = daysOfWeek.indexOf(prevOccurrence!!.dayOfWeek)
 
-            next.add(Calendar.DAY_OF_YEAR,1)
-            // add days to returnCalendar until returnCalendar's day of week is nextDay
-            while (next.get(Calendar.DAY_OF_WEEK) != nextDay) {
-                next.add(Calendar.DAY_OF_YEAR,1)
+            val nextIndex = if (currIndex != daysOfWeek.lastIndex) currIndex + 1 else 0
+            val nextDayOfWeek = daysOfWeek[nextIndex]
+
+            prevOccurrence = prevOccurrence!!.with(TemporalAdjusters.next(nextDayOfWeek))
+
+            if (nextIndex == 0) { // if moved to a new week, account for frequency
+                prevOccurrence = prevOccurrence!!.plusWeeks(frequency - 1L)
             }
-            // if returnCalendar goes into a new week, account for the frequency
-            if (next.get(Calendar.DAY_OF_WEEK) == daysOfWeek[0]) {
-                next.add(Calendar.WEEK_OF_YEAR,frequency - 1)
-            }
-            prevOccurrence = next
-            next
+
+            prevOccurrence!!
         }
     }
 
@@ -51,11 +43,11 @@ data class RepeatWeekly(override var frequency: Int, var dateTimeOfFirstDayOfSta
         val time = dateTimeOfFirstDayOfStartingWeek.toLocalTime().format(DateTimeFormatter.ofPattern("h:mm a"))
 
         val weekdays = listOf(
-            Calendar.MONDAY,
-            Calendar.TUESDAY,
-            Calendar.WEDNESDAY,
-            Calendar.THURSDAY,
-            Calendar.FRIDAY
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY
         )
 
         if (daysOfWeek == weekdays) {
@@ -65,25 +57,16 @@ data class RepeatWeekly(override var frequency: Int, var dateTimeOfFirstDayOfSta
                 "Weekdays $time every $frequency weeks"
             }
         } else {
-            val dayConstantToString = mapOf(
-                Calendar.MONDAY to "Monday",
-                Calendar.TUESDAY to "Tuesday",
-                Calendar.WEDNESDAY to "Wednesday",
-                Calendar.THURSDAY to "Thursday",
-                Calendar.FRIDAY to "Friday",
-                Calendar.SATURDAY to "Saturday",
-                Calendar.SUNDAY to "Sunday"
-            )
 
             var string = ""
             when (daysOfWeek.size) {
-                1 -> string = "${dayConstantToString[daysOfWeek[0]]}s"
-                2 -> string = "${dayConstantToString[daysOfWeek[0]]}s and ${dayConstantToString[daysOfWeek[1]]}s"
+                1 -> string = "${daysOfWeek[0].getFullName()}s"
+                2 -> string = "${daysOfWeek[0].getFullName()}s and ${daysOfWeek[1].getFullName()}s"
                 else -> {
                     for (i in 0..daysOfWeek.size - 2) {
-                        string += "${dayConstantToString[daysOfWeek[i]]}s, "
+                        string += "${daysOfWeek[i].getFullName()}s, "
                     }
-                    string += "and ${dayConstantToString[daysOfWeek.last()]}s"
+                    string += "and ${daysOfWeek.last().getFullName()}s"
                 }
             }
             string += " at $time"

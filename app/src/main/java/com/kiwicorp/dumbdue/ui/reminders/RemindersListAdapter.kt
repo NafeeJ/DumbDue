@@ -1,5 +1,6 @@
 package com.kiwicorp.dumbdue.ui.reminders
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -8,11 +9,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.databinding.ItemHeaderBinding
 import com.kiwicorp.dumbdue.databinding.ItemReminderBinding
+import com.kiwicorp.dumbdue.util.timeFromNowString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.temporal.ChronoUnit
 
 private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_ITEM = 1
@@ -63,75 +69,52 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
 
     private fun addHeaders(list: List<Reminder>): List<Item> {
         if (list.isEmpty()) return listOf()
-        //calendar with date at 23:59:59 today
-        val endOfTodayCalendar = Calendar.getInstance().apply {
-            set(Calendar.MILLISECOND,59)
-            set(Calendar.SECOND,59)
-            set(Calendar.MINUTE,59)
-            set(Calendar.HOUR_OF_DAY,23)
-        }
-        //calendar with date at 23:59:59 tomorrow
-        val endOfTomorrowCalendar = Calendar.getInstance().apply {
-            set(Calendar.MILLISECOND,59)
-            set(Calendar.SECOND,59)
-            set(Calendar.MINUTE,59)
-            set(Calendar.HOUR_OF_DAY,23)
-            add(Calendar.DAY_OF_YEAR,1)
-        }
-        //calendar with date at 23:59:59 in 7 days
-        val endOfNext7daysCalendar = Calendar.getInstance().apply {
-            set(Calendar.MILLISECOND,59)
-            set(Calendar.SECOND,59)
-            set(Calendar.MINUTE,59)
-            set(Calendar.HOUR_OF_DAY,23)
-            add(Calendar.WEEK_OF_YEAR,1)
-        }
 
-        val calendarNow = Calendar.getInstance()
+        val now = ZonedDateTime.now()
+        // 23:59:59 today
+        val endOfToday = now
+            .withHour(23)
+            .withMinute(59)
+            .withSecond(59)
+            .withNano(59)
+        // 23:59:59 tomorrow
+        val endOfTomorrow = endOfToday.plusDays(1)
+        // 23:59:59 in 7 days
+        val endOfNext7days = endOfToday.plusDays(7)
 
-        val calendarMax = Calendar.getInstance().apply {
-            timeInMillis = Long.MAX_VALUE
-        }
+        val dateMax = ZonedDateTime.ofInstant(Instant.ofEpochMilli(Long.MAX_VALUE), ZoneId.of("UTC"))
 
-        val calendarAndTitle: List<Pair<Calendar,String>> = listOf(
-            Pair(calendarNow,""),
-            Pair(endOfTodayCalendar,"today"),
-            Pair(endOfTomorrowCalendar,"tomorrow"),
-            Pair(endOfNext7daysCalendar,"next 7 days"),
-            Pair(calendarMax,"future"))
+        val dateToTitle: List<Pair<ZonedDateTime,String>> = listOf(
+            Pair(now,""),
+            Pair(endOfToday,"today"),
+            Pair(endOfTomorrow,"tomorrow"),
+            Pair(endOfNext7days,"next 7 days"),
+            Pair(dateMax,"future"))
 
-        val iter = calendarAndTitle.listIterator()
+        val iter = dateToTitle.listIterator()
 
         val result = mutableListOf<Item>()
         var currPair = iter.next()
         //check if overdue header needs to be added
-        if (list[0].calendar < calendarNow) {
+        if (list[0].dueDate < ZonedDateTime.now()) {
             result.add(Item.Header("overdue"))
         }
         //for rest, add header and switch calendar if current reminder.calendar > currCalendar
         for (reminder in list) {
-           if (reminder.calendar > currPair.first) {
+           if (reminder.dueDate > currPair.first) {
                //check if this calendar is greater than any of the next calendars
                 while(iter.hasNext()) {
                     currPair = iter.next()
-                    if (reminder.calendar <= currPair.first) {
+                    if (reminder.dueDate <= currPair.first) {
                         currPair = iter.previous()
                         break
                     }
                 }
                result.add(Item.Header(currPair.second))
-               result.add(
-                   Item.ReminderItem(
-                       reminder
-                   )
-               )
+               result.add(Item.ReminderItem(reminder))
                currPair = iter.next()
            } else {
-               result.add(
-                   Item.ReminderItem(
-                       reminder
-                   )
-               )
+               result.add(Item.ReminderItem(reminder))
            }
         }
         return result
@@ -149,7 +132,80 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
         fun bind(viewModel: RemindersViewModel, item: Reminder) {
             binding.viewmodel = viewModel
             binding.reminder = item
+
+            val dueDate = item.dueDate
+
+            binding.timeText.text = findTimeString(dueDate)
+
+            binding.dateRepeatText.text = item.repeatInterval?.toString()
+                ?: dueDate.format(DateTimeFormatter.ofPattern("MMM d, h:mm a"))
+
+            binding.dateRepeatText.setTextColor(
+                if (item.dueDate.isBefore(ZonedDateTime.now())) {
+                    Color.parseColor("#f54242") // red
+                } else {
+                    Color.parseColor("#525252") // grey
+                }
+            )
+
+            binding.colorBar.setBackgroundColor(getColorOfColorBar(dueDate))
+
             binding.executePendingBindings()
+        }
+
+        private fun findTimeString(time: ZonedDateTime): String {
+            // 23:59:59 tomorrow
+            val endOfTomorrow = ZonedDateTime.now()
+                .withHour(23)
+                .withMinute(59)
+                .withSecond(59)
+                .withNano(59)
+                .plusDays(1)
+            // 23:59:59 in 7 days
+            val endOfNext7Days = ZonedDateTime.now()
+                .withHour(23)
+                .withMinute(59)
+                .withSecond(59)
+                .withNano(59)
+                .plusWeeks(1)
+
+            return when {
+                // add "ago if time is before now
+                time.isBefore(ZonedDateTime.now()) -> {
+                    "${time.timeFromNowString(true)} ago"
+                }
+                // add "in" to time from now string if within 3 hours or more than a week
+                (ChronoUnit.HOURS.between(time, ZonedDateTime.now()) <= 3) || time.isAfter(endOfNext7Days) -> {
+                    "in ${time.timeFromNowString(true)}"
+                }
+                // if less than 2 days from today, return the time
+                time.isBefore(endOfTomorrow) -> time.format(DateTimeFormatter.ofPattern("h:mm a"))
+                // if less than 7 days from today, return the day of the week
+                time.isBefore(endOfNext7Days) -> time.format(DateTimeFormatter.ofPattern("EEE"))
+                else -> ""
+            }
+        }
+
+        private fun getColorOfColorBar(time: ZonedDateTime): Int {
+            val now = ZonedDateTime.now()
+            // 23:59:59 today
+            val endOfToday = now
+                .withHour(23)
+                .withMinute(59)
+                .withSecond(59)
+                .withNano(59)
+            // 23:59:59 tomorrow
+            val endOfTomorrow = endOfToday.plusDays(1)
+            // 23:59:59 in 7 days
+            val endOfNext7days = endOfToday.plusDays(7)
+
+            return when {
+                time.isBefore(now) -> Color.parseColor("#f54242") //red
+                time.isBefore(endOfToday)-> Color.parseColor("#fff262") //yellow
+                time.isBefore(endOfTomorrow) -> Color.parseColor("#3371FF")//blue
+                time.isBefore(endOfNext7days) -> Color.parseColor("#6a44b1") //purple
+                else -> Color.parseColor("#525252") //grey
+            }
         }
 
         companion object {

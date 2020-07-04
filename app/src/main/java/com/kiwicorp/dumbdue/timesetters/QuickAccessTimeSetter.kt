@@ -1,29 +1,30 @@
 package com.kiwicorp.dumbdue.timesetters
 
-import java.util.*
+import org.threeten.bp.temporal.ChronoField
+import org.threeten.bp.temporal.Temporal
+import org.threeten.bp.temporal.TemporalAdjuster
 
-class QuickAccessTimeSetter {
-    var min: Int
+class QuickAccessTimeSetter : TemporalAdjuster {
+    var minute: Int
 
     var hourOfDay: Int
 
-    val text: String
-        get() {
-            val hour: Int
-            val ampm: String
-            if (hourOfDay >= 12) {
-                hour = if (hourOfDay == 12) hourOfDay else hourOfDay - 12
-                ampm = "PM"
-            } else {
-                hour = if (hourOfDay == 0) 12 else hourOfDay
-                ampm = "AM"
-            }
-            val min: String = if (min < 10) "0$min" else "$min"
-            return "$hour:$min $ampm"
+    override fun toString(): String {
+        val hour: Int
+        val ampm: String
+        if (hourOfDay >= 12) {
+            hour = if (hourOfDay == 12) hourOfDay else hourOfDay - 12
+            ampm = "PM"
+        } else {
+            hour = if (hourOfDay == 0) 12 else hourOfDay
+            ampm = "AM"
         }
+        val min: String = if (minute < 10) "0$minute" else "$minute"
+        return "$hour:$min $ampm"
+    }
 
-    constructor(min: Int, hourOfDay: Int) {
-        this.min = min
+    constructor(hourOfDay: Int, minute: Int ) {
+        this.minute = minute
         this.hourOfDay = hourOfDay
     }
 
@@ -35,12 +36,13 @@ class QuickAccessTimeSetter {
         } else {
             if (hour == 12) hour = 0
         }
-        this.min = minute
+        this.minute = minute
         this.hourOfDay = hour
     }
 
-    fun setTime(calendar: Calendar) {
-        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
-        calendar.set(Calendar.MINUTE, min)
+    override fun adjustInto(temporal: Temporal): Temporal {
+        return temporal.with(ChronoField.HOUR_OF_DAY, hourOfDay.toLong())
+            .with(ChronoField.MINUTE_OF_HOUR, minute.toLong())
     }
+
 }

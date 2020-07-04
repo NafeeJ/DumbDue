@@ -21,10 +21,8 @@ import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCount.Day
 import com.kiwicorp.dumbdue.databinding.FragmentChooseCustomRepeatBinding
 import com.kiwicorp.dumbdue.ui.addeditreminder.*
-import com.kiwicorp.dumbdue.util.NoScrollGridLayoutManager
+import com.kiwicorp.dumbdue.util.*
 import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
-import com.kiwicorp.dumbdue.util.getDropDownMenuAdapter
-import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.TextStyle
@@ -139,7 +137,7 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
         (binding.chooseYearlyLayout.startDateTextLayout.editText as? AutoCompleteTextView)?.apply {
             setAdapter(getDropDownMenuAdapter(years))
             doOnTextChanged { text, start, before, count ->
-                chooseCustomRepeatViewModel.chooseYearlyViewModel.startingYear = text.toString().toInt()
+                chooseCustomRepeatViewModel.chooseYearlyViewModel.startingYear = Year.parse(text)
             }
         }
 
@@ -307,29 +305,27 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
         }
 
         (binding.chooseYearlyLayout.yearlyByCountDayOfWeekText.editText as? AutoCompleteTextView)?.apply {
-            val daysOfTheWeek = listOf("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
-            val daysOfTheWeekValues = listOf(Calendar.SUNDAY, Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY)
+            val daysOfTheWeek = DayOfWeek.values().toList().sortedSundayFirst()
 
-            setAdapter(getDropDownMenuAdapter(daysOfTheWeek))
+            setAdapter(getDropDownMenuAdapter(List(7) { daysOfTheWeek[it].getFullName() }))
             setOnItemClickListener { parent, view, position, id ->
-                setText(daysOfTheWeek[position].substring(0..2),false)
-                chooseCustomRepeatViewModel.chooseYearlyViewModel.byCountDayOfWeek = daysOfTheWeekValues[position]
+                setText(daysOfTheWeek[position].getFullName().substring(0..2),false)
+                chooseCustomRepeatViewModel.chooseYearlyViewModel.byCountDayOfWeek = daysOfTheWeek[position]
             }
         }
         (binding.chooseYearlyLayout.yearlyByCountMonthText.editText as? AutoCompleteTextView)?.apply {
-            val months = listOf("January","February","March","April","May","June","July","August","September","October","November","December")
-            val monthsValue = listOf(Calendar.JANUARY, Calendar.FEBRUARY, Calendar.MARCH, Calendar.APRIL, Calendar.MAY, Calendar.JUNE, Calendar.JULY, Calendar.AUGUST, Calendar.SEPTEMBER, Calendar.OCTOBER, Calendar.NOVEMBER, Calendar.DECEMBER)
-            setAdapter(getDropDownMenuAdapter(months))
+            val months = Month.values()
+            setAdapter(getDropDownMenuAdapter(List(12) { months[it].getFullName() }))
             setOnItemClickListener { parent, view, position, id ->
-                setText(months[position].substring(0..2),false)
-                chooseCustomRepeatViewModel.chooseYearlyViewModel.byCountMonth = monthsValue[position]
+                setText(months[position].getFullName().substring(0..2),false)
+                chooseCustomRepeatViewModel.chooseYearlyViewModel.byCountMonth = months[position]
             }
         }
     }
 
     private fun setupWeekly() {
         with(binding.chooseWeeklyLayout) {
-            val clickListener = { chip: Chip, dayOfWeek: Int ->
+            val clickListener = { chip: Chip, dayOfWeek: DayOfWeek ->
                 if (chip.isChecked) {
                     chooseCustomRepeatViewModel.chooseWeeklyViewModel.daysOfWeek.add(dayOfWeek)
                 } else {
@@ -337,25 +333,25 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
                 }
             }
             chipSunday.setOnClickListener {
-                clickListener(it as Chip, Calendar.SUNDAY)
+                clickListener(it as Chip, DayOfWeek.SUNDAY)
             }
             chipMonday.setOnClickListener {
-                clickListener(it as Chip, Calendar.MONDAY)
+                clickListener(it as Chip, DayOfWeek.MONDAY)
             }
             chipTuesday.setOnClickListener {
-                clickListener(it as Chip, Calendar.TUESDAY)
+                clickListener(it as Chip, DayOfWeek.TUESDAY)
             }
             chipWednesday.setOnClickListener {
-                clickListener(it as Chip, Calendar.WEDNESDAY)
+                clickListener(it as Chip, DayOfWeek.WEDNESDAY)
             }
             chipThursday.setOnClickListener {
-                clickListener(it as Chip, Calendar.THURSDAY)
+                clickListener(it as Chip, DayOfWeek.THURSDAY)
             }
             chipFriday.setOnClickListener {
-                clickListener(it as Chip, Calendar.FRIDAY)
+                clickListener(it as Chip, DayOfWeek.FRIDAY)
             }
             chipSaturday.setOnClickListener {
-                clickListener(it as Chip, Calendar.SATURDAY)
+                clickListener(it as Chip, DayOfWeek.SATURDAY)
             }
         }
     }

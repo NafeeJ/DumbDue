@@ -2,157 +2,114 @@ package com.kiwicorp.dumbdue.data.repeat
 
 import org.junit.Assert.*
 import org.junit.Test
-import java.text.SimpleDateFormat
 import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCount.Day
-import java.util.*
+import org.threeten.bp.*
 
 class RepeatMonthlyByCountTest {
-    private val dateFormatter = SimpleDateFormat("MMM d YYYY, h:mm a")
+    private val time = LocalTime.of(10,15)
 
     @Test
     fun getNextDueDate_frequency1Recurrence2ndMondayJune82020_july132020() {
-        val june82020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,8,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june82020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 8), time, ZoneId.systemDefault())
 
-        val july132020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JULY,13,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val july132020 = ZonedDateTime.of(LocalDate.of(2020, Month.JULY,13), time, ZoneId.systemDefault())
 
-        val recurrence2ndMonday = listOf(Day(Calendar.MONDAY, 2))
+        val recurrence2ndMonday = listOf(Day(DayOfWeek.MONDAY, 2))
 
-        val repeat = RepeatMonthlyByCount(1,june82020,recurrence2ndMonday)
+        val repeat = RepeatMonthlyByCount(1, YearMonth.of(2020,Month.JUNE),time,recurrence2ndMonday)
         val result = repeat.getNextDueDate(june82020)
 
-        assertEquals(result,july132020)
+        assertEquals(july132020,result)
     }
 
     @Test
     fun getNextDueDate_frequency2Recurrence2ndMondayJune82020_august102020() {
-        val june82020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,8,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june82020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 8), time, ZoneId.systemDefault())
 
-        val august102020 = Calendar.getInstance().apply {
-            set(2020, Calendar.AUGUST,10,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val august102020 = ZonedDateTime.of(LocalDate.of(2020, Month.AUGUST, 10), time, ZoneId.systemDefault())
 
-        val recurrence2ndMonday = listOf(Day(Calendar.MONDAY,2))
+        val recurrence2ndMonday = listOf(Day(DayOfWeek.MONDAY,2))
 
-        val repeat = RepeatMonthlyByCount(2,june82020,recurrence2ndMonday)
+        val repeat = RepeatMonthlyByCount(2, YearMonth.of(2020,Month.JUNE),time,recurrence2ndMonday)
         val result = repeat.getNextDueDate(june82020)
 
-        assertEquals(result,august102020)
+        assertEquals(august102020,result)
     }
 
     @Test
     fun getNextDueDate_frequency8Recurrence2ndMondayJune82020_February82021() {
-        val june82020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,8,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june82020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 8), time, ZoneId.systemDefault())
 
-        val february82021 = Calendar.getInstance().apply {
-            set(2021, Calendar.FEBRUARY,8,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val february82021 = ZonedDateTime.of(LocalDate.of(2021, Month.FEBRUARY, 8), time, ZoneId.systemDefault())
 
-        val recurrence2ndMonday = listOf(Day(Calendar.MONDAY,2))
+        val recurrence2ndMonday = listOf(Day(DayOfWeek.MONDAY,2))
 
-        val repeat = RepeatMonthlyByCount(8,june82020,recurrence2ndMonday)
+        val repeat = RepeatMonthlyByCount(8,YearMonth.of(2020, Month.JUNE),time,recurrence2ndMonday)
         val result = repeat.getNextDueDate(june82020)
 
-        assertEquals(result,february82021)
+        assertEquals(february82021,result)
     }
 
     @Test
     fun getNextDueDate_frequency1RecurrenceArbitraryJune82020_June192020() {
-        val june82020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,8,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june82020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 8), time, ZoneId.systemDefault())
 
-        val june192020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,19,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june192020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 19), time, ZoneId.systemDefault())
 
         val recurrence = listOf(
-            Day(Calendar.TUESDAY,1),
-            Day(Calendar.FRIDAY,1),
-            Day(Calendar.MONDAY,2),
-            Day(Calendar.FRIDAY,3),
-            Day(Calendar.THURSDAY,4)
+            Day(DayOfWeek.TUESDAY,1),
+            Day(DayOfWeek.FRIDAY,1),
+            Day(DayOfWeek.MONDAY,2),
+            Day(DayOfWeek.FRIDAY,3),
+            Day(DayOfWeek.THURSDAY,4)
         )
 
-        val repeat = RepeatMonthlyByCount(1,june82020,recurrence)
+        val repeat = RepeatMonthlyByCount(1, YearMonth.of(2020,Month.JUNE),time,recurrence)
         val result = repeat.getNextDueDate(june82020)
 
-        assertEquals(result,june192020)
+        assertEquals(june192020,result)
     }
 
     @Test
     fun getNextDueDate_frequency1RecurrenceLastFridayJune262020_july312020() {
-        val june262020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,26,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june262020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 26), time, ZoneId.systemDefault())
 
-        val july312020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JULY,31,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val july312020 = ZonedDateTime.of(LocalDate.of(2020, Month.JULY, 31), time, ZoneId.systemDefault())
 
-        val recurrenceLastFriday = listOf(Day(Calendar.FRIDAY,5))
+        val recurrenceLastFriday = listOf(Day(DayOfWeek.FRIDAY,5))
 
-        val repeat = RepeatMonthlyByCount(1,june262020,recurrenceLastFriday)
+        val repeat = RepeatMonthlyByCount(1,YearMonth.of(2020, Month.JUNE),time,recurrenceLastFriday)
         val result = repeat.getNextDueDate(june262020)
 
-        assertEquals(result,july312020)
+        assertEquals(july312020,result)
     }
 
     @Test
     fun getNextDueDate_frequency1Recurrence4thFridayLastThursdayMay282020_june252020() {
-        val may282020 = Calendar.getInstance().apply {
-            set(2020, Calendar.MAY,28,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val may282020 = ZonedDateTime.of(LocalDate.of(2020, Month.MAY, 28), time, ZoneId.systemDefault())
 
-        val june252020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,25,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june252020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 25), time, ZoneId.systemDefault())
 
         val recurrenceLastFriday = listOf(
-            Day(Calendar.FRIDAY,4),
-            Day(Calendar.THURSDAY,5)
+            Day(DayOfWeek.FRIDAY,4),
+            Day(DayOfWeek.THURSDAY,5)
         )
 
-        val repeat = RepeatMonthlyByCount(1,may282020,recurrenceLastFriday)
+        val repeat = RepeatMonthlyByCount(1, YearMonth.of(2020, Month.MAY),time,recurrenceLastFriday)
         val result = repeat.getNextDueDate(may282020)
 
-        assertEquals(result,june252020)
+        assertEquals(june252020,result)
     }
 
     @Test
     fun getNextDueDate_frequency1Recurrence4thFridayJune182020_June262020() {
-        val june182020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,18,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june182020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 18), time, ZoneId.systemDefault())
 
-        val june262020 = Calendar.getInstance().apply {
-            set(2020, Calendar.JUNE,26,3,3,0)
-            set(Calendar.MILLISECOND,0)
-        }
+        val june262020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 26), time, ZoneId.systemDefault())
 
-        val recurrenceLastFriday = listOf(Day(Calendar.FRIDAY,4))
+        val recurrenceLastFriday = listOf(Day(DayOfWeek.FRIDAY,4))
 
-        val repeat = RepeatMonthlyByCount(1,june182020,recurrenceLastFriday)
+        val repeat = RepeatMonthlyByCount(1, YearMonth.of(2020, Month.JUNE),time,recurrenceLastFriday)
         val result = repeat.getNextDueDate(june182020)
 
         assertEquals(result,june262020)

@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.kiwicorp.dumbdue.Event
 import com.kiwicorp.dumbdue.data.repeat.*
+import com.kiwicorp.dumbdue.util.sortedSundayFirst
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
 import javax.inject.Inject
@@ -83,10 +84,10 @@ class ChooseWeeklyViewModel {
     private val _eventOnStartingWeekChosen = MutableLiveData<Event<Unit>>()
     val eventOnFirstDateOfStartingWeekChosen: LiveData<Event<Unit>> = _eventOnStartingWeekChosen
 
-    val daysOfWeek: MutableList<Int> = mutableListOf()
+    val daysOfWeek: MutableList<DayOfWeek> = mutableListOf()
 
     fun getRepeatInterval(frequency: Int, time: LocalTime): RepeatWeekly {
-        return RepeatWeekly(frequency, LocalDateTime.of(firstDateOfStartingWeek.value!!,time), daysOfWeek.sorted())
+        return RepeatWeekly(frequency, LocalDateTime.of(firstDateOfStartingWeek.value!!,time), daysOfWeek.sortedSundayFirst())
     }
 
     fun chooseStartingWeek(firstDateOfWeek: LocalDate) {
@@ -114,24 +115,24 @@ class ChooseMonthlyViewModel {
 }
 
 class ChooseYearlyViewModel {
-    var startingYear = Year.now().value
+    var startingYear = Year.now()
     // public mutable for 2 way data binding
     val selectedYearlyOption = MutableLiveData<String>()
 
     var byNumberMonthDay: MonthDay = MonthDay.now()
 
-    var byCountDayOfWeek = 0
+    var byCountDayOfWeek = DayOfWeek.SUNDAY
 
     var byCountDayOfWeekInMonth = 0
 
-    var byCountMonth = 0
+    var byCountMonth = Month.JANUARY
 
     fun getRepeatInterval(frequency: Int, time: LocalTime): RepeatInterval {
         return if (selectedYearlyOption.value!! == "By count of day of week in month") {
             RepeatYearlyByCount(frequency, startingYear, byCountMonth, byCountDayOfWeek, byCountDayOfWeekInMonth, time)
         } else {
             RepeatYearlyByNumber(frequency, LocalDateTime.of(
-                startingYear,
+                startingYear.value,
                 byNumberMonthDay.month,
                 byNumberMonthDay.dayOfMonth,
                 time.hour,
