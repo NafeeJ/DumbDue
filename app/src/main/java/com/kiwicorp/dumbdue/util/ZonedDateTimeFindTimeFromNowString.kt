@@ -33,7 +33,7 @@ fun ZonedDateTime.timeFromNowString(abbreviateNames: Boolean): String {
     if (chronoUnit == null) {
         chronoUnit = ChronoUnit.YEARS
     }
-    val diff = chronoUnit.betweenRounded(this,ZonedDateTime.now()).absoluteValue
+    val diff = chronoUnit.betweenRounded(this,ZonedDateTime.now().withSecond(0).withNano(0)).absoluteValue
     var name = chronoUnitsToName[chronoUnit]
     if (!abbreviateNames && diff == 1) {
         name = name!!.dropLast(1)
