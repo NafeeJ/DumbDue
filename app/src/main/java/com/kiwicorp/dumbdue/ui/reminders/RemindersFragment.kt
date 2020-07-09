@@ -130,8 +130,7 @@ class RemindersFragment : DaggerFragment() {
     private fun setupListAdapter() {
         val viewModel = binding.viewmodel
         if (viewModel != null)  {
-            listAdapter =
-                ReminderAdapter(viewModel)
+            listAdapter = ReminderAdapter(viewModel)
             binding.remindersRecyclerView.adapter = listAdapter
         } else {
             Timber.d("ViewModel not initialized when attempting to set up adapter.")
@@ -165,9 +164,9 @@ class RemindersFragment : DaggerFragment() {
                 if (viewHolder is ReminderAdapter.HeaderViewHolder) return
 
                 if (direction == ItemTouchHelper.RIGHT) { //if user swipes right, delete reminder
-                    viewModel.onDeleteReminder((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
+                    viewModel.delete((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
                 } else if ( direction == ItemTouchHelper.LEFT) {//if user swipes left, complete reminder
-                    viewModel.onCompleteReminder((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
+                    viewModel.complete((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
                 }
             }
             //allows for color and icons in the background when reminders are swiped

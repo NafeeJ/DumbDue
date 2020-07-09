@@ -27,7 +27,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
             android:src="@drawable/add_white"
-            android:onClick="@{() -> viewmodel.onAddReminder()}"/>
+            android:onClick="@{() -> viewmodel.addReminder()}"/>
         
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

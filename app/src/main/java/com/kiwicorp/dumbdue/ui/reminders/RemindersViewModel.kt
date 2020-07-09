@@ -34,22 +34,20 @@ class RemindersViewModel @Inject constructor(
     /**
      * Called via listener binding.
      */
-    fun onAddReminder() {
+    fun addReminder() {
         _eventAddReminder.value = Event(Unit)
     }
 
     /**
      * Called via listener binding.
      */
-
-    fun onEditReminder(id: String) {
-        _eventEditReminder.value = Event(id)
+    fun editReminder(reminderId: String) {
+        _eventEditReminder.value = Event(reminderId)
     }
 
-    fun onDeleteReminder(reminder: Reminder) {
+    fun delete(reminder: Reminder) {
         viewModelScope.launch {
-            delete(reminder)
-            reminderAlarmManager.cancelAlarm(reminder)
+            repository.deleteReminder(reminder)
             _snackbarMessage.value = Event(SnackbarMessage("Bye-Bye ${reminder.title}", Snackbar.LENGTH_LONG, "Undo") {
                 undoDelete(reminder)
             })
@@ -59,23 +57,32 @@ class RemindersViewModel @Inject constructor(
     /**
      * Only used to delete reminder in [handleRequest]
      */
-    private fun onDeleteReminder(reminderId: String) {
+    private fun delete(reminderId: String) {
         viewModelScope.launch {
-            val reminder = getReminder(reminderId)
+            val reminder = repository.getReminder(reminderId)
             if (reminder != null) {
-                onDeleteReminder(reminder)
+                delete(reminder)
             }
         }
     }
 
-    fun onCompleteReminder(reminder: Reminder) {
+    fun complete(reminder: Reminder) {
         viewModelScope.launch {
-            val reminderFromRecurrence = complete(reminder)
-            if (reminderFromRecurrence != null) {
-                insert(reminderFromRecurrence)
+            repository.deleteReminder(reminder)
+
+            val reminderFromRepeatInterval = if (reminder.repeatInterval != null) {
+                val nextDueDate = reminder.repeatInterval!!.getNextDueDate(reminder.dueDate)
+                Reminder(reminder.title, nextDueDate,reminder.repeatInterval,reminder.autoSnoozeVal)
+            } else {
+                null
             }
+
+            if (reminderFromRepeatInterval != null) {
+                repository.insertReminder(reminderFromRepeatInterval)
+            }
+
             _snackbarMessage.value = Event(SnackbarMessage("Completed ${reminder.title} :)", Snackbar.LENGTH_LONG,"Undo") {
-                undoComplete(reminder, reminderFromRecurrence)
+                undoComplete(reminder, reminderFromRepeatInterval)
             })
         }
     }
@@ -83,47 +90,34 @@ class RemindersViewModel @Inject constructor(
     /**
      * Only used to complete reminder in [handleRequest]
      */
-    private fun onCompleteReminder(reminderId: String) {
+    private fun complete(reminderId: String) {
         viewModelScope.launch {
-            val reminder = getReminder(reminderId)
+            val reminder = repository.getReminder(reminderId)
             if (reminder != null) {
-                onCompleteReminder(reminder)
+                complete(reminder)
             }
         }
     }
 
-    /**
-     * Reinserts the deleted reminder
-     */
     private fun undoDelete(reminder: Reminder) {
         viewModelScope.launch {
-            insert(reminder)
+            repository.insertReminder(reminder)
             reminderAlarmManager.setAlarm(reminder)
         }
     }
 
     /**
      * [reminder] is the reminder that was just completed.
-     * [reminderFromRecurrence] is the reminder that was just created by the repository if [reminder]'s repeat
-     * val was not [Reminder.REPEAT_NONE]. If it was [Reminder.REPEAT_NONE], [reminderFromRecurrence] should be
-     * null. todo
+     * [reminderFromRepeatInterval] is the reminder that was just created  if [reminder]'s repeat
+     *  interval was not null. If the repeat interval was null, [reminderFromRepeatInterval] should
+     *  be null.
      */
-    private fun undoComplete(reminder: Reminder, reminderFromRecurrence: Reminder?) {
+    private fun undoComplete(reminder: Reminder, reminderFromRepeatInterval: Reminder?) {
         viewModelScope.launch {
-            if (reminderFromRecurrence != null) {
-                delete(reminderFromRecurrence)
+            if (reminderFromRepeatInterval != null) {
+                repository.deleteReminder(reminderFromRepeatInterval)
             }
-            insert(reminder)
-        }
-    }
-
-    /**
-     * Deletes the given reminder in the repository
-     */
-    private suspend fun delete(reminder: Reminder) {
-        reminderAlarmManager.cancelAlarm(reminder)
-        withContext(Dispatchers.IO) {
-            repository.deleteReminder(reminder)
+            repository.insertReminder(reminder)
         }
     }
 
@@ -133,35 +127,10 @@ class RemindersViewModel @Inject constructor(
     fun handleRequest(request: Int, reminderId: String) {
         if (argsRequestHandled) return
         when (request) {
-            REQUEST_COMPLETE -> onCompleteReminder(reminderId)
-            REQUEST_DELETE -> onDeleteReminder(reminderId)
+            REQUEST_COMPLETE -> complete(reminderId)
+            REQUEST_DELETE -> delete(reminderId)
         }
         argsRequestHandled = true
     }
-
-    /**
-     * Completes the reminder in the repository
-     */
-    private suspend fun complete(reminder: Reminder): Reminder? {
-        reminderAlarmManager.cancelAlarm(reminder)
-        return withContext(Dispatchers.IO) {
-            repository.completeReminder(reminder)
-        }
-    }
-
-    private suspend fun getReminder(reminderId: String): Reminder? {
-        return withContext(Dispatchers.IO) {
-            repository.getReminder(reminderId)
-        }
-    }
-
-    /**
-     * Inserts the given reminder into the repository
-     */
-    private suspend fun insert(reminder: Reminder) {
-        reminderAlarmManager.setAlarm(reminder)
-        withContext(Dispatchers.IO) {
-            repository.insertReminder(reminder)
-        }
-    }
+    
 }

@@ -18,7 +18,6 @@ import javax.inject.Inject
 
 class AddEditReminderViewModel @Inject constructor(
     private val repository: ReminderRepository,
-    private val reminderAlarmManager: ReminderAlarmManager,
     private val preferencesStorage: PreferencesStorage
 ) : ViewModel(), OnTimeSetterClick {
     //Public mutable for two-way data binding
@@ -142,7 +141,7 @@ class AddEditReminderViewModel @Inject constructor(
                     repeatInterval.value,
                     autoSnoozeVal.value!!)
 
-                insert(reminder)
+                repository.insertReminder(reminder)
 
                 _eventClose.value = Event(Unit)
             }
@@ -153,7 +152,7 @@ class AddEditReminderViewModel @Inject constructor(
     /**
      * Called by Confirm button in EditReminderFragment via listener binding.
      */
-    fun onUpdateReminder() {
+    fun updateReminder() {
         if (title.value == null || title.value == "") {
             _eventSnackbar.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
         } else if (dueDate.value!!.isBefore(ZonedDateTime.now())) {
@@ -162,7 +161,7 @@ class AddEditReminderViewModel @Inject constructor(
         } else {
             viewModelScope.launch {
                 val reminder = Reminder(title.value!!,dueDate.value!!,repeatInterval.value,autoSnoozeVal.value!!,reminderId!!)
-                update(reminder)
+                repository.updateReminder(reminder)
             }
             _eventClose.value = Event(Unit)
         }
@@ -175,39 +174,10 @@ class AddEditReminderViewModel @Inject constructor(
      */
     fun loadReminder(reminderId: String) {
         viewModelScope.launch {
-            val reminder = getReminder(reminderId)
+            val reminder = repository.getReminder(reminderId)
             if (reminder != null) {
                 onReminderLoaded(reminder)
             }
-        }
-    }
-
-    /**
-     * Inserts the given reminder into the repository
-     */
-    private suspend fun insert(reminder: Reminder) {
-        reminderAlarmManager.setAlarm(reminder)
-        withContext(Dispatchers.IO) {
-            repository.insertReminder(reminder)
-        }
-    }
-
-    /**
-     * Updates the given reminder in the repository
-     */
-    private suspend fun update(reminder: Reminder) {
-        reminderAlarmManager.updateAlarm(reminder)
-        withContext(Dispatchers.IO) {
-            repository.updateReminder(reminder)
-        }
-    }
-
-    /**
-     * Gets the reminder that corresponds to reminderId from the repository
-     */
-    private suspend fun getReminder(reminderId: String): Reminder? {
-        return withContext(Dispatchers.IO) {
-            repository.getReminder(reminderId)
         }
     }
 
