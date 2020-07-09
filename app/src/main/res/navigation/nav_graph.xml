@@ -24,6 +24,9 @@
             android:name="reminderId"
             app:argType="string"
             android:defaultValue="" />
+        <action
+            android:id="@+id/action_reminders_fragment_dest_to_settings_fragment_dest"
+            app:destination="@id/settings_fragment_dest" />
     </fragment>
     <fragment
         android:id="@+id/settings_fragment_dest"

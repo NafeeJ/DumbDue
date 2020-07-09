@@ -5,9 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -67,7 +65,21 @@ class RemindersFragment : DaggerFragment() {
             viewmodel = viewModel
             lifecycleOwner = viewLifecycleOwner
         }
+        setHasOptionsMenu(true)
         return root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.reminders_fragment_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.menu_settings) {
+            val action = RemindersFragmentDirections.actionRemindersFragmentDestToSettingsFragmentDest()
+            findNavController().navigate(action)
+            return true
+        }
+        return false
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

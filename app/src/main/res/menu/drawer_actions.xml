@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/reminders_fragment_dest"
-        android:title="@string/reminders"/>
-    <item
-        android:id="@+id/settings_fragment_dest"
-        android:title="@string/settings" />
-</menu>
