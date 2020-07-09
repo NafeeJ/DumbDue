@@ -87,9 +87,12 @@ class PreferencesStorage @Inject constructor(val context: Context) {
 
     val defaultAutoSnooze: Long
         get() {
-            return prefs.getString(
-                context.getString(R.string.default_auto_snooze),
-                Reminder.AUTO_SNOOZE_MINUTE.toString()
-            )!!.toLong()
+            return prefs.getString(context.getString(R.string.prefs_default_auto_snooze),
+                Reminder.AUTO_SNOOZE_MINUTE.toString())!!.toLong()
+        }
+
+    val repeatIntervalUsesRemindersTime: Boolean
+        get() {
+            return prefs.getBoolean(context.getString(R.string.prefs_repeat_interval_uses_time),true)
         }
 }

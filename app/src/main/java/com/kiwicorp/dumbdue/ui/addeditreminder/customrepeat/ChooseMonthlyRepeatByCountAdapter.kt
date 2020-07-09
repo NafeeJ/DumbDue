@@ -6,12 +6,11 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.R
-import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCount.Day
+import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCountInterval.Day
 import com.kiwicorp.dumbdue.databinding.ItemChooseMonthlyRepeatByCountBinding
 import com.kiwicorp.dumbdue.util.getFullName
 import com.kiwicorp.dumbdue.util.sortedSundayFirst
 import org.threeten.bp.DayOfWeek
-import java.util.*
 
 class ChooseMonthlyRepeatByCountAdapter(private val onDayDeletedListener: OnDayDeletedListener) : RecyclerView.Adapter<ChooseMonthlyRepeatViewHolder>() {
 
@@ -52,12 +51,7 @@ class ChooseMonthlyRepeatViewHolder private constructor(val binding: ItemChooseM
             setOnItemClickListener { parent, view, position, id ->
                 day.dayOfWeek = daysOfWeek[position]
             }
-            // in case recycler view reuses view holder
-            if (day.dayOfWeek != null) {
-                setText(day.dayOfWeek!!.getFullName(),false)
-            } else {
-                setText("")
-            }
+            setText(day.dayOfWeek.getFullName(),false)
         }
 
         (binding.countTextLayout.editText as? AutoCompleteTextView)?.apply {
@@ -65,12 +59,7 @@ class ChooseMonthlyRepeatViewHolder private constructor(val binding: ItemChooseM
             setOnItemClickListener { parent, view, position, id ->
                 day.dayOfWeekInMonth = position + 1
             }
-            // in case recycler view reuses view holder
-            if (day.dayOfWeekInMonth != null) {
-                setText(counts[day.dayOfWeekInMonth!!.minus(1)],false)
-            } else {
-                setText("")
-            }
+            setText(counts[day.dayOfWeekInMonth.minus(1)],false)
         }
     }
 

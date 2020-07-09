@@ -30,7 +30,6 @@
                 android:padding="10dp"
                 android:inputType="none"
                 android:editable="false"
-                android:text="@={viewmodel.selectedMonthlyOption}"
                 tools:text="By the number of the day of the week"/>
 
         </com.google.android.material.textfield.TextInputLayout>

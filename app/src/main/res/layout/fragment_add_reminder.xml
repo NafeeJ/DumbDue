@@ -102,6 +102,7 @@
                     android:paddingBottom="10dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="#FFFFFF"
+                    android:onClick="@{() -> viewmodel.onOpenChooseCustomRepeat()}"
                     android:visibility="@{(viewmodel.repeatInterval == null)? View.GONE : View.VISIBLE}"
                     android:text="@{viewmodel.repeatInterval.toString()}"/>
 

@@ -51,6 +51,9 @@
             <action
                 android:id="@+id/action_addReminderFragment_to_timePickerFragment"
                 app:destination="@id/time_picker_fragment_dest" />
+            <action
+                android:id="@+id/action_add_reminder_fragment_dest_to_customRepeatFragment"
+                app:destination="@id/customRepeatFragment" />
         </dialog>
 
         <dialog

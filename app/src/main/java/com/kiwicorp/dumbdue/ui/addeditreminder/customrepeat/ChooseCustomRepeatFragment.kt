@@ -1,5 +1,6 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat
 
+import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
@@ -8,26 +9,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
-import android.widget.TextView
+import android.widget.FrameLayout
 import android.widget.TimePicker
-import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
+import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
-import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCount.Day
+import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCountInterval.Day
 import com.kiwicorp.dumbdue.databinding.FragmentChooseCustomRepeatBinding
 import com.kiwicorp.dumbdue.ui.addeditreminder.*
 import com.kiwicorp.dumbdue.util.*
 import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import org.threeten.bp.*
-import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.format.TextStyle
-import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
@@ -41,11 +41,9 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var addEditViewModel: AddEditReminderViewModel
+    private lateinit var viewModel: AddEditReminderViewModel
 
     private lateinit var chooseCustomRepeatViewModel: ChooseCustomRepeatViewModel
-
-    val daysByNumber = List(32) { DayItem(it + 1) }
 
     private val monthlyByNumberCalendarAdapter = ChooseRepeatMonthlyByNumberCalendarAdapter(this)
 
@@ -53,13 +51,15 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
 
     private val options = listOf("By count of day of week in month", "By number of day in month")
 
+    private val today = LocalDate.now()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        chooseCustomRepeatViewModel = getNavGraphViewModel(args.graphId) { viewModelFactory }
-        addEditViewModel = getNavGraphViewModel(args.graphId) { viewModelFactory }
+        viewModel = getNavGraphViewModel(args.graphId) { viewModelFactory }
+        chooseCustomRepeatViewModel = viewModel.chooseCustomRepeatViewModel
         val root = layoutInflater.inflate(R.layout.fragment_choose_custom_repeat, container,false)
         binding = FragmentChooseCustomRepeatBinding.bind(root).apply {
             lifecycleOwner = viewLifecycleOwner
@@ -69,114 +69,93 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
             chooseMonthlyLayout.viewmodel = chooseCustomRepeatViewModel.chooseMonthlyViewModel
             chooseYearlyLayout.viewmodel = chooseCustomRepeatViewModel.chooseYearlyViewModel
         }
+
         return root
+    }
+    // Expands the BottomSheetDialog so the entire dialog is shown when the keyboard is first opened
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        bottomSheetDialog.setOnShowListener {
+            val dialog = it as BottomSheetDialog
+            val bottomSheet: FrameLayout = dialog.findViewById(R.id.design_bottom_sheet)!!
+            val bottomSheetBehavior: BottomSheetBehavior<FrameLayout> = BottomSheetBehavior.from(bottomSheet)
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
+        }
+        return bottomSheetDialog
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        setupNavigation()
+        viewModel.repeatInterval.value?.let {
+            chooseCustomRepeatViewModel.loadRepeatInterval(it)
+        }
+    }
+
+    private fun setupNavigation() {
+        chooseCustomRepeatViewModel.chooseDailyViewModel.eventOpenChooseDailyStartDate.observe(viewLifecycleOwner, EventObserver {
+            navigateToChooseDailyStartDate()
+        })
+        chooseCustomRepeatViewModel.chooseWeeklyViewModel.eventOpenChooseWeeklyStartDate.observe(viewLifecycleOwner, EventObserver {
+            navigateToChooseWeeklyStartDate()
+        })
+        chooseCustomRepeatViewModel.eventOpenTimePicker.observe(viewLifecycleOwner, EventObserver {
+            openTimePicker()
+        })
+    }
+
+    private fun navigateToChooseDailyStartDate() {
+        val action = ChooseCustomRepeatFragmentDirections.actionCustomRepeatFragmentToChooseDailyStartDateFragment(args.graphId)
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToChooseWeeklyStartDate() {
+        val action = ChooseCustomRepeatFragmentDirections.actionCustomRepeatFragmentToChooseWeeklyStartDateFragment(args.graphId)
+        findNavController().navigate(action)
+    }
+
+    private fun openTimePicker() {
+        val onTimeSetListener = TimePickerDialog.OnTimeSetListener { timePicker: TimePicker, hourOfDay: Int, minute: Int ->
+            chooseCustomRepeatViewModel.updateTime(LocalTime.of(hourOfDay, minute))
+        }
+        val now = LocalTime.now()
+        val timePickerDialog = TimePickerDialog(
+            requireContext(),
+            onTimeSetListener,
+            now.hour,
+            now.minute,
+            false
+        )
+        timePickerDialog.show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.doneButton.setOnClickListener {
-            addEditViewModel.onChooseRepeatInterval(chooseCustomRepeatViewModel.getRepeatInterval())
-            findNavController().popBackStack()
-        }
-        binding.timeText.setOnClickListener {
-            val onTimeSetListener = TimePickerDialog.OnTimeSetListener { timePicker: TimePicker, hourOfDay: Int, minute: Int ->
-                chooseCustomRepeatViewModel.time.value = LocalTime.of(hourOfDay, minute)
-            }
-            val now = LocalTime.now()
-            val timePickerDialog = TimePickerDialog(
-                requireContext(),
-                onTimeSetListener,
-                now.hour,
-                now.minute,
-                false
-            )
-            timePickerDialog.show()
-        }
+        setupRepeatTypeText()
         setupFrequencyText()
-        setupTypeText()
-        setupStartDateTexts()
+        setupDoneButton()
         setupWeekly()
         setupMonthly()
-        setupMonthlyByNumber()
-        setupMonthlyByCount()
-        setupYearlyOptionsText()
-        setupYearlyByCount()
-        setupYearlyByNumber()
+        setupYearly()
     }
 
-    private fun setupStartDateTexts() {
-        with(ChooseCustomRepeatFragmentDirections) {
-            binding.chooseDailyLayout.startDateText.setOnClickListener {
-                val action = actionCustomRepeatFragmentToChooseDailyStartDateFragment(args.graphId)
-                findNavController().navigate(action)
-            }
-            binding.chooseWeeklyLayout.startDateText.setOnClickListener {
-                val action = actionCustomRepeatFragmentToChooseWeeklyStartDateFragment(args.graphId)
-                findNavController().navigate(action)
-            }
-        }
-        val today = LocalDate.now()
-
-        val months = getMonths()
-        //list of the months with year next to it ex: "June 2020"
-        val monthsStr = List(12) {
-            "${months[it].getDisplayName(TextStyle.FULL, Locale.ENGLISH)} " +
-                    "${today.year + if (months[it] < today.month) 1 else 0}" }
-        (binding.chooseMonthlyLayout.startDateTextLayout.editText as? AutoCompleteTextView)?.apply {
-                setAdapter(getDropDownMenuAdapter(monthsStr))
-                doOnTextChanged { text, start, before, count ->
-                    with(text.toString()) {
-                        val year = this.substringAfter(' ').toInt()
-                        val month: Month = Month.valueOf(this.substringBefore(' ').toUpperCase())
-                        chooseCustomRepeatViewModel.chooseMonthlyViewModel.startingYearMonth = YearMonth.of(year, month)
-                    }
-                }
-            }
-
-        val years = List(11) {today.year + it}
-        (binding.chooseYearlyLayout.startDateTextLayout.editText as? AutoCompleteTextView)?.apply {
-            setAdapter(getDropDownMenuAdapter(years))
-            doOnTextChanged { text, start, before, count ->
-                chooseCustomRepeatViewModel.chooseYearlyViewModel.startingYear = Year.parse(text)
-            }
-        }
-
-    }
-
-    private fun setupTypeText() {
+    private fun setupRepeatTypeText() {
         val types = listOf("days","weeks","months","years")
         (binding.typeTextLayout.editText as? AutoCompleteTextView)?.apply {
             setAdapter(getDropDownMenuAdapter(types))
-            setOnItemClickListener { parent, view, position, id ->
-                binding.mainLayout.visibility = View.VISIBLE
-                // make corresponding layout visible and the rest invisible
-                when (position) {
-                    0 -> {
-                        binding.chooseDailyLayout.root.visibility = View.VISIBLE
-                        binding.chooseWeeklyLayout.root.visibility = View.GONE
-                        binding.chooseMonthlyLayout.root.visibility = View.GONE
-                        binding.chooseYearlyLayout.root.visibility = View.GONE
-                    }
-                    1 -> {
-                        binding.chooseDailyLayout.root.visibility = View.GONE
-                        binding.chooseWeeklyLayout.root.visibility = View.VISIBLE
-                        binding.chooseMonthlyLayout.root.visibility = View.GONE
-                        binding.chooseYearlyLayout.root.visibility  = View.GONE
-                    }
-                    2 -> {
-                        binding.chooseDailyLayout.root.visibility = View.GONE
-                        binding.chooseWeeklyLayout.root.visibility = View.GONE
-                        binding.chooseMonthlyLayout.root.visibility = View.VISIBLE
-                        binding.chooseYearlyLayout.root.visibility = View.GONE
-                    }
-                    3 -> {
-                        binding.chooseDailyLayout.root.visibility = View.GONE
-                        binding.chooseWeeklyLayout.root.visibility = View.GONE
-                        binding.chooseMonthlyLayout.root.visibility = View.GONE
-                        binding.chooseYearlyLayout.root.visibility = View.VISIBLE
-                    }
-                }
+            doOnTextChanged { text, start, before, count ->
+                chooseCustomRepeatViewModel.updateType(text.toString())
             }
+            chooseCustomRepeatViewModel.type.observe(viewLifecycleOwner, Observer {
+                if (it != text.toString()) {
+                    setText(it, false)
+                }
+                binding.mainLayout.visibility = View.VISIBLE
+                binding.chooseDailyLayout.root.visibility = if (it == "days") View.VISIBLE else View.GONE
+                binding.chooseWeeklyLayout.root.visibility = if (it == "weeks") View.VISIBLE else View.GONE
+                binding.chooseMonthlyLayout.root.visibility = if (it == "months") View.VISIBLE else View.GONE
+                binding.chooseYearlyLayout.root.visibility = if (it == "years") View.VISIBLE else View.GONE
+            })
         }
     }
 
@@ -192,134 +171,11 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
         }
     }
 
-    private fun setupMonthly() {
-        (binding.chooseMonthlyLayout.monthlyOptionsText.editText as? AutoCompleteTextView)?.apply {
-            setAdapter(getDropDownMenuAdapter(options))
-            setOnItemClickListener { parent, view, position, id ->
-                with (binding.chooseMonthlyLayout) {
-                    if (position == 0) {
-                        monthlyByCountGroup.visibility = View.VISIBLE
-                        monthlyByNumberCalendar.visibility = View.GONE
-                    } else {
-                        monthlyByCountGroup.visibility = View.GONE
-                        monthlyByNumberCalendar.visibility = View.VISIBLE
-                    }
-                }
-            }
-        }
-    }
-
-
-    private fun setupMonthlyByNumber() {
-        binding.chooseMonthlyLayout.monthlyByNumberCalendar.apply {
-            setHasFixedSize(true)
-            adapter = monthlyByNumberCalendarAdapter
-            monthlyByNumberCalendarAdapter.days = daysByNumber
-            layoutManager = NoScrollGridLayoutManager(requireContext(),7)
-        }
-    }
-
-    private fun setupMonthlyByCount() {
-        binding.chooseMonthlyLayout.monthlyByCountRecyclerView.adapter = monthlyByCountRecyclerViewAdapter
-        val days = chooseCustomRepeatViewModel.chooseMonthlyViewModel.daysByCount
-        monthlyByCountRecyclerViewAdapter.daysInMonth = days
-
-        binding.chooseMonthlyLayout.monthlyByCountAddButton.setOnClickListener {
-            days.add(Day())
-            monthlyByCountRecyclerViewAdapter.notifyItemInserted(days.lastIndex)
-        }
-    }
-
-    private fun setupYearlyOptionsText() {
-        (binding.chooseYearlyLayout.yearlyOptionsText.editText as? AutoCompleteTextView)?.apply {
-            setAdapter(getDropDownMenuAdapter(options))
-            setOnItemClickListener { parent, view, position, id ->
-                if (position == 0) {
-                    binding.chooseYearlyLayout.yearlyByCountGroup.visibility = View.VISIBLE
-                    binding.chooseYearlyLayout.yearlyByNumberGroup.visibility = View.GONE
-                } else {
-                    binding.chooseYearlyLayout.yearlyByNumberGroup.visibility = View.VISIBLE
-                    binding.chooseYearlyLayout.yearlyByCountGroup.visibility = View.GONE
-                }
-            }
-        }
-    }
-
-    private fun setupYearlyByNumber() {
-        val months = listOf("January","February","March","April","May","June","July","August","September","October","November","December")
-        var daysOfMonth = List(31) {it + 1}
-
-        val monthsAdapter = getDropDownMenuAdapter(months)
-        val daysOfMonthAdapter = getDropDownMenuAdapter(daysOfMonth)
-
-        (binding.chooseYearlyLayout.yearlyByNumberMonthText.editText as? AutoCompleteTextView)?.apply {
-            setAdapter(monthsAdapter)
-            setOnItemClickListener { parent, view, position, id ->
-                // adjust the maximum number of days based on the selected month
-                val size = when (months[position]) {
-                    "January" -> 31
-                    "February" -> 29
-                    "March" -> 31
-                    "April" -> 30
-                    "May" -> 31
-                    "June" -> 30
-                    "July" -> 31
-                    "August" -> 31
-                    "September" -> 30
-                    "October" -> 31
-                    "November" -> 30
-                    else -> 31
-                }
-                daysOfMonth = List(size) {it + 1}
-                daysOfMonthAdapter.notifyDataSetChanged()
-                with(binding.chooseYearlyLayout.yearlyByNumberDayText.editText?.text.toString().toIntOrNull()) {
-                    if (this != null && this > size) {
-                        (binding.chooseYearlyLayout.yearlyByNumberDayText.editText as? AutoCompleteTextView)?.setText(size.toString(),false)
-                    }
-                }
-
-                val month = Month.valueOf(text.toString().toUpperCase())
-                val day = chooseCustomRepeatViewModel.chooseYearlyViewModel.byNumberMonthDay.dayOfMonth
-                chooseCustomRepeatViewModel.chooseYearlyViewModel.byNumberMonthDay = MonthDay.of(month,day)
-            }
-        }
-        (binding.chooseYearlyLayout.yearlyByNumberDayText.editText as? AutoCompleteTextView)?.apply {
-            setAdapter(daysOfMonthAdapter)
-            setOnItemClickListener { parent, view, position, id ->
-                val month = chooseCustomRepeatViewModel.chooseYearlyViewModel.byNumberMonthDay.month
-                val day = text.toString().toInt()
-                chooseCustomRepeatViewModel.chooseYearlyViewModel.byNumberMonthDay = MonthDay.of(month, day)
-            }
-        }
-    }
-
-    private fun setupYearlyByCount() {
-
-
-        (binding.chooseYearlyLayout.yearlyByCountDayOfWeekInMonthText.editText as? AutoCompleteTextView)?.apply {
-            val counts = listOf("First","Second","Third","Fourth","Last")
-            setAdapter(getDropDownMenuAdapter(counts))
-            setOnItemClickListener { parent, view, position, id ->
-                chooseCustomRepeatViewModel.chooseYearlyViewModel.byCountDayOfWeekInMonth = position + 1
-            }
-        }
-
-        (binding.chooseYearlyLayout.yearlyByCountDayOfWeekText.editText as? AutoCompleteTextView)?.apply {
-            val daysOfTheWeek = DayOfWeek.values().toList().sortedSundayFirst()
-
-            setAdapter(getDropDownMenuAdapter(List(7) { daysOfTheWeek[it].getFullName() }))
-            setOnItemClickListener { parent, view, position, id ->
-                setText(daysOfTheWeek[position].getFullName().substring(0..2),false)
-                chooseCustomRepeatViewModel.chooseYearlyViewModel.byCountDayOfWeek = daysOfTheWeek[position]
-            }
-        }
-        (binding.chooseYearlyLayout.yearlyByCountMonthText.editText as? AutoCompleteTextView)?.apply {
-            val months = Month.values()
-            setAdapter(getDropDownMenuAdapter(List(12) { months[it].getFullName() }))
-            setOnItemClickListener { parent, view, position, id ->
-                setText(months[position].getFullName().substring(0..2),false)
-                chooseCustomRepeatViewModel.chooseYearlyViewModel.byCountMonth = months[position]
-            }
+    private fun setupDoneButton() {
+        binding.doneButton.setOnClickListener {
+            //todo
+            viewModel.onChooseRepeatInterval(chooseCustomRepeatViewModel.getRepeatInterval())
+            dialog?.cancel()
         }
     }
 
@@ -327,11 +183,12 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
         with(binding.chooseWeeklyLayout) {
             val clickListener = { chip: Chip, dayOfWeek: DayOfWeek ->
                 if (chip.isChecked) {
-                    chooseCustomRepeatViewModel.chooseWeeklyViewModel.daysOfWeek.add(dayOfWeek)
+                    chooseCustomRepeatViewModel.chooseWeeklyViewModel.addDayOfWeek(dayOfWeek)
                 } else {
-                    chooseCustomRepeatViewModel.chooseWeeklyViewModel.daysOfWeek.remove(dayOfWeek)
+                    chooseCustomRepeatViewModel.chooseWeeklyViewModel.removeDayOfWeek(dayOfWeek)
                 }
             }
+            //todo make own implementation with recycler view instead of chips
             chipSunday.setOnClickListener {
                 clickListener(it as Chip, DayOfWeek.SUNDAY)
             }
@@ -353,27 +210,233 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
             chipSaturday.setOnClickListener {
                 clickListener(it as Chip, DayOfWeek.SATURDAY)
             }
+            chooseCustomRepeatViewModel.chooseWeeklyViewModel.daysOfWeek.observe(viewLifecycleOwner, Observer {
+                chipSunday.isChecked = it.contains(DayOfWeek.SUNDAY)
+                chipMonday.isChecked = it.contains(DayOfWeek.MONDAY)
+                chipTuesday.isChecked = it.contains(DayOfWeek.TUESDAY)
+                chipWednesday.isChecked = it.contains(DayOfWeek.WEDNESDAY)
+                chipThursday.isChecked = it.contains(DayOfWeek.THURSDAY)
+                chipFriday.isChecked = it.contains(DayOfWeek.FRIDAY)
+                chipSaturday.isChecked = it.contains(DayOfWeek.SATURDAY)
+            })
+        }
+    }
+
+    private fun setupMonthly() {
+        setupMonthlyOptionsText()
+        setupMonthlyStartText()
+        setupMonthlyByNumber()
+        setupMonthlyByCount()
+    }
+
+    private fun setupMonthlyStartText() {
+        val months = getMonths()
+        //list of the months with year next to it ex: "June 2020"
+        val monthsStr = List(12) {
+            "${months[it].getFullName()} " +
+                    "${today.year + if (months[it] < today.month) 1 else 0}" }
+        (binding.chooseMonthlyLayout.startDateTextLayout.editText as? AutoCompleteTextView)?.apply {
+            setAdapter(getDropDownMenuAdapter(monthsStr))
+
+            setOnItemClickListener { parent, view, position, id ->
+                with(text.toString()) {
+                    val year = this.substringAfter(' ').toInt()
+                    val month: Month = Month.valueOf(this.substringBefore(' ').toUpperCase())
+                    chooseCustomRepeatViewModel.chooseMonthlyViewModel.updateStartingYearMonth(YearMonth.of(year, month))
+                }
+            }
+
+            chooseCustomRepeatViewModel.chooseMonthlyViewModel.startingYearMonthStr.observe(viewLifecycleOwner, Observer {
+                setText(it,false)
+            })
+        }
+    }
+
+    private fun setupMonthlyOptionsText() {
+        (binding.chooseMonthlyLayout.monthlyOptionsText.editText as? AutoCompleteTextView)?.apply{
+            setAdapter(getDropDownMenuAdapter(options))
+            doOnTextChanged { text, start, before, count ->
+                chooseCustomRepeatViewModel.chooseMonthlyViewModel.updateSelectedMonthlyOption(text.toString())
+            }
+            chooseCustomRepeatViewModel.chooseMonthlyViewModel.selectedMonthlyOption.observe(viewLifecycleOwner, Observer {
+                if (it != text.toString()) {
+                    setText(it, false)
+                }
+                with(binding.chooseMonthlyLayout) {
+                    monthlyByCountGroup.visibility = if (it == options[0]) View.VISIBLE else View.GONE
+                    monthlyByNumberCalendar.visibility = if (it == options[1]) View.VISIBLE else View.GONE
+                }
+            })
         }
     }
 
 
-    override fun onDayItemClicked(day: DayItem) {
-        val index = day.number - 1
-        if (day.isChecked) {
-            chooseCustomRepeatViewModel.chooseMonthlyViewModel.daysByNumber.remove(day.number)
-        } else {
-            chooseCustomRepeatViewModel.chooseMonthlyViewModel.daysByNumber.add(day.number)
+    private fun setupMonthlyByNumber() {
+        binding.chooseMonthlyLayout.monthlyByNumberCalendar.apply {
+            setHasFixedSize(true)
+            adapter = monthlyByNumberCalendarAdapter
+            chooseCustomRepeatViewModel.chooseMonthlyViewModel.daysByNumber.observe(viewLifecycleOwner, Observer {days ->
+                monthlyByNumberCalendarAdapter.days = MutableList(32) { DayItem(it + 1) }.apply {
+                    for (day in days) {
+                        this[day - 1] = DayItem(day, true)
+                    }
+                }
+                monthlyByNumberCalendarAdapter.notifyDataSetChanged()
+            })
+            layoutManager = NoScrollGridLayoutManager(requireContext(),7)
         }
-        daysByNumber[index].isChecked = !day.isChecked
+    }
 
-        monthlyByNumberCalendarAdapter.notifyItemChanged(index)
+    private fun setupMonthlyByCount() {
+        binding.chooseMonthlyLayout.monthlyByCountRecyclerView.adapter = monthlyByCountRecyclerViewAdapter
+
+        chooseCustomRepeatViewModel.chooseMonthlyViewModel.daysByCount.observe(viewLifecycleOwner, Observer {
+            monthlyByCountRecyclerViewAdapter.daysInMonth = it
+            monthlyByCountRecyclerViewAdapter.notifyDataSetChanged()
+        })
+
+        binding.chooseMonthlyLayout.monthlyByCountAddButton.setOnClickListener {
+            chooseCustomRepeatViewModel.chooseMonthlyViewModel.addDayInDayByCount(Day())
+        }
+    }
+
+    private fun setupYearly() {
+        setupYearlyOptionsText()
+        setupYearlyStartText()
+        setupYearlyByCount()
+        setupYearlyByNumber()
+    }
+
+    private fun setupYearlyOptionsText() {
+        (binding.chooseYearlyLayout.yearlyOptionsText.editText as? AutoCompleteTextView)?.apply{
+            setAdapter(getDropDownMenuAdapter(options))
+            doOnTextChanged { text, start, before, count ->
+                chooseCustomRepeatViewModel.chooseYearlyViewModel.updateSelectedYearlyOption(text.toString())
+            }
+            chooseCustomRepeatViewModel.chooseYearlyViewModel.selectedYearlyOption.observe(viewLifecycleOwner, Observer {
+                if (it != text.toString()) {
+                    setText(it, false)
+                }
+                with(binding.chooseYearlyLayout) {
+                    yearlyByCountGroup.visibility = if (it == options[0]) View.VISIBLE else View.GONE
+                    yearlyByNumberGroup.visibility = if (it == options[1]) View.VISIBLE else View.GONE
+                }
+            })
+        }
+    }
+
+    private fun setupYearlyStartText() {
+        val years = List(11) {today.year + it}
+        (binding.chooseYearlyLayout.startDateTextLayout.editText as? AutoCompleteTextView)?.apply {
+            setAdapter(getDropDownMenuAdapter(years))
+            setOnItemClickListener { parent, view, position, id ->
+                chooseCustomRepeatViewModel.chooseYearlyViewModel.updateStartingYear(Year.parse(text))
+            }
+            chooseCustomRepeatViewModel.chooseYearlyViewModel.startingYear.observe(viewLifecycleOwner, Observer {
+                setText(it.toString(),false)
+            })
+        }
+    }
+
+    private fun setupYearlyByNumber() {
+        val months = Month.values()
+        val monthsAdapter = getDropDownMenuAdapter(List(12) { months[it].getFullName() })
+
+        var daysOfMonth = List(31) {it + 1}
+        val daysOfMonthAdapter = getDropDownMenuAdapter(daysOfMonth)
+
+        (binding.chooseYearlyLayout.yearlyByNumberMonthText.editText as? AutoCompleteTextView)?.apply {
+            setAdapter(monthsAdapter)
+            setOnItemClickListener { parent, view, position, id ->
+                val month = Month.valueOf(text.toString().toUpperCase())
+                // update the size of daysOfMonth based on the month selected
+                val size = month.maxLength()
+                daysOfMonthAdapter.clear()
+                daysOfMonth = List(size) {it + 1}
+                daysOfMonthAdapter.addAll(daysOfMonth)
+                daysOfMonthAdapter.notifyDataSetChanged()
+                val day: Int
+                with(binding.chooseYearlyLayout.yearlyByNumberDayText.editText) {
+                    // if current day of month exceeds the max, set current day of month to the max
+                    if (this@with!!.text.toString().toInt() > size) {
+                        (this@with as? AutoCompleteTextView)?.setText(size.toString(),false)
+                    }
+                    day = this@with.text.toString().toInt()
+                }
+                chooseCustomRepeatViewModel.chooseYearlyViewModel.updateByNumberMonthDay(MonthDay.of(month,day))
+            }
+        }
+
+        (binding.chooseYearlyLayout.yearlyByNumberDayText.editText as? AutoCompleteTextView)?.apply {
+            setAdapter(daysOfMonthAdapter)
+            setOnItemClickListener { parent, view, position, id ->
+                val month = chooseCustomRepeatViewModel.chooseYearlyViewModel.byNumberMonthDay.value!!.month
+                val day = text.toString().toInt()
+                chooseCustomRepeatViewModel.chooseYearlyViewModel.updateByNumberMonthDay(MonthDay.of(month, day))
+            }
+        }
+
+        chooseCustomRepeatViewModel.chooseYearlyViewModel.byNumberMonthDay.observe(viewLifecycleOwner, Observer { monthDay ->
+            (binding.chooseYearlyLayout.yearlyByNumberDayText.editText as? AutoCompleteTextView)?.setText(monthDay.dayOfMonth.toString(), false)
+            (binding.chooseYearlyLayout.yearlyByNumberMonthText.editText as? AutoCompleteTextView)?.setText(monthDay.month.getFullName(), false)
+        })
+    }
+
+    private fun setupYearlyByCount() {
+        (binding.chooseYearlyLayout.yearlyByCountDayOfWeekInMonthTextLayout.editText as? AutoCompleteTextView)?.apply {
+            val counts = listOf("First","Second","Third","Fourth","Last")
+            setAdapter(getDropDownMenuAdapter(counts))
+
+            setOnItemClickListener { parent, view, position, id ->
+                chooseCustomRepeatViewModel.chooseYearlyViewModel.updateByCountDayOfWeekInMonth(position + 1)
+            }
+
+            chooseCustomRepeatViewModel.chooseYearlyViewModel.byCountDayOfWeekInMonth.observe(viewLifecycleOwner, Observer {
+                setText(counts[it - 1], false)
+            })
+        }
+
+        (binding.chooseYearlyLayout.yearlyByCountDayOfWeekText.editText as? AutoCompleteTextView)?.apply {
+            val daysOfTheWeek = DayOfWeek.values().toList().sortedSundayFirst()
+            setAdapter(getDropDownMenuAdapter(List(7) { daysOfTheWeek[it].getFullName() }))
+
+            setOnItemClickListener { parent, view, position, id ->
+                chooseCustomRepeatViewModel.chooseYearlyViewModel.updateByCountDayOfWeek(daysOfTheWeek[position])
+            }
+
+            chooseCustomRepeatViewModel.chooseYearlyViewModel.byCountDayOfWeek.observe(viewLifecycleOwner, Observer {
+                setText(it.getFullName().substring(0..2), false)
+            })
+        }
+
+        (binding.chooseYearlyLayout.yearlyByCountMonthText.editText as? AutoCompleteTextView)?.apply {
+            val months = Month.values()
+            setAdapter(getDropDownMenuAdapter(List(12) { months[it].getFullName() }))
+
+            setOnItemClickListener { parent, view, position, id ->
+                chooseCustomRepeatViewModel.chooseYearlyViewModel.updateByCountMonth(months[position])
+            }
+
+            chooseCustomRepeatViewModel.chooseYearlyViewModel.byCountMonth.observe(viewLifecycleOwner, Observer {
+                setText(it.getFullName().substring(0..2),false)
+            })
+        }
+    }
+
+
+    override fun onDayItemClicked(dayItem: DayItem) {
+        if (dayItem.isChecked) {
+            chooseCustomRepeatViewModel.chooseMonthlyViewModel.removeDayInDaysByNumber(dayItem.number)
+        } else {
+            chooseCustomRepeatViewModel.chooseMonthlyViewModel.addDayInDaysByNumber(dayItem.number)
+        }
     }
 
     override fun onDayDeleted(day: Day) {
-        chooseCustomRepeatViewModel.chooseMonthlyViewModel.daysByCount.remove(day)
-        monthlyByCountRecyclerViewAdapter.notifyDataSetChanged()
+        chooseCustomRepeatViewModel.chooseMonthlyViewModel.removeDayInDayByCount(day)
     }
 
+    // returns the a list of all the months with the current month first and the rest in order
     private fun getMonths(): List<Month> {
         val thisMonth = LocalDate.now().month
         val months = Month.values()

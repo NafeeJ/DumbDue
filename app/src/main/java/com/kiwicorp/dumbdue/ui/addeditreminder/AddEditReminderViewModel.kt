@@ -1,9 +1,6 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.*
 import com.kiwicorp.dumbdue.data.Reminder
@@ -12,10 +9,11 @@ import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
 import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
+import com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatViewModel
 import kotlinx.coroutines.*
+import org.threeten.bp.LocalTime
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 class AddEditReminderViewModel @Inject constructor(
@@ -38,6 +36,8 @@ class AddEditReminderViewModel @Inject constructor(
     var reminderId: String? = null
         private set //makes value read only externally
 
+    val chooseCustomRepeatViewModel = ChooseCustomRepeatViewModel(dueDate,preferencesStorage.repeatIntervalUsesRemindersTime)
+
     private val _eventOpenRepeatMenu = MutableLiveData<Event<Unit>>()
     val eventOpenRepeatMenu: LiveData<Event<Unit>> = _eventOpenRepeatMenu
 
@@ -52,6 +52,9 @@ class AddEditReminderViewModel @Inject constructor(
 
     private val _eventChooseAutoSnooze = MutableLiveData<Event<Unit>>()
     val eventChooseAutoSnooze: LiveData<Event<Unit>> = _eventChooseAutoSnooze
+
+    private val _eventOpenChooseCustomRepeat = MutableLiveData<Event<Unit>>()
+    val eventOpenChooseCustomRepeat: LiveData<Event<Unit>> = _eventOpenChooseCustomRepeat
 
     private val _eventClose = MutableLiveData<Event<Unit>>()
     val eventClose: LiveData<Event<Unit>> = _eventClose
@@ -81,6 +84,10 @@ class AddEditReminderViewModel @Inject constructor(
      */
     fun onOpenTimePicker() {
         _eventOpenTimePicker.value = Event(Unit)
+    }
+
+    fun onOpenChooseCustomRepeat() {
+        _eventOpenChooseCustomRepeat.value = Event(Unit)
     }
 
     /**
@@ -222,7 +229,7 @@ class AddEditReminderViewModel @Inject constructor(
     override fun onQuickAccessTimeSetterClick(key: String) {
         Timber.d("Time Setter Clicked")
         val timeSetter = preferencesStorage.getQuickAccessTimeSetter(key)
-        _dueDate.value = dueDate.value!!.with(timeSetter)
+        updateDueDate(dueDate.value!!.with(timeSetter))
     }
 
     /**
@@ -232,11 +239,14 @@ class AddEditReminderViewModel @Inject constructor(
     override fun onIncrementalTimeSetterClick(key: String) {
         Timber.d("Time Setter Clicked")
         val timeSetter = preferencesStorage.getIncrementalTimeSetter(key)
-        _dueDate.value = dueDate.value!!.with(timeSetter)
+        updateDueDate(dueDate.value!!.with(timeSetter))
     }
 
     fun updateDueDate(dueDate: ZonedDateTime) {
         _dueDate.value = dueDate
+        if (_repeatInterval.value != null && preferencesStorage.repeatIntervalUsesRemindersTime) {
+            _repeatInterval.value = _repeatInterval.value!!.apply { time = dueDate.toLocalTime() }
+        }
     }
 
 }

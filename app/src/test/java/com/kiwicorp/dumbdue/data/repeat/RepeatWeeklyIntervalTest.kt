@@ -4,7 +4,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.threeten.bp.*
 
-class RepeatWeeklyTest {
+class RepeatWeeklyIntervalTest {
 
     private val time = LocalTime.of(10,15)
 
@@ -23,7 +23,7 @@ class RepeatWeeklyTest {
         // a tuesday
         val june162020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,16),time, ZoneId.systemDefault())
 
-        val repeat = RepeatWeekly(1, LocalDateTime.of(2020,Month.JUNE,14,time.hour, time.minute),weekDays)
+        val repeat = RepeatWeeklyInterval(1, time, LocalDate.of(2020,Month.JUNE,14), weekDays)
         val result = repeat.getNextDueDate(june152020)
 
         assertEquals(june162020,result)
@@ -36,9 +36,9 @@ class RepeatWeeklyTest {
         // a tuesday
         val june162020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,16),time, ZoneId.systemDefault())
 
-        val firstDateTimeOfWeek = LocalDateTime.of(2020,Month.JUNE,14,time.hour, time.minute)
+        val firstDateOfWeek = LocalDate.of(2020,Month.JUNE,14)
 
-        val repeat = RepeatWeekly(2, firstDateTimeOfWeek, weekDays)
+        val repeat = RepeatWeeklyInterval(2, time, firstDateOfWeek, weekDays)
         val result = repeat.getNextDueDate(june152020)
 
         assertEquals(june162020, result)
@@ -52,9 +52,9 @@ class RepeatWeeklyTest {
         // monday next week
         val june152020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE,15),time, ZoneId.systemDefault())
 
-        val firstDateTimeOfWeek = LocalDateTime.of(2020,Month.JUNE,7,time.hour, time.minute)
+        val firstDateOfWeek = LocalDate.of(2020,Month.JUNE,7)
 
-        val repeat = RepeatWeekly(1,firstDateTimeOfWeek,weekDays)
+        val repeat = RepeatWeeklyInterval(1,time,firstDateOfWeek,weekDays)
         val result = repeat.getNextDueDate(june122020)
 
         assertEquals(june152020,result)
@@ -76,9 +76,9 @@ class RepeatWeeklyTest {
             DayOfWeek.SATURDAY
         )
 
-        val firstDateTimeOfWeek = LocalDateTime.of(2020,Month.JUNE,14,time.hour, time.minute)
+        val firstDateOfWeek = LocalDate.of(2020,Month.JUNE,14)
 
-        val repeat = RepeatWeekly(3,firstDateTimeOfWeek,everydayExceptWednesday)
+        val repeat = RepeatWeeklyInterval(3,time,firstDateOfWeek,everydayExceptWednesday)
         val result = repeat.getNextDueDate(june162020)
 
         assertEquals(result,june182020)
@@ -94,9 +94,9 @@ class RepeatWeeklyTest {
 
         val mondays = listOf(DayOfWeek.MONDAY)
 
-        val firstDateTimeOfWeek = LocalDateTime.of(2020,Month.JUNE,14,time.hour, time.minute)
+        val firstDateOfWeek = LocalDate.of(2020,Month.JUNE,14)
 
-        val repeat = RepeatWeekly(1,firstDateTimeOfWeek,mondays)
+        val repeat = RepeatWeeklyInterval(1,time,firstDateOfWeek,mondays)
         val result = repeat.getNextDueDate(june152020)
 
         assertEquals(result,june222020)
@@ -112,9 +112,9 @@ class RepeatWeeklyTest {
 
         val mondays = listOf(DayOfWeek.MONDAY)
 
-        val firstDateTimeOfWeek = LocalDateTime.of(2020,Month.JUNE,7,time.hour, time.minute)
+        val firstDateOfWeek = LocalDate.of(2020,Month.JUNE,7)
 
-        val repeat = RepeatWeekly(2,firstDateTimeOfWeek,mondays)
+        val repeat = RepeatWeeklyInterval(2,time,firstDateOfWeek,mondays)
         val result = repeat.getNextDueDate(june112020)
 
         assertEquals(result,june222020)

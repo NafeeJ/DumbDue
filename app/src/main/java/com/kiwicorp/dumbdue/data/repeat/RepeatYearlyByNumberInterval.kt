@@ -1,8 +1,6 @@
 package com.kiwicorp.dumbdue.data.repeat
 
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
@@ -12,11 +10,11 @@ import java.util.*
  *
  * [frequency] will be the years users receive a reminder on
  */
-class RepeatYearlyByNumber(frequency: Int, val startingDateTime: LocalDateTime) : RepeatInterval(frequency) {
+class RepeatYearlyByNumberInterval(frequency: Int, time: LocalTime, val startingDate: LocalDate) : RepeatYearlyInterval(frequency, time, Year.of(startingDate.year)) {
 
     override fun getNextOccurrence(): ZonedDateTime {
         return if (prevOccurrence == null) {
-            prevOccurrence = ZonedDateTime.of(startingDateTime, ZoneId.systemDefault())
+            prevOccurrence = ZonedDateTime.of(LocalDateTime.of(startingDate, time), ZoneId.systemDefault())
             prevOccurrence!!
         } else {
             prevOccurrence = prevOccurrence!!.plusYears(frequency.toLong())
@@ -25,7 +23,7 @@ class RepeatYearlyByNumber(frequency: Int, val startingDateTime: LocalDateTime) 
     }
 
     override fun toString(): String {
-        val dateAndTime = startingDateTime.format(DateTimeFormatter.ofPattern("MMMM d, h:mm a"))
+        val dateAndTime = LocalDateTime.of(startingDate, time).format(DateTimeFormatter.ofPattern("MMMM d, h:mm a"))
         return if (frequency == 1) "Every $dateAndTime" else "$dateAndTime every $frequency years"
     }
 }

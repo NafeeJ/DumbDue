@@ -6,12 +6,19 @@
 
     <PreferenceCategory app:title="@string/defaults_header">
         <ListPreference
-            app:key="default_auto_snooze"
+            app:key="@string/prefs_default_auto_snooze"
             app:title="Auto Snooze"
             app:useSimpleSummaryProvider="true"
             app:entries="@array/auto_snooze_entries"
             app:entryValues="@array/auto_snooze_values"
             app:defaultValue="60000"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/repeat_interval">
+        <SwitchPreferenceCompat
+            app:key="@string/prefs_repeat_interval_uses_time"
+            app:title="Use reminder's time"
+            app:defaultValue="true" />
     </PreferenceCategory>
 
 </PreferenceScreen>

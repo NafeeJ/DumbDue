@@ -17,7 +17,7 @@ import java.util.*
  * [days] will be a list of the days in a month that the reminder will repeat on. Range is 1-32. 32
  * indicates the last day of the month.
  */
-class RepeatMonthlyByNumber(frequency: Int, var startingYearMonth: YearMonth, var time: LocalTime, val days: List<Int>): RepeatInterval(frequency) {
+class RepeatMonthlyByNumberInterval(frequency: Int, startingYearMonth: YearMonth, time: LocalTime, val days: List<Int>): RepeatMonthlyInterval(frequency, time, startingYearMonth) {
 
     override fun getNextOccurrence(): ZonedDateTime {
         return if (prevOccurrence == null) {

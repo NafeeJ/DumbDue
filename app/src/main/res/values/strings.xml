@@ -45,8 +45,6 @@
     <string name="preference_edit_timer_setters">Edit Time Setter Buttons</string>
     <string name="reset">reset</string>
 
-    <string name="default_auto_snooze">default_auto_snooze</string>
-
     <string name="day">Day</string>
     <string name="week">Week</string>
     <string name="month">Month</string>
@@ -70,12 +68,15 @@
     <string name="w">W</string>
     <string name="f">F</string>
     <string name="s">S</string>
+
     <string name="every">Every</string>
 
     <string name="last_day">Last Day</string>
-    <string name="freq">freq</string>
+
     <string name="start">Start</string>
+
     <string name="add_day">Add Day</string>
+
     <string name="sun">SUN</string>
     <string name="mon">MON</string>
     <string name="tue">TUE</string>
@@ -83,5 +84,10 @@
     <string name="thu">THU</string>
     <string name="fri">FRI</string>
     <string name="sat">SAT</string>
+
+    <string name="repeat_interval">Repeat Interval</string>
+
+    <string name="prefs_repeat_interval_uses_time">PREFS_REPEAT_INTERVAL_USE_TIME</string>
+    <string name="prefs_default_auto_snooze">PREFS_DEFAULT_AUTO_SNOOZE</string>
 
 </resources>

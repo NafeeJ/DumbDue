@@ -4,8 +4,6 @@ import com.kiwicorp.dumbdue.util.getFullName
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.*
-import timber.log.Timber
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -18,11 +16,11 @@ import java.util.*
  * that the user wishes to repeat the reminder on.
  */
 
-class RepeatMonthlyByCount(frequency: Int, var startingMonth: YearMonth, var time: LocalTime, val days: List<Day>): RepeatInterval(frequency) {
+class RepeatMonthlyByCountInterval(frequency: Int, startingYearMonth: YearMonth, time: LocalTime, val days: List<Day>): RepeatMonthlyInterval(frequency, time, startingYearMonth) {
 
     override fun getNextOccurrence(): ZonedDateTime {
         return if (prevOccurrence == null) {
-            prevOccurrence = ZonedDateTime.of(findFirstDayOfMonth(startingMonth),time, ZoneId.systemDefault())
+            prevOccurrence = ZonedDateTime.of(findFirstDayOfMonth(startingYearMonth),time, ZoneId.systemDefault())
             prevOccurrence!!
         } else {
             //todo make this more efficient
@@ -70,7 +68,7 @@ class RepeatMonthlyByCount(frequency: Int, var startingMonth: YearMonth, var tim
     }
 
     override fun toString(): String {
-        val time = this.time.format(DateTimeFormatter.ofPattern("h:mm a"))
+        val time = time.format(DateTimeFormatter.ofPattern("h:mm a"))
         var string = "On the "
 
         when (days.size) {
@@ -99,7 +97,7 @@ class RepeatMonthlyByCount(frequency: Int, var startingMonth: YearMonth, var tim
      * given day of the week in a given month must occur at least 4 times but can go up to at most 5
      * times, 5 represent the last occurrence of [dayOfWeek] in the month.
      */
-    data class Day(var dayOfWeek: DayOfWeek? = null, var dayOfWeekInMonth: Int? = null) : TemporalAdjuster {
+    data class Day(var dayOfWeekInMonth: Int = 1, var dayOfWeek: DayOfWeek = DayOfWeek.SUNDAY) : TemporalAdjuster, Comparable<Day> {
         override fun toString(): String {
             val number = when (dayOfWeekInMonth) {
                 1 -> "1st"
@@ -108,7 +106,15 @@ class RepeatMonthlyByCount(frequency: Int, var startingMonth: YearMonth, var tim
                 4 -> "4th"
                 else -> "last"
             }
-            return "$number ${dayOfWeek!!.getFullName()}"
+            return "$number ${dayOfWeek.getFullName()}"
+        }
+
+        override operator fun compareTo(other: Day): Int {
+            if (this.dayOfWeekInMonth > other.dayOfWeekInMonth) return 1
+            if (this.dayOfWeekInMonth < other.dayOfWeekInMonth) return -1
+            if (this.dayOfWeek > other.dayOfWeek) return 1
+            if (this.dayOfWeek < other.dayOfWeek) return -1
+            return 0
         }
 
         override fun adjustInto(temporal: Temporal): Temporal {

@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
 
         <variable
             name="viewmodel"
@@ -74,7 +75,6 @@
                     android:padding="10dp"
                     android:inputType="none"
                     android:editable="false"
-                    android:text="@={viewmodel.type}"
                     tools:text="months"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -84,28 +84,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
                 android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/type_text_layout">
+                app:layout_constraintBottom_toTopOf="@id/done_button"
+                app:layout_constraintTop_toBottomOf="@id/type_text_layout"
+                app:layout_constraintVertical_bias="0.0"
+                tools:visibility="visible">
 
                 <include
                     android:id="@+id/choose_daily_layout"
                     layout="@layout/include_custom_repeat_daily"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <include
                     android:id="@+id/choose_weekly_layout"
                     layout="@layout/include_custom_repeat_weekly"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <include
                     android:id="@+id/choose_monthly_layout"
                     layout="@layout/include_custom_repeat_monthly"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <include
                     android:id="@+id/choose_yearly_layout"
                     layout="@layout/include_custom_repeat_yearly"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -113,10 +117,13 @@
                 android:id="@+id/time_text_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginHorizontal="20dp"
+                android:visibility="@{viewmodel.repeatIntervalUsesReminderTime? View.GONE : View.VISIBLE }"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/done_button"
                 app:layout_constraintTop_toBottomOf="@id/main_layout">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -128,6 +135,7 @@
                     android:textColor="@android:color/white"
                     android:textSize="15sp"
                     android:focusableInTouchMode="false"
+                    android:onClick="@{() -> viewmodel.openTimePicker()}"
                     android:text="@{viewmodel.timeStr}"
                     tools:text="2:00 PM" />
 
@@ -141,6 +149,7 @@
                 android:shadowColor="@android:color/transparent"
                 android:text="@string/done"
                 android:textColor="@android:color/white"
+                android:layout_marginBottom="10dp"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

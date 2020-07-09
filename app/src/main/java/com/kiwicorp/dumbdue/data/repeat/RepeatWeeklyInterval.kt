@@ -1,10 +1,7 @@
 package com.kiwicorp.dumbdue.data.repeat
 
 import com.kiwicorp.dumbdue.util.getFullName
-import org.threeten.bp.DayOfWeek
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.TemporalAdjusters
 
@@ -16,12 +13,12 @@ import org.threeten.bp.temporal.TemporalAdjusters
  * [daysOfWeek] is a sorted list of the days the user wishes to receive reminders on. The list
  * should never have a size of more than 7. Sunday is considered to be the first day.
  */
-class RepeatWeekly(frequency: Int, var dateTimeOfFirstDayOfStartingWeek: LocalDateTime, val daysOfWeek: List<DayOfWeek>): RepeatInterval(frequency) {
+class RepeatWeeklyInterval(frequency: Int, time: LocalTime, var dateOfFirstDayOfStartingWeek: LocalDate, val daysOfWeek: List<DayOfWeek>): RepeatInterval(frequency, time) {
 
     override fun getNextOccurrence(): ZonedDateTime {
         return if (prevOccurrence == null) {
-            val firstOccurrence = dateTimeOfFirstDayOfStartingWeek.with(TemporalAdjusters.nextOrSame(daysOfWeek.first()))
-            prevOccurrence = ZonedDateTime.of(firstOccurrence, ZoneId.systemDefault())
+            val firstOccurrence = dateOfFirstDayOfStartingWeek.with(TemporalAdjusters.nextOrSame(daysOfWeek.first()))
+            prevOccurrence = ZonedDateTime.of(LocalDateTime.of(firstOccurrence, time), ZoneId.systemDefault())
             prevOccurrence!!
         } else {
             val currIndex = daysOfWeek.indexOf(prevOccurrence!!.dayOfWeek)
@@ -40,7 +37,7 @@ class RepeatWeekly(frequency: Int, var dateTimeOfFirstDayOfStartingWeek: LocalDa
     }
 
     override fun toString(): String {
-        val time = dateTimeOfFirstDayOfStartingWeek.toLocalTime().format(DateTimeFormatter.ofPattern("h:mm a"))
+        val time = time.format(DateTimeFormatter.ofPattern("h:mm a"))
 
         val weekdays = listOf(
             DayOfWeek.MONDAY,

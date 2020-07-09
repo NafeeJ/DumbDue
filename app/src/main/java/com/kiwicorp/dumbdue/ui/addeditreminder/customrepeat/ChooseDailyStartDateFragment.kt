@@ -11,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseDailyStartDateBinding
+import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
 import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import com.kizitonwose.calendarview.model.CalendarDay
@@ -36,7 +37,7 @@ class ChooseDailyStartDateFragment : DaggerBottomSheetDialogFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var viewModel: ChooseCustomRepeatViewModel
+    private lateinit var viewModel: AddEditReminderViewModel
 
     private var selectedDate = LocalDate.now()
     private val today = LocalDate.now()
@@ -113,14 +114,14 @@ class ChooseDailyStartDateFragment : DaggerBottomSheetDialogFragment() {
         }
 
         binding.doneButton.setOnClickListener {
-            viewModel.chooseDailyViewModel.chooseStartingDate(selectedDate)
+            viewModel.chooseCustomRepeatViewModel.chooseDailyViewModel.chooseStartingDate(selectedDate)
         }
 
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.chooseDailyViewModel.eventOnStartingDateChosen.observe(viewLifecycleOwner, EventObserver {
+        viewModel.chooseCustomRepeatViewModel.chooseDailyViewModel.eventOnStartingDateChosen.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
         })
     }

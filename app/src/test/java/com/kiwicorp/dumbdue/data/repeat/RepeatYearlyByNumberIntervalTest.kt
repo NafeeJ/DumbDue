@@ -4,7 +4,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.threeten.bp.*
 
-class RepeatYearlyByNumberTest {
+class RepeatYearlyByNumberIntervalTest {
     private val time = LocalTime.of(10,15)
 
     @Test
@@ -12,7 +12,7 @@ class RepeatYearlyByNumberTest {
         val june302020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 30), time, ZoneId.systemDefault())
         val june302021 = ZonedDateTime.of(LocalDate.of(2021, Month.JUNE, 30), time, ZoneId.systemDefault())
 
-        val repeat = RepeatYearlyByNumber(1, LocalDateTime.from(june302020))
+        val repeat = RepeatYearlyByNumberInterval(1, time,LocalDate.from(june302020))
         val result = repeat.getNextDueDate(june302020)
 
         assertEquals(june302021,result)
@@ -23,7 +23,7 @@ class RepeatYearlyByNumberTest {
         val june302020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 30), time, ZoneId.systemDefault())
         val june302023 = ZonedDateTime.of(LocalDate.of(2023, Month.JUNE, 30), time, ZoneId.systemDefault())
 
-        val repeat = RepeatYearlyByNumber(3, LocalDateTime.from(june302020))
+        val repeat = RepeatYearlyByNumberInterval(3, time,LocalDate.from(june302020))
         val result = repeat.getNextDueDate(june302020)
 
         assertEquals(june302023,result)
@@ -36,7 +36,7 @@ class RepeatYearlyByNumberTest {
         val july42020 = ZonedDateTime.of(LocalDate.of(2020, Month.JULY, 4), time, ZoneId.systemDefault())
         val june302023 = ZonedDateTime.of(LocalDate.of(2023, Month.JUNE, 30), time, ZoneId.systemDefault())
 
-        val repeat = RepeatYearlyByNumber(3, LocalDateTime.from(june302020))
+        val repeat = RepeatYearlyByNumberInterval(3, time,LocalDate.from(june302020))
         val result = repeat.getNextDueDate(july42020)
 
         assertEquals(june302023,result)

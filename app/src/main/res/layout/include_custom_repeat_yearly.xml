@@ -30,7 +30,6 @@
                 android:padding="10dp"
                 android:inputType="none"
                 android:editable="false"
-                android:text="@={viewmodel.selectedYearlyOption}"
                 tools:text="By the number of the day of the week"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -41,13 +40,13 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:constraint_referenced_ids="
-                        yearly_by_count_day_of_week_in_month_text,
+                        yearly_by_count_day_of_week_in_month_text_layout,
                         yearly_by_count_day_of_week_text,
                         yearly_by_count_month_text"
             tools:visibility="visible"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/yearly_by_count_day_of_week_in_month_text"
+            android:id="@+id/yearly_by_count_day_of_week_in_month_text_layout"
             android:layout_width="135dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20sp"
@@ -80,7 +79,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
             app:layout_constraintTop_toBottomOf="@id/yearly_options_text"
             app:layout_constraintBottom_toTopOf="@id/start_date_text_layout"
-            app:layout_constraintStart_toEndOf="@id/yearly_by_count_day_of_week_in_month_text"
+            app:layout_constraintStart_toEndOf="@id/yearly_by_count_day_of_week_in_month_text_layout"
             app:layout_constraintEnd_toStartOf="@id/yearly_by_count_month_text">
 
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView

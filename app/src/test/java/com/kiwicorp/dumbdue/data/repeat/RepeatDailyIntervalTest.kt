@@ -4,13 +4,13 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.threeten.bp.*
 
-class RepeatDailyTest {
+class RepeatDailyIntervalTest {
     @Test
     fun getNextDueDate_frequency1june152020_june162020() {
         val time = LocalTime.of(10,15)
         val date = LocalDate.of(2020,Month.JUNE,15)
         val june152020 = ZonedDateTime.of(date,time, ZoneId.systemDefault())
-        val repeat = RepeatDaily(1, june152020.toLocalDateTime())
+        val repeat = RepeatDailyInterval(1, time, date)
 
         val june162020 = ZonedDateTime.of(LocalDate.of(2020,Month.JUNE,16),time, ZoneId.systemDefault())
 
@@ -23,7 +23,7 @@ class RepeatDailyTest {
         val time = LocalTime.of(10,15)
         val date = LocalDate.of(2020,Month.JUNE,15)
         val june152020 = ZonedDateTime.of(date,time, ZoneId.systemDefault())
-        val repeat = RepeatDaily(3, june152020.toLocalDateTime())
+        val repeat = RepeatDailyInterval(3, time, date)
 
         val june182020 = ZonedDateTime.of(LocalDate.of(2020,Month.JUNE,18),time, ZoneId.systemDefault())
 

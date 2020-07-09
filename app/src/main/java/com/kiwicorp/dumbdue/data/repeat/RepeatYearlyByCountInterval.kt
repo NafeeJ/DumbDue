@@ -19,7 +19,7 @@ import java.util.*
  * most 5 times, 5 represent the last occurrence of the day of the week in the month.
  *
  */
-class RepeatYearlyByCount(frequency: Int, val startingYear: Year, val month: Month, var dayOfWeek: DayOfWeek, var dayOfWeekInMonth: Int, val time: LocalTime): RepeatInterval(frequency) {
+class RepeatYearlyByCountInterval(frequency: Int, startingYear: Year, val month: Month, var dayOfWeek: DayOfWeek, var dayOfWeekInMonth: Int, time: LocalTime): RepeatYearlyInterval(frequency,time,startingYear) {
 
     override fun getNextOccurrence(): ZonedDateTime {
         return if (prevOccurrence == null) {
@@ -47,7 +47,7 @@ class RepeatYearlyByCount(frequency: Int, val startingYear: Year, val month: Mon
     }
 
     override fun toString(): String {
-        val time = this.time.format(DateTimeFormatter.ofPattern("h:mm a"))
+        val time = time.format(DateTimeFormatter.ofPattern("h:mm a"))
 
         val week = when(dayOfWeekInMonth) {
             1 -> "1st"

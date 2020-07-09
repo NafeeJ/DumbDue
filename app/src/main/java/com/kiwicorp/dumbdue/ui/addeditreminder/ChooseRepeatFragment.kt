@@ -18,7 +18,6 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.YearMonth
 import org.threeten.bp.temporal.TemporalAdjusters
-import java.util.*
 import javax.inject.Inject
 
 class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
@@ -67,7 +66,9 @@ class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
 
     private fun setupTextViews() {
         val dueDate = viewModel.dueDate.value!!
-
+        val time = dueDate.toLocalTime()
+        val date = dueDate.toLocalDate()
+        //todo move these to view model
         binding.repeatOffText.apply {
             text = getString(R.string.repeat_off)
 
@@ -75,9 +76,10 @@ class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
         }
 
         binding.repeatDailyText.apply {
-            val repeatInterval = RepeatDaily(
+            val repeatInterval = RepeatDailyInterval(
                 1,
-                viewModel.dueDate.value!!.toLocalDateTime())
+                time,
+                date)
 
             text = repeatInterval.toString()
 
@@ -92,9 +94,13 @@ class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
                 DayOfWeek.THURSDAY,
                 DayOfWeek.FRIDAY
             )
-            val thisSunday = dueDate.toLocalDateTime()
+            val thisSunday = dueDate.toLocalDate()
                 .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
-            val repeatInterval = RepeatWeekly(1,thisSunday,weekDays)
+            val repeatInterval = RepeatWeeklyInterval(
+                1,
+                time,
+                thisSunday
+                ,weekDays)
 
             text = repeatInterval.toString()
 
@@ -102,9 +108,13 @@ class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
         }
 
         binding.repeatWeeklyText.apply {
-            val thisSunday = dueDate.toLocalDateTime()
+            val thisSunday = dueDate.toLocalDate()
                 .with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
-            val repeatInterval = RepeatWeekly(1,thisSunday,listOf(dueDate.dayOfWeek))
+            val repeatInterval = RepeatWeeklyInterval(
+                1,
+                time,
+                thisSunday,
+                listOf(dueDate.dayOfWeek))
 
             text = repeatInterval.toString()
 
@@ -112,10 +122,10 @@ class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
         }
 
         binding.repeatMonthlyText.apply {
-            val repeatInterval = RepeatMonthlyByNumber(
+            val repeatInterval = RepeatMonthlyByNumberInterval(
                 1,
                 YearMonth.from(dueDate),
-                LocalTime.from(dueDate),
+                time,
                 listOf(dueDate.dayOfMonth)
             )
 
@@ -125,7 +135,7 @@ class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
         }
 
         binding.repeatYearlyText.apply {
-            val repeatInterval = RepeatYearlyByNumber(1, LocalDateTime.from(dueDate))
+            val repeatInterval = RepeatYearlyByNumberInterval(1, time, date)
             text = repeatInterval.toString()
             setOnClickListener { viewModel.onChooseRepeatInterval(repeatInterval) }
         }

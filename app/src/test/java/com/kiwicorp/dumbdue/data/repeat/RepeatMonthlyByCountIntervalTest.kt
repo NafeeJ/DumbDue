@@ -2,10 +2,10 @@ package com.kiwicorp.dumbdue.data.repeat
 
 import org.junit.Assert.*
 import org.junit.Test
-import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCount.Day
+import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCountInterval.Day
 import org.threeten.bp.*
 
-class RepeatMonthlyByCountTest {
+class RepeatMonthlyByCountIntervalTest {
     private val time = LocalTime.of(10,15)
 
     @Test
@@ -14,9 +14,9 @@ class RepeatMonthlyByCountTest {
 
         val july132020 = ZonedDateTime.of(LocalDate.of(2020, Month.JULY,13), time, ZoneId.systemDefault())
 
-        val recurrence2ndMonday = listOf(Day(DayOfWeek.MONDAY, 2))
+        val recurrence2ndMonday = listOf(Day(2, DayOfWeek.MONDAY))
 
-        val repeat = RepeatMonthlyByCount(1, YearMonth.of(2020,Month.JUNE),time,recurrence2ndMonday)
+        val repeat = RepeatMonthlyByCountInterval(1, YearMonth.of(2020,Month.JUNE),time,recurrence2ndMonday)
         val result = repeat.getNextDueDate(june82020)
 
         assertEquals(july132020,result)
@@ -28,9 +28,9 @@ class RepeatMonthlyByCountTest {
 
         val august102020 = ZonedDateTime.of(LocalDate.of(2020, Month.AUGUST, 10), time, ZoneId.systemDefault())
 
-        val recurrence2ndMonday = listOf(Day(DayOfWeek.MONDAY,2))
+        val recurrence2ndMonday = listOf(Day(2, DayOfWeek.MONDAY))
 
-        val repeat = RepeatMonthlyByCount(2, YearMonth.of(2020,Month.JUNE),time,recurrence2ndMonday)
+        val repeat = RepeatMonthlyByCountInterval(2, YearMonth.of(2020,Month.JUNE),time,recurrence2ndMonday)
         val result = repeat.getNextDueDate(june82020)
 
         assertEquals(august102020,result)
@@ -42,9 +42,9 @@ class RepeatMonthlyByCountTest {
 
         val february82021 = ZonedDateTime.of(LocalDate.of(2021, Month.FEBRUARY, 8), time, ZoneId.systemDefault())
 
-        val recurrence2ndMonday = listOf(Day(DayOfWeek.MONDAY,2))
+        val recurrence2ndMonday = listOf(Day(2, DayOfWeek.MONDAY))
 
-        val repeat = RepeatMonthlyByCount(8,YearMonth.of(2020, Month.JUNE),time,recurrence2ndMonday)
+        val repeat = RepeatMonthlyByCountInterval(8,YearMonth.of(2020, Month.JUNE),time,recurrence2ndMonday)
         val result = repeat.getNextDueDate(june82020)
 
         assertEquals(february82021,result)
@@ -57,14 +57,14 @@ class RepeatMonthlyByCountTest {
         val june192020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 19), time, ZoneId.systemDefault())
 
         val recurrence = listOf(
-            Day(DayOfWeek.TUESDAY,1),
-            Day(DayOfWeek.FRIDAY,1),
-            Day(DayOfWeek.MONDAY,2),
-            Day(DayOfWeek.FRIDAY,3),
-            Day(DayOfWeek.THURSDAY,4)
+            Day(1, DayOfWeek.TUESDAY),
+            Day(1, DayOfWeek.FRIDAY),
+            Day(2, DayOfWeek.MONDAY),
+            Day(3, DayOfWeek.FRIDAY),
+            Day(4, DayOfWeek.THURSDAY)
         )
 
-        val repeat = RepeatMonthlyByCount(1, YearMonth.of(2020,Month.JUNE),time,recurrence)
+        val repeat = RepeatMonthlyByCountInterval(1, YearMonth.of(2020,Month.JUNE),time,recurrence)
         val result = repeat.getNextDueDate(june82020)
 
         assertEquals(june192020,result)
@@ -76,9 +76,9 @@ class RepeatMonthlyByCountTest {
 
         val july312020 = ZonedDateTime.of(LocalDate.of(2020, Month.JULY, 31), time, ZoneId.systemDefault())
 
-        val recurrenceLastFriday = listOf(Day(DayOfWeek.FRIDAY,5))
+        val recurrenceLastFriday = listOf(Day(5, DayOfWeek.FRIDAY))
 
-        val repeat = RepeatMonthlyByCount(1,YearMonth.of(2020, Month.JUNE),time,recurrenceLastFriday)
+        val repeat = RepeatMonthlyByCountInterval(1,YearMonth.of(2020, Month.JUNE),time,recurrenceLastFriday)
         val result = repeat.getNextDueDate(june262020)
 
         assertEquals(july312020,result)
@@ -91,11 +91,11 @@ class RepeatMonthlyByCountTest {
         val june252020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 25), time, ZoneId.systemDefault())
 
         val recurrenceLastFriday = listOf(
-            Day(DayOfWeek.FRIDAY,4),
-            Day(DayOfWeek.THURSDAY,5)
+            Day(4,DayOfWeek.FRIDAY),
+            Day(5,DayOfWeek.THURSDAY)
         )
 
-        val repeat = RepeatMonthlyByCount(1, YearMonth.of(2020, Month.MAY),time,recurrenceLastFriday)
+        val repeat = RepeatMonthlyByCountInterval(1, YearMonth.of(2020, Month.MAY),time,recurrenceLastFriday)
         val result = repeat.getNextDueDate(may282020)
 
         assertEquals(june252020,result)
@@ -107,9 +107,9 @@ class RepeatMonthlyByCountTest {
 
         val june262020 = ZonedDateTime.of(LocalDate.of(2020, Month.JUNE, 26), time, ZoneId.systemDefault())
 
-        val recurrenceLastFriday = listOf(Day(DayOfWeek.FRIDAY,4))
+        val recurrenceLastFriday = listOf(Day(4, DayOfWeek.FRIDAY))
 
-        val repeat = RepeatMonthlyByCount(1, YearMonth.of(2020, Month.JUNE),time,recurrenceLastFriday)
+        val repeat = RepeatMonthlyByCountInterval(1, YearMonth.of(2020, Month.JUNE),time,recurrenceLastFriday)
         val result = repeat.getNextDueDate(june182020)
 
         assertEquals(result,june262020)

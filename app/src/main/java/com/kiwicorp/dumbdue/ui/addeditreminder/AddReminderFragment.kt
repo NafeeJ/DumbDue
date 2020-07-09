@@ -73,6 +73,9 @@ class AddReminderFragment : DaggerBottomSheetDialogFragment() {
         viewModel.eventClose.observe(viewLifecycleOwner, EventObserver {
             cancel()
         })
+        viewModel.eventOpenChooseCustomRepeat.observe(viewLifecycleOwner, EventObserver {
+            navigateToChooseCustomRepeat()
+        })
     }
 
     private fun navigateToRepeatMenu() {
@@ -93,6 +96,11 @@ class AddReminderFragment : DaggerBottomSheetDialogFragment() {
 
     private fun navigateToTimePicker() {
         val action = AddReminderFragmentDirections.actionAddReminderFragmentToTimePickerFragment(R.id.nav_graph_add)
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToChooseCustomRepeat() {
+        val action = AddReminderFragmentDirections.actionAddReminderFragmentDestToCustomRepeatFragment(R.id.nav_graph_add)
         findNavController().navigate(action)
     }
 

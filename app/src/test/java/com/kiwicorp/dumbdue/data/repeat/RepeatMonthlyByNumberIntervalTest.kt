@@ -3,9 +3,8 @@ package com.kiwicorp.dumbdue.data.repeat
 import org.junit.Assert.*
 import org.junit.Test
 import org.threeten.bp.*
-import java.util.*
 
-class RepeatMonthlyByNumberTest {
+class RepeatMonthlyByNumberIntervalTest {
 
     private val time = LocalTime.of(10, 15)
 
@@ -16,7 +15,7 @@ class RepeatMonthlyByNumberTest {
 
         val recurrenceFifteenthOnly = listOf(15)
 
-        val repeat = RepeatMonthlyByNumber(1, YearMonth.of(2020,Month.JUNE), time, recurrenceFifteenthOnly)
+        val repeat = RepeatMonthlyByNumberInterval(1, YearMonth.of(2020,Month.JUNE), time, recurrenceFifteenthOnly)
         val result = repeat.getNextDueDate(june152020)
 
         assertEquals(july152020, result)
@@ -29,7 +28,7 @@ class RepeatMonthlyByNumberTest {
 
         val recurrenceDays = listOf(1,10,13,15,18,21,30)
 
-        val repeat = RepeatMonthlyByNumber(1,YearMonth.of(2020, Month.JUNE),time,recurrenceDays)
+        val repeat = RepeatMonthlyByNumberInterval(1,YearMonth.of(2020, Month.JUNE),time,recurrenceDays)
         val result = repeat.getNextDueDate(june152020)
 
         assertEquals(june182020, result)
@@ -42,7 +41,7 @@ class RepeatMonthlyByNumberTest {
 
         val recurrenceDays = listOf(1,10,13,15,18,21,30)
 
-        val repeat = RepeatMonthlyByNumber(1, YearMonth.of(2020,Month.JUNE),time,recurrenceDays)
+        val repeat = RepeatMonthlyByNumberInterval(1, YearMonth.of(2020,Month.JUNE),time,recurrenceDays)
         val result = repeat.getNextDueDate(june302020)
 
         assertEquals(july12020,result)
@@ -55,7 +54,7 @@ class RepeatMonthlyByNumberTest {
 
         val recurrenceDays = listOf(1,10,13,15,18,21,30)
 
-        val repeat = RepeatMonthlyByNumber(3, YearMonth.of(2020,Month.JUNE),time,recurrenceDays)
+        val repeat = RepeatMonthlyByNumberInterval(3, YearMonth.of(2020,Month.JUNE),time,recurrenceDays)
         val result = repeat.getNextDueDate(june302020)
 
         assertEquals(september12020,result)
@@ -68,7 +67,7 @@ class RepeatMonthlyByNumberTest {
 
         val recurrenceDays = listOf(32)
 
-        val repeat = RepeatMonthlyByNumber(1,YearMonth.of(2020, Month.JUNE),time,recurrenceDays)
+        val repeat = RepeatMonthlyByNumberInterval(1,YearMonth.of(2020, Month.JUNE),time,recurrenceDays)
         val result = repeat.getNextDueDate(june302020)
 
         assertEquals(july312020,result)
@@ -81,7 +80,7 @@ class RepeatMonthlyByNumberTest {
 
         val recurrenceDays = listOf(1,10,13,15,18,21,32)
 
-        val repeat = RepeatMonthlyByNumber(3, YearMonth.of(2020,Month.JUNE),time,recurrenceDays)
+        val repeat = RepeatMonthlyByNumberInterval(3, YearMonth.of(2020,Month.JUNE),time,recurrenceDays)
         val result = repeat.getNextDueDate(june212020)
 
         assertEquals(june302020, result)

@@ -93,6 +93,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="15sp"
                 android:focusableInTouchMode="false"
+                android:onClick="@{() -> viewmodel.openChooseWeeklyStartDateDialog()}"
                 android:text="@{viewmodel.firstDateOfStartingWeekStr}"
                 tools:text="week starting on June 28" />
 

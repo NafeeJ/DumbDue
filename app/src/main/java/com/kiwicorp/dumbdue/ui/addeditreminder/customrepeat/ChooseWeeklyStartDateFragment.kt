@@ -11,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseWeeklyStartDateBinding
+import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
 import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import com.kizitonwose.calendarview.model.CalendarDay
@@ -24,10 +25,8 @@ import kotlinx.android.synthetic.main.calendar_header.view.*
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
-import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.TemporalAdjusters
 import org.threeten.bp.temporal.WeekFields
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -40,7 +39,7 @@ class ChooseWeeklyStartDateFragment : DaggerBottomSheetDialogFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var viewModel: ChooseCustomRepeatViewModel
+    private lateinit var viewModel: AddEditReminderViewModel
 
     private val today = LocalDate.now()
     private var firstDayOfSelectedWeek: LocalDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
@@ -163,13 +162,13 @@ class ChooseWeeklyStartDateFragment : DaggerBottomSheetDialogFragment() {
         }
 
         binding.doneButton.setOnClickListener {
-            viewModel.chooseWeeklyViewModel.chooseStartingWeek(firstDayOfSelectedWeek)
+            viewModel.chooseCustomRepeatViewModel.chooseWeeklyViewModel.chooseStartingWeek(firstDayOfSelectedWeek)
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.chooseWeeklyViewModel.eventOnFirstDateOfStartingWeekChosen.observe(viewLifecycleOwner, EventObserver {
+        viewModel.chooseCustomRepeatViewModel.chooseWeeklyViewModel.eventOnFirstDateOfStartingWeekChosen.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
         })
     }

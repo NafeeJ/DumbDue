@@ -7,7 +7,7 @@
     <data>
         <variable
             name="day"
-            type="com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCount.Day" />
+            type="com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCountInterval.Day" />
 
         <variable
             name="onDayDeletedListener"

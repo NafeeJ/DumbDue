@@ -1,142 +1,305 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
 import com.kiwicorp.dumbdue.Event
 import com.kiwicorp.dumbdue.data.repeat.*
+import com.kiwicorp.dumbdue.util.getFullName
 import com.kiwicorp.dumbdue.util.sortedSundayFirst
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
-import javax.inject.Inject
+import org.threeten.bp.temporal.TemporalAdjusters
 
-class ChooseCustomRepeatViewModel @Inject constructor(): ViewModel() {
+class ChooseCustomRepeatViewModel(dueDate: LiveData<ZonedDateTime>,
+    val repeatIntervalUsesReminderTime: Boolean) {
 
-
-    val time = MutableLiveData<LocalTime>()
-
-    val timeStr = Transformations.map(time) { time ->
+    val time = Transformations.map(dueDate) { it.toLocalTime() }
+    val timeStr = Transformations.map(this.time) { time ->
         time.format(DateTimeFormatter.ofPattern("h:mm a"))
     }
     // public mutable for 2 way data binding
-    var frequency = MutableLiveData<String>()
-    // public mutable for 2 way data binding
-    var type = MutableLiveData<String>()
+    var frequency = MutableLiveData("1")
+
+    val _type = MutableLiveData("weeks")
+    var type : LiveData<String> = _type
+
+    private val _eventOpenTimePicker = MutableLiveData<Event<Unit>>()
+    val eventOpenTimePicker: LiveData<Event<Unit>> = _eventOpenTimePicker
+
+    val chooseDailyViewModel = ChooseDailyViewModel(dueDate)
+    val chooseWeeklyViewModel = ChooseWeeklyViewModel(dueDate)
+    val chooseMonthlyViewModel = ChooseMonthlyViewModel(dueDate)
+    val chooseYearlyViewModel = ChooseYearlyViewModel(dueDate)
 
     fun getRepeatInterval(): RepeatInterval {
-        return with(type.value!!) {
-            when (this) {
-                "days" -> {
-                    chooseDailyViewModel.getRepeatInterval(frequency.value!!.toInt(),time.value!!)
-                }
-                "weeks" -> {
-                    chooseWeeklyViewModel.getRepeatInterval(frequency.value!!.toInt(), time.value!!)
-                }
-                "months" -> {
-                    chooseMonthlyViewModel.getRepeatInterval(frequency.value!!.toInt(), time.value!!)
-                }
-                "years" -> {
-                    chooseYearlyViewModel.getRepeatInterval(frequency.value!!.toInt(), time.value!!)
-                }
-                else -> {
-                    throw Exception("The done button was pressed when it should've have been able to")
-                }
+        val frequency = this.frequency.value!!.toInt()
+        val time = time.value!!
+
+        return when (type.value!!) {
+            "days" -> chooseDailyViewModel.getRepeatInterval(frequency, time)
+            "weeks" -> chooseWeeklyViewModel.getRepeatInterval(frequency, time)
+            "months" -> chooseMonthlyViewModel.getRepeatInterval(frequency, time)
+            "years" -> chooseYearlyViewModel.getRepeatInterval(frequency, time)
+            else -> throw Exception("The done button was pressed when it should've have been able to")
+        }
+    }
+
+    fun loadRepeatInterval(repeatInterval: RepeatInterval) {
+        updateTime(repeatInterval.time)
+        frequency.value = repeatInterval.frequency.toString()
+
+        when (repeatInterval) {
+            is RepeatDailyInterval -> {
+                updateType("days")
+                chooseDailyViewModel.loadRepeatDailyInterval(repeatInterval)
+            }
+            is RepeatWeeklyInterval -> {
+                updateType("weeks")
+                chooseWeeklyViewModel.loadRepeatWeeklyInterval(repeatInterval)
+            }
+            is RepeatMonthlyInterval -> {
+                updateType("months")
+                chooseMonthlyViewModel.loadRepeatMonthlyInterval(repeatInterval)
+            }
+            is RepeatYearlyInterval -> {
+                updateType("years")
+                chooseYearlyViewModel.loadRepeatYearlyInterval(repeatInterval)
             }
         }
     }
 
-    val chooseDailyViewModel = ChooseDailyViewModel()
-    val chooseWeeklyViewModel = ChooseWeeklyViewModel()
-    val chooseMonthlyViewModel = ChooseMonthlyViewModel()
-    val chooseYearlyViewModel = ChooseYearlyViewModel()
+    fun openTimePicker() {
+        _eventOpenTimePicker.value = Event(Unit)
+    }
+
+    fun updateTime(time: LocalTime) {
+        (this.time as? MutableLiveData<LocalTime>)?.value = time
+    }
+
+    fun updateType(type: String) {
+        _type.value = type
+    }
 }
 
-class ChooseDailyViewModel {
-    private val _startingDate = MutableLiveData<LocalDate>()
-    val startingDate: LiveData<LocalDate> = _startingDate
+class ChooseDailyViewModel(dueDate: LiveData<ZonedDateTime>) {
+    private val _startingDate = Transformations.map(dueDate) { it.toLocalDate() } as MutableLiveData
 
-    val startingDateStr = Transformations.map(startingDate) { date ->
+    val startingDateStr = Transformations.map(_startingDate) { date ->
         date.format(DateTimeFormatter.ofPattern("MMMM d, yyy"))
     }
+
+    private val _eventOpenChooseDailyStartDate = MutableLiveData<Event<Unit>>()
+    val eventOpenChooseDailyStartDate: LiveData<Event<Unit>> = _eventOpenChooseDailyStartDate
 
     private val _eventOnStartingDateChosen = MutableLiveData<Event<Unit>>()
     val eventOnStartingDateChosen: LiveData<Event<Unit>> = _eventOnStartingDateChosen
 
-    fun getRepeatInterval(frequency: Int, time: LocalTime): RepeatDaily {
-        return RepeatDaily(frequency, LocalDateTime.of(startingDate.value!!,time))
+    fun getRepeatInterval(frequency: Int, time: LocalTime): RepeatDailyInterval {
+        return RepeatDailyInterval(frequency, time, _startingDate.value!!)
+    }
+
+    fun openChooseDailyStartDateDialog() {
+        _eventOpenChooseDailyStartDate.value = Event(Unit)
     }
 
     fun chooseStartingDate(date: LocalDate) {
         _startingDate.value = date
         _eventOnStartingDateChosen.value = Event(Unit)
     }
+
+     fun loadRepeatDailyInterval(repeatDailyInterval: RepeatDailyInterval) {
+         _startingDate.value = repeatDailyInterval.startingDate
+     }
 }
 
-class ChooseWeeklyViewModel {
-    private val _firstDateOfStartingWeek = MutableLiveData<LocalDate>()
-    val firstDateOfStartingWeek: LiveData<LocalDate> = _firstDateOfStartingWeek
+class ChooseWeeklyViewModel(dueDate: LiveData<ZonedDateTime>) {
+    private val _firstDateOfStartingWeek = Transformations.map(dueDate) { it.toLocalDate().with(
+        TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)) } as MutableLiveData
 
-    val firstDateOfStartingWeekStr = Transformations.map(firstDateOfStartingWeek) { date ->
+    val firstDateOfStartingWeekStr = Transformations.map(_firstDateOfStartingWeek) { date ->
         "week starting on ${date.format(DateTimeFormatter.ofPattern("MMMM d"))}"
     }
+
+    private val _eventOpenChooseWeeklyStartDate = MutableLiveData<Event<Unit>>()
+    val eventOpenChooseWeeklyStartDate: LiveData<Event<Unit>> = _eventOpenChooseWeeklyStartDate
 
     private val _eventOnStartingWeekChosen = MutableLiveData<Event<Unit>>()
     val eventOnFirstDateOfStartingWeekChosen: LiveData<Event<Unit>> = _eventOnStartingWeekChosen
 
-    val daysOfWeek: MutableList<DayOfWeek> = mutableListOf()
+    private val _daysOfWeek = MutableLiveData(listOf<DayOfWeek>())
+    val daysOfWeek: LiveData<List<DayOfWeek>> = _daysOfWeek
 
-    fun getRepeatInterval(frequency: Int, time: LocalTime): RepeatWeekly {
-        return RepeatWeekly(frequency, LocalDateTime.of(firstDateOfStartingWeek.value!!,time), daysOfWeek.sortedSundayFirst())
+    fun getRepeatInterval(frequency: Int, time: LocalTime): RepeatWeeklyInterval {
+        return RepeatWeeklyInterval(
+            frequency,
+            time,
+            _firstDateOfStartingWeek.value!!,
+            daysOfWeek.value!!.sortedSundayFirst())
+    }
+
+    fun openChooseWeeklyStartDateDialog() {
+        _eventOpenChooseWeeklyStartDate.value = Event(Unit)
     }
 
     fun chooseStartingWeek(firstDateOfWeek: LocalDate) {
         _firstDateOfStartingWeek.value = firstDateOfWeek
         _eventOnStartingWeekChosen.value = Event(Unit)
     }
-}
 
-class ChooseMonthlyViewModel {
-    var startingYearMonth: YearMonth = YearMonth.now()
+    fun addDayOfWeek(dayOfWeek: DayOfWeek) {
+        _daysOfWeek.value = _daysOfWeek.value!!.toMutableList().apply { add(dayOfWeek) }
+    }
 
-    val selectedMonthlyOption = MutableLiveData<String>()
+    fun removeDayOfWeek(dayOfWeek: DayOfWeek) {
+        _daysOfWeek.value = _daysOfWeek.value!!.toMutableList().apply { remove(dayOfWeek) }
+    }
 
-    val daysByNumber = mutableListOf<Int>()
-
-    val daysByCount = mutableListOf(RepeatMonthlyByCount.Day())
-
-    fun getRepeatInterval(frequency: Int, time: LocalTime): RepeatInterval {
-        return if (selectedMonthlyOption.value!! == "By count of day of week in month") {
-            RepeatMonthlyByCount(frequency,startingYearMonth, time, daysByCount)
-        } else {
-            return RepeatMonthlyByNumber(frequency,startingYearMonth,time,daysByNumber.sorted())
-        }
+    fun loadRepeatWeeklyInterval(repeatWeeklyInterval: RepeatWeeklyInterval) {
+        _firstDateOfStartingWeek.value = repeatWeeklyInterval.dateOfFirstDayOfStartingWeek
+        _daysOfWeek.value = repeatWeeklyInterval.daysOfWeek
     }
 }
 
-class ChooseYearlyViewModel {
-    var startingYear = Year.now()
-    // public mutable for 2 way data binding
-    val selectedYearlyOption = MutableLiveData<String>()
 
-    var byNumberMonthDay: MonthDay = MonthDay.now()
+class ChooseMonthlyViewModel(dueDate: LiveData<ZonedDateTime>) {
+    private val _startingYearMonth = Transformations.map(dueDate) { YearMonth.from(it) } as MutableLiveData
 
-    var byCountDayOfWeek = DayOfWeek.SUNDAY
+    val startingYearMonthStr: LiveData<String> = Transformations.map(_startingYearMonth) {
+        "${it.month.getFullName()} ${it.year + if (it.month < YearMonth.now().month) 1 else 0}"
+    }
 
-    var byCountDayOfWeekInMonth = 0
+    private val _selectedMonthlyOption = MutableLiveData("By number of day in month")
+    val selectedMonthlyOption: LiveData<String> = _selectedMonthlyOption
 
-    var byCountMonth = Month.JANUARY
+    private val _daysByCount = MutableLiveData(listOf(RepeatMonthlyByCountInterval.Day()))
+    val daysByCount: LiveData<List<RepeatMonthlyByCountInterval.Day>> = _daysByCount
+
+    private val _daysByNumber = MutableLiveData(listOf<Int>())
+    val daysByNumber: LiveData<List<Int>> = _daysByNumber
+
+    fun getRepeatInterval(frequency: Int, time: LocalTime): RepeatInterval {
+        return if (selectedMonthlyOption.value!! == "By count of day of week in month") {
+            RepeatMonthlyByCountInterval(frequency,_startingYearMonth.value!!, time, daysByCount.value!!.distinct().sorted())
+        } else {
+            return RepeatMonthlyByNumberInterval(frequency,_startingYearMonth.value!!,time,daysByNumber.value!!.sorted())
+        }
+    }
+
+    fun updateStartingYearMonth(yearMonth: YearMonth) {
+        _startingYearMonth.value = yearMonth
+    }
+
+    fun addDayInDaysByNumber(day: Int) {
+        _daysByNumber.value = daysByNumber.value!!.toMutableList().apply { add(day) }
+    }
+
+    fun removeDayInDaysByNumber(day: Int) {
+        _daysByNumber.value = daysByNumber.value!!.toMutableList().apply { remove(day) }
+    }
+
+    fun addDayInDayByCount(day: RepeatMonthlyByCountInterval.Day) {
+        _daysByCount.value = daysByCount.value!!.toMutableList().apply { add(day) }
+    }
+
+    fun removeDayInDayByCount(day: RepeatMonthlyByCountInterval.Day) {
+        _daysByCount.value = daysByCount.value!!.toMutableList().apply { remove(day) }
+    }
+
+    fun loadRepeatMonthlyInterval(repeatMonthlyInterval: RepeatMonthlyInterval) {
+        _startingYearMonth.value = repeatMonthlyInterval.startingYearMonth
+        if (repeatMonthlyInterval is RepeatMonthlyByCountInterval) {
+            updateSelectedMonthlyOption("By count of day of week in month")
+            _daysByCount.value = repeatMonthlyInterval.days
+
+        } else if (repeatMonthlyInterval is RepeatMonthlyByNumberInterval) {
+            updateSelectedMonthlyOption("By number of day in month")
+            _daysByNumber.value = repeatMonthlyInterval.days
+        }
+    }
+
+    fun updateSelectedMonthlyOption(option: String) {
+        _selectedMonthlyOption.value = option
+    }
+}
+
+class ChooseYearlyViewModel(dueDate: LiveData<ZonedDateTime>) {
+    val _selectedYearlyOption = MutableLiveData("By number of day in month")
+    val selectedYearlyOption: LiveData<String> = _selectedYearlyOption
+
+    private val _startingYear = Transformations.map(dueDate) { Year.from(it) } as MutableLiveData
+    val startingYear: LiveData<Year> = _startingYear
+
+    private val _byCountDayOfWeek = MutableLiveData(DayOfWeek.SUNDAY)
+    val byCountDayOfWeek: LiveData<DayOfWeek> = _byCountDayOfWeek
+
+    private val _byCountDayOfWeekInMonth = MutableLiveData(1)
+    val byCountDayOfWeekInMonth: LiveData<Int> = _byCountDayOfWeekInMonth
+
+    private val _byCountMonth = MutableLiveData(Month.from(LocalDate.now()))
+    var byCountMonth: LiveData<Month> = _byCountMonth
+
+    private val _byNumberMonthDay = MutableLiveData(MonthDay.now())
+    val byNumberMonthDay: LiveData<MonthDay> = _byNumberMonthDay
+
+    fun updateSelectedYearlyOption(option: String) {
+        _selectedYearlyOption.value = option
+    }
+
+    fun updateStartingYear(year: Year) {
+        _startingYear.value = year
+    }
+
+    fun updateByCountDayOfWeek(dayOfWeek: DayOfWeek) {
+        _byCountDayOfWeek.value = dayOfWeek
+    }
+
+    fun updateByCountDayOfWeekInMonth(dayOfWeekInMonth: Int) {
+        _byCountDayOfWeekInMonth.value = dayOfWeekInMonth
+    }
+
+    fun updateByCountMonth(month: Month) {
+        _byCountMonth.value = month
+    }
+
+    fun updateByNumberMonthDay(monthDay: MonthDay) {
+        _byNumberMonthDay.value = monthDay
+    }
 
     fun getRepeatInterval(frequency: Int, time: LocalTime): RepeatInterval {
         return if (selectedYearlyOption.value!! == "By count of day of week in month") {
-            RepeatYearlyByCount(frequency, startingYear, byCountMonth, byCountDayOfWeek, byCountDayOfWeekInMonth, time)
+            RepeatYearlyByCountInterval(
+                frequency,
+                startingYear.value!!,
+                byCountMonth.value!!,
+                byCountDayOfWeek.value!!,
+                byCountDayOfWeekInMonth.value!!,
+                time
+            )
         } else {
-            RepeatYearlyByNumber(frequency, LocalDateTime.of(
-                startingYear.value,
-                byNumberMonthDay.month,
-                byNumberMonthDay.dayOfMonth,
-                time.hour,
-                time.minute))
+            RepeatYearlyByNumberInterval(
+                frequency,
+                time,
+                LocalDate.of(
+                    startingYear.value!!.value,
+                    byNumberMonthDay.value!!.month,
+                    byNumberMonthDay.value!!.dayOfMonth
+                )
+            )
+        }
+    }
+
+    fun loadRepeatYearlyInterval(repeatYearlyInterval: RepeatYearlyInterval) {
+        _startingYear.value = repeatYearlyInterval.startingYear
+        if (repeatYearlyInterval is RepeatYearlyByCountInterval) {
+            updateSelectedYearlyOption("By count of day of week in month")
+            _byCountMonth.value = repeatYearlyInterval.month
+            _byCountDayOfWeek.value = repeatYearlyInterval.dayOfWeek
+            _byCountDayOfWeekInMonth.value = repeatYearlyInterval.dayOfWeekInMonth
+        } else if (repeatYearlyInterval is RepeatYearlyByNumberInterval) {
+            updateSelectedYearlyOption("By number of day in month")
+            _byNumberMonthDay.value = MonthDay.from(repeatYearlyInterval.startingDate)
         }
     }
 }

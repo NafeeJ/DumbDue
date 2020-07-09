@@ -30,6 +30,12 @@ abstract class AddEditReminderModule {
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
     internal abstract fun timePickerFragment(): TimePickerFragment
 
+    @ContributesAndroidInjector(modules = [ViewModelModule::class])
+    internal abstract fun chooseDailyStartDateFragment(): ChooseDailyStartDateFragment
+
+    @ContributesAndroidInjector(modules = [ViewModelModule::class])
+    internal abstract fun chooseWeeklyStartDateFragment(): ChooseWeeklyStartDateFragment
+
     @Binds
     @IntoMap
     @ViewModelKey(AddEditReminderViewModel::class)
