@@ -95,6 +95,7 @@ class RemindersFragment : DaggerFragment() {
     override fun onResume() {
         super.onResume()
         setupRefreshTimer()
+        findNavController().addOnDestinationChangedListener(onDestinationChangedListener)
     }
 
     override fun onPause() {
