@@ -14,8 +14,6 @@ import com.kiwicorp.dumbdue.databinding.FragmentChooseRepeatBinding
 import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import org.threeten.bp.DayOfWeek
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.LocalTime
 import org.threeten.bp.YearMonth
 import org.threeten.bp.temporal.TemporalAdjusters
 import javax.inject.Inject
@@ -52,7 +50,7 @@ class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
     }
 
     private fun setupNavigation() {
-        viewModel.eventChooseRepeat.observe(viewLifecycleOwner, EventObserver {
+        viewModel.eventRepeatChosen.observe(viewLifecycleOwner, EventObserver {
             close()
         })
     }

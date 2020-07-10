@@ -39,7 +39,7 @@ class ChooseAutoSnoozeFragment : DaggerBottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.eventChooseAutoSnooze.observe(viewLifecycleOwner, EventObserver {
+        viewModel.eventAutoSnoozeChosen.observe(viewLifecycleOwner, EventObserver {
             close()
         })
     }

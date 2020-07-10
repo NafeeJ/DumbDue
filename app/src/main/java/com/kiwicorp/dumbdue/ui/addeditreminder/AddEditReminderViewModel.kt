@@ -6,14 +6,11 @@ import com.kiwicorp.dumbdue.*
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
-import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
 import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatViewModel
 import kotlinx.coroutines.*
-import org.threeten.bp.LocalTime
 import org.threeten.bp.ZonedDateTime
-import timber.log.Timber
 import javax.inject.Inject
 
 class AddEditReminderViewModel @Inject constructor(
@@ -46,20 +43,20 @@ class AddEditReminderViewModel @Inject constructor(
     private val _eventOpenTimePicker = MutableLiveData<Event<Unit>>()
     val eventOpenTimePicker: LiveData<Event<Unit>> = _eventOpenTimePicker
 
-    private val _eventChooseRepeat = MutableLiveData<Event<Unit>>()
-    val eventChooseRepeat: LiveData<Event<Unit>> = _eventChooseRepeat
+    private val _eventRepeatChosen = MutableLiveData<Event<Unit>>()
+    val eventRepeatChosen: LiveData<Event<Unit>> = _eventRepeatChosen
 
-    private val _eventChooseCustomRepeat = MutableLiveData<Event<Unit>>()
-    val eventChooseCustomRepeat: LiveData<Event<Unit>> = _eventChooseCustomRepeat
+    private val _eventCustomRepeatChosen = MutableLiveData<Event<Unit>>()
+    val eventCustomRepeatChosen: LiveData<Event<Unit>> = _eventCustomRepeatChosen
 
-    private val _eventChooseAutoSnooze = MutableLiveData<Event<Unit>>()
-    val eventChooseAutoSnooze: LiveData<Event<Unit>> = _eventChooseAutoSnooze
-
-    private val _eventOpenChooseCustomRepeat = MutableLiveData<Event<Unit>>()
-    val eventOpenChooseCustomRepeat: LiveData<Event<Unit>> = _eventOpenChooseCustomRepeat
+    private val _eventAutoSnoozeChosen = MutableLiveData<Event<Unit>>()
+    val eventAutoSnoozeChosen: LiveData<Event<Unit>> = _eventAutoSnoozeChosen
 
     private val _eventClose = MutableLiveData<Event<Unit>>()
     val eventClose: LiveData<Event<Unit>> = _eventClose
+
+    private val _eventOpenChooseCustomRepeat = MutableLiveData<Event<Unit>>()
+    val eventOpenChooseCustomRepeat: LiveData<Event<Unit>> = _eventOpenChooseCustomRepeat
 
     private val _eventCompleteDelete = MutableLiveData<Event<Int>>()
     val eventCompleteDelete: LiveData<Event<Int>> = _eventCompleteDelete
@@ -97,12 +94,12 @@ class AddEditReminderViewModel @Inject constructor(
      */
     fun onChooseRepeatInterval(repeatInterval: RepeatInterval?) {
         _repeatInterval.value = repeatInterval
-        _eventChooseRepeat.value = Event(Unit)
+        _eventRepeatChosen.value = Event(Unit)
     }
 
     fun onChooseCustomRepeatInterval() {
         onChooseRepeatInterval(chooseCustomRepeatViewModel.getRepeatInterval())
-        _eventChooseCustomRepeat.value = Event(Unit)
+        _eventCustomRepeatChosen.value = Event(Unit)
     }
 
     /**
@@ -110,7 +107,7 @@ class AddEditReminderViewModel @Inject constructor(
      */
     fun onChooseAutoSnooze(autoSnoozeVal: Long) {
         _autoSnoozeVal.value = autoSnoozeVal
-        _eventChooseAutoSnooze.value = Event(Unit)
+        _eventAutoSnoozeChosen.value = Event(Unit)
     }
 
     /**

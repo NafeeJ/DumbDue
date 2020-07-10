@@ -12,7 +12,6 @@ import android.widget.AutoCompleteTextView
 import android.widget.FrameLayout
 import android.widget.TimePicker
 import androidx.core.widget.doOnTextChanged
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -99,7 +98,7 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
         chooseCustomRepeatViewModel.chooseWeeklyViewModel.eventOpenChooseWeeklyStartDate.observe(viewLifecycleOwner, EventObserver {
             navigateToChooseWeeklyStartDate()
         })
-        viewModel.eventChooseCustomRepeat.observe(viewLifecycleOwner, EventObserver {
+        viewModel.eventCustomRepeatChosen.observe(viewLifecycleOwner, EventObserver {
             close()
         })
         chooseCustomRepeatViewModel.eventOpenTimePicker.observe(viewLifecycleOwner, EventObserver {
