@@ -10,6 +10,7 @@ import com.kiwicorp.dumbdue.util.getFullName
 import com.kiwicorp.dumbdue.util.sortedSundayFirst
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.temporal.ChronoField
 import org.threeten.bp.temporal.TemporalAdjusters
 
 class ChooseCustomRepeatViewModel(dueDate: LiveData<ZonedDateTime>,
@@ -128,7 +129,7 @@ class ChooseWeeklyViewModel(dueDate: LiveData<ZonedDateTime>) {
     private val _eventOnStartingWeekChosen = MutableLiveData<Event<Unit>>()
     val eventOnFirstDateOfStartingWeekChosen: LiveData<Event<Unit>> = _eventOnStartingWeekChosen
 
-    private val _daysOfWeek = MutableLiveData(listOf<DayOfWeek>())
+    private val _daysOfWeek = MutableLiveData(listOf(dueDate.value!!.dayOfWeek))
     val daysOfWeek: LiveData<List<DayOfWeek>> = _daysOfWeek
 
     fun getRepeatInterval(frequency: Int, time: LocalTime): RepeatWeeklyInterval {
@@ -173,10 +174,10 @@ class ChooseMonthlyViewModel(dueDate: LiveData<ZonedDateTime>) {
     private val _selectedMonthlyOption = MutableLiveData("By number of day in month")
     val selectedMonthlyOption: LiveData<String> = _selectedMonthlyOption
 
-    private val _daysByCount = MutableLiveData(listOf(RepeatMonthlyByCountInterval.Day()))
+    private val _daysByCount = MutableLiveData(listOf(RepeatMonthlyByCountInterval.Day(dueDate.value!!.get(ChronoField.ALIGNED_WEEK_OF_MONTH),dueDate.value!!.dayOfWeek)))
     val daysByCount: LiveData<List<RepeatMonthlyByCountInterval.Day>> = _daysByCount
 
-    private val _daysByNumber = MutableLiveData(listOf<Int>())
+    private val _daysByNumber = MutableLiveData(listOf(dueDate.value!!.dayOfMonth))
     val daysByNumber: LiveData<List<Int>> = _daysByNumber
 
     fun getRepeatInterval(frequency: Int, time: LocalTime): RepeatInterval {
@@ -231,16 +232,16 @@ class ChooseYearlyViewModel(dueDate: LiveData<ZonedDateTime>) {
     private val _startingYear = Transformations.map(dueDate) { Year.from(it) } as MutableLiveData
     val startingYear: LiveData<Year> = _startingYear
 
-    private val _byCountDayOfWeek = MutableLiveData(DayOfWeek.SUNDAY)
+    private val _byCountDayOfWeek = MutableLiveData(dueDate.value!!.dayOfWeek)
     val byCountDayOfWeek: LiveData<DayOfWeek> = _byCountDayOfWeek
 
-    private val _byCountDayOfWeekInMonth = MutableLiveData(1)
+    private val _byCountDayOfWeekInMonth = MutableLiveData(dueDate.value!!.get(ChronoField.ALIGNED_WEEK_OF_MONTH))
     val byCountDayOfWeekInMonth: LiveData<Int> = _byCountDayOfWeekInMonth
 
-    private val _byCountMonth = MutableLiveData(Month.from(LocalDate.now()))
+    private val _byCountMonth = MutableLiveData(Month.from(dueDate.value!!))
     var byCountMonth: LiveData<Month> = _byCountMonth
 
-    private val _byNumberMonthDay = MutableLiveData(MonthDay.now())
+    private val _byNumberMonthDay = MutableLiveData(MonthDay.from(dueDate.value!!))
     val byNumberMonthDay: LiveData<MonthDay> = _byNumberMonthDay
 
     fun updateSelectedYearlyOption(option: String) {
