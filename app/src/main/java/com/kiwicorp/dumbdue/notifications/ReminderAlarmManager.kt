@@ -31,7 +31,7 @@ class ReminderAlarmManager @Inject constructor(private val context: Context) {
      * Schedules an alarm.
      *
      * We do not use set repeating because [AlarmManager]'s setRepeating() does will not fire when
-     * device is idle
+     * device is idle. Instead, a new alarm is set in [NotificationBroadcastReceiver].
      */
     fun setAlarm(title: String, id: String, timeInMillis: Long, autoSnooze: Long) {
         val notificationIntent = makePendingIntent(title,id,timeInMillis, autoSnooze)

@@ -7,4 +7,7 @@ import dagger.android.ContributesAndroidInjector
 abstract class BroadcastReceiverModule {
     @ContributesAndroidInjector
     internal abstract fun notificationBroadcastReceiver(): NotificationBroadcastReceiver
+
+    @ContributesAndroidInjector
+    internal abstract fun bootReceiver(): BootReceiver
 }
