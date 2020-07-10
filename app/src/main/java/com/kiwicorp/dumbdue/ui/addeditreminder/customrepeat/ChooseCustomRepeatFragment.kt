@@ -99,6 +99,9 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
         chooseCustomRepeatViewModel.chooseWeeklyViewModel.eventOpenChooseWeeklyStartDate.observe(viewLifecycleOwner, EventObserver {
             navigateToChooseWeeklyStartDate()
         })
+        viewModel.eventChooseCustomRepeat.observe(viewLifecycleOwner, EventObserver {
+            close()
+        })
         chooseCustomRepeatViewModel.eventOpenTimePicker.observe(viewLifecycleOwner, EventObserver {
             openTimePicker()
         })
@@ -112,6 +115,10 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
     private fun navigateToChooseWeeklyStartDate() {
         val action = ChooseCustomRepeatFragmentDirections.actionCustomRepeatFragmentToChooseWeeklyStartDateFragment(args.graphId)
         findNavController().navigate(action)
+    }
+
+    private fun close() {
+        findNavController().popBackStack()
     }
 
     private fun openTimePicker() {
@@ -173,9 +180,7 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
 
     private fun setupDoneButton() {
         binding.doneButton.setOnClickListener {
-            //todo
-            viewModel.onChooseRepeatInterval(chooseCustomRepeatViewModel.getRepeatInterval())
-            dialog?.cancel()
+            viewModel.onChooseCustomRepeatInterval()
         }
     }
 

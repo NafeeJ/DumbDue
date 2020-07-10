@@ -49,6 +49,9 @@ class AddEditReminderViewModel @Inject constructor(
     private val _eventChooseRepeat = MutableLiveData<Event<Unit>>()
     val eventChooseRepeat: LiveData<Event<Unit>> = _eventChooseRepeat
 
+    private val _eventChooseCustomRepeat = MutableLiveData<Event<Unit>>()
+    val eventChooseCustomRepeat: LiveData<Event<Unit>> = _eventChooseCustomRepeat
+
     private val _eventChooseAutoSnooze = MutableLiveData<Event<Unit>>()
     val eventChooseAutoSnooze: LiveData<Event<Unit>> = _eventChooseAutoSnooze
 
@@ -95,6 +98,11 @@ class AddEditReminderViewModel @Inject constructor(
     fun onChooseRepeatInterval(repeatInterval: RepeatInterval?) {
         _repeatInterval.value = repeatInterval
         _eventChooseRepeat.value = Event(Unit)
+    }
+
+    fun onChooseCustomRepeatInterval() {
+        onChooseRepeatInterval(chooseCustomRepeatViewModel.getRepeatInterval())
+        _eventChooseCustomRepeat.value = Event(Unit)
     }
 
     /**

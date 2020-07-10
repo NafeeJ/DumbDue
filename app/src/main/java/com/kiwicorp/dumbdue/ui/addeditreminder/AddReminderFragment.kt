@@ -79,10 +79,7 @@ class AddReminderFragment : DaggerBottomSheetDialogFragment() {
     }
 
     private fun navigateToRepeatMenu() {
-        val action =
-            AddReminderFragmentDirections.actionAddReminderFragmentToChooseRepeatFragment(
-                R.id.nav_graph_add
-            )
+        val action = AddReminderFragmentDirections.actionAddReminderFragmentToChooseRepeatFragment(R.id.nav_graph_add)
         findNavController().navigate(action)
     }
 

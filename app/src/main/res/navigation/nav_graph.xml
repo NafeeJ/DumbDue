@@ -69,8 +69,7 @@
                 app:argType="integer" />
             <action
                 android:id="@+id/action_choose_repeat_fragment_dest_to_customRepeatFragment"
-                app:destination="@id/customRepeatFragment"
-                app:popUpTo="@id/add_reminder_fragment_dest" />
+                app:destination="@id/customRepeatFragment" />
         </dialog>
 
         <dialog
@@ -157,8 +156,7 @@
                 app:argType="integer"/>
             <action
                 android:id="@+id/action_choose_repeat_fragment_dest_to_customRepeatFragment"
-                app:destination="@id/customRepeatFragment"
-                app:popUpTo="@id/edit_reminder_fragment_dest" />
+                app:destination="@id/customRepeatFragment" />
         </dialog>
 
         <dialog
