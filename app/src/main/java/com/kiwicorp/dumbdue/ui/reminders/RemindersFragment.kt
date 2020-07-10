@@ -84,12 +84,11 @@ class RemindersFragment : DaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        Timber.d("OnActivityCreated")
         setupSnackbar()
         setupListAdapter()
         setupNavigation()
         setupRecyclerViewSwiping()
-        setupRefreshTimer()
-        findNavController().addOnDestinationChangedListener(onDestinationChangedListener)
     }
 
     override fun onResume() {
