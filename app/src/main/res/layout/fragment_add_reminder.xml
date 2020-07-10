@@ -32,7 +32,7 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:onClick="@{()->viewmodel.onCancel()}"/>
+                    android:onClick="@{()->viewmodel.cancel()}"/>
 
                 <ImageButton
                     android:id="@+id/snooze"
@@ -43,7 +43,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:scaleType="fitCenter"
                     app:autoSnooze="@{viewmodel.autoSnoozeVal}"
-                    android:onClick="@{()->viewmodel.onOpenAutoSnoozeMenu()}"/>
+                    android:onClick="@{()->viewmodel.openAutoSnoozeMenu()}"/>
 
                 <ImageButton
                     android:id="@+id/repeat"
@@ -53,7 +53,7 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toEndOf="@+id/snooze"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:onClick="@{()->viewmodel.onOpenRepeatMenu()}"/>
+                    android:onClick="@{()->viewmodel.openRepeatMenu()}"/>
 
                 <ImageButton
                     android:id="@+id/add"
@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     dueDate="@{viewmodel.dueDate}"
-                    android:onClick="@{()->viewmodel.onOpenTimePicker()}"
+                    android:onClick="@{()->viewmodel.openTimePicker()}"
                     android:padding="10dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="#FFFFFF"

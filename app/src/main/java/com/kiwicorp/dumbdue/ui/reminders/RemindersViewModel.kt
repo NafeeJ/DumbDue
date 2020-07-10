@@ -16,8 +16,7 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class RemindersViewModel @Inject constructor(
-    private val repository: ReminderRepository,
-    private val reminderAlarmManager: ReminderAlarmManager
+    private val repository: ReminderRepository
 ) : ViewModel() {
     val reminders: LiveData<List<Reminder>> = repository.reminders
 
@@ -102,7 +101,6 @@ class RemindersViewModel @Inject constructor(
     private fun undoDelete(reminder: Reminder) {
         viewModelScope.launch {
             repository.insertReminder(reminder)
-            reminderAlarmManager.setAlarm(reminder)
         }
     }
 

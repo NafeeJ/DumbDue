@@ -54,7 +54,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#FFFFFF"
                 dueDate="@{viewmodel.dueDate}"
-                android:onClick="@{()->viewmodel.onOpenTimePicker()}"
+                android:onClick="@{()->viewmodel.openTimePicker()}"
                 tools:text="Fri, May 29, 10:05 AM in 4 Hours"/>
 
             <TextView
@@ -69,7 +69,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#FFFFFF"
                 app:repeatInterval="@{viewmodel.repeatInterval}"
-                android:onClick="@{()->viewmodel.onOpenRepeatMenu()}"
+                android:onClick="@{()->viewmodel.openRepeatMenu()}"
                 tools:text="Weekdays 10:05 AM"/>
 
             <TextView
@@ -84,7 +84,7 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#FFFFFF"
                 app:autoSnooze="@{viewmodel.autoSnoozeVal}"
-                android:onClick="@{()->viewmodel.onOpenAutoSnoozeMenu()}"
+                android:onClick="@{()->viewmodel.openAutoSnoozeMenu()}"
                 tools:text="Every Minute"/>
 
             <include

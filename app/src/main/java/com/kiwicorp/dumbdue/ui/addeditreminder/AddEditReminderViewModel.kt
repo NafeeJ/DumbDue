@@ -67,21 +67,21 @@ class AddEditReminderViewModel @Inject constructor(
     /**
      * Called by ImageButtons in AddReminderFragment/EditReminderFragment via listener binding.
      */
-    fun onOpenRepeatMenu() {
+    fun openRepeatMenu() {
         _eventOpenRepeatMenu.value = Event(Unit)
     }
 
     /**
      * Called by ImageButton in AddReminderFragment/EditReminderFragment via listener binding.
      */
-    fun onOpenAutoSnoozeMenu() {
+    fun openAutoSnoozeMenu() {
         _eventOpenAutoSnoozeMenu.value = Event(Unit)
     }
 
     /**
      * Called by TextView in AddReminderFragment/EditReminderFragment via listener binding.
      */
-    fun onOpenTimePicker() {
+    fun openTimePicker() {
         _eventOpenTimePicker.value = Event(Unit)
     }
 
@@ -108,7 +108,7 @@ class AddEditReminderViewModel @Inject constructor(
     /**
      * Called by ImageButton in AddReminderFragment/EditReminderFragment
      */
-    fun onCancel() {
+    fun cancel() {
         _eventClose.value = Event(Unit)
     }
 
@@ -193,21 +193,17 @@ class AddEditReminderViewModel @Inject constructor(
     }
 
     /**
-     * Called by the QuickAccess buttons in time_button.xml via listener binding to update the calendar.
-     * Sets [calendar] to the hour and minute of the invoking Button's text.
+     * Called by the QuickAccess buttons in time_button.xml via listener binding to update the due date.
      */
     override fun onQuickAccessTimeSetterClick(key: String) {
-        Timber.d("Time Setter Clicked")
         val timeSetter = preferencesStorage.getQuickAccessTimeSetter(key)
         updateDueDate(dueDate.value!!.with(timeSetter))
     }
 
     /**
-     * Called by the TimeSetter buttons in time_button.xml via listener binding to update the calendar.
-     * Increments/Decrements [calendar] by the number and unit that the invoking Button's text indicates.
+     * Called by the TimeSetter buttons in time_button.xml via listener binding to update the due date.
      */
     override fun onIncrementalTimeSetterClick(key: String) {
-        Timber.d("Time Setter Clicked")
         val timeSetter = preferencesStorage.getIncrementalTimeSetter(key)
         updateDueDate(dueDate.value!!.with(timeSetter))
     }

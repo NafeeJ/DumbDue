@@ -31,6 +31,7 @@ class ReminderRepository @Inject constructor(
     }
 
     suspend fun updateReminder(reminder: Reminder): Int {
+        alarmManger.updateAlarm(reminder)
         return withContext(Dispatchers.IO) {
             reminderDao.updateReminder(reminder)
         }
