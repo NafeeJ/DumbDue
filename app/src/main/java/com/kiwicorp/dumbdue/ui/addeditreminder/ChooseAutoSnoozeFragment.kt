@@ -10,11 +10,12 @@ import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseAutoSnoozeBinding
+import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import javax.inject.Inject
 
-class ChooseAutoSnoozeFragment : DaggerBottomSheetDialogFragment() {
+class ChooseAutoSnoozeFragment : RoundedDaggerBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentChooseAutoSnoozeBinding
 

@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:background="#000000"
         android:orientation="vertical">
 
         <com.shawnlin.numberpicker.NumberPicker
@@ -31,8 +30,8 @@
             app:np_max="4"
             app:np_value="2"
             app:np_dividerColor="#00000000"
-            app:np_textColor="#ffffff"
-            app:np_selectedTextColor="#ffffff" />
+            app:np_textColor="?attr/colorOnBackground"
+            app:np_selectedTextColor="?attr/colorOnBackground"/>
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/hourPicker"
@@ -44,8 +43,8 @@
             android:layout_height="wrap_content"
             app:np_max="12"
             app:np_dividerColor="#00000000"
-            app:np_textColor="#ffffff"
-            app:np_selectedTextColor="#ffffff"/>
+            app:np_textColor="?attr/colorOnBackground"
+            app:np_selectedTextColor="?attr/colorOnBackground"/>
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/minutePicker"
@@ -58,8 +57,8 @@
             app:np_max="59"
             app:np_min="0"
             app:np_dividerColor="#00000000"
-            app:np_textColor="#ffffff"
-            app:np_selectedTextColor="#ffffff"/>
+            app:np_textColor="?attr/colorOnBackground"
+            app:np_selectedTextColor="?attr/colorOnBackground"/>
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/ampmPicker"
@@ -71,8 +70,8 @@
             android:layout_height="wrap_content"
             app:np_max="2"
             app:np_dividerColor="#00000000"
-            app:np_textColor="#ffffff"
-            app:np_selectedTextColor="#ffffff"/>
+            app:np_textColor="?attr/colorOnBackground"
+            app:np_selectedTextColor="?attr/colorOnBackground"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

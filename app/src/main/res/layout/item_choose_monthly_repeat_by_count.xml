@@ -35,7 +35,6 @@
                 android:layout_height="50dp"
                 android:inputType="none"
                 android:padding="10dp"
-                android:textColor="@android:color/white"
                 android:textSize="15sp"
                 android:editable="false"
                 tools:text="Second" />
@@ -59,7 +58,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:padding="10dp"
-                android:textColor="@android:color/white"
                 android:textSize="15sp"
                 android:editable="false"
                 tools:text="Thursday" />
@@ -71,8 +69,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="20dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/delete_white"
+            android:src="@drawable/ic_delete"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -29,7 +29,7 @@ import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import org.threeten.bp.*
 import javax.inject.Inject
 
-class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
+class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
     DayItemClickListener,
     OnDayDeletedListener {
 
@@ -68,19 +68,7 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
             chooseMonthlyLayout.viewmodel = chooseCustomRepeatViewModel.chooseMonthlyViewModel
             chooseYearlyLayout.viewmodel = chooseCustomRepeatViewModel.chooseYearlyViewModel
         }
-
         return root
-    }
-    // Expands the BottomSheetDialog so the entire dialog is shown when the keyboard is first opened
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-        bottomSheetDialog.setOnShowListener {
-            val dialog = it as BottomSheetDialog
-            val bottomSheet: FrameLayout = dialog.findViewById(R.id.design_bottom_sheet)!!
-            val bottomSheetBehavior: BottomSheetBehavior<FrameLayout> = BottomSheetBehavior.from(bottomSheet)
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
-        }
-        return bottomSheetDialog
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -107,13 +95,17 @@ class ChooseCustomRepeatFragment : DaggerBottomSheetDialogFragment(),
     }
 
     private fun navigateToChooseDailyStartDate() {
-        val action = ChooseCustomRepeatFragmentDirections.actionCustomRepeatFragmentToChooseDailyStartDateFragment(args.graphId)
-        findNavController().navigate(action)
+        if (findNavController().currentDestination?.id == R.id.customRepeatFragment) {
+            val action = ChooseCustomRepeatFragmentDirections.actionCustomRepeatFragmentToChooseDailyStartDateFragment(args.graphId)
+            findNavController().navigate(action)
+        }
     }
 
     private fun navigateToChooseWeeklyStartDate() {
-        val action = ChooseCustomRepeatFragmentDirections.actionCustomRepeatFragmentToChooseWeeklyStartDateFragment(args.graphId)
-        findNavController().navigate(action)
+        if (findNavController().currentDestination?.id == R.id.customRepeatFragment) {
+            val action = ChooseCustomRepeatFragmentDirections.actionCustomRepeatFragmentToChooseWeeklyStartDateFragment(args.graphId)
+            findNavController().navigate(action)
+        }
     }
 
     private fun close() {

@@ -15,58 +15,65 @@
 
     </data>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#000000"
         android:onClick="@{()->viewmodel.editReminder(reminder.id)}">
 
-        <TextView
-            android:id="@+id/title_text"
-            android:layout_width="235dp"
+        <com.google.android.material.radiobutton.MaterialRadioButton
+            android:id="@+id/checkbox"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            android:maxLines = "1"
-            android:ellipsize="end"
-            android:paddingStart="10dp"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:text="@{reminder.title}"
-            tools:text="Title"
-            tools:ignore="RtlSymmetry" />
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/date_repeat_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title_text"
-            android:layout_alignParentStart="true"
-            android:layout_marginHorizontal="4dp"
-            android:layout_marginBottom="4dp"
-            android:paddingStart="10dp"
-            android:textColor="#525252"
-            tools:text="Date/Repeat"
-            tools:ignore="RtlSymmetry" />
+            <TextView
+                android:id="@+id/title_text"
+                style="?attr/textAppearanceSubtitle1"
+                android:textSize="20sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:paddingStart="0dp"
+                android:paddingEnd="8dp"
+                android:text="@{reminder.title}"
+                app:layout_constraintStart_toEndOf="@id/checkbox"
+                app:layout_constraintEnd_toStartOf="@id/time_text"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Title" />
 
-        <TextView
-            android:id="@+id/time_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="2dp"
-            android:paddingEnd="10dp"
-            android:textColor="#525252"
-            tools:text="time"
-            tools:ignore="RtlSymmetry" />
+            <TextView
+                android:id="@+id/date_repeat_text"
+                style="?attr/textAppearanceBody2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title_text"
+                app:layout_constraintStart_toEndOf="@id/checkbox"
+                tools:text="Jul 14, 9:30 AM" />
 
-        <View
-            android:id="@+id/color_bar"
-            android:layout_width="5dp"
-            android:layout_height="65dp"
-            tools:background="@android:color/holo_red_light"/>
+            <TextView
+                android:id="@+id/time_text"
+                style="?attr/textAppearanceBody1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginVertical="8dp"
+                android:paddingEnd="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="RtlSymmetry"
+                tools:text="in 1d" />
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </layout>
 

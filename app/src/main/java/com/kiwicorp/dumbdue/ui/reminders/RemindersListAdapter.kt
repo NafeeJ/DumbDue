@@ -1,14 +1,19 @@
 package com.kiwicorp.dumbdue.ui.reminders
 
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.databinding.ItemHeaderBinding
 import com.kiwicorp.dumbdue.databinding.ItemReminderBinding
+import com.kiwicorp.dumbdue.util.getColorFromAttr
+import com.kiwicorp.dumbdue.util.isLightTheme
 import com.kiwicorp.dumbdue.util.timeFromNowString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -69,7 +74,7 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
 
     private fun addHeaders(list: List<Reminder>): List<Item> {
         if (list.isEmpty()) return listOf()
-
+        //todo refactor to make more readable?
         val now = ZonedDateTime.now()
         // 23:59:59 today
         val endOfToday = now
@@ -129,27 +134,43 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
 
     class ReminderViewHolder private constructor(val binding: ItemReminderBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(viewModel: RemindersViewModel, item: Reminder) {
+        fun bind(viewModel: RemindersViewModel, reminder: Reminder) {
             binding.viewmodel = viewModel
-            binding.reminder = item
+            binding.reminder = reminder
 
-            val dueDate = item.dueDate
+            val context = binding.root.context
+
+            val dueDate = reminder.dueDate
 
             binding.timeText.text = findTimeString(dueDate)
 
-            binding.dateRepeatText.text = item.repeatInterval?.toString()
+            binding.dateRepeatText.text = reminder.repeatInterval?.toString()
                 ?: dueDate.format(DateTimeFormatter.ofPattern("MMM d, h:mm a"))
 
             binding.dateRepeatText.setTextColor(
-                if (item.dueDate.isBefore(ZonedDateTime.now())) {
-                    Color.parseColor("#f54242") // red
+                if (dueDate.isBefore(ZonedDateTime.now())) {
+                    context.getColorFromAttr(R.attr.colorError)
                 } else {
-                    Color.parseColor("#525252") // grey
+                    context.getColor(R.color.grey)
                 }
             )
 
-            binding.colorBar.setBackgroundColor(getColorOfColorBar(dueDate))
+            binding.timeText.setTextColor(
+                if (dueDate.isBefore(ZonedDateTime.now())) {
+                    context.getColorFromAttr(R.attr.colorError)
+                } else {
+                    context.getColorFromAttr(R.attr.colorOnBackground)
+                }
+            )
 
+            // in case recycler view resuses view holder
+            binding.checkbox.isChecked = false
+
+            binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    viewModel.complete(reminder)
+                }
+            }
             binding.executePendingBindings()
         }
 
@@ -186,7 +207,7 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
             }
         }
 
-        private fun getColorOfColorBar(time: ZonedDateTime): Int {
+        private fun getColorOfReminder(dueDate: ZonedDateTime): Int {
             val now = ZonedDateTime.now()
             // 23:59:59 today
             val endOfToday = now
@@ -200,10 +221,10 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
             val endOfNext7days = endOfToday.plusDays(7)
 
             return when {
-                time.isBefore(now) -> Color.parseColor("#f54242") //red
-                time.isBefore(endOfToday)-> Color.parseColor("#fff262") //yellow
-                time.isBefore(endOfTomorrow) -> Color.parseColor("#3371FF")//blue
-                time.isBefore(endOfNext7days) -> Color.parseColor("#6a44b1") //purple
+                dueDate.isBefore(now) -> Color.parseColor("#f54242") //red
+                dueDate.isBefore(endOfToday)-> Color.parseColor("#fff262") //yellow
+                dueDate.isBefore(endOfTomorrow) -> Color.parseColor("#3371FF")//blue
+                dueDate.isBefore(endOfNext7days) -> Color.parseColor("#6a44b1") //purple
                 else -> Color.parseColor("#525252") //grey
             }
         }
@@ -223,6 +244,66 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
     class HeaderViewHolder private constructor(val binding: ItemHeaderBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(title: String) {
             binding.title = title
+            val context = binding.root.context
+            // hot to cold
+            val hotToColdPalette = if (context.theme.isLightTheme()) {
+                getPalette(
+                    Color.valueOf(Color.parseColor("#FF4C5D")),
+                    Color.valueOf(Color.parseColor("#0049ff")),
+                    3
+                )
+            } else {
+                getPalette(
+                    Color.valueOf(Color.parseColor("#FF4C5D")),
+                    Color.valueOf(Color.parseColor("#305074")),
+                    3
+                )
+            }
+
+            binding.divider.setBackgroundColor(when (title) {
+                "overdue" -> hotToColdPalette[0].toArgb()
+                "today" -> hotToColdPalette[1].toArgb()
+                "tomorrow" -> hotToColdPalette[2].toArgb()
+                "next 7 days" -> hotToColdPalette[3].toArgb()
+                else -> hotToColdPalette[4].toArgb()
+            })
+//            // secondary to primary
+//            val palette = getPalette(
+//                Color.valueOf(context.getColorFromAttr(R.attr.colorSecondary)),
+//                Color.valueOf(context.getColorFromAttr(R.attr.colorPrimary)),
+//                2
+//            )
+//            binding.divider.setBackgroundColor(when (title) {
+//                "overdue" -> Color.parseColor("#FF4C5D")
+//                "today" -> palette[0].toArgb()
+//                "tomorrow" -> palette[1].toArgb()
+//                "next 7 days" -> palette[2].toArgb()
+//                else -> palette[3].toArgb()
+//            })
+//            binding.divider.setBackgroundColor(if (title == "overdue") {
+//                context.getColorFromAttr(R.attr.colorError)
+//            } else {
+//                context.getColorFromAttr(R.attr.colorSecondary)
+//            })
+        }
+
+        private fun getPalette(color1: Color, color2: Color, midpoints: Int): List<Color> {
+            val redStep = (color2.red() - color1.red()) / (midpoints.toFloat() + 1f)
+            val greenStep = (color2.green() - color1.green()) / (midpoints.toFloat() + 1f)
+            val blueStep = (color2.blue() - color1.blue()) / (midpoints.toFloat() + 1f)
+
+            val palette = mutableListOf(color1)
+            var currColor = color1
+            repeat(midpoints) {
+                currColor = Color.valueOf(
+                    currColor.red() + redStep,
+                    currColor.green() + greenStep,
+                    currColor.blue() + blueStep
+                )
+                palette.add(currColor)
+            }
+            palette.add(color2)
+            return palette
         }
 
         companion object {

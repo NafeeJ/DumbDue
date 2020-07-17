@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--Top level DayNight theme to be used in AndroidManifest.xml-->
+    <style name="Theme.DumbDue.DayNight" parent="Theme.DumbDue"/>
+    <!--Base custom theme which will be shared between both light and dark theme variants-->
+    <style name="Theme.DumbDue" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!--Material color attributes (light theme) -->
+        <item name="colorPrimary">@color/dumbdue_dark_yellow_500</item>
+        <item name="colorPrimaryVariant">@color/dumbdue_dark_yellow_700</item>
+        <item name="colorSecondary">@color/dumbdue_green_400</item>
+        <item name="colorSecondaryVariant">@color/green_500</item>
+
+        <item name="android:colorBackground">@color/white_50</item>
+        <item name="colorSurface">@color/white_50</item>
+        <item name="colorError">@color/red_400</item>
+
+        <item name="colorOnPrimary">@color/white_50</item>
+        <item name="colorOnSecondary">@color/white_50</item>
+        <item name="colorOnBackground">@color/black_900</item>
+        <item name="colorOnSurface">@color/black_900</item>
+        <item name="colorOnError">@color/white_50</item>
+
+        <item name="isLightTheme">true</item>
+
+        <item name="android:statusBarColor">@color/white_50</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
+        <item name="android:navigationBarColor">@color/nav_bar</item>
+        <!--Typography-->
+        <item name="textAppearanceHeadline1">@style/TextAppearance.DumbDue.Headline1</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.DumbDue.Headline2</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.DumbDue.Headline3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.DumbDue.Headline4</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.DumbDue.Headline5</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.DumbDue.Headline6</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.DumbDue.Subtitle1</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.DumbDue.Subtitle2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.DumbDue.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.DumbDue.Body2</item>
+        <item name="textAppearanceButton">@style/TextAppearance.DumbDue.Button</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.DumbDue.Caption</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.DumbDue.Overline</item>
+        <!--Shape attributes-->
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.DumbDue.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.DumbDue.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.DumbDue.LargeComponent</item>
+        <!--Component styles-->
+        <item name="bottomAppBarStyle">@style/Widget.MaterialComponents.BottomAppBar.PrimarySurface</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.DumbDue.BottomSheetDialog</item>
+        <item name="navigationViewStyle">@style/Widget.DumbDue.NavigationView</item>
+        <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
+        <item name="imageButtonStyle">@style/Widget.DumbDue.Button.ImageButton</item>
+        <item name="preferenceTheme">@style/DumbDue.PreferenceThemOverlay</item>
+    </style>
+</resources>

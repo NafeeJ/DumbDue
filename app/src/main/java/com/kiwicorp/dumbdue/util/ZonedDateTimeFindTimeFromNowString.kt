@@ -4,8 +4,8 @@ import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.temporal.ChronoUnit
 import kotlin.math.absoluteValue
 
-fun ZonedDateTime.timeFromNowString(abbreviateNames: Boolean): String {
-    val names = if (abbreviateNames) {
+fun ZonedDateTime.timeFromNowString(abbreviateUnitName: Boolean): String {
+    val names = if (abbreviateUnitName) {
         listOf("m","h","d","w","mo","yr")
     } else {
         listOf(" minutes"," hours"," days"," weeks"," months"," years")
@@ -35,7 +35,7 @@ fun ZonedDateTime.timeFromNowString(abbreviateNames: Boolean): String {
     }
     val diff = chronoUnit.betweenRounded(this,ZonedDateTime.now().withSecond(0).withNano(0)).absoluteValue
     var name = chronoUnitsToName[chronoUnit]
-    if (!abbreviateNames && diff == 1) {
+    if (!abbreviateUnitName && diff == 1) {
         name = name!!.dropLast(1)
     }
     return "$diff$name"

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentTimePickerBinding
+import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import org.threeten.bp.LocalDate
@@ -16,7 +17,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoField
 import javax.inject.Inject
 
-class TimePickerFragment : DaggerBottomSheetDialogFragment() {
+class TimePickerFragment : RoundedDaggerBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentTimePickerBinding
 

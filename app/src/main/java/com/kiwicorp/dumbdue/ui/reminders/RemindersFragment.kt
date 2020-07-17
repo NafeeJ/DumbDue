@@ -9,13 +9,13 @@ import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.EventObserver
+import com.kiwicorp.dumbdue.MainActivity
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentRemindersBinding
 import dagger.android.support.DaggerFragment
@@ -39,23 +39,6 @@ class RemindersFragment : DaggerFragment() {
 
     private var refreshTimer: Timer? = null
 
-    /**
-     * Prevents FAB from being clicked twice. (Clicking twice will cause the app to crash since
-     * the NavController will have changed and won't have an action of navigating to
-     * AddReminderFragment)
-     */
-    private val onDestinationChangedListener =
-        NavController.OnDestinationChangedListener { controller, destination, arguments ->
-            Timber.d("Destination Changed ${this.hashCode()}")
-            if (destination.id == R.id.add_reminder_fragment_dest) {
-                binding.fab.isClickable = false
-                binding.fab.hide()
-            } else if (destination.id == R.id.reminders_fragment_dest) {
-                binding.fab.isClickable = true
-                binding.fab.show()
-            }
-        }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,26 +48,28 @@ class RemindersFragment : DaggerFragment() {
             viewmodel = viewModel
             lifecycleOwner = viewLifecycleOwner
         }
-        setHasOptionsMenu(true)
         return root
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.reminders_fragment_menu, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.menu_settings) {
-            val action = RemindersFragmentDirections.actionRemindersFragmentDestToSettingsFragmentDest()
-            findNavController().navigate(action)
-            return true
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (requireActivity() as MainActivity).bottomAppBar.setOnMenuItemClickListener {
+            if (it.itemId == R.id.menu_settings) {
+                val action = RemindersFragmentDirections.actionRemindersFragmentDestToSettingsFragmentDest()
+                findNavController().navigate(action)
+                true
+            } else {
+                false
+            }
         }
-        return false
+        (requireActivity() as MainActivity).fab.setOnClickListener {
+            viewModel.addReminder()
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        Timber.d("OnActivityCreated")
+        handleRequest()
         setupSnackbar()
         setupListAdapter()
         setupNavigation()
@@ -94,7 +79,6 @@ class RemindersFragment : DaggerFragment() {
     override fun onResume() {
         super.onResume()
         setupRefreshTimer()
-        findNavController().addOnDestinationChangedListener(onDestinationChangedListener)
     }
 
     override fun onPause() {
@@ -105,7 +89,6 @@ class RemindersFragment : DaggerFragment() {
         // RemindersFragment will be attached the activity while the old one will be detached with
         // the timer still running and thus calling requireActivity() will crash the app.
         cancelRefreshTimer()
-        findNavController().removeOnDestinationChangedListener(onDestinationChangedListener)
     }
 
     private fun setupNavigation() {
@@ -127,6 +110,16 @@ class RemindersFragment : DaggerFragment() {
         findNavController().navigate(action)
     }
 
+    private fun handleRequest() {
+        arguments?.let {
+            with(args) {
+                if (request != 0 && reminderId != "") {
+                    viewModel.handleRequest(request,reminderId)
+                }
+            }
+        }
+    }
+
     private fun setupListAdapter() {
         val viewModel = binding.viewmodel
         if (viewModel != null)  {
@@ -138,20 +131,11 @@ class RemindersFragment : DaggerFragment() {
     }
 
     private fun setupSnackbar() {
-        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { snackbarMessage ->
-            val snackbar = Snackbar.make(binding.coordinatorLayout,snackbarMessage.text,snackbarMessage.duration)
-            if (snackbarMessage.action != null) {
-                snackbar.setAction(snackbarMessage.actionText,snackbarMessage.action)
+        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { snackbar ->
+            with (requireActivity() as MainActivity) {
+                snackbar.show(coordinatorLayout, fab)
             }
-            snackbar.show()
         })
-        arguments?.let {
-            with(args) {
-                if (request != 0 && reminderId != "") {
-                    viewModel.handleRequest(request,reminderId)
-                }
-            }
-        }
     }
 
     private fun setupRecyclerViewSwiping() {
@@ -176,8 +160,8 @@ class RemindersFragment : DaggerFragment() {
                 //do nothing if
                 if (viewHolder is ReminderAdapter.HeaderViewHolder) return
 
-                val deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.delete_white) as Drawable
-                val checkIcon = ContextCompat.getDrawable(requireContext(),R.drawable.check_white) as Drawable
+                val deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete) as Drawable
+                val checkIcon = ContextCompat.getDrawable(requireContext(),R.drawable.ic_check) as Drawable
                 lateinit var swipeBackground: ColorDrawable
 
                 val itemView = viewHolder.itemView

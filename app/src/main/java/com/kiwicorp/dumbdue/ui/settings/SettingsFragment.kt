@@ -1,12 +1,19 @@
 package com.kiwicorp.dumbdue.ui.settings
 
 import android.os.Bundle
+import android.view.*
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.kiwicorp.dumbdue.R
 
-class SettingsFragment : PreferenceFragmentCompat(){
+class SettingsFragment : PreferenceFragmentCompat() {
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.findViewById<Toolbar>(R.id.toolbar).setNavigationOnClickListener { findNavController().navigateUp() }
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)

@@ -11,42 +11,41 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@android:color/black">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/repeat_off_text"
-            style="@style/MenuStyle"
+            style="@style/Widget.DumbDue.TextView.Menu"
             tools:text="Repeat Off" />
 
         <TextView
             android:id="@+id/repeat_daily_text"
-            style="@style/MenuStyle"
+            style="@style/Widget.DumbDue.TextView.Menu"
             tools:text="Repeat Daily" />
 
         <TextView
             android:id="@+id/repeat_weekdays_text"
-            style="@style/MenuStyle"
+            style="@style/Widget.DumbDue.TextView.Menu"
             tools:text="Repeat Weekdays" />
 
         <TextView
             android:id="@+id/repeat_weekly_text"
-            style="@style/MenuStyle"
+            style="@style/Widget.DumbDue.TextView.Menu"
             tools:text="Repeat Weekly" />
 
         <TextView
             android:id="@+id/repeat_monthly_text"
-            style="@style/MenuStyle"
+            style="@style/Widget.DumbDue.TextView.Menu"
             tools:text="Repeat Monthly" />
 
         <TextView
             android:id="@+id/repeat_yearly_text"
-            style="@style/MenuStyle"
+            style="@style/Widget.DumbDue.TextView.Menu"
             tools:text="Repeat Yearly" />
 
         <TextView
             android:id="@+id/repeat_custom_text"
-            style="@style/MenuStyle"
+            style="@style/Widget.DumbDue.TextView.Menu"
             tools:text="Repeat Custom" />
     </LinearLayout>
 

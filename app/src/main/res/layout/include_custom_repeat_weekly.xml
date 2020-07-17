@@ -90,7 +90,6 @@
                 android:layout_height="50dp"
                 android:padding="0dp"
                 android:editable="false"
-                android:textColor="@android:color/white"
                 android:textSize="15sp"
                 android:focusableInTouchMode="false"
                 android:onClick="@{() -> viewmodel.openChooseWeeklyStartDateDialog()}"

@@ -1,7 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1c1c1c</color>
-    <color name="colorPrimaryDark">#1c1c1c</color>
-    <color name="colorAccent">#3371FF</color>
-    <color name="colorError">#f54242</color>
+    <!--Color palette-->
+    <color name="dumbdue_green_100">#8df9d2</color>
+    <color name="dumbdue_green_200">#55e3b0</color>
+    <color name="dumbdue_green_300">#23d796</color>
+    <color name="dumbdue_green_400">#1cac78</color> <!-- the og green -->
+    <color name="dumbdue_green_500">#168a60</color>
+    <color name="dumbdue_green_600">#126e4d</color>
+    <color name="dumbdue_green_700">#1b654a</color>
+    <color name="dumbdue_green_800">#0e3426</color>
+    <color name="dumbdue_green_900">#071b13 </color>
+
+    <color name="paint_rose_crystal">#f2ede9</color>
+
+    <color name="dumbdue_dark_yellow_400">#4c3d30</color>
+    <color name="dumbdue_dark_yellow_500">#443e30</color>
+    <color name="dumbdue_dark_yellow_600">#363226</color>
+    <color name="dumbdue_dark_yellow_700">#2b281e</color>
+    <color name="dumbdue_dark_yellow_800">#1b1a13</color>
+    <color name="dumbdue_dark_yellow_900">#151410</color>
+
+    <color name="quiet_slate_blue">#483d8b</color>
+
+    <color name="seashell">#fff5ee</color>
+    <color name="penguin_white">#f5f3ef</color>
+    <color name="titanic_grey">#a1a4a3</color>
+    <color name="dark_pink">#5e5b5c</color>
+    <color name="grey">#525252</color>
+
+    <color name="reply_white_50_alpha_060">#99ffffff</color>
+    <color name="reply_blue_50_alpha_060">#99eef0f2</color>
+    <color name="reply_black_900_alpha_020">#33000000</color>
+
+    <color name="purple_200">#bb86fc</color> <!--Color primary (dark)-->
+    <color name="purple_500">#6200ee</color> <!--Color primary (light)-->
+    <color name="purple_600">#4b01d0</color> <!--Color primary variant (dark)-->
+    <color name="purple_700">#3700b3</color> <!--Color primary variant (light)-->
+
+    <color name="green_200">#03dac6</color> <!--Color secondary-->
+    <color name="green_500">#018786</color> <!--Color secondary variant-->
+
+    <color name="red_400">#ff4c5d</color> <!--Color error -->
+
+    <!--Color surface (light), color on error (light), -->
+    <!--color on surface (dark), color on surface (dark)-->
+    <color name="white_50">#ffffff</color>
+
+    <color name="black_800">#121212</color> <!--Color surface (dark)-->
+    <!--Color on secondary (light), color on background (light),-->
+    <!--color on surface (light)-->
+    <color name="black_900">#000000</color>
+    <color name="black_900_alpha_60">#99000000</color>
+
+    <!--Nav bar color protection for behavior differences between Android P and Q. All sdk-->
+    <!--levels should draw fullscreen. P should color the nav bar with a translucent background -->
+    <!--to guard for contrast. Q should have a transparent nav bar as Q will automatically -->
+    <!--handles contrast by either dynamically coloring the nav bar handle (gesture nav) -->
+    <!--or automatically applying a translucent background (3-button mode).-->
+    <color name="nav_bar">@color/reply_black_900_alpha_020</color>
+
 </resources>

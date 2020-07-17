@@ -36,7 +36,7 @@
     <string name="auto_snooze_hour">Every Hour</string>
 
     <string name="snackbar_add_error">Title cannot be empty.</string>
-    <string name="new_reminder_hint">New Reminder</string>
+    <string name="reminder_hint">What chu wanna remember?</string>
     <string name="delete">Delete</string>
     <string name="complete">Complete</string>
     <string name="confirm">Confirm</string>

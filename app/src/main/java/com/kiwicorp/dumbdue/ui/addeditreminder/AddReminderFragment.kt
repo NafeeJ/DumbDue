@@ -1,23 +1,24 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavDirections
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kiwicorp.dumbdue.EventObserver
+import com.kiwicorp.dumbdue.MainActivity
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
-import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
+import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections
+import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
 import javax.inject.Inject
 
-class AddReminderFragment : DaggerBottomSheetDialogFragment() {
+
+class AddReminderFragment : RoundedDaggerBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentAddReminderBinding
 
@@ -35,23 +36,9 @@ class AddReminderFragment : DaggerBottomSheetDialogFragment() {
             viewmodel = viewModel
             timeSetters.onTimeSetterClickImpl = viewModel
             lifecycleOwner = viewLifecycleOwner
-            titleText.requestFocus() //open keyboard
+            titleText.requestFocus() // opens keyboard
         }
         return root
-    }
-
-    /**
-     * Expands the BottomSheetDialog so the entire dialog is shown when the keyboard is first opened
-     */
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-        bottomSheetDialog.setOnShowListener {
-            val dialog = it as BottomSheetDialog
-            val bottomSheet: FrameLayout = dialog.findViewById(R.id.design_bottom_sheet)!!
-            val bottomSheetBehavior: BottomSheetBehavior<FrameLayout> = BottomSheetBehavior.from(bottomSheet)
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
-        }
-        return bottomSheetDialog
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -60,9 +47,21 @@ class AddReminderFragment : DaggerBottomSheetDialogFragment() {
         setupSnackbar()
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        (requireActivity() as MainActivity).bottomAppBar.setOnMenuItemClickListener {
+            if (it.itemId == R.id.menu_settings) {
+                val action = RemindersFragmentDirections.actionRemindersFragmentDestToSettingsFragmentDest()
+                findNavController().navigate(action)
+            }
+            true
+        }
+    }
+
     private fun setupNavigation() {
+        //todo do the rest of this
         viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, EventObserver {
-            navigateToRepeatMenu()
+            navigate(AddReminderFragmentDirections.actionAddReminderFragmentToChooseRepeatFragment(R.id.nav_graph_add))
         })
         viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, EventObserver {
             navigateToAutoSnoozeMenu()
@@ -78,9 +77,10 @@ class AddReminderFragment : DaggerBottomSheetDialogFragment() {
         })
     }
 
-    private fun navigateToRepeatMenu() {
-        val action = AddReminderFragmentDirections.actionAddReminderFragmentToChooseRepeatFragment(R.id.nav_graph_add)
-        findNavController().navigate(action)
+    private fun navigate(direction: NavDirections) {
+        if (findNavController().currentDestination?.id == R.id.add_reminder_fragment_dest) {
+            findNavController().navigate(direction)
+        }
     }
 
     private fun navigateToAutoSnoozeMenu() {

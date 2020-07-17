@@ -34,6 +34,11 @@ class EditTimeSetButtonsFragment : DaggerFragment() {
         return root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.includeBackToolbar.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()

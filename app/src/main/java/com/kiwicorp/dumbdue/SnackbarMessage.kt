@@ -15,11 +15,17 @@ data class SnackbarMessage(
     val actionText: String = "",
     val action: ((View) -> Unit)? = null) {
 
-    fun show(view: View) {
-        val snackbar = Snackbar.make(view,text,duration)
+    fun show(view: View, anchorView: View? = null) {
+        val snackbar = Snackbar.make(view, text, duration)
+
+        if (anchorView != null) {
+            snackbar.anchorView = anchorView
+        }
+
         if (action != null) {
             snackbar.setAction(actionText,action)
         }
+
         snackbar.show()
     }
 }

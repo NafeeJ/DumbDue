@@ -12,6 +12,7 @@ import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseDailyStartDateBinding
 import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
+import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import com.kizitonwose.calendarview.model.CalendarDay
@@ -28,7 +29,7 @@ import org.threeten.bp.temporal.WeekFields
 import java.util.*
 import javax.inject.Inject
 
-class ChooseDailyStartDateFragment : DaggerBottomSheetDialogFragment() {
+class ChooseDailyStartDateFragment : RoundedDaggerBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentChooseDailyStartDateBinding
 

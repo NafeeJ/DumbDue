@@ -120,14 +120,14 @@ class AddEditReminderViewModel @Inject constructor(
     /**
      * Called by TextView in EditReminderFragment vis listener binding.
      */
-    fun onDeleteReminder() {
+    fun deleteReminder() {
         _eventCompleteDelete.value = Event(REQUEST_DELETE)
     }
 
     /**
      * Called by TextView in EditReminderFragment vis listener binding.
      */
-    fun onCompleteReminder() {
+    fun completeReminder() {
         _eventCompleteDelete.value = Event(REQUEST_COMPLETE)
     }
 
@@ -155,20 +155,23 @@ class AddEditReminderViewModel @Inject constructor(
     }
 
     /**
-     * Called by Confirm button in EditReminderFragment via listener binding.
+     * Updates reminder, returns true if update successful, returns false if update unsuccessful
      */
-    fun updateReminder() {
-        if (title.value == null || title.value == "") {
+    fun updateReminder(): Boolean {
+        return if (title.value == null || title.value == "") {
             _eventSnackbar.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
+            false
         } else if (dueDate.value!!.isBefore(ZonedDateTime.now())) {
             _eventSnackbar.value =
                 Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
+            false
         } else {
             viewModelScope.launch {
                 val reminder = Reminder(title.value!!,dueDate.value!!,repeatInterval.value,autoSnoozeVal.value!!,reminderId!!)
                 repository.updateReminder(reminder)
             }
             _eventClose.value = Event(Unit)
+            true
         }
     }
 

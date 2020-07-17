@@ -11,6 +11,7 @@ import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.repeat.*
 import com.kiwicorp.dumbdue.databinding.FragmentChooseRepeatBinding
+import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import org.threeten.bp.DayOfWeek
@@ -18,7 +19,7 @@ import org.threeten.bp.YearMonth
 import org.threeten.bp.temporal.TemporalAdjusters
 import javax.inject.Inject
 
-class ChooseRepeatFragment : DaggerBottomSheetDialogFragment() {
+class ChooseRepeatFragment : RoundedDaggerBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentChooseRepeatBinding
 

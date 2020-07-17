@@ -7,6 +7,7 @@ import androidx.databinding.BindingAdapter
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
+import com.kiwicorp.dumbdue.util.getColorFromAttr
 import com.kiwicorp.dumbdue.util.timeFromNowString
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
@@ -17,7 +18,7 @@ import org.threeten.bp.format.DateTimeFormatter
 @BindingAdapter("autoSnooze")
 fun ImageButton.setAutoSnooze(autoSnooze: Long) {
     setImageResource(when(autoSnooze) {
-        Reminder.AUTO_SNOOZE_NONE -> R.drawable.white_none_square
+        Reminder.AUTO_SNOOZE_NONE -> R.drawable.ic_none
         Reminder.AUTO_SNOOZE_MINUTE -> R.drawable.one_white
         Reminder.AUTO_SNOOZE_5_MINUTES -> R.drawable.five_white
         Reminder.AUTO_SNOOZE_10_MINUTES -> R.drawable.ten_white
@@ -48,17 +49,17 @@ fun TextView.setDueDate(dueDate: ZonedDateTime) {
     val timeFromNow = dueDate.timeFromNowString(false)
 
     val stringId: Int
-    val colorString: String
+    val color: Int
     if (dueDate.isBefore(ZonedDateTime.now())) {
         stringId = R.string.time_from_now_past
-        colorString = "#f54242"
+        color = context.getColorFromAttr(R.attr.colorError)
     } else {
         stringId = R.string.time_from_now_future
-        colorString = "#ffffff"
+        color = context.getColorFromAttr(R.attr.colorOnSurface)
     }
 
     text = context.getString(stringId, dateTime, timeFromNow)
-    setTextColor(Color.parseColor(colorString))
+    setTextColor(color)
 }
 
 @BindingAdapter("repeatInterval")

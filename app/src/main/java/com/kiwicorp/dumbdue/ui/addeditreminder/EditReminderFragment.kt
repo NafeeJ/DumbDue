@@ -6,14 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
+import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.EventObserver
+import com.kiwicorp.dumbdue.MainActivity
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditReminderBinding
 import dagger.android.support.DaggerFragment
+import timber.log.Timber
 import javax.inject.Inject
 
 class EditReminderFragment : DaggerFragment() {
@@ -41,6 +48,27 @@ class EditReminderFragment : DaggerFragment() {
             lifecycleOwner = viewLifecycleOwner
         }
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            viewModel.updateReminder()
+        }
+        binding.toolbar.toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
+        (requireActivity() as MainActivity).bottomAppBar.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.menu_complete -> {
+                    viewModel.completeReminder()
+                    true
+                }
+                R.id.menu_delete -> {
+                    viewModel.deleteReminder()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -112,7 +140,9 @@ class EditReminderFragment : DaggerFragment() {
 
     private fun setupSnackbar() {
         viewModel.eventSnackbar.observe(viewLifecycleOwner, EventObserver { snackbar ->
-            snackbar.show(binding.coordinatorLayout)
+            with (requireActivity() as MainActivity) {
+                snackbar.show(coordinatorLayout, bottomAppBar)
+            }
         })
     }
 }

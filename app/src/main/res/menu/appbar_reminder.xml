@@ -5,5 +5,5 @@
         android:id="@+id/menu_settings"
         android:title="@string/settings"
         app:showAsAction="always"
-        android:icon="@drawable/settings_white" />
+        android:icon="@drawable/ic_settings_on_primary" />
 </menu>
