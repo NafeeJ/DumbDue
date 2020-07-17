@@ -9,7 +9,6 @@ import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentTimePickerBinding
 import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
-import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZonedDateTime

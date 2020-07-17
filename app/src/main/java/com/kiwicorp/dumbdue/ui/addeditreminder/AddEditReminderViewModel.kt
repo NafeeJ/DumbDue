@@ -1,15 +1,21 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.material.snackbar.Snackbar
-import com.kiwicorp.dumbdue.*
+import com.kiwicorp.dumbdue.Event
+import com.kiwicorp.dumbdue.REQUEST_COMPLETE
+import com.kiwicorp.dumbdue.REQUEST_DELETE
+import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
-import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
+import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
 import com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 

@@ -9,10 +9,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
-import com.kiwicorp.dumbdue.data.repeat.*
+import com.kiwicorp.dumbdue.data.repeat.RepeatDailyInterval
+import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByNumberInterval
+import com.kiwicorp.dumbdue.data.repeat.RepeatWeeklyInterval
+import com.kiwicorp.dumbdue.data.repeat.RepeatYearlyByNumberInterval
 import com.kiwicorp.dumbdue.databinding.FragmentChooseRepeatBinding
 import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
-import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.YearMonth

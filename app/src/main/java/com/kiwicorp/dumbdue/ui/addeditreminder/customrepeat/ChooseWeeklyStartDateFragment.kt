@@ -13,7 +13,6 @@ import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseWeeklyStartDateBinding
 import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
 import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
-import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth

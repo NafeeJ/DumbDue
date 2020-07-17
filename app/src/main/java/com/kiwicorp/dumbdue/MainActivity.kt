@@ -10,7 +10,6 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.navigation.findNavController
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections
 
 class MainActivity: AppCompatActivity() {
 

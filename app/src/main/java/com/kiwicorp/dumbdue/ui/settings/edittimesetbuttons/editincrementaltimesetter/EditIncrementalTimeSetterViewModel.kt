@@ -7,9 +7,7 @@ import com.kiwicorp.dumbdue.Event
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.timesetters.IncrementalTimeSetter
 import com.shawnlin.numberpicker.NumberPicker
-import org.threeten.bp.temporal.ChronoField
 import org.threeten.bp.temporal.ChronoUnit
-import java.util.*
 import javax.inject.Inject
 
 class EditIncrementalTimeSetterViewModel @Inject constructor(

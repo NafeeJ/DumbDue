@@ -1,6 +1,8 @@
 package com.kiwicorp.dumbdue.timesetters
 
-import org.threeten.bp.temporal.*
+import org.threeten.bp.temporal.ChronoUnit
+import org.threeten.bp.temporal.Temporal
+import org.threeten.bp.temporal.TemporalAdjuster
 
 class IncrementalTimeSetter : TemporalAdjuster {
 

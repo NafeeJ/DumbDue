@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kiwicorp.dumbdue.Event
-import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
+import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
 import javax.inject.Inject
 
 class EditTimeSetButtonsViewModel @Inject constructor(

@@ -1,6 +1,5 @@
 package com.kiwicorp.dumbdue.timesetters
 
-import org.threeten.bp.Instant
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.temporal.ChronoField
 import org.threeten.bp.temporal.ChronoUnit

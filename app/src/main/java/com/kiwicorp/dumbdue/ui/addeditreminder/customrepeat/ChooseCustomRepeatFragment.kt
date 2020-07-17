@@ -1,6 +1,5 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat
 
-import android.app.Dialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
@@ -9,23 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
-import android.widget.FrameLayout
 import android.widget.TimePicker
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.chip.Chip
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCountInterval.Day
 import com.kiwicorp.dumbdue.databinding.FragmentChooseCustomRepeatBinding
-import com.kiwicorp.dumbdue.ui.addeditreminder.*
+import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
 import com.kiwicorp.dumbdue.util.*
-import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 import org.threeten.bp.*
 import javax.inject.Inject
 

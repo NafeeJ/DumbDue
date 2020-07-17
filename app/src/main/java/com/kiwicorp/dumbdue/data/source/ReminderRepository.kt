@@ -6,7 +6,6 @@ import com.kiwicorp.dumbdue.data.source.local.ReminderDao
 import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 

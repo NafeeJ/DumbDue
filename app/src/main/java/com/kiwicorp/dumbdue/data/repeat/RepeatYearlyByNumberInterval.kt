@@ -2,7 +2,6 @@ package com.kiwicorp.dumbdue.data.repeat
 
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
-import java.util.*
 
 /**
  * A class the represents a repeat interval that's scoped in years and will be based off of the

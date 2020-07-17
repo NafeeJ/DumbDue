@@ -2,20 +2,15 @@ package com.kiwicorp.dumbdue.util
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import androidx.annotation.AttrRes
-import androidx.annotation.BoolRes
 import androidx.annotation.ColorInt
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import com.kiwicorp.dumbdue.R
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.Month
-import org.threeten.bp.ZoneId
 import org.threeten.bp.format.TextStyle
 import java.util.*
 

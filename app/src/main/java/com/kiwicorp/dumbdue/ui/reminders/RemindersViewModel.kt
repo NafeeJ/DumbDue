@@ -11,8 +11,7 @@ import com.kiwicorp.dumbdue.REQUEST_DELETE
 import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
-import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RemindersViewModel @Inject constructor(

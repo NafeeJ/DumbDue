@@ -13,9 +13,7 @@ import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditIncrementalTimeSetterBinding
 import com.shawnlin.numberpicker.NumberPicker
 import dagger.android.support.DaggerFragment
-import org.threeten.bp.temporal.ChronoField
 import org.threeten.bp.temporal.ChronoUnit
-import java.util.*
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 

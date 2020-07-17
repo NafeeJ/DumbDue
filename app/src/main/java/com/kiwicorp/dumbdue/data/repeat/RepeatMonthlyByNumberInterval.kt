@@ -3,10 +3,7 @@ package com.kiwicorp.dumbdue.data.repeat
 import com.kiwicorp.dumbdue.util.getDaySuffix
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.temporal.ChronoField
 import org.threeten.bp.temporal.TemporalAdjusters
-import java.time.LocalDateTime
-import java.util.*
 
 /**
  * A class that represents a repeat interval that's scoped in a month and will be based off of

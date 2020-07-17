@@ -1,6 +1,5 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
-import android.graphics.Color
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.databinding.BindingAdapter

@@ -1,7 +1,6 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.kiwicorp.dumbdue.Event

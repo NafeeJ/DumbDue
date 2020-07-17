@@ -1,7 +1,7 @@
 package com.kiwicorp.dumbdue.ui.settings
 
 import android.os.Bundle
-import android.view.*
+import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
