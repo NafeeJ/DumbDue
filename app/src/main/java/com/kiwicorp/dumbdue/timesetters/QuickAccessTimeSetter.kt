@@ -1,6 +1,9 @@
 package com.kiwicorp.dumbdue.timesetters
 
+import org.threeten.bp.Instant
+import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.temporal.ChronoField
+import org.threeten.bp.temporal.ChronoUnit
 import org.threeten.bp.temporal.Temporal
 import org.threeten.bp.temporal.TemporalAdjuster
 
@@ -41,8 +44,12 @@ class QuickAccessTimeSetter : TemporalAdjuster {
     }
 
     override fun adjustInto(temporal: Temporal): Temporal {
-        return temporal.with(ChronoField.HOUR_OF_DAY, hourOfDay.toLong())
+        var newTemporal = temporal.with(ChronoField.HOUR_OF_DAY, hourOfDay.toLong())
             .with(ChronoField.MINUTE_OF_HOUR, minute.toLong())
+        while (!(newTemporal as ZonedDateTime).isAfter(ZonedDateTime.now())) {
+            newTemporal = newTemporal.plus(1, ChronoUnit.DAYS)
+        }
+        return newTemporal
     }
 
 }
