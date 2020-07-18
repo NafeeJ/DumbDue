@@ -1,23 +1,25 @@
 package com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editincrementaltimesetter
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditIncrementalTimeSetterBinding
+import com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSettersViewModel
+import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
 import com.shawnlin.numberpicker.NumberPicker
-import dagger.android.support.DaggerFragment
 import org.threeten.bp.temporal.ChronoUnit
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 
-class EditIncrementalTimeSetterFragment : DaggerFragment() {
+class EditIncrementalTimeSetterFragment : RoundedDaggerBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentEditIncrementalTimeSetterBinding
 
@@ -27,6 +29,8 @@ class EditIncrementalTimeSetterFragment : DaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel : EditIncrementalTimeSetterViewModel by viewModels { viewModelFactory }
+
+    private val editTimeSetterViewModel: EditTimeSettersViewModel by activityViewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,33 +42,24 @@ class EditIncrementalTimeSetterFragment : DaggerFragment() {
         return root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.includeBackToolbar.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
+    override fun onDismiss(dialog: DialogInterface) {
+        viewModel.updateTimeSetter()
+        editTimeSetterViewModel.notifyTimeSettersUpdated()
+        super.onDismiss(dialog)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.loadTimeSetter(args.key)
-        setupNavigation()
         setupPlusMinusPicker(binding.pickerPlusMinus)
         setupNumberPicker(binding.pickerNumber)
         setupUnitPicker(binding.pickerUnits, binding.pickerNumber)
     }
 
-    private fun setupNavigation() {
-        viewModel.eventDone.observe(viewLifecycleOwner, EventObserver {
-            close()
-        })
-    }
-
-    private fun close() {
-        findNavController().popBackStack()
-    }
-
     private fun setupPlusMinusPicker(plusMinusPicker: NumberPicker) {
         val plusMinus = arrayOf("+","-")
         with(plusMinusPicker) {
+            typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             displayedValues = plusMinus
             value = if (viewModel.incrementalTimeSetter.number > 0) 1 else 2
             setOnValueChangedListener(viewModel.plusMinusPickerOnValueChangedListener)
@@ -73,6 +68,7 @@ class EditIncrementalTimeSetterFragment : DaggerFragment() {
 
     private fun setupNumberPicker(numberPicker: NumberPicker) {
         with(numberPicker) {
+            typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             value = viewModel.incrementalTimeSetter.number.absoluteValue.toInt()
             setOnValueChangedListener(viewModel.numberPickerOnValueChangedListener)
         }
@@ -81,6 +77,7 @@ class EditIncrementalTimeSetterFragment : DaggerFragment() {
     private fun setupUnitPicker(unitPicker: NumberPicker, numberPicker: NumberPicker) {
         val units = arrayOf("min","hr","day","wk","mo","yr")
         with(unitPicker) {
+            typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             displayedValues = units
             value = when(viewModel.incrementalTimeSetter.unit) {
                 ChronoUnit.MINUTES -> 1

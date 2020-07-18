@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.R
@@ -45,7 +47,6 @@ class TimePickerFragment : RoundedDaggerBottomSheetDialogFragment() {
         setupHourPicker()
         setupMinutePicker()
         setupAmpmPicker()
-
     }
 
     private fun setupDatePicker() {
@@ -62,10 +63,10 @@ class TimePickerFragment : RoundedDaggerBottomSheetDialogFragment() {
                 dateFormatter.format(date)
             }
         }
-
         // a list of the 5 calendars from [calendars] formatted
         val datesStr = Array(5) { format(dates[it]) }
         with(binding.datePicker) {
+            typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             displayedValues = datesStr
 
             setOnValueChangedListener { picker, oldVal, newVal ->
@@ -98,6 +99,7 @@ class TimePickerFragment : RoundedDaggerBottomSheetDialogFragment() {
 
     private fun setupHourPicker() {
         with(binding.hourPicker) {
+            typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             value = viewModel.dueDate.value!!.get(ChronoField.HOUR_OF_AMPM)
             setOnValueChangedListener { picker, oldVal, newVal ->
                 viewModel.updateDueDate(ZonedDateTime.from(viewModel.dueDate.value!!).with(ChronoField.HOUR_OF_AMPM, if (newVal == 12) 0 else newVal.toLong()))
@@ -111,6 +113,7 @@ class TimePickerFragment : RoundedDaggerBottomSheetDialogFragment() {
             minutes[i] = "0${minutes[i]}"
         }
         with(binding.minutePicker) {
+            typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             value = viewModel.dueDate.value!!.minute
             displayedValues = minutes
             setOnValueChangedListener { picker, oldVal, newVal ->
@@ -122,6 +125,7 @@ class TimePickerFragment : RoundedDaggerBottomSheetDialogFragment() {
     private fun setupAmpmPicker() {
         val ampm = arrayOf("AM","PM")
         with(binding.ampmPicker) {
+            typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             displayedValues = ampm
             value = when(viewModel.dueDate.value!!.get(ChronoField.AMPM_OF_DAY)) {
                 0 -> 1 // AM

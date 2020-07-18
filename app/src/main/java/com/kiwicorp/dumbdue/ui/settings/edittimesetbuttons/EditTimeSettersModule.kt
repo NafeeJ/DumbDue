@@ -9,12 +9,12 @@ import dagger.android.ContributesAndroidInjector
 import dagger.multibindings.IntoMap
 
 @Module
-abstract class EditTimeSetButtonsModule {
+abstract class EditTimeSettersModule {
     @ContributesAndroidInjector(modules = [ViewModelModule::class])
-    internal abstract fun editTimeSetButtonsFragment(): EditTimeSetButtonsFragment
+    internal abstract fun editTimeSetButtonsFragment(): EditTimeSettersFragment
 
     @Binds
     @IntoMap
-    @ViewModelKey(EditTimeSetButtonsViewModel::class)
-    internal abstract fun bindEditTimeSetButtonsViewModel(viewmodel: EditTimeSetButtonsViewModel): ViewModel
+    @ViewModelKey(EditTimeSettersViewModel::class)
+    internal abstract fun bindEditTimeSetButtonsViewModel(viewmodel: EditTimeSettersViewModel): ViewModel
 }

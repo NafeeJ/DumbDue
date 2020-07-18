@@ -8,8 +8,8 @@ import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
 import javax.inject.Inject
 
-class EditTimeSetButtonsViewModel @Inject constructor(
-    val preferencesStorage: PreferencesStorage
+class EditTimeSettersViewModel @Inject constructor(
+    private val preferencesStorage: PreferencesStorage
 ) : ViewModel(), OnTimeSetterClick {
 
     private val _eventEditQuickAccessTimeSetter = MutableLiveData<Event<String>>()
@@ -18,8 +18,8 @@ class EditTimeSetButtonsViewModel @Inject constructor(
     private val _eventEditIncrementalTimeSetter = MutableLiveData<Event<String>>()
     val eventEditIncrementalTimeSetter : LiveData<Event<String>> = _eventEditIncrementalTimeSetter
 
-    private val _eventReset = MutableLiveData<Event<Unit>>()
-    val eventReset: LiveData<Event<Unit>> = _eventReset
+    private val _eventTimeSettersUpdated = MutableLiveData<Event<Unit>>()
+    val eventTimeSettersUpdated: LiveData<Event<Unit>> = _eventTimeSettersUpdated
 
     override fun onQuickAccessTimeSetterClick(key: String) {
         _eventEditQuickAccessTimeSetter.value = Event(key)
@@ -31,7 +31,11 @@ class EditTimeSetButtonsViewModel @Inject constructor(
 
     fun onReset() {
         preferencesStorage.resetTimeSetters()
-        _eventReset.value = Event(Unit)
+        _eventTimeSettersUpdated.value = Event(Unit)
+    }
+
+    fun notifyTimeSettersUpdated() {
+        _eventTimeSettersUpdated.value = Event(Unit)
     }
 
 }

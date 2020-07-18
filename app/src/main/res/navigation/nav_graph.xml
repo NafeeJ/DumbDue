@@ -214,7 +214,7 @@
     </navigation>
     <fragment
         android:id="@+id/editTimeSetButtonsFragment"
-        android:name="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSetButtonsFragment"
+        android:name="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSettersFragment"
         android:label="Edit Time Setter Buttons"
         tools:layout="@layout/fragment_edit_time_set_buttons" >
         <action
@@ -224,15 +224,15 @@
             android:id="@+id/action_editTimeSetButtonsFragment_to_editQuickAccessTimeSetterFragment"
             app:destination="@id/editQuickAccessTimeSetterFragment" />
     </fragment>
-    <fragment
+    <dialog
         android:id="@+id/editIncrementalTimeSetter"
         android:name="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editincrementaltimesetter.EditIncrementalTimeSetterFragment"
         android:label="Edit Incremental Time Setter" >
         <argument
             android:name="key"
             app:argType="string" />
-    </fragment>
-    <fragment
+    </dialog>
+    <dialog
         android:id="@+id/editQuickAccessTimeSetterFragment"
         android:name="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editquickaccesstimesetter.EditQuickAccessTimeSetterFragment"
         android:label="Edit Quick Access Time Setter"
@@ -240,6 +240,6 @@
         <argument
             android:name="key"
             app:argType="string" />
-    </fragment>
+    </dialog>
 
 </navigation>

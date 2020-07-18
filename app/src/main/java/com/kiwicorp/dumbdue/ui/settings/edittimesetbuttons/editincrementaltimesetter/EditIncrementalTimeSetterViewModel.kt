@@ -14,9 +14,6 @@ class EditIncrementalTimeSetterViewModel @Inject constructor(
     private val preferencesStorage: PreferencesStorage
 ) : ViewModel() {
 
-    private val _eventDone = MutableLiveData<Event<Unit>>()
-    val eventDone: LiveData<Event<Unit>> = _eventDone
-
     lateinit var incrementalTimeSetter: IncrementalTimeSetter
         private set
 
@@ -72,8 +69,7 @@ class EditIncrementalTimeSetterViewModel @Inject constructor(
         }
     }
 
-    fun onDone() {
+    fun updateTimeSetter() {
         preferencesStorage.updateIncrementalTimeSetter(key, incrementalTimeSetter)
-        _eventDone.value = Event(Unit)
     }
 }

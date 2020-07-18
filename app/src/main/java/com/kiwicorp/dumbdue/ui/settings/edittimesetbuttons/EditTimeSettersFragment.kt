@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.kiwicorp.dumbdue.EventObserver
@@ -13,14 +13,14 @@ import com.kiwicorp.dumbdue.databinding.FragmentEditTimeSetButtonsBinding
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-class EditTimeSetButtonsFragment : DaggerFragment() {
+class EditTimeSettersFragment : DaggerFragment() {
 
     lateinit var binding: FragmentEditTimeSetButtonsBinding
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: EditTimeSetButtonsViewModel by viewModels { viewModelFactory }
+    private val viewModel: EditTimeSettersViewModel by activityViewModels { viewModelFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,8 +42,7 @@ class EditTimeSetButtonsFragment : DaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
-        viewModel.eventReset.observe(viewLifecycleOwner, EventObserver {
-            //tells view to redraw
+        viewModel.eventTimeSettersUpdated.observe(viewLifecycleOwner, EventObserver {
             binding.invalidateAll()
         })
     }
