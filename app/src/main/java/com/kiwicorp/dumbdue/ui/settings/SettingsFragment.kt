@@ -7,11 +7,24 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.kiwicorp.dumbdue.R
+import com.kiwicorp.dumbdue.util.applySystemWindowInsetsPadding
 
 class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // apply insets here because for some reason applySystemWindowInsetsPadding() won't be
+        // called in data binding
+        view.applySystemWindowInsetsPadding(
+            previousApplyLeft = false,
+            previousApplyTop = false,
+            previousApplyRight = false,
+            previousApplyBottom = false,
+            applyLeft = false,
+            applyTop = true,
+            applyRight = false,
+            applyBottom = false
+        )
         view.findViewById<Toolbar>(R.id.toolbar).setNavigationOnClickListener { findNavController().navigateUp() }
     }
 

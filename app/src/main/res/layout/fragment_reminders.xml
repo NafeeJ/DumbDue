@@ -6,21 +6,15 @@
             name="viewmodel"
             type="com.kiwicorp.dumbdue.ui.reminders.RemindersViewModel" />
     </data>
-    
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinator_layout"
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reminders_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/reminders_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:items="@{viewmodel.reminders}"/>
-        
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:items="@{viewmodel.reminders}"
+        app:paddingTopSystemWindowInsets="@{true}"
+        app:paddingBottomSystemWindowInsets="@{true}" />
 
 </layout>
