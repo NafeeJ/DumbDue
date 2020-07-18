@@ -243,46 +243,41 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
         fun bind(title: String) {
             binding.title = title
             val context = binding.root.context
-            // hot to cold
-            val hotToColdPalette = if (context.theme.isLightTheme()) {
-                getPalette(
-                    Color.valueOf(Color.parseColor("#FF4C5D")),
-                    Color.valueOf(Color.parseColor("#0049ff")),
-                    3
-                )
-            } else {
-                getPalette(
-                    Color.valueOf(Color.parseColor("#FF4C5D")),
-                    Color.valueOf(Color.parseColor("#305074")),
-                    3
-                )
-            }
-
-            binding.divider.setBackgroundColor(when (title) {
-                "overdue" -> hotToColdPalette[0].toArgb()
-                "today" -> hotToColdPalette[1].toArgb()
-                "tomorrow" -> hotToColdPalette[2].toArgb()
-                "next 7 days" -> hotToColdPalette[3].toArgb()
-                else -> hotToColdPalette[4].toArgb()
-            })
-//            // secondary to primary
-//            val palette = getPalette(
-//                Color.valueOf(context.getColorFromAttr(R.attr.colorSecondary)),
-//                Color.valueOf(context.getColorFromAttr(R.attr.colorPrimary)),
-//                2
-//            )
-//            binding.divider.setBackgroundColor(when (title) {
-//                "overdue" -> Color.parseColor("#FF4C5D")
-//                "today" -> palette[0].toArgb()
-//                "tomorrow" -> palette[1].toArgb()
-//                "next 7 days" -> palette[2].toArgb()
-//                else -> palette[3].toArgb()
-//            })
-//            binding.divider.setBackgroundColor(if (title == "overdue") {
-//                context.getColorFromAttr(R.attr.colorError)
+//            // hot to cold
+//            val hotToColdPalette = if (context.theme.isLightTheme()) {
+//                getPalette(
+//                    Color.valueOf(Color.parseColor("#FF4C5D")),
+//                    Color.valueOf(Color.parseColor("#0049ff")),
+//                    3
+//                )
 //            } else {
-//                context.getColorFromAttr(R.attr.colorSecondary)
+//                getPalette(
+//                    Color.valueOf(Color.parseColor("#FF4C5D")),
+//                    Color.valueOf(Color.parseColor("#305074")),
+//                    3
+//                )
+//            }
+//
+//            binding.divider.setBackgroundColor(when (title) {
+//                "overdue" -> hotToColdPalette[0].toArgb()
+//                "today" -> hotToColdPalette[1].toArgb()
+//                "tomorrow" -> hotToColdPalette[2].toArgb()
+//                "next 7 days" -> hotToColdPalette[3].toArgb()
+//                else -> hotToColdPalette[4].toArgb()
 //            })
+            // secondary to primary
+            val palette = getPalette(
+                Color.valueOf(context.getColorFromAttr(R.attr.colorSecondary)),
+                Color.valueOf(context.getColorFromAttr(R.attr.colorPrimary)),
+                2
+            )
+            binding.divider.setBackgroundColor(when (title) {
+                "overdue" -> Color.parseColor("#FF4C5D")
+                "today" -> palette[0].toArgb()
+                "tomorrow" -> palette[1].toArgb()
+                "next 7 days" -> palette[2].toArgb()
+                else -> palette[3].toArgb()
+            })
         }
 
         private fun getPalette(color1: Color, color2: Color, midpoints: Int): List<Color> {
