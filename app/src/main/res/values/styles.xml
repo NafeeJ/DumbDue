@@ -46,6 +46,12 @@
         <item name="android:layout">@layout/fragment_preferences</item>
     </style>
 
+    <style name="Widget.DumbDue.NumberPicker" parent="">
+        <item name="np_dividerColor">#00000000</item>
+        <item name="np_textColor">?attr/colorOnBackground</item>
+        <item name="np_selectedTextColor">?attr/colorOnBackground</item>
+    </style>
+
     <style name="DaysOfWeekChipStyle">
         <item name="android:checkable">true</item>
         <item name="android:layout_height">50dp</item>
@@ -55,6 +61,5 @@
         <item name="android:textAlignment">center</item>
         <item name="chipBackgroundColor">@color/mtrl_choice_chip_background_color</item>
     </style>
-
 
 </resources>

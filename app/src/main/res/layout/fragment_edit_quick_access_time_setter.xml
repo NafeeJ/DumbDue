@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" >
 
     <data>
         <variable
@@ -7,83 +9,67 @@
             type="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editquickaccesstimesetter.EditQuickAccessTimeSetterViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="wrap_content"
         tools:context=".ui.settings.edittimesetbuttons.editquickaccesstimesetter.EditQuickAccessTimeSetterFragment">
-
-        <include
-            android:id="@+id/include_back_toolbar"
-            layout="@layout/include_back_toolbar" />
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/picker_hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="100dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/picker_minutes"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:np_dividerColor="#00000000"
+            style="@style/Widget.DumbDue.NumberPicker"
             app:np_height="180dp"
             app:np_max="12"
             app:np_min="1"
-            app:np_width="64dp" />
+            app:np_width="64dp"
+            android:layout_marginVertical="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/picker_minutes"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/picker_minutes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:np_height="180dp"
+            app:np_width="64dp"
+            app:np_max="59"
+            app:np_min="0"
+            style="@style/Widget.DumbDue.NumberPicker"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:np_dividerColor="#00000000"
-            app:np_height="180dp"
-            app:np_max="59"
-            app:np_min="0"
-            app:np_selectedTextColor="#FFFFFF"
-            app:np_textColor="#FFFFFF"
-            app:np_width="64dp" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/picker_am_pm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="105dp"
+            app:np_height="180dp"
+            app:np_width="64dp"
+            app:np_max="2"
+            app:np_min="1"
+            style="@style/Widget.DumbDue.NumberPicker"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/picker_minutes"
-            app:layout_constraintTop_toTopOf="parent"
-            app:np_dividerColor="#00000000"
-            app:np_height="180dp"
-            app:np_max="2"
-            app:np_min="1"
-            app:np_width="64dp" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text=":"
+            android:text="@string/colon"
             android:textColor="#FFFFFF"
             android:textSize="23dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/picker_minutes"
             app:layout_constraintStart_toStartOf="@id/picker_hours"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/done_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="@string/done"
-            android:onClick="@{() -> viewmodel.onDone()}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

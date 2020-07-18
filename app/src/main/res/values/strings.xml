@@ -90,4 +90,5 @@
     <string name="prefs_repeat_interval_uses_time">PREFS_REPEAT_INTERVAL_USE_TIME</string>
     <string name="prefs_default_auto_snooze">PREFS_DEFAULT_AUTO_SNOOZE</string>
 
+    <string name="colon">:</string>
 </resources>

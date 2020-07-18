@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -7,74 +9,49 @@
             type="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editincrementaltimesetter.EditIncrementalTimeSetterViewModel" />
     </data>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_height="wrap_content"
         tools:context=".ui.settings.edittimesetbuttons.editincrementaltimesetter.EditIncrementalTimeSetterFragment">
-
-        <include
-            android:id="@+id/include_back_toolbar"
-            layout="@layout/include_back_toolbar" />
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/picker_plus_minus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:np_height="180dp"
+            app:np_width="64dp"
+            app:np_min="1"
+            app:np_max="2"
+            style="@style/Widget.DumbDue.NumberPicker"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="85dp"
-            app:np_dividerColor="#00000000"
-            app:np_min="1"
-            app:np_max="2"
-            app:np_wrapSelectorWheel="false"
-            app:np_height="180dp"
-            app:np_width="64dp"
-            app:np_textColor="?attr/colorOnBackground"
-            app:np_selectedTextColor="?attr/colorOnBackground"/>
+            android:layout_marginVertical="30dp"/>
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/picker_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            app:np_dividerColor="#00000000"
-            app:np_min="1"
-            app:np_wrapSelectorWheel="false"
             app:np_height="180dp"
             app:np_width="64dp"
-            app:np_textColor="?attr/colorOnBackground"
-            app:np_selectedTextColor="?attr/colorOnBackground"/>
+            app:np_min="1"
+            style="@style/Widget.DumbDue.NumberPicker"
+            android:layout_centerInParent="true" />
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/picker_units"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:np_height="180dp"
+            app:np_width="64dp"
+            app:np_min="1"
+            app:np_max="6"
+            style="@style/Widget.DumbDue.NumberPicker"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="70dp"
-            android:layout_toEndOf="@+id/picker_number"
-            app:np_dividerColor="#00000000"
-            app:np_min="1"
-            app:np_max="6"
-            app:np_wrapSelectorWheel="true"
-            app:np_height="180dp"
-            app:np_width="64dp"
-            app:np_textColor="?attr/colorOnBackground"
-            app:np_selectedTextColor="?attr/colorOnBackground"/>
-
-        <Button
-            android:id="@+id/done_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:textColor="@android:color/white"
-            android:text="@string/done"
-            android:onClick="@{() -> viewmodel.onDone()}"/>
+            android:layout_toEndOf="@+id/picker_number"/>
 
     </RelativeLayout>
-
 
 </layout>
