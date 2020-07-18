@@ -46,17 +46,6 @@ class AddReminderFragment : RoundedDaggerBottomSheetDialogFragment() {
         setupSnackbar()
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        (requireActivity() as MainActivity).bottomAppBar.setOnMenuItemClickListener {
-            if (it.itemId == R.id.menu_settings) {
-                val action = RemindersFragmentDirections.actionRemindersFragmentDestToSettingsFragmentDest()
-                findNavController().navigate(action)
-            }
-            true
-        }
-    }
-
     private fun setupNavigation() {
         //todo do the rest of this
         viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, EventObserver {
