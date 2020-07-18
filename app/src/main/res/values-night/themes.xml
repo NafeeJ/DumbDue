@@ -20,8 +20,8 @@
 
     <style name="Theme.DumbDue.Dark" parent="Theme.DumbDue">
         <!--Material color attributes (dark theme) -->
-        <item name="colorPrimary">@color/dumbdue_dark_yellow_900</item>
-        <item name="colorPrimaryVariant">@color/dumbdue_dark_yellow_700</item>
+        <item name="colorPrimary">@color/dumbdue_dark_yellow_700</item>
+        <item name="colorPrimaryVariant">@color/dumbdue_dark_yellow_800</item>
         <item name="colorSecondary">@color/dumbdue_green_400</item>
         <item name="colorSecondaryVariant">@color/dumbdue_green_700</item>
 
