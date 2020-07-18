@@ -43,13 +43,12 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="50dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:inputType="number"
                     android:maxLength="2"
-                    android:padding="0dp"
+                    android:paddingVertical="0dp"
                     android:textAlignment="center"
-                    android:textSize="15sp"
                     android:text="@={viewmodel.frequency}"
                     tools:text="22" />
 
