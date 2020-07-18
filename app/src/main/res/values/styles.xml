@@ -50,6 +50,7 @@
         <item name="np_dividerColor">#00000000</item>
         <item name="np_textColor">?attr/colorOnBackground</item>
         <item name="np_selectedTextColor">?attr/colorOnBackground</item>
+        <item name="android:scrollbars">none</item>
     </style>
 
     <style name="DaysOfWeekChipStyle">
