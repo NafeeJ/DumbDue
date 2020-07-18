@@ -24,6 +24,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/start_date_text_layout"
             app:layout_constraintTop_toTopOf="@id/start_date_text_layout"
+            android:textAppearance="?attr/textAppearanceBody1"
             android:text="@string/start"/>
 
         <com.google.android.material.textfield.TextInputLayout

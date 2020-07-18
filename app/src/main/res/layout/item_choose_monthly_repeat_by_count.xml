@@ -20,7 +20,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/count_text_layout"
-            android:layout_width="125dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginVertical="10dp"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:focusable="false"
             android:layout_marginVertical="10dp"
-            android:layout_marginHorizontal="20dp"
+            android:layout_marginHorizontal="10dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -58,7 +58,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:padding="10dp"
-                android:textSize="15sp"
                 android:editable="false"
                 tools:text="Thursday" />
 
@@ -66,8 +65,8 @@
 
         <ImageButton
             android:id="@+id/delete_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
             android:src="@drawable/ic_delete"
             android:scaleType="fitCenter"
