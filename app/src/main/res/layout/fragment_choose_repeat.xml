@@ -16,6 +16,7 @@
         <TextView
             android:id="@+id/repeat_off_text"
             style="@style/Widget.DumbDue.TextView.Menu"
+            android:layout_marginTop="20dp"
             tools:text="Repeat Off" />
 
         <TextView
@@ -46,7 +47,8 @@
         <TextView
             android:id="@+id/repeat_custom_text"
             style="@style/Widget.DumbDue.TextView.Menu"
-            tools:text="Repeat Custom" />
+            android:layout_marginBottom="20dp"
+            tools:text="Repeat Custom"/>
     </LinearLayout>
 
 </layout>

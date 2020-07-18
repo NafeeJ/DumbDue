@@ -19,6 +19,7 @@
             android:id="@+id/none_text"
             style="@style/Widget.DumbDue.TextView.Menu"
             android:text="@string/auto_snooze_none"
+            android:layout_marginTop="20dp"
             android:onClick="@{()->viewmodel.onChooseAutoSnooze(Reminder.AUTO_SNOOZE_NONE)}"/>
         <TextView
             android:id="@+id/minute_text"
@@ -49,6 +50,7 @@
             android:id="@+id/hour_text"
             style="@style/Widget.DumbDue.TextView.Menu"
             android:text="@string/auto_snooze_hour"
+            android:layout_marginBottom="20dp"
             android:onClick="@{()->viewmodel.onChooseAutoSnooze(Reminder.AUTO_SNOOZE_HOUR)}"/>
     </LinearLayout>
 
