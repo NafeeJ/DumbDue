@@ -24,7 +24,7 @@ class AddEditReminderViewModel @Inject constructor(
     private val preferencesStorage: PreferencesStorage
 ) : ViewModel(), OnTimeSetterClick {
     //Public mutable for two-way data binding
-    val title = MutableLiveData<String>()
+    val title = MutableLiveData("")
 
     private val _dueDate = MutableLiveData(ZonedDateTime.now().withSecond(0).withNano(0))
     val dueDate: LiveData<ZonedDateTime> = _dueDate
@@ -142,20 +142,15 @@ class AddEditReminderViewModel @Inject constructor(
      */
     fun addReminder() {
         viewModelScope.launch {
-            if (title.value == null || title.value == "") {
-                _eventSnackbar.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
-            } else if (dueDate.value!!.isBefore(ZonedDateTime.now())) {
-                _eventSnackbar.value = Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
-            } else {
-                val reminder = Reminder(title.value!!,
-                    dueDate.value!!,
-                    repeatInterval.value,
-                    autoSnoozeVal.value!!)
+            val reminder = Reminder(title.value!!,
+                dueDate.value!!,
+                repeatInterval.value,
+                autoSnoozeVal.value!!)
 
-                repository.insertReminder(reminder)
+            repository.insertReminder(reminder)
 
-                _eventClose.value = Event(Unit)
-            }
+            _eventClose.value = Event(Unit)
+
 
         }
     }
@@ -163,22 +158,12 @@ class AddEditReminderViewModel @Inject constructor(
     /**
      * Updates reminder, returns true if update successful, returns false if update unsuccessful
      */
-    fun updateReminder(): Boolean {
-        return if (title.value == null || title.value == "") {
-            _eventSnackbar.value = Event(SnackbarMessage("Title Cannot Be Empty.", Snackbar.LENGTH_SHORT))
-            false
-        } else if (dueDate.value!!.isBefore(ZonedDateTime.now())) {
-            _eventSnackbar.value =
-                Event(SnackbarMessage("Due date cannot be in the past", Snackbar.LENGTH_SHORT))
-            false
-        } else {
-            viewModelScope.launch {
-                val reminder = Reminder(title.value!!,dueDate.value!!,repeatInterval.value,autoSnoozeVal.value!!,reminderId!!)
-                repository.updateReminder(reminder)
-            }
-            _eventClose.value = Event(Unit)
-            true
+    fun updateReminder() {
+        viewModelScope.launch {
+            val reminder = Reminder(title.value!!,dueDate.value!!,repeatInterval.value,autoSnoozeVal.value!!,reminderId!!)
+            repository.updateReminder(reminder)
         }
+        _eventClose.value = Event(Unit)
     }
 
     /**
