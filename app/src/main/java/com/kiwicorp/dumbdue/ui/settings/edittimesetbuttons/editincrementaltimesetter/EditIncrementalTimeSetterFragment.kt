@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.R
@@ -43,7 +44,6 @@ class EditIncrementalTimeSetterFragment : RoundedDaggerBottomSheetDialogFragment
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        viewModel.updateTimeSetter()
         editTimeSetterViewModel.notifyTimeSettersUpdated()
         super.onDismiss(dialog)
     }
@@ -61,33 +61,53 @@ class EditIncrementalTimeSetterFragment : RoundedDaggerBottomSheetDialogFragment
         with(plusMinusPicker) {
             typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             displayedValues = plusMinus
-            value = if (viewModel.incrementalTimeSetter.number > 0) 1 else 2
-            setOnValueChangedListener(viewModel.plusMinusPickerOnValueChangedListener)
+            viewModel.incrementalTimeSetter.observe(viewLifecycleOwner, Observer {
+                value = if (it.number > 0) 1 else 2
+            })
+            setOnValueChangedListener { _, _, newVal ->
+                viewModel.onSignChanged( if (newVal == 1) Sign.POSITIVE else Sign.NEGATIVE )
+            }
         }
     }
 
     private fun setupNumberPicker(numberPicker: NumberPicker) {
         with(numberPicker) {
             typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
-            value = viewModel.incrementalTimeSetter.number.absoluteValue.toInt()
-            setOnValueChangedListener(viewModel.numberPickerOnValueChangedListener)
+            viewModel.incrementalTimeSetter.observe(viewLifecycleOwner, Observer {
+                value = it.number.absoluteValue.toInt()
+            })
+            setOnValueChangedListener { _, _, newVal ->
+                viewModel.onNumberChanged(newVal.toLong())
+            }
         }
     }
 
     private fun setupUnitPicker(unitPicker: NumberPicker, numberPicker: NumberPicker) {
         val units = arrayOf("min","hr","day","wk","mo","yr")
+        val unitValues = listOf(ChronoUnit.MINUTES, ChronoUnit.HOURS, ChronoUnit.DAYS, ChronoUnit.WEEKS,ChronoUnit.MONTHS, ChronoUnit.YEARS)
+
         with(unitPicker) {
             typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             displayedValues = units
-            value = when(viewModel.incrementalTimeSetter.unit) {
-                ChronoUnit.MINUTES -> 1
-                ChronoUnit.HOURS -> 2
-                ChronoUnit.DAYS -> 3
-                ChronoUnit.WEEKS -> 4
-                ChronoUnit.MONTHS -> 5
-                else -> 6
+
+            viewModel.incrementalTimeSetter.observe(viewLifecycleOwner, Observer {
+                value = unitValues.indexOf(it.unit) + 1
+            })
+            setOnValueChangedListener { _, _, newVal ->
+                val unit = unitValues[newVal - 1]
+                viewModel.onUnitChanged(unit)
+                numberPicker.maxValue = when(unit) {
+                    ChronoUnit.MINUTES -> 59
+                    ChronoUnit.HOURS -> 23
+                    ChronoUnit.DAYS -> 6
+                    ChronoUnit.WEEKS -> 3
+                    ChronoUnit.MONTHS -> 11
+                    else -> 100
+                }
+                //update number in case numberPicker's new maxValue was less than numberPicker's value
+                viewModel.onNumberChanged(numberPicker.value.toLong())
             }
-            setOnValueChangedListener(viewModel.getUnitPickerOnValueChangeListener(numberPicker))
         }
     }
 }
+

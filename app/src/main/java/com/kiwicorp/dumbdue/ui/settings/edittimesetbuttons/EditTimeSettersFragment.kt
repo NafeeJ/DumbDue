@@ -9,13 +9,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
-import com.kiwicorp.dumbdue.databinding.FragmentEditTimeSetButtonsBinding
+import com.kiwicorp.dumbdue.databinding.FragmentEditTimeSettersBinding
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
 class EditTimeSettersFragment : DaggerFragment() {
 
-    lateinit var binding: FragmentEditTimeSetButtonsBinding
+    lateinit var binding: FragmentEditTimeSettersBinding
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -26,8 +26,8 @@ class EditTimeSettersFragment : DaggerFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_edit_time_set_buttons, container, false)
-        binding = FragmentEditTimeSetButtonsBinding.bind(root).apply {
+        val root = inflater.inflate(R.layout.fragment_edit_time_setters, container, false)
+        binding = FragmentEditTimeSettersBinding.bind(root).apply {
             timeSetters.onTimeSetterClickImpl = viewModel
             viewmodel = viewModel
         }

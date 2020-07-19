@@ -8,47 +8,52 @@ import org.threeten.bp.temporal.TemporalAdjuster
 
 class QuickAccessTimeSetter : TemporalAdjuster {
     var minute: Int
+        set(value) {
+            if (value > 59) {
+                throw IllegalArgumentException("minute should not be more than 59")
+            }
+            field = value
+        }
 
-    var hourOfDay: Int
+    var hour: Int
+        set(value) {
+            if (value > 12) {
+                throw IllegalArgumentException("hour should not be more than 12")
+            }
+            field = value
+        }
+
+    var amPm: AmPm
 
     override fun toString(): String {
-        val hour: Int
-        val ampm: String
-        if (hourOfDay >= 12) {
-            hour = if (hourOfDay == 12) hourOfDay else hourOfDay - 12
-            ampm = "PM"
-        } else {
-            hour = if (hourOfDay == 0) 12 else hourOfDay
-            ampm = "AM"
-        }
-        val min: String = if (minute < 10) "0$minute" else "$minute"
-        return "$hour:$min $ampm"
+        val minuteString: String = if (minute < 10) "0$minute" else "$minute"
+        return "$hour:$minuteString $amPm"
     }
 
-    constructor(hourOfDay: Int, minute: Int ) {
+    constructor(hour: Int, minute: Int, amPm: AmPm ) {
         this.minute = minute
-        this.hourOfDay = hourOfDay
+        this.hour = hour
+        this.amPm = amPm
     }
 
     constructor(text: String) {
-        val minute: Int = text.substringAfter(':').substringBefore(' ').toInt()
-        var hour: Int = text.substringBefore(':').toInt()
-        if (text.takeLast(2) == "PM") {
-            if (hour < 12) hour += 12
-        } else {
-            if (hour == 12) hour = 0
-        }
-        this.minute = minute
-        this.hourOfDay = hour
+        minute = text.substringAfter(':').substringBefore(' ').toInt()
+        hour = text.substringBefore(':').toInt()
+        amPm = if (text.takeLast(2) == "AM") AmPm.AM else AmPm.PM
     }
 
     override fun adjustInto(temporal: Temporal): Temporal {
-        var newTemporal = temporal.with(ChronoField.HOUR_OF_DAY, hourOfDay.toLong())
-            .with(ChronoField.MINUTE_OF_HOUR, minute.toLong())
-        while (!(newTemporal as ZonedDateTime).isAfter(ZonedDateTime.now())) {
-            newTemporal = newTemporal.plus(1, ChronoUnit.DAYS)
-        }
-        return newTemporal
+        return temporal.with(ChronoField.HOUR_OF_AMPM, if (hour == 12) 0 else hour.toLong())
+            .with(ChronoField.MINUTE_OF_HOUR, minute.toLong()).with(ChronoField.AMPM_OF_DAY,amPm.ordinal.toLong())
     }
 
+}
+
+enum class AmPm {
+    AM,
+    PM;
+
+    override fun toString(): String {
+        return if (this == AM) "AM" else "PM"
+    }
 }

@@ -10,4 +10,7 @@
     <dimen name="elevation_default_top_app_bar">4dp</dimen>
     <dimen name="bottom_app_bar_fab_cradle_radius">32dp</dimen>
     <dimen name="bottom_app_bar_cradle_margin">8dp</dimen>
+
+    <dimen name="bottom_sheet_dialog_vertical_margin">20dp</dimen>
+    <dimen name="bottom_sheet_dialog_horizontal_margin">10dp</dimen>
 </resources>

@@ -22,8 +22,7 @@
             style="@style/Widget.DumbDue.NumberPicker"
             app:np_max="12"
             app:np_min="1"
-            android:layout_marginVertical="30dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="30dp"
             app:layout_constraintEnd_toStartOf="@id/picker_minutes"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -34,8 +33,8 @@
             android:layout_height="wrap_content"
             app:np_max="59"
             app:np_min="0"
+            android:layout_marginTop="30dp"
             style="@style/Widget.DumbDue.NumberPicker"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -47,8 +46,8 @@
             android:layout_marginEnd="105dp"
             app:np_max="2"
             app:np_min="1"
+            android:layout_marginTop="30dp"
             style="@style/Widget.DumbDue.NumberPicker"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/picker_minutes"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -58,12 +57,24 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/colon"
-            android:textColor="#FFFFFF"
             android:textSize="23dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textAppearance="?attr/textAppearanceBody1"
+            app:layout_constraintBottom_toBottomOf="@id/picker_minutes"
+            app:layout_constraintTop_toTopOf="@id/picker_minutes"
             app:layout_constraintEnd_toEndOf="@id/picker_minutes"
-            app:layout_constraintStart_toStartOf="@id/picker_hours"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@id/picker_hours"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="20dp"
+            style="@style/Widget.DumbDue.Button.OutlinedButton"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/picker_minutes"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/reset"
+            android:onClick="@{()->viewmodel.resetTimeSetter()}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

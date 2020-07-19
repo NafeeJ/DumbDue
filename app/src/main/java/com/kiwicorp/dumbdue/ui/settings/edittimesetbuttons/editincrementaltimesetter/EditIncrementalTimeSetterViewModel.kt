@@ -3,73 +3,77 @@ package com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editincrementaltimes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.kiwicorp.dumbdue.Event
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.timesetters.IncrementalTimeSetter
-import com.shawnlin.numberpicker.NumberPicker
 import org.threeten.bp.temporal.ChronoUnit
 import javax.inject.Inject
+import kotlin.math.absoluteValue
 
 class EditIncrementalTimeSetterViewModel @Inject constructor(
     private val preferencesStorage: PreferencesStorage
 ) : ViewModel() {
 
-    lateinit var incrementalTimeSetter: IncrementalTimeSetter
-        private set
+    private val _incrementalTimeSetter = MutableLiveData<IncrementalTimeSetter>()
+    val incrementalTimeSetter: LiveData<IncrementalTimeSetter> = _incrementalTimeSetter
 
     private lateinit var key: String
 
     fun loadTimeSetter(key: String) {
         this.key = key
-        incrementalTimeSetter = preferencesStorage.getIncrementalTimeSetter(key)
-    }
-
-
-    val plusMinusPickerOnValueChangedListener = NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
-        incrementalTimeSetter.number *= -1
-    }
-
-    val numberPickerOnValueChangedListener = NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
-        incrementalTimeSetter.number = newVal.toLong()
+        _incrementalTimeSetter.value = preferencesStorage.getIncrementalTimeSetter(key)
     }
 
     /**
-     * Pass the number picker so when the unit changes the number picker can adjust its max value
+     * Updates the sign of the number of the incremental time setter
      */
-    fun getUnitPickerOnValueChangeListener(numberPicker: NumberPicker): NumberPicker.OnValueChangeListener {
-        return NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
-            when (newVal) {
-                1 -> {
-                    incrementalTimeSetter.unit = ChronoUnit.MINUTES
-                    numberPicker.maxValue = 59
-                }
-                2 -> {
-                    incrementalTimeSetter.unit = ChronoUnit.HOURS
-                    numberPicker.maxValue = 23
-                }
-                3 -> {
-                    incrementalTimeSetter.unit = ChronoUnit.DAYS
-                    numberPicker.maxValue = 6
-                }
-                4 -> {
-                    incrementalTimeSetter.unit = ChronoUnit.WEEKS
-                    numberPicker.maxValue = 3
-                }
-                5 -> {
-                    incrementalTimeSetter.unit = ChronoUnit.MONTHS
-                    numberPicker.maxValue = 11
-                }
-                else -> {
-                    incrementalTimeSetter.unit = ChronoUnit.YEARS
-                    numberPicker.maxValue = 100
-                }
-            }
-            //update number in case numberPicker's new maxValue was less than numberPicker's value
-            incrementalTimeSetter.number = numberPicker.value.toLong()
+    fun onSignChanged(sign: Sign) {
+        var num = _incrementalTimeSetter.value!!.number.absoluteValue
+        if (sign == Sign.NEGATIVE) {
+            num *= -1
         }
+        _incrementalTimeSetter.value!!.number = num
+        updateTimeSetterInPreferences()
     }
 
-    fun updateTimeSetter() {
-        preferencesStorage.updateIncrementalTimeSetter(key, incrementalTimeSetter)
+    /**
+     * Updates the magnitude of the number of the time setter.
+     *
+     * [number] is the new number of the time setter
+     */
+    fun onNumberChanged(number: Long) {
+        if (incrementalTimeSetter.value!!.number < 0) {
+            _incrementalTimeSetter.value!!.number = number.absoluteValue * -1
+        } else {
+            _incrementalTimeSetter.value!!.number = number.absoluteValue
+        }
+        updateTimeSetterInPreferences()
     }
+
+    /**
+     * Updates the unit of the incremental time setter
+     */
+    fun onUnitChanged(unit: ChronoUnit) {
+        _incrementalTimeSetter.value!!.unit = unit
+        updateTimeSetterInPreferences()
+    }
+
+    /**
+     * Resets the time setter to its default value
+     */
+    fun resetTimeSetter() {
+        preferencesStorage.resetTimeSetter(key)
+        loadTimeSetter(key)
+    }
+
+    /**
+     * Updates the time setter in preferences
+     */
+    private fun updateTimeSetterInPreferences() {
+        preferencesStorage.updateIncrementalTimeSetter(key, incrementalTimeSetter.value!!)
+    }
+}
+
+enum class Sign {
+    POSITIVE,
+    NEGATIVE
 }

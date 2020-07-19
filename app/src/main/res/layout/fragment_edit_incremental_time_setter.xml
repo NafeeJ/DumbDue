@@ -22,9 +22,8 @@
             app:np_max="2"
             style="@style/Widget.DumbDue.NumberPicker"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
             android:layout_marginStart="85dp"
-            android:layout_marginVertical="30dp"/>
+            android:layout_marginVertical="20dp"/>
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/picker_number"
@@ -32,7 +31,8 @@
             android:layout_height="wrap_content"
             app:np_min="1"
             style="@style/Widget.DumbDue.NumberPicker"
-            android:layout_centerInParent="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_marginVertical="20dp"/>
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/picker_units"
@@ -42,9 +42,19 @@
             app:np_max="6"
             style="@style/Widget.DumbDue.NumberPicker"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
             android:layout_marginEnd="70dp"
-            android:layout_toEndOf="@+id/picker_number"/>
+            android:layout_toEndOf="@+id/picker_number"
+            android:layout_marginVertical="20dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_below="@id/picker_number"
+            android:layout_centerHorizontal="true"
+            style="@style/Widget.DumbDue.Button.OutlinedButton"
+            android:text="@string/reset"
+            android:onClick="@{() -> viewmodel.resetTimeSetter()}"/>
 
     </RelativeLayout>
 

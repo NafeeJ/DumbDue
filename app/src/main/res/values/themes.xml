@@ -46,6 +46,7 @@
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.DumbDue.MediumComponent</item>
         <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.DumbDue.LargeComponent</item>
         <!--Component styles-->
+        <item name="buttonStyle">@style/Widget.MaterialComponents.Button</item>
         <item name="bottomAppBarStyle">@style/Widget.MaterialComponents.BottomAppBar.PrimarySurface</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.DumbDue.BottomSheetDialog</item>

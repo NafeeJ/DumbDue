@@ -91,4 +91,5 @@
     <string name="prefs_default_auto_snooze">PREFS_DEFAULT_AUTO_SNOOZE</string>
 
     <string name="colon">:</string>
+    <string name="reset_all">Reset All</string>
 </resources>

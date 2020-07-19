@@ -3,47 +3,55 @@ package com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editquickaccesstimes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.kiwicorp.dumbdue.Event
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
+import com.kiwicorp.dumbdue.timesetters.AmPm
 import com.kiwicorp.dumbdue.timesetters.QuickAccessTimeSetter
-import com.shawnlin.numberpicker.NumberPicker
 import javax.inject.Inject
 
 class EditQuickAccessTimeSetterViewModel @Inject constructor(
     private val preferencesStorage: PreferencesStorage
 ) : ViewModel() {
 
-    lateinit var quickAccessTimeSetter: QuickAccessTimeSetter
-        private set
+    private val _quickAccessTimeSetter = MutableLiveData<QuickAccessTimeSetter>()
+    var quickAccessTimeSetter: LiveData<QuickAccessTimeSetter> = _quickAccessTimeSetter
 
     private lateinit var key: String
 
-    fun loadQuickAccessTimeSetter(key: String) {
-        quickAccessTimeSetter = preferencesStorage.getQuickAccessTimeSetter(key)
+    fun loadTimeSetter(key: String) {
+        _quickAccessTimeSetter.value = preferencesStorage.getQuickAccessTimeSetter(key)
         this.key = key
     }
 
-    val ampmPickerSetOnValueChangedListener = NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
-        when(newVal) {
-            1 -> quickAccessTimeSetter.hourOfDay -= 12
-            2 -> quickAccessTimeSetter.hourOfDay += 12
-        }
+    /**
+     * Updates the period of the time setter
+     */
+    fun onAmPmChanged(amPm: AmPm) {
+        quickAccessTimeSetter.value!!.amPm = amPm
+        updateTimeSetterInPreferences()
     }
 
-    val minutePickerOnValueChangedListener = NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
-        quickAccessTimeSetter.minute = newVal
+    /**
+     * Updates the hour of the time setter
+     */
+    fun onHourChanged(hour: Int) {
+        _quickAccessTimeSetter.value!!.hour = hour
+        updateTimeSetterInPreferences()
     }
 
-    val hourPickerOnValueChangedListener = NumberPicker.OnValueChangeListener { picker, oldVal, newVal ->
-       if (quickAccessTimeSetter.hourOfDay > 12) {
-           quickAccessTimeSetter.hourOfDay = newVal + 12
-       } else {
-           quickAccessTimeSetter.hourOfDay = newVal
-       }
-
+    /**
+     * Updates the minute of the time setter
+     */
+    fun onMinuteChanged(minute: Int) {
+        _quickAccessTimeSetter.value!!.minute = minute
+        updateTimeSetterInPreferences()
     }
 
-    fun updateTimeSetter() {
-        preferencesStorage.updateQuickAccessTimeSetter(key, quickAccessTimeSetter)
+    fun resetTimeSetter() {
+        preferencesStorage.resetTimeSetter(key)
+        loadTimeSetter(key)
+    }
+
+    private fun updateTimeSetterInPreferences() {
+        preferencesStorage.updateQuickAccessTimeSetter(key, quickAccessTimeSetter.value!!)
     }
 }

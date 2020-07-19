@@ -216,7 +216,7 @@
         android:id="@+id/editTimeSetButtonsFragment"
         android:name="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSettersFragment"
         android:label="Edit Time Setter Buttons"
-        tools:layout="@layout/fragment_edit_time_set_buttons" >
+        tools:layout="@layout/fragment_edit_time_setters" >
         <action
             android:id="@+id/action_editTimeSetButtonsFragment_to_editIncrementalTimeSetter"
             app:destination="@id/editIncrementalTimeSetter" />

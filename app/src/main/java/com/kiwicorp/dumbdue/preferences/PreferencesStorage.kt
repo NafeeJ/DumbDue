@@ -85,6 +85,11 @@ class PreferencesStorage @Inject constructor(val context: Context) {
         prefsEditor.apply()
     }
 
+    fun resetTimeSetter(key: String) {
+        prefsEditor.remove(key)
+        prefsEditor.apply()
+    }
+
     val defaultAutoSnooze: Long
         get() {
             return prefs.getString(context.getString(R.string.prefs_default_auto_snooze),

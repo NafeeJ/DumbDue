@@ -32,15 +32,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
+            style="@style/Widget.DumbDue.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/reset"
-            style="@style/Widget.DumbDue.Button.TextButton"
+            android:onClick="@{()->viewmodel.onReset()}"
+            android:text="@string/reset_all"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/time_setters"
-            android:onClick="@{() -> viewmodel.onReset()}"/>
+            app:layout_constraintVertical_bias="0.15" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

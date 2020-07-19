@@ -8,10 +8,12 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditQuickAccessTimeSetterBinding
+import com.kiwicorp.dumbdue.timesetters.AmPm
 import com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSettersViewModel
 import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
 import com.shawnlin.numberpicker.NumberPicker
@@ -42,14 +44,13 @@ class EditQuickAccessTimeSetterFragment : RoundedDaggerBottomSheetDialogFragment
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        viewModel.updateTimeSetter()
         editTimeSetterViewModel.notifyTimeSettersUpdated()
         super.onDismiss(dialog)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.loadQuickAccessTimeSetter(args.key)
+        viewModel.loadTimeSetter(args.key)
         setupAmpmPicker(binding.pickerAmPm)
         setupMinutePicker(binding.pickerMinutes)
         setupHourPicker(binding.pickerHours)
@@ -60,8 +61,12 @@ class EditQuickAccessTimeSetterFragment : RoundedDaggerBottomSheetDialogFragment
         ampmPicker.apply {
             typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             displayedValues = ampm
-            value = if (viewModel.quickAccessTimeSetter.hourOfDay < 12) 1 else 2
-            setOnValueChangedListener(viewModel.ampmPickerSetOnValueChangedListener)
+            viewModel.quickAccessTimeSetter.observe(viewLifecycleOwner, Observer {
+                value = it.amPm.ordinal + 1
+            })
+            setOnValueChangedListener { _, _, newVal ->
+                viewModel.onAmPmChanged(if (newVal == 1) AmPm.AM else AmPm.PM)
+            }
         }
     }
 
@@ -70,24 +75,28 @@ class EditQuickAccessTimeSetterFragment : RoundedDaggerBottomSheetDialogFragment
         minutePicker.apply {
             typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             displayedValues = minutes
-            value = viewModel.quickAccessTimeSetter.minute
-            setOnValueChangedListener(viewModel.minutePickerOnValueChangedListener)
+            viewModel.quickAccessTimeSetter.observe(viewLifecycleOwner, Observer {
+                value = it.minute
+            })
+            setOnValueChangedListener { _, _, newVal ->
+                viewModel.onMinuteChanged(newVal)
+            }
         }
 
     }
 
     private fun setupHourPicker(hourPicker: NumberPicker) {
         val hours = Array(12) { if(it < 9) "0${it + 1}" else "${it + 1}" }
-        val hourOfDay = viewModel.quickAccessTimeSetter.hourOfDay
         hourPicker.apply {
             typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
-            hourPicker.displayedValues = hours
-            hourPicker.value = if (hourOfDay > 12) hourOfDay - 12 else hourOfDay
-            hourPicker.setOnValueChangedListener(viewModel.hourPickerOnValueChangedListener)
+            displayedValues = hours
+            viewModel.quickAccessTimeSetter.observe(viewLifecycleOwner, Observer {
+                value = it.hour
+            })
+            setOnValueChangedListener { _, _, newVal ->
+                viewModel.onHourChanged(newVal)
+            }
         }
-
-
-
     }
 
 }
