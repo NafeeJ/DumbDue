@@ -37,7 +37,7 @@ class RepeatMonthlyByCountInterval(frequency: Int, startingYearMonth: YearMonth,
                     // break if day of week in month is less than four because we don't have to worry
                     // about the inconsistency of the fourth day of a day in the week coming before the
                     // last day of another day of the week
-                    if (day.dayOfWeekInMonth!! < 4) break
+                    if (day.dayOfWeekInMonth < 4) break
                 }
             }
             // if could not find a day in this month
@@ -63,7 +63,7 @@ class RepeatMonthlyByCountInterval(frequency: Int, startingYearMonth: YearMonth,
                 // break if day of week in month is less than four because we don't have to worry
                 // about the inconsistency of the fourth day of a day in the week coming before the
                 // last day of another day of the week
-                if (day.dayOfWeekInMonth!! < 4) {
+                if (day.dayOfWeekInMonth < 4) {
                     break
                 }
             }
@@ -126,7 +126,9 @@ class RepeatMonthlyByCountInterval(frequency: Int, startingYearMonth: YearMonth,
                 temporal.with(TemporalAdjusters.lastDayOfMonth())
                     .with(TemporalAdjusters.previousOrSame(dayOfWeek))
             } else {
-                val moo = temporal.with(TemporalAdjusters.dayOfWeekInMonth(dayOfWeekInMonth!!, dayOfWeek!!))
+                val moo = temporal.with(TemporalAdjusters.dayOfWeekInMonth(dayOfWeekInMonth,
+                    dayOfWeek
+                ))
                 moo
             }
         }

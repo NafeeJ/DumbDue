@@ -5,19 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import com.kiwicorp.dumbdue.EventObserver
-import com.kiwicorp.dumbdue.MainActivity
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
-import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections
+import com.kiwicorp.dumbdue.ui.addeditreminder.AddReminderFragmentDirections.Companion.toChooseAutoSnooze
+import com.kiwicorp.dumbdue.ui.addeditreminder.AddReminderFragmentDirections.Companion.toChooseRepeat
+import com.kiwicorp.dumbdue.ui.addeditreminder.AddReminderFragmentDirections.Companion.toTimePicker
+import com.kiwicorp.dumbdue.util.DialogNavigator
 import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
 import javax.inject.Inject
 
 
-class AddReminderFragment : RoundedDaggerBottomSheetDialogFragment() {
+class AddReminderFragment : RoundedDaggerBottomSheetDialogFragment(), DialogNavigator {
+
+    override val destId: Int = R.id.navigation_add_reminder
 
     private lateinit var binding: FragmentAddReminderBinding
 
@@ -47,50 +50,22 @@ class AddReminderFragment : RoundedDaggerBottomSheetDialogFragment() {
     }
 
     private fun setupNavigation() {
-        //todo do the rest of this
         viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, EventObserver {
-            navigate(AddReminderFragmentDirections.actionAddReminderFragmentToChooseRepeatFragment(R.id.nav_graph_add))
+            navigate(toChooseRepeat(R.id.nav_graph_add), findNavController())
         })
         viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, EventObserver {
-            navigateToAutoSnoozeMenu()
+            navigate(toChooseAutoSnooze(R.id.nav_graph_add), findNavController())
         })
         viewModel.eventOpenTimePicker.observe(viewLifecycleOwner, EventObserver {
-            navigateToTimePicker()
+            navigate(toTimePicker(R.id.nav_graph_add), findNavController())
         })
         viewModel.eventClose.observe(viewLifecycleOwner, EventObserver {
             cancel()
         })
-        viewModel.eventOpenChooseCustomRepeat.observe(viewLifecycleOwner, EventObserver {
-            navigateToChooseCustomRepeat()
-        })
-    }
-
-    private fun navigate(direction: NavDirections) {
-        if (findNavController().currentDestination?.id == R.id.add_reminder_fragment_dest) {
-            findNavController().navigate(direction)
-        }
-    }
-
-    private fun navigateToAutoSnoozeMenu() {
-        val action =
-            AddReminderFragmentDirections.actionAddReminderFragmentToChooseAutoSnoozeFragment(
-                R.id.nav_graph_add
-            )
-        findNavController().navigate(action)
-    }
-
-    private fun navigateToTimePicker() {
-        val action = AddReminderFragmentDirections.actionAddReminderFragmentToTimePickerFragment(R.id.nav_graph_add)
-        findNavController().navigate(action)
-    }
-
-    private fun navigateToChooseCustomRepeat() {
-        val action = AddReminderFragmentDirections.actionAddReminderFragmentDestToCustomRepeatFragment(R.id.nav_graph_add)
-        findNavController().navigate(action)
     }
 
     private fun cancel() {
-        findNavController().popBackStack()
+        findNavController().navigateUp()
     }
 
     private fun setupSnackbar() {

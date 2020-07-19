@@ -69,7 +69,7 @@ class TimePickerFragment : RoundedDaggerBottomSheetDialogFragment() {
             typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             displayedValues = datesStr
 
-            setOnValueChangedListener { picker, oldVal, newVal ->
+            setOnValueChangedListener { _, oldVal, newVal ->
                 if (oldVal < newVal || (oldVal == 4 && newVal == 0)) { //if the date picker is increasing
                     //gets the proper index of the new val +1/+2
                     val indexPlus1: Int = if (newVal + 1 <= 4) newVal + 1 else 0
@@ -101,7 +101,7 @@ class TimePickerFragment : RoundedDaggerBottomSheetDialogFragment() {
         with(binding.hourPicker) {
             typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             value = viewModel.dueDate.value!!.get(ChronoField.HOUR_OF_AMPM)
-            setOnValueChangedListener { picker, oldVal, newVal ->
+            setOnValueChangedListener { _, _, newVal ->
                 viewModel.updateDueDate(ZonedDateTime.from(viewModel.dueDate.value!!).with(ChronoField.HOUR_OF_AMPM, if (newVal == 12) 0 else newVal.toLong()))
             }
         }
@@ -116,7 +116,7 @@ class TimePickerFragment : RoundedDaggerBottomSheetDialogFragment() {
             typeface = ResourcesCompat.getFont(requireContext(),R.font.rubik)
             value = viewModel.dueDate.value!!.minute
             displayedValues = minutes
-            setOnValueChangedListener { picker, oldVal, newVal ->
+            setOnValueChangedListener { _, _, newVal ->
                 viewModel.updateDueDate(ZonedDateTime.from(viewModel.dueDate.value!!).withMinute(newVal))
             }
         }
@@ -131,7 +131,7 @@ class TimePickerFragment : RoundedDaggerBottomSheetDialogFragment() {
                 0 -> 1 // AM
                 else -> 2 // PM
             }
-            setOnValueChangedListener { picker, oldVal, newVal ->
+            setOnValueChangedListener { _, _, newVal ->
                 viewModel.updateDueDate(ZonedDateTime.from(viewModel.dueDate.value!!).with(ChronoField.AMPM_OF_DAY,newVal - 1L))
             }
         }

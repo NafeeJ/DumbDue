@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -19,13 +20,19 @@ import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.MainActivity
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentRemindersBinding
+import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toNavGraphAdd
+import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toNavGraphEdit
+import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toSettings
+import com.kiwicorp.dumbdue.util.DialogNavigator
 import dagger.android.support.DaggerFragment
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
 
-class RemindersFragment : DaggerFragment() {
+class RemindersFragment : DaggerFragment(), DialogNavigator {
+
+    override val destId: Int = R.id.navigation_reminders
 
     private lateinit var binding: FragmentRemindersBinding
 
@@ -56,8 +63,7 @@ class RemindersFragment : DaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         (requireActivity() as MainActivity).bottomAppBar.setOnMenuItemClickListener {
             if (it.itemId == R.id.menu_settings) {
-                val action = RemindersFragmentDirections.actionRemindersFragmentDestToSettingsFragmentDest()
-                findNavController().navigate(action)
+                navigate(toSettings(), findNavController())
                 true
             } else {
                 false
@@ -94,21 +100,11 @@ class RemindersFragment : DaggerFragment() {
 
     private fun setupNavigation() {
         viewModel.eventAddReminder.observe(viewLifecycleOwner, EventObserver {
-            navigateToAddReminder()
+            navigate(toNavGraphAdd(), findNavController())
         })
         viewModel.eventEditReminder.observe(viewLifecycleOwner, EventObserver { id ->
-            navigateToEditReminder(id)
+            navigate(toNavGraphEdit(id), findNavController())
         })
-    }
-
-    private fun navigateToAddReminder() {
-        val action = RemindersFragmentDirections.actionRemindersFragmentDestToNavGraphAdd()
-        findNavController().navigate(action)
-    }
-
-    private fun navigateToEditReminder(reminderId: String) {
-        val action = RemindersFragmentDirections.actionRemindersFragmentDestToNavGraphEdit(reminderId)
-        findNavController().navigate(action)
     }
 
     private fun handleRequest() {

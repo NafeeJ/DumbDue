@@ -34,10 +34,10 @@ class MainActivity: AppCompatActivity() {
     private fun setupNavControllerAndFAB() {
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.add_reminder_fragment_dest -> setupBottomAppBarForAddReminder()
-                R.id.reminders_fragment_dest -> setupBottomAppBarForReminders()
-                R.id.edit_reminder_fragment_dest -> setupBottomAppBarForEditReminder()
-                R.id.settings_fragment_dest -> setupBottomAppBarForSettings()
+                R.id.navigation_add_reminder -> setupBottomAppBarForAddReminder()
+                R.id.navigation_reminders -> setupBottomAppBarForReminders()
+                R.id.navigation_edit_reminder -> setupBottomAppBarForEditReminder()
+                R.id.navigation_settings -> setupBottomAppBarForSettings()
             }
         }
     }

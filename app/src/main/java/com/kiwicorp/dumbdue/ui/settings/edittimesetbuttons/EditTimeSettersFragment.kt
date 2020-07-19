@@ -10,10 +10,15 @@ import androidx.navigation.fragment.findNavController
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditTimeSettersBinding
+import com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSettersFragmentDirections.Companion.toEditIncrementalTimeSetter
+import com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSettersFragmentDirections.Companion.toEditQuickAccessTimeSetter
+import com.kiwicorp.dumbdue.util.DialogNavigator
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-class EditTimeSettersFragment : DaggerFragment() {
+class EditTimeSettersFragment : DaggerFragment(), DialogNavigator {
+
+    override val destId: Int = R.id.navigation_edit_time_setters
 
     lateinit var binding: FragmentEditTimeSettersBinding
 
@@ -49,20 +54,10 @@ class EditTimeSettersFragment : DaggerFragment() {
 
     private fun setupNavigation() {
         viewModel.eventEditQuickAccessTimeSetter.observe(viewLifecycleOwner, EventObserver { key ->
-            navigateToEditQuickAccessTimerSetterFragment(key)
+            navigate(toEditQuickAccessTimeSetter(key), findNavController())
         })
         viewModel.eventEditIncrementalTimeSetter.observe(viewLifecycleOwner, EventObserver { key ->
-            navigateToEditIncrementalTimeSetterFragment(key)
+            navigate(toEditIncrementalTimeSetter(key), findNavController())
         })
-    }
-
-    private fun navigateToEditQuickAccessTimerSetterFragment(key: String) {
-        val action = EditTimeSettersFragmentDirections.actionEditTimeSetButtonsFragmentToEditQuickAccessTimeSetterFragment(key)
-        findNavController().navigate(action)
-    }
-
-    private fun navigateToEditIncrementalTimeSetterFragment(key: String) {
-        val action = EditTimeSettersFragmentDirections.actionEditTimeSetButtonsFragmentToEditIncrementalTimeSetter(key)
-        findNavController().navigate(action)
     }
 }

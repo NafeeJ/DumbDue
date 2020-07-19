@@ -20,13 +20,18 @@ import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCountInterval.Day
 import com.kiwicorp.dumbdue.databinding.FragmentChooseCustomRepeatBinding
 import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
+import com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatFragmentDirections.Companion.toChooseDailyStartDate
+import com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatFragmentDirections.Companion.toChooseWeeklyStartDate
 import com.kiwicorp.dumbdue.util.*
 import org.threeten.bp.*
 import javax.inject.Inject
 
 class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
     DayItemClickListener,
-    OnDayDeletedListener {
+    OnDayDeletedListener,
+    DialogNavigator {
+
+    override val destId: Int = R.id.navigation_choose_custom_repeat
 
     private val args: ChooseCustomRepeatFragmentArgs by navArgs()
 
@@ -76,10 +81,10 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
 
     private fun setupNavigation() {
         chooseCustomRepeatViewModel.chooseDailyViewModel.eventOpenChooseDailyStartDate.observe(viewLifecycleOwner, EventObserver {
-            navigateToChooseDailyStartDate()
+            navigate(toChooseDailyStartDate(args.graphId),findNavController())
         })
         chooseCustomRepeatViewModel.chooseWeeklyViewModel.eventOpenChooseWeeklyStartDate.observe(viewLifecycleOwner, EventObserver {
-            navigateToChooseWeeklyStartDate()
+            navigate(toChooseWeeklyStartDate(args.graphId),findNavController())
         })
         viewModel.eventCustomRepeatChosen.observe(viewLifecycleOwner, EventObserver {
             close()
@@ -89,26 +94,12 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
         })
     }
 
-    private fun navigateToChooseDailyStartDate() {
-        if (findNavController().currentDestination?.id == R.id.customRepeatFragment) {
-            val action = ChooseCustomRepeatFragmentDirections.actionCustomRepeatFragmentToChooseDailyStartDateFragment(args.graphId)
-            findNavController().navigate(action)
-        }
-    }
-
-    private fun navigateToChooseWeeklyStartDate() {
-        if (findNavController().currentDestination?.id == R.id.customRepeatFragment) {
-            val action = ChooseCustomRepeatFragmentDirections.actionCustomRepeatFragmentToChooseWeeklyStartDateFragment(args.graphId)
-            findNavController().navigate(action)
-        }
-    }
-
     private fun close() {
         findNavController().popBackStack()
     }
 
     private fun openTimePicker() {
-        val onTimeSetListener = TimePickerDialog.OnTimeSetListener { timePicker: TimePicker, hourOfDay: Int, minute: Int ->
+        val onTimeSetListener = TimePickerDialog.OnTimeSetListener { _: TimePicker, hourOfDay: Int, minute: Int ->
             chooseCustomRepeatViewModel.updateTime(LocalTime.of(hourOfDay, minute))
         }
         val now = LocalTime.now()
@@ -136,7 +127,7 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
         val types = listOf("days","weeks","months","years")
         (binding.typeTextLayout.editText as? AutoCompleteTextView)?.apply {
             setAdapter(getDropDownMenuAdapter(types))
-            doOnTextChanged { text, start, before, count ->
+            doOnTextChanged { text, _, _, _ ->
                 chooseCustomRepeatViewModel.updateType(text.toString())
             }
             chooseCustomRepeatViewModel.type.observe(viewLifecycleOwner, Observer {
@@ -229,7 +220,7 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
         (binding.chooseMonthlyLayout.startDateTextLayout.editText as? AutoCompleteTextView)?.apply {
             setAdapter(getDropDownMenuAdapter(monthsStr))
 
-            setOnItemClickListener { parent, view, position, id ->
+            setOnItemClickListener { _, _, _, _ ->
                 with(text.toString()) {
                     val year = this.substringAfter(' ').toInt()
                     val month: Month = Month.valueOf(this.substringBefore(' ').toUpperCase())
@@ -246,7 +237,7 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
     private fun setupMonthlyOptionsText() {
         (binding.chooseMonthlyLayout.monthlyOptionsText.editText as? AutoCompleteTextView)?.apply{
             setAdapter(getDropDownMenuAdapter(options))
-            doOnTextChanged { text, start, before, count ->
+            doOnTextChanged { text, _, _, _ ->
                 chooseCustomRepeatViewModel.chooseMonthlyViewModel.updateSelectedMonthlyOption(text.toString())
             }
             chooseCustomRepeatViewModel.chooseMonthlyViewModel.selectedMonthlyOption.observe(viewLifecycleOwner, Observer {
@@ -301,7 +292,7 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
     private fun setupYearlyOptionsText() {
         (binding.chooseYearlyLayout.yearlyOptionsText.editText as? AutoCompleteTextView)?.apply{
             setAdapter(getDropDownMenuAdapter(options))
-            doOnTextChanged { text, start, before, count ->
+            doOnTextChanged { text, _, _, _ ->
                 chooseCustomRepeatViewModel.chooseYearlyViewModel.updateSelectedYearlyOption(text.toString())
             }
             chooseCustomRepeatViewModel.chooseYearlyViewModel.selectedYearlyOption.observe(viewLifecycleOwner, Observer {
@@ -320,7 +311,7 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
         val years = List(11) {today.year + it}
         (binding.chooseYearlyLayout.startDateTextLayout.editText as? AutoCompleteTextView)?.apply {
             setAdapter(getDropDownMenuAdapter(years))
-            setOnItemClickListener { parent, view, position, id ->
+            setOnItemClickListener { _, _, _, _ ->
                 chooseCustomRepeatViewModel.chooseYearlyViewModel.updateStartingYear(Year.parse(text))
             }
             chooseCustomRepeatViewModel.chooseYearlyViewModel.startingYear.observe(viewLifecycleOwner, Observer {
@@ -338,7 +329,7 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
 
         (binding.chooseYearlyLayout.yearlyByNumberMonthText.editText as? AutoCompleteTextView)?.apply {
             setAdapter(monthsAdapter)
-            setOnItemClickListener { parent, view, position, id ->
+            setOnItemClickListener { _, _, _, _ ->
                 val month = Month.valueOf(text.toString().toUpperCase())
                 // update the size of daysOfMonth based on the month selected
                 val size = month.maxLength()
@@ -360,7 +351,7 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
 
         (binding.chooseYearlyLayout.yearlyByNumberDayText.editText as? AutoCompleteTextView)?.apply {
             setAdapter(daysOfMonthAdapter)
-            setOnItemClickListener { parent, view, position, id ->
+            setOnItemClickListener { _, _, _, _ ->
                 val month = chooseCustomRepeatViewModel.chooseYearlyViewModel.byNumberMonthDay.value!!.month
                 val day = text.toString().toInt()
                 chooseCustomRepeatViewModel.chooseYearlyViewModel.updateByNumberMonthDay(MonthDay.of(month, day))
@@ -378,7 +369,7 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
             val counts = listOf("First","Second","Third","Fourth","Last")
             setAdapter(getDropDownMenuAdapter(counts))
 
-            setOnItemClickListener { parent, view, position, id ->
+            setOnItemClickListener { _, _, position, _ ->
                 chooseCustomRepeatViewModel.chooseYearlyViewModel.updateByCountDayOfWeekInMonth(position + 1)
             }
 
@@ -391,7 +382,7 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
             val daysOfTheWeek = DayOfWeek.values().toList().sortedSundayFirst()
             setAdapter(getDropDownMenuAdapter(List(7) { daysOfTheWeek[it].getFullName() }))
 
-            setOnItemClickListener { parent, view, position, id ->
+            setOnItemClickListener { _, _, position, _ ->
                 chooseCustomRepeatViewModel.chooseYearlyViewModel.updateByCountDayOfWeek(daysOfTheWeek[position])
             }
 
@@ -404,7 +395,7 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
             val months = Month.values()
             setAdapter(getDropDownMenuAdapter(List(12) { months[it].getFullName() }))
 
-            setOnItemClickListener { parent, view, position, id ->
+            setOnItemClickListener { _, _, position, _ ->
                 chooseCustomRepeatViewModel.chooseYearlyViewModel.updateByCountMonth(months[position])
             }
 

@@ -7,6 +7,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.kiwicorp.dumbdue.R
+import com.kiwicorp.dumbdue.ui.settings.SettingsFragmentDirections.Companion.toEditTimeSetters
 import com.kiwicorp.dumbdue.util.applySystemWindowInsetsPadding
 
 class SettingsFragment : PreferenceFragmentCompat() {
@@ -34,14 +35,13 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onPreferenceTreeClick(preference: Preference?): Boolean {
         if (preference != null) {
-            val action = when (preference.title) {
+            return when (preference.title) {
                 getString(R.string.preference_edit_timer_setters) -> {
-                    SettingsFragmentDirections.actionSettingsFragmentDestToEditTimeSetButtonsFragment()
+                    findNavController().navigate(toEditTimeSetters())
+                    true
                 }
-                else -> return super.onPreferenceTreeClick(preference)
+                else -> super.onPreferenceTreeClick(preference)
             }
-            findNavController().navigate(action)
-            return true
         }
         return super.onPreferenceTreeClick(preference)
     }

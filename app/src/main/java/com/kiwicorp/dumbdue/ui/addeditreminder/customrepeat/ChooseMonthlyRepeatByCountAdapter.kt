@@ -48,7 +48,7 @@ class ChooseMonthlyRepeatViewHolder private constructor(val binding: ItemChooseM
 
         (binding.dayOfWeekTextLayout.editText as? AutoCompleteTextView)?.apply {
             setAdapter(dayOfWeekAdapter)
-            setOnItemClickListener { parent, view, position, id ->
+            setOnItemClickListener { _, _, position, _ ->
                 day.dayOfWeek = daysOfWeek[position]
             }
             setText(day.dayOfWeek.getFullName(),false)
@@ -56,7 +56,7 @@ class ChooseMonthlyRepeatViewHolder private constructor(val binding: ItemChooseM
 
         (binding.countTextLayout.editText as? AutoCompleteTextView)?.apply {
             setAdapter(countAdapter)
-            setOnItemClickListener { parent, view, position, id ->
+            setOnItemClickListener { _, _, position, _ ->
                 day.dayOfWeekInMonth = position + 1
             }
             setText(counts[day.dayOfWeekInMonth.minus(1)],false)

@@ -14,6 +14,8 @@ import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByNumberInterval
 import com.kiwicorp.dumbdue.data.repeat.RepeatWeeklyInterval
 import com.kiwicorp.dumbdue.data.repeat.RepeatYearlyByNumberInterval
 import com.kiwicorp.dumbdue.databinding.FragmentChooseRepeatBinding
+import com.kiwicorp.dumbdue.ui.addeditreminder.ChooseRepeatFragmentDirections.Companion.toChooseCustomRepeat
+import com.kiwicorp.dumbdue.util.DialogNavigator
 import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import org.threeten.bp.DayOfWeek
@@ -21,7 +23,7 @@ import org.threeten.bp.YearMonth
 import org.threeten.bp.temporal.TemporalAdjusters
 import javax.inject.Inject
 
-class ChooseRepeatFragment : RoundedDaggerBottomSheetDialogFragment() {
+class ChooseRepeatFragment : RoundedDaggerBottomSheetDialogFragment(), DialogNavigator {
 
     private lateinit var binding: FragmentChooseRepeatBinding
 
@@ -32,6 +34,8 @@ class ChooseRepeatFragment : RoundedDaggerBottomSheetDialogFragment() {
 
     // Shares ViewModel with Add/Edit ReminderFragment
     private lateinit var viewModel: AddEditReminderViewModel
+
+    override val destId: Int = R.id.navigation_choose_repeat
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,7 +76,6 @@ class ChooseRepeatFragment : RoundedDaggerBottomSheetDialogFragment() {
         //todo move these to view model
         binding.repeatOffText.apply {
             text = getString(R.string.repeat_off)
-
             setOnClickListener { viewModel.onChooseRepeatInterval(null) }
         }
 
@@ -144,14 +147,10 @@ class ChooseRepeatFragment : RoundedDaggerBottomSheetDialogFragment() {
         binding.repeatCustomText.apply {
             text = getString(R.string.repeat_custom)
             setOnClickListener {
-                navigateToCustomRepeatMenu()
+                navigate(toChooseCustomRepeat(args.graphId),findNavController())
             }
         }
 
     }
 
-    private fun navigateToCustomRepeatMenu() {
-        val action = ChooseRepeatFragmentDirections.actionChooseRepeatFragmentDestToCustomRepeatFragment(args.graphId)
-        findNavController().navigate(action)
-    }
 }

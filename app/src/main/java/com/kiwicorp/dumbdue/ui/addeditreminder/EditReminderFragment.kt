@@ -1,11 +1,9 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -15,10 +13,18 @@ import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.MainActivity
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditReminderBinding
+import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toChooseAutoSnooze
+import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toChooseRepeat
+import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toReminders
+import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toTimePicker
+import com.kiwicorp.dumbdue.util.DialogNavigator
+import com.kiwicorp.dumbdue.util.closeKeyboard
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-class EditReminderFragment : DaggerFragment() {
+class EditReminderFragment : DaggerFragment(), DialogNavigator {
+
+    override val destId: Int = R.id.navigation_edit_reminder
 
     lateinit var binding: FragmentEditReminderBinding
 
@@ -80,13 +86,13 @@ class EditReminderFragment : DaggerFragment() {
 
     private fun setupNavigation() {
         viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, EventObserver {
-            navigateToRepeatMenu()
+            navigate(toChooseRepeat(R.id.nav_graph_edit), findNavController())
         })
         viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, EventObserver {
-            navigateToAutoSnoozeMenu()
+            navigate(toChooseAutoSnooze(R.id.nav_graph_edit),findNavController())
         })
         viewModel.eventOpenTimePicker.observe(viewLifecycleOwner, EventObserver {
-            navigateToTimePicker()
+            navigate(toTimePicker(R.id.nav_graph_edit),findNavController())
         })
         viewModel.eventClose.observe(viewLifecycleOwner, EventObserver {
             close()
@@ -96,42 +102,12 @@ class EditReminderFragment : DaggerFragment() {
         })
     }
 
-    private fun navigateToRepeatMenu() {
-        val action =
-            EditReminderFragmentDirections.actionEditReminderFragmentToChooseRepeatFragment(
-                R.id.nav_graph_edit
-            )
-        findNavController().navigate(action)
-    }
-
-    private fun navigateToAutoSnoozeMenu() {
-        val action =
-            EditReminderFragmentDirections.actionEditReminderFragmentToChooseAutoSnoozeFragment(
-                R.id.nav_graph_edit
-            )
-        findNavController().navigate(action)
-    }
-
-    private fun navigateToTimePicker() {
-        val action = EditReminderFragmentDirections.actionEditReminderFragmentToTimePickerFragment(R.id.nav_graph_edit)
-        findNavController().navigate(action)
-    }
-
     private fun close(request: Int = 0, reminderId: String = "") {
         closeKeyboard()
-        val action = EditReminderFragmentDirections.actionGlobalRemindersFragmentDest(request,reminderId)
-        findNavController().navigate(action)
+        navigate(toReminders(request,reminderId), findNavController())
     }
 
-    //closes keyboard if the current focus is not the edit text
-    private fun closeKeyboard() {
-        // Check if no view has focus:
-        val view = requireActivity().currentFocus
-        view?.let {
-            val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.hideSoftInputFromWindow(it.windowToken, 0)
-        }
-    }
+
 
     private fun setupSnackbar() {
         viewModel.eventSnackbar.observe(viewLifecycleOwner, EventObserver { snackbar ->
