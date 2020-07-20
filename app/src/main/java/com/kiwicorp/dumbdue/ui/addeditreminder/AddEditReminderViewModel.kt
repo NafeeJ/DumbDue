@@ -160,8 +160,11 @@ class AddEditReminderViewModel @Inject constructor(
      */
     fun updateReminder() {
         viewModelScope.launch {
+            val originalReminder = reminderId?.let { repository.getReminder(it) }
             val reminder = Reminder(title.value!!,dueDate.value!!,repeatInterval.value,autoSnoozeVal.value!!,reminderId!!)
-            repository.updateReminder(reminder)
+            if (originalReminder != reminder) {
+                repository.updateReminder(reminder)
+            }
         }
         _eventClose.value = Event(Unit)
     }
