@@ -20,11 +20,13 @@ fun ZonedDateTime.timeFromNowString(abbreviateUnitName: Boolean): String {
     )
     val chronoUnits = chronoUnitsToName.keys.toList()
 
+    val now = ZonedDateTime.now().withSecond(0).withNano(0)
+
     var chronoUnit: ChronoUnit? = null
     // iterates through ChronoUnits until the difference between the time and now in the
     // given unit returns zero. When it does, assign the previous unit to chronoUnit.
     for (i in chronoUnits.indices) {
-        if (chronoUnits[i].betweenRounded(this,ZonedDateTime.now()).absoluteValue <= 0) {
+        if (chronoUnits[i].between(this,now).absoluteValue <= 0) {
             chronoUnit = if (i == 0) ChronoUnit.MINUTES else chronoUnits[i - 1]
             break
         }
@@ -33,9 +35,9 @@ fun ZonedDateTime.timeFromNowString(abbreviateUnitName: Boolean): String {
     if (chronoUnit == null) {
         chronoUnit = ChronoUnit.YEARS
     }
-    val diff = chronoUnit.betweenRounded(this,ZonedDateTime.now().withSecond(0).withNano(0)).absoluteValue
+    val diff = chronoUnit.between(this,now).absoluteValue
     var name = chronoUnitsToName[chronoUnit]
-    if (!abbreviateUnitName && diff == 1) {
+    if (!abbreviateUnitName && diff == 1L) {
         name = name!!.dropLast(1)
     }
     return "$diff$name"
