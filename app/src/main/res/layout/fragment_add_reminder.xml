@@ -31,18 +31,7 @@
                     android:src="@drawable/ic_cancel"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/snooze"/>
-
-                <ImageButton
-                    android:id="@+id/snooze"
-                    android:layout_height="50dp"
-                    android:layout_width="0dp"
-                    app:autoSnooze="@{viewmodel.autoSnoozeVal}"
-                    android:onClick="@{()->viewmodel.openAutoSnoozeMenu()}"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/cancel"
-                    app:layout_constraintEnd_toStartOf="@id/repeat"
-                    tools:src="@drawable/ic_none"/>
+                    app:layout_constraintEnd_toStartOf="@id/repeat"/>
 
                 <ImageButton
                     android:id="@+id/repeat"
@@ -51,7 +40,7 @@
                     android:src="@drawable/ic_repeat"
                     android:onClick="@{()->viewmodel.openRepeatMenu()}"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/snooze"
+                    app:layout_constraintStart_toEndOf="@id/cancel"
                     app:layout_constraintEnd_toEndOf="@id/add" />
 
                 <ImageButton
