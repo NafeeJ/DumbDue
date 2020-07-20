@@ -1,5 +1,8 @@
 package com.kiwicorp.dumbdue.ui.reminders
 
+import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.*
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.Event
@@ -8,6 +11,7 @@ import com.kiwicorp.dumbdue.REQUEST_DELETE
 import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
+import com.kiwicorp.dumbdue.ui.EditReminderParams
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,8 +27,8 @@ class RemindersViewModel @Inject constructor(
     private val _eventAddReminder = MutableLiveData<Event<Unit>>()
     val eventAddReminder: LiveData<Event<Unit>> = _eventAddReminder
 
-    private val _eventEditReminder = MutableLiveData<Event<String>>()
-    val eventEditReminder: LiveData<Event<String>> = _eventEditReminder
+    private val _eventEditReminder = MutableLiveData<Event<EditReminderParams>>()
+    val eventEditReminder: LiveData<Event<EditReminderParams>> = _eventEditReminder
 
     private val _snackbarMessage = MutableLiveData<Event<SnackbarMessage>>()
     val snackbarMessage: LiveData<Event<SnackbarMessage>> = _snackbarMessage
@@ -40,8 +44,8 @@ class RemindersViewModel @Inject constructor(
     /**
      * Called via listener binding.
      */
-    fun editReminder(reminderId: String) {
-        _eventEditReminder.value = Event(reminderId)
+    fun editReminder(layout: View, reminderId: String) {
+        _eventEditReminder.value = Event(EditReminderParams(layout,reminderId))
     }
 
     fun delete(reminder: Reminder) {

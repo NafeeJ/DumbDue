@@ -16,10 +16,12 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_layout"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{()->viewmodel.editReminder(reminder.id)}">
+        android:onClick="@{(view) -> viewmodel.editReminder(view,reminder.id)}"
+        android:transitionName="@{@string/reminder_to_edit_reminder_transition_name(reminder.id)}">
 
         <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/checkbox"

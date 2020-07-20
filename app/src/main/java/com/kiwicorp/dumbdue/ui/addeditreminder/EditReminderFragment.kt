@@ -1,5 +1,6 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
+import com.google.android.material.transition.MaterialContainerTransform
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.MainActivity
 import com.kiwicorp.dumbdue.R
@@ -19,6 +21,7 @@ import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Co
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toTimePicker
 import com.kiwicorp.dumbdue.util.DialogNavigator
 import com.kiwicorp.dumbdue.util.closeKeyboard
+import com.kiwicorp.dumbdue.util.getColorFromAttr
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -35,6 +38,18 @@ class EditReminderFragment : DaggerFragment(), DialogNavigator {
 
     private val viewModel: AddEditReminderViewModel by navGraphViewModels(R.id.nav_graph_edit) {
         viewModelFactory
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            // Scope the transition to a view in the hierarchy so we know it will be added under
+            // the bottom app bar but over the elevation scale of the exiting RemindersFragment.
+            drawingViewId = R.id.nav_host_fragment
+            duration = resources.getInteger(R.integer.dumbdue_motion_duration_large).toLong()
+            scrimColor = Color.TRANSPARENT
+            setAllContainerColors(requireContext().getColorFromAttr(R.attr.colorSurface))
+        }
     }
 
     override fun onCreateView(

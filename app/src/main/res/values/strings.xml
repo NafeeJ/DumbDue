@@ -93,4 +93,7 @@
     <string name="colon">:</string>
     <string name="reset_all">Reset All</string>
     <string name="no_reminders_text">I am empty. Fill me</string>
+
+    <string name="reminder_to_edit_reminder_transition_name">edit_reminder_%1s</string>
+    <string name="edit_reminder_transition_name">edit_reminder_transition</string>
 </resources>

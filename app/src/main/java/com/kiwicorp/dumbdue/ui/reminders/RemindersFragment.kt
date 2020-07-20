@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavDirections
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -102,8 +102,10 @@ class RemindersFragment : DaggerFragment(), DialogNavigator {
         viewModel.eventAddReminder.observe(viewLifecycleOwner, EventObserver {
             navigate(toNavGraphAdd(), findNavController())
         })
-        viewModel.eventEditReminder.observe(viewLifecycleOwner, EventObserver { id ->
-            navigate(toNavGraphEdit(id), findNavController())
+        viewModel.eventEditReminder.observe(viewLifecycleOwner, EventObserver {
+            val editReminderTransitionName = getString(R.string.edit_reminder_transition_name)
+            val extras = FragmentNavigatorExtras(it.layout to editReminderTransitionName)
+            findNavController().navigate(toNavGraphEdit(it.reminderId), extras)
         })
     }
 
