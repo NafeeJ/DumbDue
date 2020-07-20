@@ -95,7 +95,5 @@ class PreferencesStorage @Inject constructor(val context: Context) {
 
 
     val repeatIntervalUsesRemindersTime: Boolean
-        get() {
-            return prefs.getBoolean(context.getString(R.string.prefs_repeat_interval_uses_time),true)
-        }
+        get() = true
 }
