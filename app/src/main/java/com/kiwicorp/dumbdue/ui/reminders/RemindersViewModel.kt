@@ -1,9 +1,6 @@
 package com.kiwicorp.dumbdue.ui.reminders
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.Event
 import com.kiwicorp.dumbdue.REQUEST_COMPLETE
@@ -18,6 +15,10 @@ class RemindersViewModel @Inject constructor(
     private val repository: ReminderRepository
 ) : ViewModel() {
     val reminders: LiveData<List<Reminder>> = repository.reminders
+
+    val isEmpty: LiveData<Boolean> = Transformations.map(reminders) {
+        it.isEmpty()
+    }
 
     private val _eventAddReminder = MutableLiveData<Event<Unit>>()
     val eventAddReminder: LiveData<Event<Unit>> = _eventAddReminder
