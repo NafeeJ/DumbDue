@@ -24,6 +24,7 @@ import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.t
 import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toNavGraphEdit
 import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toSettings
 import com.kiwicorp.dumbdue.util.DialogNavigator
+import com.kiwicorp.dumbdue.util.createMaterialElevationScale
 import dagger.android.support.DaggerFragment
 import timber.log.Timber
 import java.util.*
@@ -46,6 +47,16 @@ class RemindersFragment : DaggerFragment(), DialogNavigator {
     private lateinit var listAdapter: ReminderAdapter
 
     private var refreshTimer: Timer? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        exitTransition = createMaterialElevationScale(false).apply {
+            duration = resources.getInteger(R.integer.dumbdue_motion_duration_large).toLong()
+        }
+        enterTransition = createMaterialElevationScale(true).apply {
+            duration = resources.getInteger(R.integer.dumbdue_motion_duration_large).toLong()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

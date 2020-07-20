@@ -9,8 +9,19 @@ import androidx.preference.PreferenceFragmentCompat
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.ui.settings.SettingsFragmentDirections.Companion.toEditTimeSetters
 import com.kiwicorp.dumbdue.util.applySystemWindowInsetsPadding
+import com.kiwicorp.dumbdue.util.createMaterialElevationScale
 
 class SettingsFragment : PreferenceFragmentCompat() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        exitTransition = createMaterialElevationScale(false).apply {
+            duration = resources.getInteger(R.integer.dumbdue_motion_duration_large).toLong()
+        }
+        enterTransition = createMaterialElevationScale(true).apply {
+            duration = resources.getInteger(R.integer.dumbdue_motion_duration_large).toLong()
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

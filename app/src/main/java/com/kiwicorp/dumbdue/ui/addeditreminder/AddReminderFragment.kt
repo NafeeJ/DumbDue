@@ -1,5 +1,6 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.google.android.material.transition.MaterialContainerTransform
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
@@ -15,6 +17,7 @@ import com.kiwicorp.dumbdue.ui.addeditreminder.AddReminderFragmentDirections.Com
 import com.kiwicorp.dumbdue.ui.addeditreminder.AddReminderFragmentDirections.Companion.toTimePicker
 import com.kiwicorp.dumbdue.util.DialogNavigator
 import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
+import com.kiwicorp.dumbdue.util.getColorFromAttr
 import javax.inject.Inject
 
 

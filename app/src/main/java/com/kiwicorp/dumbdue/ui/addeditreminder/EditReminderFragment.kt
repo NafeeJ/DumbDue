@@ -21,7 +21,7 @@ import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Co
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toTimePicker
 import com.kiwicorp.dumbdue.util.DialogNavigator
 import com.kiwicorp.dumbdue.util.closeKeyboard
-import com.kiwicorp.dumbdue.util.getColorFromAttr
+import com.kiwicorp.dumbdue.util.createMaterialElevationScale
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
@@ -38,6 +38,16 @@ class EditReminderFragment : DaggerFragment(), DialogNavigator {
 
     private val viewModel: AddEditReminderViewModel by navGraphViewModels(R.id.nav_graph_edit) {
         viewModelFactory
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        exitTransition = createMaterialElevationScale(false).apply {
+            duration = resources.getInteger(R.integer.dumbdue_motion_duration_large).toLong()
+        }
+        enterTransition = createMaterialElevationScale(true).apply {
+            duration = resources.getInteger(R.integer.dumbdue_motion_duration_large).toLong()
+        }
     }
 
     override fun onCreateView(
