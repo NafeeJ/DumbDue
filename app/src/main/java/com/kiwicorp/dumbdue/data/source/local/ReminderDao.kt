@@ -9,12 +9,20 @@ import com.kiwicorp.dumbdue.data.Reminder
 interface ReminderDao  {
 
     /**
-     * Observers list of reminders ordered by their calendar.
+     * Observers list of reminders ordered by their due date.
      *
      * @return all reminders
      */
-    @Query("SELECT * FROM reminders ORDER BY calendar")
+    @Query("SELECT * FROM reminders ORDER BY dueDate")
     fun observeReminders(): LiveData<List<Reminder>>
+
+    /**
+     * get all reminders ordered by their due date
+     *
+     * @return all reminders
+     */
+    @Query("SELECT * FROM reminders ORDER BY dueDate")
+    suspend fun getReminders(): List<Reminder>
 
     /**
      * Observe a single task.
@@ -32,7 +40,7 @@ interface ReminderDao  {
      * @return the reminder corresponding to the reminder id
      */
     @Query("SELECT * FROM reminders WHERE id = :reminderId")
-    fun getReminder(reminderId: String): Reminder?
+    suspend fun getReminder(reminderId: String): Reminder?
 
     /**
      * Insert a reminder in the database. If the reminder already exists, replace it.
@@ -70,7 +78,7 @@ interface ReminderDao  {
     suspend fun deleteReminderById(reminderId: String): Int
 
     /**
-     * Delete all tasks.
+     * Delete all reminders.
      */
     @Query("DELETE FROM reminders")
     suspend fun deleteReminders()

@@ -16,6 +16,12 @@ class ReminderRepository @Inject constructor(
 
     val reminders: LiveData<List<Reminder>> = reminderDao.observeReminders()
 
+    suspend fun getReminders(): List<Reminder>? {
+        return withContext(Dispatchers.IO) {
+            reminderDao.getReminders()
+        }
+    }
+
     suspend fun getReminder(reminderId: String): Reminder? {
         return withContext(Dispatchers.IO ) {
             reminderDao.getReminder(reminderId)

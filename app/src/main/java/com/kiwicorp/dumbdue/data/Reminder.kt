@@ -12,7 +12,7 @@ data class Reminder (
     @ColumnInfo(name = "title")
     var title: String = "",
 
-    @ColumnInfo(name = "calendar")
+    @ColumnInfo(name = "dueDate")
     var dueDate: ZonedDateTime = ZonedDateTime.now(),
 
     @ColumnInfo(name = "repeat_interval")
