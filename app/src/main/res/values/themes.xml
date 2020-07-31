@@ -48,7 +48,7 @@
         <!--Component styles-->
         <item name="buttonStyle">@style/Widget.MaterialComponents.Button</item>
         <item name="bottomAppBarStyle">@style/Widget.MaterialComponents.BottomAppBar.PrimarySurface</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.DumbDue.AlertDialogTheme</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.DumbDue.BottomSheetDialog</item>
         <item name="navigationViewStyle">@style/Widget.DumbDue.NavigationView</item>
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>

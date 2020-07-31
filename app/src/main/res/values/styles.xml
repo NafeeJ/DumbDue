@@ -13,6 +13,12 @@
     <style name="Widget.DumbDue.BottomSheet.Modal" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="shapeAppearanceOverlay">?attr/shapeAppearanceLargeComponent</item>
     </style>
+    
+    <style name="ThemeOverlay.DumbDue.AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.DumbDue.Button.TextButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.DumbDue.Button.TextButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.DumbDue.Button.TextButton</item>
+    </style>
 
     <!-- Navigation Drawer -->
     <style name="Widget.DumbDue.NavigationView" parent="Widget.MaterialComponents.NavigationView">
@@ -47,8 +53,9 @@
     </style>
 
     <style name="Widget.DumbDue.Settings.Text" parent="">
-        <item name="android:padding">20dp</item>
-        <item name="android:textAppearance">?textAppearanceBody1</item>
+        <item name="android:paddingHorizontal">30dp</item>
+        <item name="android:paddingVertical">20dp</item>
+        <item name="android:textAppearance">@android:style/TextAppearance</item>
     </style>
 
     <style name="DumbDue.PreferenceThemOverlay" parent="@style/PreferenceThemeOverlay">

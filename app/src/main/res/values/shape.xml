@@ -24,6 +24,8 @@
 
     <!--Shape Appearance for medium components like cards, alert dialogs-->
     <style name="ShapeAppearance.DumbDue.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/dumbDue_medium_component_corner_radius</item>
     </style>
 
     <!--Shape Appearance for large components like side and bottom navigation drawers-->
@@ -34,7 +36,7 @@
     </style>
 
     <dimen name="dumbDue_small_component_corner_radius">24dp</dimen>
-    <dimen name="dumbDue_medium_component_corner_radius">0dp</dimen>
+    <dimen name="dumbDue_medium_component_corner_radius">12dp</dimen>
     <dimen name="dumbDue_large_component_corner_radius">12dp</dimen>
 
 </resources>
