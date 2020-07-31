@@ -1,6 +1,5 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
-import com.google.android.material.transition.MaterialContainerTransform
 import com.kiwicorp.dumbdue.EventObserver
-import com.kiwicorp.dumbdue.MainActivity
+import com.kiwicorp.dumbdue.ui.MainActivity
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditReminderBinding
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toChooseAutoSnooze

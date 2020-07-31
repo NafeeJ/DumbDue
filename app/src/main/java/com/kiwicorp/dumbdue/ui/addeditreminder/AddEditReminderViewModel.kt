@@ -1,10 +1,9 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
 import androidx.lifecycle.*
-import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.Event
-import com.kiwicorp.dumbdue.REQUEST_COMPLETE
-import com.kiwicorp.dumbdue.REQUEST_DELETE
+import com.kiwicorp.dumbdue.ui.REQUEST_COMPLETE
+import com.kiwicorp.dumbdue.ui.REQUEST_DELETE
 import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval

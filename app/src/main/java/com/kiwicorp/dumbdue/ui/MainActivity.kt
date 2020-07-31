@@ -1,25 +1,36 @@
-package com.kiwicorp.dumbdue
+package com.kiwicorp.dumbdue.ui
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.kiwicorp.dumbdue.R
+import dagger.android.support.DaggerAppCompatActivity
+import javax.inject.Inject
 
-class MainActivity: AppCompatActivity() {
+class MainActivity: DaggerAppCompatActivity() {
 
     lateinit var bottomAppBar: BottomAppBar
     lateinit var fab: FloatingActionButton
     lateinit var coordinatorLayout: CoordinatorLayout
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: MainActivityViewModel by viewModels { viewModelFactory }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        delegate.localNightMode = viewModel.theme
         fab = findViewById(R.id.fab)
         bottomAppBar = findViewById(R.id.bottom_app_bar)
         coordinatorLayout = findViewById(R.id.coordinator_layout)

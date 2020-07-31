@@ -25,6 +25,13 @@
             style="@style/Widget.DumbDue.Settings.Text"
             android:onClick="@{() -> viewmodel.openEditTimeSetButtons()}"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.DumbDue.Settings.Text"
+            android:text="@string/settings_theme"
+            android:onClick="@{() -> viewmodel.openChooseThemeDialog()}"/>
+
     </LinearLayout>
 
 </layout>

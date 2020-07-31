@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.getSystemService
 import com.kiwicorp.dumbdue.CHANNEL_ID_REMINDER
-import com.kiwicorp.dumbdue.MainActivity
+import com.kiwicorp.dumbdue.ui.MainActivity
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.Reminder
 import dagger.android.DaggerBroadcastReceiver
@@ -32,7 +32,7 @@ class NotificationBroadcastReceiver : DaggerBroadcastReceiver() {
         val openAppIntent = PendingIntent.getActivity(
             context,
             0,
-            Intent(context,MainActivity::class.java),
+            Intent(context, MainActivity::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT)
 
         val notification = Notification.Builder(context, CHANNEL_ID_REMINDER)

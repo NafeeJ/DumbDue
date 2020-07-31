@@ -3,6 +3,7 @@ package com.kiwicorp.dumbdue.di
 import android.content.Context
 import com.kiwicorp.dumbdue.DumbDueApplication
 import com.kiwicorp.dumbdue.notifications.BroadcastReceiverModule
+import com.kiwicorp.dumbdue.ui.MainActivityModule
 import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderModule
 import com.kiwicorp.dumbdue.ui.reminders.RemindersModule
 import com.kiwicorp.dumbdue.ui.settings.SettingsModule
@@ -22,6 +23,7 @@ import javax.inject.Singleton
 @Component(modules = [
     ApplicationModule::class,
     AndroidSupportInjectionModule::class,
+    MainActivityModule::class,
     AddEditReminderModule::class,
     RemindersModule::class,
     EditTimeSettersModule::class,

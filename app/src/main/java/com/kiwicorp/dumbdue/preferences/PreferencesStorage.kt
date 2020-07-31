@@ -2,6 +2,7 @@ package com.kiwicorp.dumbdue.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.Reminder
@@ -42,6 +43,8 @@ class PreferencesStorage @Inject constructor(val context: Context) {
             PREFS_QUICK_ACCESS_3 to "6:30 PM",
             PREFS_QUICK_ACCESS_4 to "10:00 PM"
         )
+
+        private const val PREFS_THEME = "prefs_theme"
     }
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -89,6 +92,13 @@ class PreferencesStorage @Inject constructor(val context: Context) {
         prefsEditor.remove(key)
         prefsEditor.apply()
     }
+
+    var theme: Int
+        get() = prefs.getInt(PREFS_THEME,AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        set(value) {
+            prefsEditor.putInt(PREFS_THEME,value)
+            prefsEditor.apply()
+        }
 
     val defaultAutoSnooze: Long
         get() = Reminder.AUTO_SNOOZE_MINUTE

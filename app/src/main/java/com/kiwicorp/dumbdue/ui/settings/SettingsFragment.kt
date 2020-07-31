@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentSettingsBinding
@@ -61,6 +64,37 @@ class SettingsFragment : DaggerFragment() {
         viewModel.eventOpenEditTimeSetButton.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(toEditTimeSetters())
         })
+        viewModel.eventOpenChooseThemeDialog.observe(viewLifecycleOwner, EventObserver {
+            openChooseThemeDialog()
+        })
+    }
+
+    private fun openChooseThemeDialog() {
+        val themesText = arrayOf("Light", "Dark", "System Default")
+
+        val delegate = (requireActivity() as AppCompatActivity).delegate
+
+        val currTheme = when(delegate.localNightMode) {
+            AppCompatDelegate.MODE_NIGHT_NO -> 0
+            AppCompatDelegate.MODE_NIGHT_YES -> 1
+            else -> 2
+        }
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setSingleChoiceItems(themesText, currTheme) { dialog, which ->
+                val theme = when (which) {
+                    0 -> AppCompatDelegate.MODE_NIGHT_NO
+                    1 -> AppCompatDelegate.MODE_NIGHT_YES
+                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                }
+                delegate.localNightMode = theme
+                viewModel.changeTheme(theme)
+                dialog.dismiss()
+            }
+            .show()
     }
     
 }
