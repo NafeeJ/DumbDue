@@ -42,23 +42,33 @@ fun TextView.setAutoSnooze(autoSnooze: Long) {
     }
 }
 
-@BindingAdapter("dueDate")
-fun TextView.setDueDate(dueDate: ZonedDateTime) {
-    val dateTime = dueDate.format(DateTimeFormatter.ofPattern("EEE, d MMM, h:mm a"))
+@BindingAdapter(value = ["app:timeFromNowDueDate","app:timeFromNowLong"], requireAll = true)
+fun TextView.setTimeFromNowText(dueDate: ZonedDateTime, long: Boolean) {
     val timeFromNow = dueDate.timeFromNowString(false)
 
-    val stringId: Int
-    val color: Int
-    if (dueDate.isBefore(ZonedDateTime.now())) {
-        stringId = R.string.time_from_now_past
-        color = context.getColorFromAttr(R.attr.colorError)
+    if (long) {
+        val dateTime = dueDate.format(DateTimeFormatter.ofPattern("EEE, d MMM, h:mm a"))
+
+        val stringId = if (dueDate.isBefore(ZonedDateTime.now()))
+            R.string.time_from_now_long_past
+        else
+            R.string.time_from_now_long_future
+
+
+        text = context.getString(stringId, dateTime, timeFromNow)
     } else {
-        stringId = R.string.time_from_now_future
-        color = context.getColorFromAttr(R.attr.colorOnSurface)
+        val stringId = if (dueDate.isBefore(ZonedDateTime.now()))
+            R.string.time_from_now_short_past
+        else
+            R.string.time_from_now_short_future
+
+
+        text = context.getString(stringId, timeFromNow)
     }
 
-    text = context.getString(stringId, dateTime, timeFromNow)
-    setTextColor(color)
+    setTextColor(context.getColorFromAttr(
+        if (dueDate.isBefore(ZonedDateTime.now())) R.attr.colorError else R.attr.colorOnSurface
+    ))
 }
 
 @BindingAdapter("repeatInterval")

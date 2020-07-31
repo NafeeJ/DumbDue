@@ -14,8 +14,11 @@
     <string name="due_date_title">Due Date</string>
     <string name="auto_snooze_title">Auto Snooze</string>
 
-    <string name="time_from_now_past">%1s %2s ago</string>
-    <string name="time_from_now_future">%1s in %2s</string>
+    <string name="time_from_now_long_past">%1s %2s ago</string>
+    <string name="time_from_now_long_future">%1s in %2s</string>
+
+    <string name="time_from_now_short_past">%2s ago</string>
+    <string name="time_from_now_short_future">in %2s</string>
 
     <!-- Repeat Text -->
     <string name="repeat_off">Repeat Off</string>

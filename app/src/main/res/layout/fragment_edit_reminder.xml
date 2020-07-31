@@ -65,7 +65,8 @@
                         android:layout_marginBottom="20dp"
                         android:gravity="center_vertical"
                         android:textAppearance="?textAppearanceBody1"
-                        dueDate="@{viewmodel.dueDate}"
+                        app:timeFromNowDueDate="@{viewmodel.dueDate}"
+                        app:timeFromNowLong="@{true}"
                         android:onClick="@{()->viewmodel.openTimePicker()}"
                         tools:text="Fri, May 29, 10:05 AM in 4 Hours"/>
 

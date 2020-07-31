@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
             name="viewmodel"
@@ -13,12 +13,25 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/time_from_now_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceHeadline5"
+            android:layout_marginTop="30dp"
+            android:padding="10dp"
+            android:gravity="center"
+            app:timeFromNowDueDate="@{viewmodel.dueDate}"
+            app:timeFromNowLong="@{false}"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="in 10 minutes"/>
+
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/datePicker"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="120dp"
-            android:layout_marginVertical="30dp"
+            android:layout_marginBottom="30dp"
             app:np_textSize="23dp"
             app:np_selectedTextSize="23dp"
             app:np_textAlign="textAlignLeft"
@@ -27,7 +40,7 @@
             app:np_max="4"
             app:np_value="2"
             style="@style/Widget.DumbDue.NumberPicker"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/time_from_now_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/hourPicker"/>
@@ -36,21 +49,23 @@
             android:id="@+id/hourPicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             app:np_max="12"
             style="@style/Widget.DumbDue.NumberPicker"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/time_from_now_text"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/minutePicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             app:np_max="59"
             app:np_min="0"
             style="@style/Widget.DumbDue.NumberPicker"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/time_from_now_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/hourPicker"
             app:layout_constraintEnd_toStartOf="@id/ampmPicker"/>
@@ -59,9 +74,10 @@
             android:id="@+id/ampmPicker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             app:np_max="2"
             style="@style/Widget.DumbDue.NumberPicker"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/time_from_now_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/minutePicker"/>

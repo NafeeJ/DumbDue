@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
@@ -36,6 +35,7 @@ class TimePickerFragment : RoundedDaggerBottomSheetDialogFragment() {
         viewModel = getNavGraphViewModel(args.graphId) { viewModelFactory }
         val root = inflater.inflate(R.layout.fragment_time_picker, container, false)
         binding = FragmentTimePickerBinding.bind(root).apply {
+            lifecycleOwner = viewLifecycleOwner
             viewmodel = viewModel
         }
         return root
