@@ -28,7 +28,9 @@
             app:fabAlignmentMode="center"
             app:fabCradleRoundedCornerRadius="@dimen/bottom_app_bar_fab_cradle_radius"
             app:fabCradleMargin="@dimen/bottom_app_bar_cradle_margin"
-            app:hideOnScroll="true">
+            android:visibility="gone"
+            app:hideOnScroll="true"
+            tools:visibility="visible">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -45,7 +47,9 @@
             android:layout_height="wrap_content"
             app:layout_anchor="@id/bottom_app_bar"
             app:srcCompat="@drawable/ic_add_on_secondary"
-            app:fabSize="normal"/>
+            app:fabSize="normal"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
