@@ -97,4 +97,6 @@
     <string name="reset_all">Reset All</string>
     <string name="no_reminders_text">I am empty. Fill me</string>
 
+    <string name="settings_edit_time_set_buttons">Edit Time Set Buttons</string>
+
 </resources>

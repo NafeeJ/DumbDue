@@ -22,7 +22,7 @@ class ChooseCustomRepeatViewModel(dueDate: LiveData<ZonedDateTime>,
     // public mutable for 2 way data binding
     var frequency = MutableLiveData("1")
 
-    val _type = MutableLiveData("weeks")
+    private val _type = MutableLiveData("weeks")
     var type : LiveData<String> = _type
 
     private val _eventOpenTimePicker = MutableLiveData<Event<Unit>>()

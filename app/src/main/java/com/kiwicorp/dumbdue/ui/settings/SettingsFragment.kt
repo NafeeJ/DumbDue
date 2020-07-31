@@ -1,17 +1,45 @@
 package com.kiwicorp.dumbdue.ui.settings
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
+import com.kiwicorp.dumbdue.databinding.FragmentSettingsBinding
 import com.kiwicorp.dumbdue.ui.settings.SettingsFragmentDirections.Companion.toEditTimeSetters
 import com.kiwicorp.dumbdue.util.applySystemWindowInsetsPadding
 import com.kiwicorp.dumbdue.util.createMaterialElevationScale
+import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
-class SettingsFragment : PreferenceFragmentCompat() {
+class SettingsFragment : DaggerFragment() {
+
+    private lateinit var binding: FragmentSettingsBinding
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: SettingsViewModel by viewModels { viewModelFactory }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val root = inflater.inflate(R.layout.fragment_settings, container, false)
+        binding = FragmentSettingsBinding.bind(root).apply {
+            lifecycleOwner = viewLifecycleOwner
+            viewmodel = viewModel
+        }
+        return root
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,35 +53,14 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // apply insets here because for some reason applySystemWindowInsetsPadding() won't be
-        // called in data binding
-        view.applySystemWindowInsetsPadding(
-            previousApplyLeft = false,
-            previousApplyTop = false,
-            previousApplyRight = false,
-            previousApplyBottom = false,
-            applyLeft = false,
-            applyTop = true,
-            applyRight = false,
-            applyBottom = false
-        )
-        view.findViewById<Toolbar>(R.id.toolbar).setNavigationOnClickListener { findNavController().navigateUp() }
+        binding.includeBackToolbar.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
+        setupNavigation()
     }
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.preferences, rootKey)
+    private fun setupNavigation() {
+        viewModel.eventOpenEditTimeSetButton.observe(viewLifecycleOwner, EventObserver {
+            findNavController().navigate(toEditTimeSetters())
+        })
     }
-
-    override fun onPreferenceTreeClick(preference: Preference?): Boolean {
-        if (preference != null) {
-            return when (preference.title) {
-                getString(R.string.preference_edit_timer_setters) -> {
-                    findNavController().navigate(toEditTimeSetters())
-                    true
-                }
-                else -> super.onPreferenceTreeClick(preference)
-            }
-        }
-        return super.onPreferenceTreeClick(preference)
-    }
+    
 }

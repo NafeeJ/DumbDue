@@ -46,8 +46,13 @@
         <item name="android:textAppearance">?attr/textAppearanceBody1</item>
     </style>
 
+    <style name="Widget.DumbDue.Settings.Text" parent="">
+        <item name="android:padding">20dp</item>
+        <item name="android:textAppearance">?textAppearanceBody1</item>
+    </style>
+
     <style name="DumbDue.PreferenceThemOverlay" parent="@style/PreferenceThemeOverlay">
-        <item name="android:layout">@layout/fragment_preferences</item>
+        <item name="android:layout">@layout/fragment_settings</item>
     </style>
 
     <style name="Widget.DumbDue.NumberPicker" parent="">
