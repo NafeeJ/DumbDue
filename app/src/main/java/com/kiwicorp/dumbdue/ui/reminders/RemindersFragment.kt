@@ -9,28 +9,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.EventObserver
-import com.kiwicorp.dumbdue.ui.MainActivity
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentRemindersBinding
+import com.kiwicorp.dumbdue.ui.MainActivity
 import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toNavGraphAdd
 import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toNavGraphEdit
 import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toSettings
 import com.kiwicorp.dumbdue.util.DialogNavigator
 import com.kiwicorp.dumbdue.util.createMaterialElevationScale
-import dagger.android.support.DaggerFragment
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
 
-class RemindersFragment : DaggerFragment(), DialogNavigator {
+@AndroidEntryPoint
+class RemindersFragment : Fragment(), DialogNavigator {
 
     override val destId: Int = R.id.navigation_reminders
 
@@ -38,10 +38,7 @@ class RemindersFragment : DaggerFragment(), DialogNavigator {
 
     private val args : RemindersFragmentArgs by navArgs()
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel: RemindersViewModel by viewModels { viewModelFactory }
+    private val viewModel: RemindersViewModel by viewModels()
 
     private lateinit var listAdapter: ReminderAdapter
 

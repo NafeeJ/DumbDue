@@ -7,12 +7,12 @@ import android.widget.FrameLayout
 import androidx.core.view.ViewCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.kiwicorp.dumbdue.R
-import com.kiwicorp.dumbdue.util.daggerext.DaggerBottomSheetDialogFragment
 
-open class RoundedDaggerBottomSheetDialogFragment : DaggerBottomSheetDialogFragment() {
+open class RoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
     /**
      * Expands the BottomSheetDialog so the entire dialog is shown when the keyboard is first opened
      */

@@ -3,13 +3,14 @@
 buildscript {
     ext {
         kotlin_version = '1.3.72'
-        dagger_version = "2.27"
+        hilt_version = "2.28-alpha"
+        hilt_jetpack_version = "1.0.0-alpha02"
         archLifecycleVersion = '1.1.1'
         room_version = '2.2.5'
         coroutine_version = '1.3.3'
         gradle_version = '3.6.3'
-        nav_version = '2.3.0-beta01'
-        fragment_version = '1.1.0-alpha09'
+        nav_version = '2.3.0'
+        fragment_version = '1.2.5'
         dataBindingCompilerVersion = gradle_version // Always need to be the same.
     }
     repositories {
@@ -19,6 +20,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         def nav_version = "2.3.0-alpha02"

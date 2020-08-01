@@ -4,15 +4,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
-import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.timesetters.IncrementalTimeSetter
 import com.kiwicorp.dumbdue.timesetters.QuickAccessTimeSetter
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PreferencesStorage @Inject constructor(val context: Context) {
+class PreferencesStorage @Inject constructor(@ApplicationContext val context: Context) {
     companion object{
         const val PREFS_TIME_SETTER_1 = "prefs_time_setter_1"
         const val PREFS_TIME_SETTER_2 = "prefs_time_setter_2"

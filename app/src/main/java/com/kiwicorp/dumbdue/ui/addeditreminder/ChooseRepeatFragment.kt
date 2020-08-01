@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.EventObserver
@@ -16,21 +15,19 @@ import com.kiwicorp.dumbdue.data.repeat.RepeatYearlyByNumberInterval
 import com.kiwicorp.dumbdue.databinding.FragmentChooseRepeatBinding
 import com.kiwicorp.dumbdue.ui.addeditreminder.ChooseRepeatFragmentDirections.Companion.toChooseCustomRepeat
 import com.kiwicorp.dumbdue.util.DialogNavigator
-import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
+import com.kiwicorp.dumbdue.util.RoundedBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.YearMonth
 import org.threeten.bp.temporal.TemporalAdjusters
-import javax.inject.Inject
 
-class ChooseRepeatFragment : RoundedDaggerBottomSheetDialogFragment(), DialogNavigator {
+@AndroidEntryPoint
+class ChooseRepeatFragment : RoundedBottomSheetDialogFragment(), DialogNavigator {
 
     private lateinit var binding: FragmentChooseRepeatBinding
 
     private val args: ChooseRepeatFragmentArgs by navArgs()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     // Shares ViewModel with Add/Edit ReminderFragment
     private lateinit var viewModel: AddEditReminderViewModel
@@ -42,7 +39,7 @@ class ChooseRepeatFragment : RoundedDaggerBottomSheetDialogFragment(), DialogNav
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = getNavGraphViewModel(args.graphId) { viewModelFactory }
+        viewModel = getNavGraphViewModel(args.graphId)
         val root = inflater.inflate(R.layout.fragment_choose_repeat,container,false)
         binding = FragmentChooseRepeatBinding.bind(root).apply {
             viewmodel = viewModel

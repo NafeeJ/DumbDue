@@ -11,7 +11,6 @@ import android.widget.AutoCompleteTextView
 import android.widget.TimePicker
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.chip.Chip
@@ -23,10 +22,11 @@ import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
 import com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatFragmentDirections.Companion.toChooseDailyStartDate
 import com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatFragmentDirections.Companion.toChooseWeeklyStartDate
 import com.kiwicorp.dumbdue.util.*
+import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.*
-import javax.inject.Inject
 
-class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
+@AndroidEntryPoint
+class ChooseCustomRepeatFragment : RoundedBottomSheetDialogFragment(),
     DayItemClickListener,
     OnDayDeletedListener,
     DialogNavigator {
@@ -36,9 +36,6 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
     private val args: ChooseCustomRepeatFragmentArgs by navArgs()
 
     lateinit var binding: FragmentChooseCustomRepeatBinding
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: AddEditReminderViewModel
 
@@ -57,7 +54,7 @@ class ChooseCustomRepeatFragment : RoundedDaggerBottomSheetDialogFragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = getNavGraphViewModel(args.graphId) { viewModelFactory }
+        viewModel = getNavGraphViewModel(args.graphId)
         chooseCustomRepeatViewModel = viewModel.chooseCustomRepeatViewModel
         val root = layoutInflater.inflate(R.layout.fragment_choose_custom_repeat, container,false)
         binding = FragmentChooseCustomRepeatBinding.bind(root).apply {

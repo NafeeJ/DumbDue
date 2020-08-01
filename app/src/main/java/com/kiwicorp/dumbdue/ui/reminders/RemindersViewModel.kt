@@ -1,17 +1,17 @@
 package com.kiwicorp.dumbdue.ui.reminders
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.Event
-import com.kiwicorp.dumbdue.ui.REQUEST_COMPLETE
-import com.kiwicorp.dumbdue.ui.REQUEST_DELETE
 import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
+import com.kiwicorp.dumbdue.ui.REQUEST_COMPLETE
+import com.kiwicorp.dumbdue.ui.REQUEST_DELETE
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class RemindersViewModel @Inject constructor(
+class RemindersViewModel @ViewModelInject constructor(
     private val repository: ReminderRepository
 ) : ViewModel() {
     val reminders: LiveData<List<Reminder>> = repository.reminders

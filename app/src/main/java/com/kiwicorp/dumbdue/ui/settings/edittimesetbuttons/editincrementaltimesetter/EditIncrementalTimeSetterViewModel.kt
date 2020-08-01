@@ -1,15 +1,15 @@
 package com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editincrementaltimesetter
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.timesetters.IncrementalTimeSetter
 import org.threeten.bp.temporal.ChronoUnit
-import javax.inject.Inject
 import kotlin.math.absoluteValue
 
-class EditIncrementalTimeSetterViewModel @Inject constructor(
+class EditIncrementalTimeSetterViewModel @ViewModelInject constructor(
     private val preferencesStorage: PreferencesStorage
 ) : ViewModel() {
 

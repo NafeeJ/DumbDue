@@ -10,6 +10,7 @@ import android.content.Intent
 import androidx.core.app.AlarmManagerCompat
 import androidx.core.content.getSystemService
 import com.kiwicorp.dumbdue.data.Reminder
+import dagger.hilt.android.qualifiers.ApplicationContext
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,7 +19,7 @@ import javax.inject.Singleton
  * Manages setting, cancelling, and updating alarms for reminders.
  */
 @Singleton
-class ReminderAlarmManager @Inject constructor(private val context: Context) {
+class ReminderAlarmManager @Inject constructor(@ApplicationContext private val context: Context) {
     private val systemAlarmManager: AlarmManager? = context.getSystemService()
 
     /**

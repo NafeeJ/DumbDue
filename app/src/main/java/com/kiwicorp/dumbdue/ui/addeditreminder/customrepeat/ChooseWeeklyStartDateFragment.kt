@@ -5,14 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseWeeklyStartDateBinding
 import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
-import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
+import com.kiwicorp.dumbdue.util.RoundedBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
@@ -20,6 +19,7 @@ import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.calendar_day.view.*
 import kotlinx.android.synthetic.main.calendar_header.view.*
 import org.threeten.bp.DayOfWeek
@@ -28,16 +28,13 @@ import org.threeten.bp.YearMonth
 import org.threeten.bp.temporal.TemporalAdjusters
 import org.threeten.bp.temporal.WeekFields
 import java.util.*
-import javax.inject.Inject
 
-class ChooseWeeklyStartDateFragment : RoundedDaggerBottomSheetDialogFragment() {
+@AndroidEntryPoint
+class ChooseWeeklyStartDateFragment : RoundedBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentChooseWeeklyStartDateBinding
 
     private val args: ChooseWeeklyStartDateFragmentArgs by navArgs()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: AddEditReminderViewModel
 
@@ -50,7 +47,7 @@ class ChooseWeeklyStartDateFragment : RoundedDaggerBottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = getNavGraphViewModel(args.graphId) { viewModelFactory }
+        viewModel = getNavGraphViewModel(args.graphId)
         val root = inflater.inflate(R.layout.fragment_choose_weekly_start_date,container,false)
         binding = FragmentChooseWeeklyStartDateBinding.bind(root)
         return root

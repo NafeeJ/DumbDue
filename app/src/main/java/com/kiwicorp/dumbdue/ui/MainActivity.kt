@@ -8,24 +8,20 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kiwicorp.dumbdue.R
-import dagger.android.support.DaggerAppCompatActivity
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class MainActivity: DaggerAppCompatActivity() {
+@AndroidEntryPoint
+class MainActivity: AppCompatActivity() {
 
     lateinit var bottomAppBar: BottomAppBar
     lateinit var fab: FloatingActionButton
     lateinit var coordinatorLayout: CoordinatorLayout
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel: MainActivityViewModel by viewModels { viewModelFactory }
+    private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

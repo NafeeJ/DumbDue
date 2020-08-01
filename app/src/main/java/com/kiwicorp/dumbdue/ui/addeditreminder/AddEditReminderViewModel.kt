@@ -1,21 +1,24 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
-import androidx.lifecycle.*
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.kiwicorp.dumbdue.Event
-import com.kiwicorp.dumbdue.ui.REQUEST_COMPLETE
-import com.kiwicorp.dumbdue.ui.REQUEST_DELETE
 import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
+import com.kiwicorp.dumbdue.ui.REQUEST_COMPLETE
+import com.kiwicorp.dumbdue.ui.REQUEST_DELETE
 import com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatViewModel
 import kotlinx.coroutines.launch
 import org.threeten.bp.ZonedDateTime
-import javax.inject.Inject
 
-class AddEditReminderViewModel @Inject constructor(
+class AddEditReminderViewModel @ViewModelInject constructor(
     private val repository: ReminderRepository,
     private val preferencesStorage: PreferencesStorage
 ) : ViewModel(), OnTimeSetterClick {

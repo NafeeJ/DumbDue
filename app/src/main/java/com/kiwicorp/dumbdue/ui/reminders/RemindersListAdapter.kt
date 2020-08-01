@@ -11,7 +11,6 @@ import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.databinding.ItemHeaderBinding
 import com.kiwicorp.dumbdue.databinding.ItemReminderBinding
 import com.kiwicorp.dumbdue.util.getColorFromAttr
-import com.kiwicorp.dumbdue.util.isLightTheme
 import com.kiwicorp.dumbdue.util.timeFromNowString
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

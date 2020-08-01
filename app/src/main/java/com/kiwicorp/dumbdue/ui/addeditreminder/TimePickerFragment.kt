@@ -5,26 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentTimePickerBinding
-import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
+import com.kiwicorp.dumbdue.util.RoundedBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.LocalDate
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoField
-import javax.inject.Inject
 
-class TimePickerFragment : RoundedDaggerBottomSheetDialogFragment() {
+@AndroidEntryPoint
+class TimePickerFragment : RoundedBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentTimePickerBinding
 
     private val args: TimePickerFragmentArgs by navArgs()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var viewModel: AddEditReminderViewModel
 
@@ -32,7 +29,7 @@ class TimePickerFragment : RoundedDaggerBottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = getNavGraphViewModel(args.graphId) { viewModelFactory }
+        viewModel = getNavGraphViewModel(args.graphId)
         val root = inflater.inflate(R.layout.fragment_time_picker, container, false)
         binding = FragmentTimePickerBinding.bind(root).apply {
             lifecycleOwner = viewLifecycleOwner

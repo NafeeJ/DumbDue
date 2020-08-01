@@ -23,7 +23,7 @@ inline fun <reified VM : ViewModel> Fragment.getNavGraphViewModel(
 
     val viewModelProvider = ViewModelProvider(
         backStackEntry.viewModelStore,
-            factoryProducer?.invoke() ?: backStackEntry.defaultViewModelProviderFactory
+            factoryProducer?.invoke() ?: defaultViewModelProviderFactory
         )
 
     return viewModelProvider.get(VM::class.java)

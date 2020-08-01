@@ -1,14 +1,14 @@
 package com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kiwicorp.dumbdue.Event
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
-import javax.inject.Inject
 
-class EditTimeSettersViewModel @Inject constructor(
+class EditTimeSettersViewModel @ViewModelInject constructor(
     private val preferencesStorage: PreferencesStorage
 ) : ViewModel(), OnTimeSetterClick {
 

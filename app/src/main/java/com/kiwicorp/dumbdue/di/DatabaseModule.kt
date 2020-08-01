@@ -7,22 +7,24 @@ import com.kiwicorp.dumbdue.data.source.local.ReminderDatabase
 import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Singleton
 
+@InstallIn(ApplicationComponent::class)
 @Module
-object ApplicationModule {
+object DatabaseModule {
 
-    @JvmStatic
     @Singleton
     @Provides
     fun provideReminderRepository(reminderDatabase: ReminderDatabase, alarmManager: ReminderAlarmManager): ReminderRepository {
         return ReminderRepository(reminderDatabase.reminderDao(), alarmManager)
     }
 
-    @JvmStatic
     @Singleton
     @Provides
-    fun provideDataBase(context: Context): ReminderDatabase {
+    fun provideDataBase(@ApplicationContext context: Context): ReminderDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
             ReminderDatabase::class.java,

@@ -9,29 +9,26 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditIncrementalTimeSetterBinding
 import com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSettersViewModel
-import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
+import com.kiwicorp.dumbdue.util.RoundedBottomSheetDialogFragment
 import com.shawnlin.numberpicker.NumberPicker
+import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.temporal.ChronoUnit
-import javax.inject.Inject
 import kotlin.math.absoluteValue
 
-class EditIncrementalTimeSetterFragment : RoundedDaggerBottomSheetDialogFragment() {
+@AndroidEntryPoint
+class EditIncrementalTimeSetterFragment : RoundedBottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentEditIncrementalTimeSetterBinding
 
     private val args: EditIncrementalTimeSetterFragmentArgs by navArgs()
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel : EditIncrementalTimeSetterViewModel by viewModels()
 
-    private val viewModel : EditIncrementalTimeSetterViewModel by viewModels { viewModelFactory }
-
-    private val editTimeSetterViewModel: EditTimeSettersViewModel by activityViewModels { viewModelFactory }
+    private val editTimeSetterViewModel: EditTimeSettersViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

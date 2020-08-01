@@ -1,14 +1,11 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
-import com.google.android.material.transition.MaterialContainerTransform
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentAddReminderBinding
@@ -16,21 +13,17 @@ import com.kiwicorp.dumbdue.ui.addeditreminder.AddReminderFragmentDirections.Com
 import com.kiwicorp.dumbdue.ui.addeditreminder.AddReminderFragmentDirections.Companion.toChooseRepeat
 import com.kiwicorp.dumbdue.ui.addeditreminder.AddReminderFragmentDirections.Companion.toTimePicker
 import com.kiwicorp.dumbdue.util.DialogNavigator
-import com.kiwicorp.dumbdue.util.RoundedDaggerBottomSheetDialogFragment
-import com.kiwicorp.dumbdue.util.getColorFromAttr
-import javax.inject.Inject
+import com.kiwicorp.dumbdue.util.RoundedBottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-
-class AddReminderFragment : RoundedDaggerBottomSheetDialogFragment(), DialogNavigator {
+@AndroidEntryPoint
+class AddReminderFragment : RoundedBottomSheetDialogFragment(), DialogNavigator {
 
     override val destId: Int = R.id.navigation_add_reminder
 
     private lateinit var binding: FragmentAddReminderBinding
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel: AddEditReminderViewModel by navGraphViewModels(R.id.nav_graph_add) { viewModelFactory }
+    // must pass defaultViewModelProviderFactory https://github.com/google/dagger/issues/1935
+    private val viewModel: AddEditReminderViewModel by navGraphViewModels(R.id.nav_graph_add) { defaultViewModelProviderFactory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

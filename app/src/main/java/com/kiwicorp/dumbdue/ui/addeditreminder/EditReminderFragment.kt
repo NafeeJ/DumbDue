@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.kiwicorp.dumbdue.EventObserver
-import com.kiwicorp.dumbdue.ui.MainActivity
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditReminderBinding
+import com.kiwicorp.dumbdue.ui.MainActivity
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toChooseAutoSnooze
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toChooseRepeat
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toReminders
@@ -20,23 +20,18 @@ import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Co
 import com.kiwicorp.dumbdue.util.DialogNavigator
 import com.kiwicorp.dumbdue.util.closeKeyboard
 import com.kiwicorp.dumbdue.util.createMaterialElevationScale
-import dagger.android.support.DaggerFragment
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class EditReminderFragment : DaggerFragment(), DialogNavigator {
+@AndroidEntryPoint
+class EditReminderFragment : Fragment(), DialogNavigator {
 
     override val destId: Int = R.id.navigation_edit_reminder
 
     lateinit var binding: FragmentEditReminderBinding
 
     private val args: EditReminderFragmentArgs by navArgs()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val viewModel: AddEditReminderViewModel by navGraphViewModels(R.id.nav_graph_edit) {
-        viewModelFactory
-    }
+    //must past default defaultViewModelProviderFactory https://github.com/google/dagger/issues/1935
+    private val viewModel: AddEditReminderViewModel by navGraphViewModels(R.id.nav_graph_edit) { defaultViewModelProviderFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

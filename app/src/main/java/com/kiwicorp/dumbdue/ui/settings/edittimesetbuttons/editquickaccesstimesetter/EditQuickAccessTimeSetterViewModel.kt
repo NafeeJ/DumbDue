@@ -1,14 +1,14 @@
 package com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editquickaccesstimesetter
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.timesetters.AmPm
 import com.kiwicorp.dumbdue.timesetters.QuickAccessTimeSetter
-import javax.inject.Inject
 
-class EditQuickAccessTimeSetterViewModel @Inject constructor(
+class EditQuickAccessTimeSetterViewModel @ViewModelInject constructor(
     private val preferencesStorage: PreferencesStorage
 ) : ViewModel() {
 
