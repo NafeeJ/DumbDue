@@ -14,6 +14,9 @@ class SettingsViewModel @ViewModelInject constructor(private val preferencesStor
     private val _eventOpenChooseThemeDialog = MutableLiveData<Event<Unit>>()
     val eventOpenChooseThemeDialog: LiveData<Event<Unit>> = _eventOpenChooseThemeDialog
 
+    private val _repeatIntervalUsesReminderDueDate = MutableLiveData<Boolean>(preferencesStorage.repeatIntervalUsesRemindersTime)
+    val repeatIntervalUsesReminderDueDate: LiveData<Boolean> = _repeatIntervalUsesReminderDueDate
+
     fun openEditTimeSetButtons() {
         _eventOpenEditTimeSetButtons.value = Event(Unit)
     }
@@ -22,7 +25,11 @@ class SettingsViewModel @ViewModelInject constructor(private val preferencesStor
         _eventOpenChooseThemeDialog.value = Event(Unit)
     }
 
-    fun changeTheme(theme: Int) {
+    fun setTheme(theme: Int) {
         preferencesStorage.theme = theme
+    }
+
+    fun setRepeatIntervalUsesReminderDueDate(repeatIntervalUsesReminderDueDate: Boolean) {
+        preferencesStorage.repeatIntervalUsesRemindersTime = repeatIntervalUsesReminderDueDate
     }
 }

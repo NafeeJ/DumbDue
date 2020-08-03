@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.chip.Chip
+import com.google.android.material.timepicker.MaterialTimePicker
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCountInterval.Day
@@ -99,6 +100,7 @@ class ChooseCustomRepeatFragment : RoundedBottomSheetDialogFragment(),
         val onTimeSetListener = TimePickerDialog.OnTimeSetListener { _: TimePicker, hourOfDay: Int, minute: Int ->
             chooseCustomRepeatViewModel.updateTime(LocalTime.of(hourOfDay, minute))
         }
+        //todo migrate to material time picker when available
         val now = LocalTime.now()
         val timePickerDialog = TimePickerDialog(
             requireContext(),

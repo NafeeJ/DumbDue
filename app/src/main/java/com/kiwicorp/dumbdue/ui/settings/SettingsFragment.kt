@@ -51,6 +51,9 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.includeBackToolbar.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
         setupNavigation()
+        binding.repeatIntervalUsesDueDateSwitch.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.setRepeatIntervalUsesReminderDueDate(isChecked)
+        }
     }
 
     private fun setupNavigation() {
@@ -84,7 +87,7 @@ class SettingsFragment : Fragment() {
                     else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 }
                 delegate.localNightMode = theme
-                viewModel.changeTheme(theme)
+                viewModel.setTheme(theme)
                 dialog.dismiss()
             }
             .show()

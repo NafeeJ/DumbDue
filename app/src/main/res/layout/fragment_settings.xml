@@ -19,6 +19,7 @@
            layout="@layout/include_back_toolbar"/>
 
         <TextView
+            android:id="@+id/edit_time_set_button_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/settings_edit_time_set_buttons"
@@ -26,11 +27,20 @@
             android:onClick="@{() -> viewmodel.openEditTimeSetButtons()}"/>
 
         <TextView
+            android:id="@+id/theme_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.DumbDue.Settings.Text"
             android:text="@string/settings_theme"
             android:onClick="@{() -> viewmodel.openChooseThemeDialog()}"/>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/repeat_interval_uses_due_date_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.DumbDue.Settings.Switch"
+            android:text="@string/settings_repeat_interval_uses_due_date"
+            android:checked="@{viewmodel.repeatIntervalUsesReminderDueDate}"/>
 
     </LinearLayout>
 

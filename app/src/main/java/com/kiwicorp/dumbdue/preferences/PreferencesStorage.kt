@@ -45,6 +45,7 @@ class PreferencesStorage @Inject constructor(@ApplicationContext val context: Co
         )
 
         private const val PREFS_THEME = "prefs_theme"
+        private const val PREFS_REPEAT_INTERVAL_USES_DUE_DATE = "prefs_repeat_interval_uses_due_date"
     }
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -104,6 +105,10 @@ class PreferencesStorage @Inject constructor(@ApplicationContext val context: Co
         get() = Reminder.AUTO_SNOOZE_MINUTE
 
 
-    val repeatIntervalUsesRemindersTime: Boolean
-        get() = true
+    var repeatIntervalUsesRemindersTime: Boolean
+        get() = prefs.getBoolean(PREFS_REPEAT_INTERVAL_USES_DUE_DATE, true)
+        set(value) {
+            prefsEditor.putBoolean(PREFS_REPEAT_INTERVAL_USES_DUE_DATE, value)
+            prefsEditor.apply()
+        }
 }
