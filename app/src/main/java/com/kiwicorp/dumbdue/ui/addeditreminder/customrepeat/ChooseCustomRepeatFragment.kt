@@ -71,7 +71,7 @@ class ChooseCustomRepeatFragment : RoundedBottomSheetDialogFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
-        if (!chooseCustomRepeatViewModel.preferencesStorage.repeatIntervalUsesRemindersTime && addEditReminderViewModel.repeatInterval.value == null) {
+        if (addEditReminderViewModel.repeatInterval.value == null) {
             chooseCustomRepeatViewModel.setDueDate(addEditReminderViewModel.dueDate.value!!)
         }
         addEditReminderViewModel.repeatInterval.value?.let {
