@@ -10,7 +10,6 @@ import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseDailyStartDateBinding
-import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
 import com.kiwicorp.dumbdue.util.RoundedBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import com.kizitonwose.calendarview.model.CalendarDay
@@ -34,9 +33,10 @@ class ChooseDailyStartDateFragment : RoundedBottomSheetDialogFragment() {
 
     private val args: ChooseDailyStartDateFragmentArgs by navArgs()
 
-    private lateinit var viewModel: AddEditReminderViewModel
+    private lateinit var chooseCustomRepeatViewModel: ChooseCustomRepeatViewModel
 
-    private var selectedDate = LocalDate.now()
+    private lateinit var chooseDailyRepeatViewModel: ChooseDailyViewModel
+
     private val today = LocalDate.now()
 
     override fun onCreateView(
@@ -44,7 +44,8 @@ class ChooseDailyStartDateFragment : RoundedBottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = getNavGraphViewModel(args.graphId)
+        chooseCustomRepeatViewModel = getNavGraphViewModel(args.graphId)
+        chooseDailyRepeatViewModel = chooseCustomRepeatViewModel.chooseDailyViewModel
         val root = inflater.inflate(R.layout.fragment_choose_daily_start_date, container,false)
         binding = FragmentChooseDailyStartDateBinding.bind(root)
         return root
@@ -66,8 +67,8 @@ class ChooseDailyStartDateFragment : RoundedBottomSheetDialogFragment() {
             init {
                 textView.setOnClickListener {
                     if (day.owner == DayOwner.THIS_MONTH && (day.date.isAfter(today) || day.date == today)) {
-                        val oldDate = selectedDate
-                        selectedDate = day.date
+                        val oldDate = chooseDailyRepeatViewModel.startingDate.value!!
+                        chooseDailyRepeatViewModel.setStartingDate(day.date)
                         binding.calendar.notifyDateChanged(day.date)
                         oldDate?.let { binding.calendar.notifyDateChanged(oldDate) }
                     }
@@ -88,7 +89,7 @@ class ChooseDailyStartDateFragment : RoundedBottomSheetDialogFragment() {
                         textView.setTextColor(Color.parseColor("#4DFFFFFF"))
                     } else {
                         when(day.date) {
-                            selectedDate -> bg.setBackgroundResource(R.drawable.calendar_selected)
+                            chooseDailyRepeatViewModel.startingDate.value!! -> bg.setBackgroundResource(R.drawable.calendar_selected)
                             today -> bg.setBackgroundResource(R.drawable.calendar_today_bg)
                             else -> bg.background = null
                         }
@@ -110,15 +111,11 @@ class ChooseDailyStartDateFragment : RoundedBottomSheetDialogFragment() {
             }
         }
 
-        binding.doneButton.setOnClickListener {
-            viewModel.chooseCustomRepeatViewModel.chooseDailyViewModel.chooseStartingDate(selectedDate)
-        }
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.chooseCustomRepeatViewModel.chooseDailyViewModel.eventOnStartingDateChosen.observe(viewLifecycleOwner, EventObserver {
+            chooseCustomRepeatViewModel.chooseDailyViewModel.eventOnStartingDateChosen.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
         })
     }

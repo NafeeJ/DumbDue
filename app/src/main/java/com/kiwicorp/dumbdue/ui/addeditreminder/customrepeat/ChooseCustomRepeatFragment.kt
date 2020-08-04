@@ -14,7 +14,6 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.chip.Chip
-import com.google.android.material.timepicker.MaterialTimePicker
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCountInterval.Day
@@ -38,7 +37,7 @@ class ChooseCustomRepeatFragment : RoundedBottomSheetDialogFragment(),
 
     lateinit var binding: FragmentChooseCustomRepeatBinding
 
-    private lateinit var viewModel: AddEditReminderViewModel
+    private lateinit var addEditReminderViewModel: AddEditReminderViewModel
 
     private lateinit var chooseCustomRepeatViewModel: ChooseCustomRepeatViewModel
 
@@ -55,8 +54,8 @@ class ChooseCustomRepeatFragment : RoundedBottomSheetDialogFragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = getNavGraphViewModel(args.graphId)
-        chooseCustomRepeatViewModel = viewModel.chooseCustomRepeatViewModel
+        addEditReminderViewModel = getNavGraphViewModel(args.graphId)
+        chooseCustomRepeatViewModel = getNavGraphViewModel(args.graphId)
         val root = layoutInflater.inflate(R.layout.fragment_choose_custom_repeat, container,false)
         binding = FragmentChooseCustomRepeatBinding.bind(root).apply {
             lifecycleOwner = viewLifecycleOwner
@@ -72,8 +71,11 @@ class ChooseCustomRepeatFragment : RoundedBottomSheetDialogFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
-        viewModel.repeatInterval.value?.let {
-            chooseCustomRepeatViewModel.loadRepeatInterval(it)
+        if (!chooseCustomRepeatViewModel.preferencesStorage.repeatIntervalUsesRemindersTime && addEditReminderViewModel.repeatInterval.value == null) {
+            chooseCustomRepeatViewModel.setDueDate(addEditReminderViewModel.dueDate.value!!)
+        }
+        addEditReminderViewModel.repeatInterval.value?.let {
+            chooseCustomRepeatViewModel.repeatInterval = it
         }
     }
 
@@ -84,7 +86,7 @@ class ChooseCustomRepeatFragment : RoundedBottomSheetDialogFragment(),
         chooseCustomRepeatViewModel.chooseWeeklyViewModel.eventOpenChooseWeeklyStartDate.observe(viewLifecycleOwner, EventObserver {
             navigate(toChooseWeeklyStartDate(args.graphId),findNavController())
         })
-        viewModel.eventCustomRepeatChosen.observe(viewLifecycleOwner, EventObserver {
+        addEditReminderViewModel.eventCustomRepeatChosen.observe(viewLifecycleOwner, EventObserver {
             close()
         })
         chooseCustomRepeatViewModel.eventOpenTimePicker.observe(viewLifecycleOwner, EventObserver {
@@ -98,7 +100,7 @@ class ChooseCustomRepeatFragment : RoundedBottomSheetDialogFragment(),
 
     private fun openTimePicker() {
         val onTimeSetListener = TimePickerDialog.OnTimeSetListener { _: TimePicker, hourOfDay: Int, minute: Int ->
-            chooseCustomRepeatViewModel.updateTime(LocalTime.of(hourOfDay, minute))
+            chooseCustomRepeatViewModel.setTime(LocalTime.of(hourOfDay, minute))
         }
         //todo migrate to material time picker when available
         val now = LocalTime.now()
@@ -127,7 +129,7 @@ class ChooseCustomRepeatFragment : RoundedBottomSheetDialogFragment(),
         (binding.typeTextLayout.editText as? AutoCompleteTextView)?.apply {
             setAdapter(getDropDownMenuAdapter(types))
             doOnTextChanged { text, _, _, _ ->
-                chooseCustomRepeatViewModel.updateType(text.toString())
+                chooseCustomRepeatViewModel.setType(text.toString())
             }
             chooseCustomRepeatViewModel.type.observe(viewLifecycleOwner, Observer {
                 if (it != text.toString()) {
@@ -156,7 +158,7 @@ class ChooseCustomRepeatFragment : RoundedBottomSheetDialogFragment(),
 
     private fun setupDoneButton() {
         binding.doneButton.setOnClickListener {
-            viewModel.onChooseCustomRepeatInterval()
+            addEditReminderViewModel.onChooseCustomRepeatInterval(chooseCustomRepeatViewModel.repeatInterval)
         }
     }
 

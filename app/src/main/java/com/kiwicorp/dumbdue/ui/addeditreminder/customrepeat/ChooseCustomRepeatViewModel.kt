@@ -1,10 +1,13 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import com.kiwicorp.dumbdue.Event
 import com.kiwicorp.dumbdue.data.repeat.*
+import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.util.getFullName
 import com.kiwicorp.dumbdue.util.sortedSundayFirst
 import org.threeten.bp.*
@@ -12,8 +15,10 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoField
 import org.threeten.bp.temporal.TemporalAdjusters
 
-class ChooseCustomRepeatViewModel(dueDate: LiveData<ZonedDateTime>,
-    val repeatIntervalUsesReminderTime: Boolean) {
+class ChooseCustomRepeatViewModel @ViewModelInject constructor(val preferencesStorage: PreferencesStorage): ViewModel() {
+
+    private val _dueDate = MutableLiveData(ZonedDateTime.now())
+    val dueDate: LiveData<ZonedDateTime> = _dueDate
 
     val time = Transformations.map(dueDate) { it.toLocalTime() }
     val timeStr = Transformations.map(this.time) { time ->
@@ -33,58 +38,63 @@ class ChooseCustomRepeatViewModel(dueDate: LiveData<ZonedDateTime>,
     val chooseMonthlyViewModel = ChooseMonthlyViewModel(dueDate)
     val chooseYearlyViewModel = ChooseYearlyViewModel(dueDate)
 
-    fun getRepeatInterval(): RepeatInterval {
-        val frequency = this.frequency.value!!.toInt()
-        val time = time.value!!
+    var repeatInterval: RepeatInterval
+        get() {
+            val frequency = this.frequency.value!!.toInt()
+            val time = time.value!!
 
-        return when (type.value!!) {
-            "days" -> chooseDailyViewModel.getRepeatInterval(frequency, time)
-            "weeks" -> chooseWeeklyViewModel.getRepeatInterval(frequency, time)
-            "months" -> chooseMonthlyViewModel.getRepeatInterval(frequency, time)
-            "years" -> chooseYearlyViewModel.getRepeatInterval(frequency, time)
-            else -> throw Exception("The done button was pressed when it should've have been able to")
-        }
-    }
-
-    fun loadRepeatInterval(repeatInterval: RepeatInterval) {
-        updateTime(repeatInterval.time)
-        frequency.value = repeatInterval.frequency.toString()
-
-        when (repeatInterval) {
-            is RepeatDailyInterval -> {
-                updateType("days")
-                chooseDailyViewModel.loadRepeatDailyInterval(repeatInterval)
-            }
-            is RepeatWeeklyInterval -> {
-                updateType("weeks")
-                chooseWeeklyViewModel.loadRepeatWeeklyInterval(repeatInterval)
-            }
-            is RepeatMonthlyInterval -> {
-                updateType("months")
-                chooseMonthlyViewModel.loadRepeatMonthlyInterval(repeatInterval)
-            }
-            is RepeatYearlyInterval -> {
-                updateType("years")
-                chooseYearlyViewModel.loadRepeatYearlyInterval(repeatInterval)
+            return when (type.value!!) {
+                "days" -> chooseDailyViewModel.getRepeatInterval(frequency, time)
+                "weeks" -> chooseWeeklyViewModel.getRepeatInterval(frequency, time)
+                "months" -> chooseMonthlyViewModel.getRepeatInterval(frequency, time)
+                "years" -> chooseYearlyViewModel.getRepeatInterval(frequency, time)
+                else -> throw Exception("The done button was pressed when it should've have been able to")
             }
         }
+        set(value) {
+            setTime(value.time)
+            frequency.value = value.frequency.toString()
+
+            when (value) {
+                is RepeatDailyInterval -> {
+                    setType("days")
+                    chooseDailyViewModel.loadRepeatDailyInterval(value)
+                }
+                is RepeatWeeklyInterval -> {
+                    setType("weeks")
+                    chooseWeeklyViewModel.loadRepeatWeeklyInterval(value)
+                }
+                is RepeatMonthlyInterval -> {
+                    setType("months")
+                    chooseMonthlyViewModel.loadRepeatMonthlyInterval(value)
+                }
+                is RepeatYearlyInterval -> {
+                    setType("years")
+                    chooseYearlyViewModel.loadRepeatYearlyInterval(value)
+                }
+            }
+        }
+
+    fun setDueDate(dueDate: ZonedDateTime) {
+        _dueDate.value = dueDate
     }
 
     fun openTimePicker() {
         _eventOpenTimePicker.value = Event(Unit)
     }
 
-    fun updateTime(time: LocalTime) {
+    fun setTime(time: LocalTime) {
         (this.time as? MutableLiveData<LocalTime>)?.value = time
     }
 
-    fun updateType(type: String) {
+    fun setType(type: String) {
         _type.value = type
     }
 }
 
 class ChooseDailyViewModel(dueDate: LiveData<ZonedDateTime>) {
     private val _startingDate = Transformations.map(dueDate) { it.toLocalDate() } as MutableLiveData
+    val startingDate: LiveData<LocalDate> = _startingDate
 
     val startingDateStr = Transformations.map(_startingDate) { date ->
         date.format(DateTimeFormatter.ofPattern("MMMM d, yyy"))
@@ -104,7 +114,7 @@ class ChooseDailyViewModel(dueDate: LiveData<ZonedDateTime>) {
         _eventOpenChooseDailyStartDate.value = Event(Unit)
     }
 
-    fun chooseStartingDate(date: LocalDate) {
+    fun setStartingDate(date: LocalDate) {
         _startingDate.value = date
         _eventOnStartingDateChosen.value = Event(Unit)
     }
@@ -117,6 +127,7 @@ class ChooseDailyViewModel(dueDate: LiveData<ZonedDateTime>) {
 class ChooseWeeklyViewModel(dueDate: LiveData<ZonedDateTime>) {
     private val _firstDateOfStartingWeek = Transformations.map(dueDate) { it.toLocalDate().with(
         TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)) } as MutableLiveData
+    val firstDateOfStartingWeek: LiveData<LocalDate> = _firstDateOfStartingWeek
 
     val firstDateOfStartingWeekStr = Transformations.map(_firstDateOfStartingWeek) { date ->
         "week starting on ${date.format(DateTimeFormatter.ofPattern("MMMM d"))}"
@@ -143,7 +154,7 @@ class ChooseWeeklyViewModel(dueDate: LiveData<ZonedDateTime>) {
         _eventOpenChooseWeeklyStartDate.value = Event(Unit)
     }
 
-    fun chooseStartingWeek(firstDateOfWeek: LocalDate) {
+    fun setStartingWeek(firstDateOfWeek: LocalDate) {
         _firstDateOfStartingWeek.value = firstDateOfWeek
         _eventOnStartingWeekChosen.value = Event(Unit)
     }

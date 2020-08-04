@@ -116,7 +116,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:layout_marginHorizontal="20dp"
-                android:visibility="@{viewmodel.repeatIntervalUsesReminderTime? View.GONE : View.VISIBLE }"
+                android:visibility="@{viewmodel.preferencesStorage.repeatIntervalUsesRemindersTime? View.GONE : View.VISIBLE }"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/done_button"

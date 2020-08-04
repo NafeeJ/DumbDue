@@ -37,8 +37,6 @@ class AddEditReminderViewModel @ViewModelInject constructor(
     var reminderId: String? = null
         private set //makes value read only externally
 
-    val chooseCustomRepeatViewModel = ChooseCustomRepeatViewModel(dueDate,preferencesStorage.repeatIntervalUsesRemindersTime)
-
     private val _eventOpenRepeatMenu = MutableLiveData<Event<Unit>>()
     val eventOpenRepeatMenu: LiveData<Event<Unit>> = _eventOpenRepeatMenu
 
@@ -102,8 +100,8 @@ class AddEditReminderViewModel @ViewModelInject constructor(
         _eventRepeatChosen.value = Event(Unit)
     }
 
-    fun onChooseCustomRepeatInterval() {
-        onChooseRepeatInterval(chooseCustomRepeatViewModel.getRepeatInterval())
+    fun onChooseCustomRepeatInterval(repeatInterval: RepeatInterval?) {
+        onChooseRepeatInterval(repeatInterval)
         _eventCustomRepeatChosen.value = Event(Unit)
     }
 

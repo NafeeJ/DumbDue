@@ -10,7 +10,6 @@ import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseWeeklyStartDateBinding
-import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
 import com.kiwicorp.dumbdue.util.RoundedBottomSheetDialogFragment
 import com.kiwicorp.dumbdue.util.getNavGraphViewModel
 import com.kizitonwose.calendarview.model.CalendarDay
@@ -36,18 +35,19 @@ class ChooseWeeklyStartDateFragment : RoundedBottomSheetDialogFragment() {
 
     private val args: ChooseWeeklyStartDateFragmentArgs by navArgs()
 
-    private lateinit var viewModel: AddEditReminderViewModel
+    private lateinit var chooseCustomRepeatViewModel: ChooseCustomRepeatViewModel
+
+    private lateinit var chooseWeeklyRepeatViewModel: ChooseWeeklyViewModel
 
     private val today = LocalDate.now()
-    private var firstDayOfSelectedWeek: LocalDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
-    private var lastDayOfSelectedWeek: LocalDate = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = getNavGraphViewModel(args.graphId)
+        chooseCustomRepeatViewModel = getNavGraphViewModel(args.graphId)
+        chooseWeeklyRepeatViewModel = chooseCustomRepeatViewModel.chooseWeeklyViewModel
         val root = inflater.inflate(R.layout.fragment_choose_weekly_start_date,container,false)
         binding = FragmentChooseWeeklyStartDateBinding.bind(root)
         return root
@@ -71,8 +71,7 @@ class ChooseWeeklyStartDateFragment : RoundedBottomSheetDialogFragment() {
                 view.setOnClickListener {
                     if (day.owner == DayOwner.THIS_MONTH && (day.date == today || day.date.isAfter(today))) {
                         with(day.date) {
-                            firstDayOfSelectedWeek = this.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
-                            lastDayOfSelectedWeek = this.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
+                            chooseWeeklyRepeatViewModel.setStartingWeek(this.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)))
                         }
                         binding.calendar.notifyCalendarChanged()
                     }
@@ -91,19 +90,22 @@ class ChooseWeeklyStartDateFragment : RoundedBottomSheetDialogFragment() {
                 textView.background = null
                 bg.visibility = View.INVISIBLE
 
+                val startDate = chooseWeeklyRepeatViewModel.firstDateOfStartingWeek.value!!
+                val endDate = startDate.with(TemporalAdjusters.next(DayOfWeek.SATURDAY))
+
                 if (day.owner == DayOwner.THIS_MONTH) {
                     textView.text = day.day.toString()
-                    if (day.date.isBefore(today) && day.date !in firstDayOfSelectedWeek..lastDayOfSelectedWeek) {
+                    if (day.date.isBefore(today) && day.date !in startDate..endDate) {
                         textView.setTextColor(Color.parseColor("#4DFFFFFF"))
                     } else {
                         when {
-                            day.date == firstDayOfSelectedWeek -> {
+                            day.date == startDate -> {
                                 textView.setBackgroundResource(R.drawable.calendar_continuous_selected_start)
                             }
-                            day.date > firstDayOfSelectedWeek && day.date < lastDayOfSelectedWeek -> {
+                            day.date > startDate && day.date < endDate -> {
                                 textView.setBackgroundResource(R.drawable.calendar_continous_selected_middle)
                             }
-                            day.date == lastDayOfSelectedWeek -> {
+                            day.date == endDate -> {
                                 textView.setBackgroundResource(R.drawable.calendar_continuous_selected_end)
                             }
                             day.date == today -> {
@@ -120,8 +122,7 @@ class ChooseWeeklyStartDateFragment : RoundedBottomSheetDialogFragment() {
                     // This part is to make the coloured selection background continuous
                     // on the blank in and out dates across various months and also on dates(months)
                     // between the start and end dates if the selection spans across multiple months.
-                    val startDate = firstDayOfSelectedWeek
-                    val endDate = lastDayOfSelectedWeek
+
                     // Mimic selection of inDates that are less than the startDate.
                     // Example: When 26 Feb 2019 is startDate and 5 Mar 2019 is endDate,
                     // this makes the inDates in Mar 2019 for 24 & 25 Feb 2019 look selected.
@@ -157,15 +158,11 @@ class ChooseWeeklyStartDateFragment : RoundedBottomSheetDialogFragment() {
                 container.textView.text = "${month.yearMonth.month.name.toLowerCase().capitalize()} ${month.year}"
             }
         }
-
-        binding.doneButton.setOnClickListener {
-            viewModel.chooseCustomRepeatViewModel.chooseWeeklyViewModel.chooseStartingWeek(firstDayOfSelectedWeek)
-        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.chooseCustomRepeatViewModel.chooseWeeklyViewModel.eventOnFirstDateOfStartingWeekChosen.observe(viewLifecycleOwner, EventObserver {
+        chooseCustomRepeatViewModel.chooseWeeklyViewModel.eventOnFirstDateOfStartingWeekChosen.observe(viewLifecycleOwner, EventObserver {
             findNavController().popBackStack()
         })
     }
