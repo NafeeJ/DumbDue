@@ -3,7 +3,6 @@ package com.kiwicorp.dumbdue.notifications
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.content.getSystemService
@@ -41,7 +40,7 @@ class NotificationBroadcastReceiver : HiltBroadcastReceiver() {
 
         val notification = Notification.Builder(context, CHANNEL_ID_REMINDER)
             .setContentTitle(title)
-            .setSmallIcon(R.drawable.ic_android_black_24dp)
+            .setSmallIcon(R.drawable.ic_dumbdue_logo)
             .setContentIntent(openAppIntent)
             .setShowWhen(true)
             .setAutoCancel(true).build()
