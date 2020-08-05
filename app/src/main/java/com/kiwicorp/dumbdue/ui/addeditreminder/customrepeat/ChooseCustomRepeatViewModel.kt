@@ -103,9 +103,6 @@ class ChooseDailyViewModel(dueDate: LiveData<ZonedDateTime>) {
     private val _eventOpenChooseDailyStartDate = MutableLiveData<Event<Unit>>()
     val eventOpenChooseDailyStartDate: LiveData<Event<Unit>> = _eventOpenChooseDailyStartDate
 
-    private val _eventOnStartingDateChosen = MutableLiveData<Event<Unit>>()
-    val eventOnStartingDateChosen: LiveData<Event<Unit>> = _eventOnStartingDateChosen
-
     fun getRepeatInterval(frequency: Int, time: LocalTime): RepeatDailyInterval {
         return RepeatDailyInterval(frequency, time, _startingDate.value!!)
     }
@@ -116,7 +113,6 @@ class ChooseDailyViewModel(dueDate: LiveData<ZonedDateTime>) {
 
     fun setStartingDate(date: LocalDate) {
         _startingDate.value = date
-        _eventOnStartingDateChosen.value = Event(Unit)
     }
 
      fun loadRepeatDailyInterval(repeatDailyInterval: RepeatDailyInterval) {
@@ -136,9 +132,6 @@ class ChooseWeeklyViewModel(dueDate: LiveData<ZonedDateTime>) {
     private val _eventOpenChooseWeeklyStartDate = MutableLiveData<Event<Unit>>()
     val eventOpenChooseWeeklyStartDate: LiveData<Event<Unit>> = _eventOpenChooseWeeklyStartDate
 
-    private val _eventOnStartingWeekChosen = MutableLiveData<Event<Unit>>()
-    val eventOnFirstDateOfStartingWeekChosen: LiveData<Event<Unit>> = _eventOnStartingWeekChosen
-
     private val _daysOfWeek = MutableLiveData(listOf(dueDate.value!!.dayOfWeek))
     val daysOfWeek: LiveData<List<DayOfWeek>> = _daysOfWeek
 
@@ -156,7 +149,6 @@ class ChooseWeeklyViewModel(dueDate: LiveData<ZonedDateTime>) {
 
     fun setStartingWeek(firstDateOfWeek: LocalDate) {
         _firstDateOfStartingWeek.value = firstDateOfWeek
-        _eventOnStartingWeekChosen.value = Event(Unit)
     }
 
     fun addDayOfWeek(dayOfWeek: DayOfWeek) {

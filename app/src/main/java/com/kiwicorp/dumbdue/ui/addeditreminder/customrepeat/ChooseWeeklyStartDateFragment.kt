@@ -160,11 +160,4 @@ class ChooseWeeklyStartDateFragment : RoundedBottomSheetDialogFragment() {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        chooseCustomRepeatViewModel.chooseWeeklyViewModel.eventOnFirstDateOfStartingWeekChosen.observe(viewLifecycleOwner, EventObserver {
-            findNavController().popBackStack()
-        })
-    }
-
 }

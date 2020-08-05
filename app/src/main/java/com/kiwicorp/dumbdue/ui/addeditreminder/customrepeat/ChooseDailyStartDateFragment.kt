@@ -113,11 +113,4 @@ class ChooseDailyStartDateFragment : RoundedBottomSheetDialogFragment() {
 
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-            chooseCustomRepeatViewModel.chooseDailyViewModel.eventOnStartingDateChosen.observe(viewLifecycleOwner, EventObserver {
-            findNavController().popBackStack()
-        })
-    }
-
 }
