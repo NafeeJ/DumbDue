@@ -1,8 +1,9 @@
-package com.kiwicorp.dumbdue.notifications
+package com.kiwicorp.dumbdue.receivers
 
 import android.content.Context
 import android.content.Intent
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
+import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
 import com.kiwicorp.dumbdue.util.HiltBroadcastReceiver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
