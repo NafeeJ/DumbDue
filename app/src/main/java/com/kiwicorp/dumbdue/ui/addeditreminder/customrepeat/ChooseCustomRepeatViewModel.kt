@@ -20,7 +20,7 @@ class ChooseCustomRepeatViewModel @ViewModelInject constructor(val preferencesSt
     private val _dueDate = MutableLiveData(ZonedDateTime.now())
     val dueDate: LiveData<ZonedDateTime> = _dueDate
 
-    val time = Transformations.map(dueDate) { it.toLocalTime() }
+    val time = MutableLiveData(LocalTime.now())
     val timeStr = Transformations.map(this.time) { time ->
         time.format(DateTimeFormatter.ofPattern("h:mm a"))
     }
@@ -77,6 +77,7 @@ class ChooseCustomRepeatViewModel @ViewModelInject constructor(val preferencesSt
 
     fun setDueDate(dueDate: ZonedDateTime) {
         _dueDate.value = dueDate
+        setTime(dueDate.toLocalTime())
     }
 
     fun openTimePicker() {
@@ -84,7 +85,7 @@ class ChooseCustomRepeatViewModel @ViewModelInject constructor(val preferencesSt
     }
 
     fun setTime(time: LocalTime) {
-        (this.time as? MutableLiveData<LocalTime>)?.value = time
+        this.time.value = time
     }
 
     fun setType(type: String) {
@@ -228,7 +229,7 @@ class ChooseMonthlyViewModel(dueDate: LiveData<ZonedDateTime>) {
 }
 
 class ChooseYearlyViewModel(dueDate: LiveData<ZonedDateTime>) {
-    val _selectedYearlyOption = MutableLiveData("By number of day in month")
+    private val _selectedYearlyOption = MutableLiveData("By number of day in month")
     val selectedYearlyOption: LiveData<String> = _selectedYearlyOption
 
     private val _startingYear = Transformations.map(dueDate) { Year.from(it) } as MutableLiveData

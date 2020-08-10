@@ -71,11 +71,12 @@ class ChooseCustomRepeatFragment : RoundedBottomSheetDialogFragment(),
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
-        if (addEditReminderViewModel.repeatInterval.value == null) {
-            chooseCustomRepeatViewModel.setDueDate(addEditReminderViewModel.dueDate.value!!)
-        }
-        addEditReminderViewModel.repeatInterval.value?.let {
-            chooseCustomRepeatViewModel.repeatInterval = it
+        addEditReminderViewModel.repeatInterval.value.let {repeatInterval ->
+            if (repeatInterval == null) {
+                chooseCustomRepeatViewModel.setDueDate(addEditReminderViewModel.dueDate.value!!)
+            } else {
+                chooseCustomRepeatViewModel.repeatInterval = repeatInterval
+            }
         }
     }
 
@@ -103,12 +104,12 @@ class ChooseCustomRepeatFragment : RoundedBottomSheetDialogFragment(),
             chooseCustomRepeatViewModel.setTime(LocalTime.of(hourOfDay, minute))
         }
         //todo migrate to material time picker when available
-        val now = LocalTime.now()
+        val time = chooseCustomRepeatViewModel.time.value!!
         val timePickerDialog = TimePickerDialog(
             requireContext(),
             onTimeSetListener,
-            now.hour,
-            now.minute,
+            time.hour,
+            time.minute,
             false
         )
         timePickerDialog.show()
