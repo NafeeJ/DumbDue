@@ -1,6 +1,5 @@
 package com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat
 
-import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.AutoCompleteTextView
-import android.widget.TimePicker
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.chip.Chip
+import com.google.android.material.timepicker.MaterialTimePicker
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCountInterval.Day
@@ -100,19 +99,15 @@ class ChooseCustomRepeatFragment : RoundedBottomSheetDialogFragment(),
     }
 
     private fun openTimePicker() {
-        val onTimeSetListener = TimePickerDialog.OnTimeSetListener { _: TimePicker, hourOfDay: Int, minute: Int ->
-            chooseCustomRepeatViewModel.setTime(LocalTime.of(hourOfDay, minute))
+        val timePicker = MaterialTimePicker.newInstance().apply {
+            val currTime = chooseCustomRepeatViewModel.time.value!!
+            minute = currTime.minute
+            hour = currTime.hour
+            setListener {
+                chooseCustomRepeatViewModel.setTime(LocalTime.of(it.hour, it.minute))
+            }
         }
-        //todo migrate to material time picker when available
-        val time = chooseCustomRepeatViewModel.time.value!!
-        val timePickerDialog = TimePickerDialog(
-            requireContext(),
-            onTimeSetListener,
-            time.hour,
-            time.minute,
-            false
-        )
-        timePickerDialog.show()
+        timePicker.show(requireActivity().supportFragmentManager, null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

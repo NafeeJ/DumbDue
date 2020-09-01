@@ -50,6 +50,7 @@
         <item name="bottomAppBarStyle">@style/Widget.MaterialComponents.BottomAppBar.PrimarySurface</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.DumbDue.AlertDialogTheme</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.DumbDue.BottomSheetDialog</item>
+        <item name="materialTimePickerTheme">@style/ThemeOverlay.DumbDue.MaterialTimePicker</item>
         <item name="navigationViewStyle">@style/Widget.DumbDue.NavigationView</item>
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
         <item name="imageButtonStyle">@style/Widget.DumbDue.Button.ImageButton</item>

@@ -33,8 +33,7 @@
     </style>
 
     <style name="TextAppearance.DumbDue.Headline3" parent="TextAppearance.MaterialComponents.Headline3">
-        <item name="fontFamily">@font/rubik_bold</item>
-        <item name="android:textStyle">bold</item>
+        <item name="fontFamily">@font/rubik_medium</item>
     </style>
 
     <style name="TextAppearance.DumbDue.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
