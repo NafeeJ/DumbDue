@@ -54,7 +54,7 @@ class TimePickerFragment : RoundedBottomSheetDialogFragment() {
         val dateFormatter = DateTimeFormatter.ofPattern("EEE MMM d")
         //return the date of the calendar formatted. If the calendar's date is today, return "Today"
         fun format(date: LocalDate): String {
-            return if (date.dayOfWeek == ZonedDateTime.now().dayOfWeek) {
+            return if (date == LocalDate.now()) {
                 "Today"
             } else {
                 dateFormatter.format(date)
