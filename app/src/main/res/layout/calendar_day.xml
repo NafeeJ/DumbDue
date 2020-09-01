@@ -25,7 +25,8 @@
             android:layout_marginBottom="4dp"
             android:gravity="center"
             android:textSize="16sp"
-            tools:text="22" />
+            tools:text="22"
+            android:textAppearance="?textAppearanceBody1"/>
     </FrameLayout>
 </layout>
 

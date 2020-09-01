@@ -12,6 +12,7 @@
         android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="26sp"
+        android:textAppearance="?textAppearanceBody1"
         tools:text="June 2020" />
     <include
         android:layout_marginTop="10dp"

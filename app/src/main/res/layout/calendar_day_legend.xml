@@ -14,6 +14,7 @@
         android:gravity="center"
         android:text="@string/sun"
         android:textColor="@android:color/white"
+        android:textAppearance="?textAppearanceBody1"
         android:textSize="14sp" />
 
     <TextView
@@ -24,6 +25,7 @@
         android:gravity="center"
         android:text="@string/mon"
         android:textColor="@android:color/white"
+        android:textAppearance="?textAppearanceBody1"
         android:textSize="14sp" />
 
     <TextView
@@ -34,6 +36,7 @@
         android:gravity="center"
         android:text="@string/tue"
         android:textColor="@android:color/white"
+        android:textAppearance="?textAppearanceBody1"
         android:textSize="14sp" />
 
     <TextView
@@ -44,6 +47,7 @@
         android:gravity="center"
         android:text="@string/wed"
         android:textColor="@android:color/white"
+        android:textAppearance="?textAppearanceBody1"
         android:textSize="14sp" />
 
     <TextView
@@ -54,6 +58,7 @@
         android:gravity="center"
         android:text="@string/thu"
         android:textColor="@android:color/white"
+        android:textAppearance="?textAppearanceBody1"
         android:textSize="14sp" />
 
     <TextView
@@ -64,6 +69,7 @@
         android:gravity="center"
         android:text="@string/fri"
         android:textColor="@android:color/white"
+        android:textAppearance="?textAppearanceBody1"
         android:textSize="14sp" />
 
     <TextView
@@ -74,6 +80,7 @@
         android:gravity="center"
         android:text="@string/sat"
         android:textColor="@android:color/white"
+        android:textAppearance="?textAppearanceBody1"
         android:textSize="14sp" />
 
 </LinearLayout>
