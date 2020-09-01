@@ -1,5 +1,6 @@
 package com.kiwicorp.dumbdue
 
+import android.graphics.Color
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
 
@@ -24,6 +25,7 @@ data class SnackbarMessage(
 
         if (action != null) {
             snackbar.setAction(actionText,action)
+            snackbar.setActionTextColor(Color.parseColor("#168a60"))
         }
 
         snackbar.show()
