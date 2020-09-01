@@ -12,12 +12,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 /**
- * Receiver that listens for device boot up so reminders can be rescheduled after the device is
- * turned off (powering off device cancels all alarms)
+ * Receiver that listens for the app updates so reminders can be rescheduled (updating app cancels
+ * all alarms).
  */
 @AndroidEntryPoint
-class BootReceiver : HiltBroadcastReceiver() {
-
+class AppUpdateReceiver : HiltBroadcastReceiver() {
     @Inject
     lateinit var alarmManager: ReminderAlarmManager
 
@@ -27,7 +26,7 @@ class BootReceiver : HiltBroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         Timber.d("Received")
-        if (intent.action == "android.intent.action.BOOT_COMPLETED") {
+        if (intent.action == "android.intent.action.MY_PACKAGE_REPLACED") {
             Timber.d("Correct action received")
             GlobalScope.launch {
                 val reminders = reminderRepository.getReminders()
@@ -42,5 +41,4 @@ class BootReceiver : HiltBroadcastReceiver() {
             }
         }
     }
-
 }
