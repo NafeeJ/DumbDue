@@ -177,14 +177,12 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
                 .withHour(23)
                 .withMinute(59)
                 .withSecond(59)
-                .withNano(59)
                 .plusDays(1)
             // 23:59:59 in 7 days
             val endOfNext7Days = ZonedDateTime.now()
                 .withHour(23)
                 .withMinute(59)
                 .withSecond(59)
-                .withNano(59)
                 .plusWeeks(1)
 
             return when {
@@ -193,10 +191,10 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
                     "${time.timeFromNowString(true)} ago"
                 }
                 // add "in" to time from now string if within 3 hours or more than a week
-                (ChronoUnit.HOURS.between(time, ZonedDateTime.now()) <= 3) || time.isAfter(endOfNext7Days) -> {
+                (ChronoUnit.HOURS.between(ZonedDateTime.now(), time) <= 3) || time.isAfter(endOfNext7Days) -> {
                     "in ${time.timeFromNowString(true)}"
                 }
-                // if less than 2 days from today, return the time
+                // if before tomorrow, return the time
                 time.isBefore(endOfTomorrow) -> time.format(DateTimeFormatter.ofPattern("h:mm a"))
                 // if less than 7 days from today, return the day of the week
                 time.isBefore(endOfNext7Days) -> time.format(DateTimeFormatter.ofPattern("EEE"))
