@@ -6,6 +6,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.kiwicorp.dumbdue.Event
 import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
+import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.ui.REQUEST_COMPLETE
 import com.kiwicorp.dumbdue.ui.REQUEST_DELETE
@@ -70,8 +71,12 @@ class RemindersViewModel @ViewModelInject constructor(
             repository.deleteReminder(reminder)
 
             val reminderFromRepeatInterval = if (reminder.repeatInterval != null) {
-                val nextDueDate = reminder.repeatInterval!!.getNextDueDate(reminder.dueDate)
-                Reminder(reminder.title, nextDueDate,reminder.repeatInterval,reminder.autoSnoozeVal)
+                // creates a repeat interval clone because if the new reminder shares the same
+                // instance of RepeatInterval as the old reminder, when complete is undone, the
+                // old reminder will have the wrong prevOccurrence.
+                val repeatIntervalClone = reminder.repeatInterval!!.clone() as RepeatInterval
+                val nextDueDate = repeatIntervalClone.getNextDueDate(reminder.dueDate)
+                Reminder(reminder.title, nextDueDate,repeatIntervalClone,reminder.autoSnoozeVal)
             } else {
                 null
             }

@@ -3,7 +3,7 @@ package com.kiwicorp.dumbdue.data.repeat
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZonedDateTime
 
-abstract class RepeatInterval(val frequency: Int, var time: LocalTime) {
+abstract class RepeatInterval(val frequency: Int, var time: LocalTime): Cloneable {
     fun getNextDueDate(currOccurrence: ZonedDateTime): ZonedDateTime{
         var nextOccurrence = getNextOccurrence()
         while(!nextOccurrence.isAfter(currOccurrence)) {
@@ -13,4 +13,7 @@ abstract class RepeatInterval(val frequency: Int, var time: LocalTime) {
     }
     protected var prevOccurrence: ZonedDateTime? = null
     protected abstract fun getNextOccurrence(): ZonedDateTime
+    public override fun clone(): Any {
+        return super.clone()
+    }
 }
