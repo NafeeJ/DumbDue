@@ -30,12 +30,11 @@
                 layout="@layout/include_back_toolbar"/>
 
             <LinearLayout
-                android:orientation="vertical"
                 android:id="@+id/text_views_card"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginHorizontal="10dp"
                 app:layout_constraintTop_toBottomOf="@id/toolbar">
 
@@ -49,7 +48,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textAppearance="?attr/textAppearanceHeadline5"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="10dp"
                         android:layout_marginHorizontal="10dp"
                         android:background="@android:color/transparent"
                         android:text="@={viewmodel.title}"
@@ -64,7 +63,8 @@
                         android:layout_marginHorizontal="10dp"
                         android:layout_marginBottom="20dp"
                         android:gravity="center_vertical"
-                        android:textAppearance="?textAppearanceBody1"
+                        android:maxLines="1"
+                        android:textAppearance="?textAppearanceBody2"
                         app:timeFromNowDueDate="@{viewmodel.dueDate}"
                         app:timeFromNowLong="@{true}"
                         android:onClick="@{()->viewmodel.openTimePicker()}"
@@ -77,9 +77,8 @@
                         android:drawableStart="@drawable/ic_repeat"
                         android:drawablePadding="10dp"
                         android:layout_marginHorizontal="10dp"
-                        android:layout_marginBottom="20dp"
                         android:gravity="center_vertical"
-                        android:textAppearance="?textAppearanceBody1"
+                        android:textAppearance="?textAppearanceBody2"
                         app:repeatInterval="@{viewmodel.repeatInterval}"
                         android:onClick="@{()->viewmodel.openRepeatMenu()}"
                         tools:text="Weekdays 10:05 AM"/>
@@ -102,8 +101,6 @@
 
             </LinearLayout>
 
-
-
             <com.google.android.material.card.MaterialCardView
                 app:layout_constraintTop_toBottomOf="@id/text_views_card"
                 android:layout_width="match_parent"
@@ -117,8 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
                     android:layout_marginHorizontal="10dp"
-                    layout="@layout/time_setters"
-                    />
+                    layout="@layout/time_setters" />
 
             </com.google.android.material.card.MaterialCardView>
 
