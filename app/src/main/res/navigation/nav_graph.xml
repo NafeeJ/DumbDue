@@ -90,7 +90,7 @@
         </dialog>
         <dialog
             android:id="@+id/navigation_choose_custom_repeat"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatFragment"
+            android:name="com.kiwicorp.dumbdue.ui.choosecustomrepeat.ChooseCustomRepeatFragment"
             android:label="CustomRepeatFragment" >
             <argument
                 android:name="graphId"
@@ -104,7 +104,7 @@
         </dialog>
         <dialog
             android:id="@+id/navigation_choose_daily_start_date"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseDailyStartDateFragment"
+            android:name="com.kiwicorp.dumbdue.ui.choosecustomrepeat.ChooseDailyStartDateFragment"
             android:label="ChooseDailyStartDateFragment">
             <argument
                 android:name="graphId"
@@ -112,7 +112,7 @@
         </dialog>
         <dialog
             android:id="@+id/navigation_choose_weekly_start_date"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseWeeklyStartDateFragment"
+            android:name="com.kiwicorp.dumbdue.ui.choosecustomrepeat.ChooseWeeklyStartDateFragment"
             android:label="ChooseWeeklyStartDateFragment" >
             <argument
                 android:name="graphId"
@@ -177,7 +177,7 @@
         </dialog>
         <dialog
             android:id="@+id/navigation_choose_custom_repeat"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatFragment"
+            android:name="com.kiwicorp.dumbdue.ui.choosecustomrepeat.ChooseCustomRepeatFragment"
             android:label="CustomRepeatFragment" >
             <argument
                 android:name="graphId"
@@ -191,7 +191,7 @@
         </dialog>
         <dialog
             android:id="@+id/navigation_choose_daily_start_date"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseDailyStartDateFragment"
+            android:name="com.kiwicorp.dumbdue.ui.choosecustomrepeat.ChooseDailyStartDateFragment"
             android:label="ChooseDailyStartDateFragment">
             <argument
                 android:name="graphId"
@@ -200,7 +200,7 @@
 
         <dialog
             android:id="@+id/navigation_choose_weekly_start_date"
-            android:name="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseWeeklyStartDateFragment"
+            android:name="com.kiwicorp.dumbdue.ui.choosecustomrepeat.ChooseWeeklyStartDateFragment"
             android:label="ChooseWeeklyStartDateFragment" >
             <argument
                 android:name="graphId"
@@ -212,7 +212,7 @@
     </navigation>
     <fragment
         android:id="@+id/navigation_edit_time_setters"
-        android:name="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSettersFragment"
+        android:name="com.kiwicorp.dumbdue.ui.edittimesetbuttons.EditTimeSettersFragment"
         android:label="Edit Time Setter Buttons"
         tools:layout="@layout/fragment_edit_time_setters" >
         <action
@@ -224,7 +224,7 @@
     </fragment>
     <dialog
         android:id="@+id/navigation_edit_incremental_time_setter"
-        android:name="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editincrementaltimesetter.EditIncrementalTimeSetterFragment"
+        android:name="com.kiwicorp.dumbdue.ui.editincrementaltimesetter.EditIncrementalTimeSetterFragment"
         android:label="Edit Incremental Time Setter" >
         <argument
             android:name="key"
@@ -232,7 +232,7 @@
     </dialog>
     <dialog
         android:id="@+id/navigation_edit_quick_access_time_setter"
-        android:name="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editquickaccesstimesetter.EditQuickAccessTimeSetterFragment"
+        android:name="com.kiwicorp.dumbdue.ui.editquickaccesstimesetter.EditQuickAccessTimeSetterFragment"
         android:label="Edit Quick Access Time Setter"
         tools:layout="@layout/fragment_edit_quick_access_time_setter" >
         <argument

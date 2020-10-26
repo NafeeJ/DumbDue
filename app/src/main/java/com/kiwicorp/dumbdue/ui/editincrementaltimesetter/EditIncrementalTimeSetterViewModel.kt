@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editincrementaltimesetter
+package com.kiwicorp.dumbdue.ui.editincrementaltimesetter
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData

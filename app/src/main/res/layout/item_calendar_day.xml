@@ -9,11 +9,11 @@
 
         <variable
             name="dayItem"
-            type="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.DayItem" />
+            type="com.kiwicorp.dumbdue.ui.choosecustomrepeat.DayItem" />
 
         <variable
             name="dayItemClickListener"
-            type="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.DayItemClickListener" />
+            type="com.kiwicorp.dumbdue.ui.choosecustomrepeat.DayItemClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

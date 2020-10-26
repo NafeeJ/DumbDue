@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons
+package com.kiwicorp.dumbdue.ui.edittimesetbuttons
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,8 +10,8 @@ import androidx.navigation.fragment.findNavController
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditTimeSettersBinding
-import com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSettersFragmentDirections.Companion.toEditIncrementalTimeSetter
-import com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSettersFragmentDirections.Companion.toEditQuickAccessTimeSetter
+import com.kiwicorp.dumbdue.ui.edittimesetbuttons.EditTimeSettersFragmentDirections.Companion.toEditIncrementalTimeSetter
+import com.kiwicorp.dumbdue.ui.edittimesetbuttons.EditTimeSettersFragmentDirections.Companion.toEditQuickAccessTimeSetter
 import com.kiwicorp.dumbdue.util.DialogNavigator
 import com.kiwicorp.dumbdue.util.createMaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint

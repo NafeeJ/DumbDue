@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons
+package com.kiwicorp.dumbdue.ui.edittimesetbuttons
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData

@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editquickaccesstimesetter
+package com.kiwicorp.dumbdue.ui.editquickaccesstimesetter
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData

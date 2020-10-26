@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat
+package com.kiwicorp.dumbdue.ui.choosecustomrepeat
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

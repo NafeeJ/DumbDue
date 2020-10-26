@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewmodel"
-            type="com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseDailyViewModel" />
+            type="com.kiwicorp.dumbdue.ui.choosecustomrepeat.ChooseDailyViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"

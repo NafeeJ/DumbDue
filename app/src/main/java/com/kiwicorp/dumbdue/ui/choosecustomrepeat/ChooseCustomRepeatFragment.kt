@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat
+package com.kiwicorp.dumbdue.ui.choosecustomrepeat
 
 import android.content.Context
 import android.os.Bundle
@@ -18,8 +18,8 @@ import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.repeat.RepeatMonthlyByCountInterval.Day
 import com.kiwicorp.dumbdue.databinding.FragmentChooseCustomRepeatBinding
 import com.kiwicorp.dumbdue.ui.addeditreminder.AddEditReminderViewModel
-import com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatFragmentDirections.Companion.toChooseDailyStartDate
-import com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatFragmentDirections.Companion.toChooseWeeklyStartDate
+import com.kiwicorp.dumbdue.ui.choosecustomrepeat.ChooseCustomRepeatFragmentDirections.Companion.toChooseDailyStartDate
+import com.kiwicorp.dumbdue.ui.choosecustomrepeat.ChooseCustomRepeatFragmentDirections.Companion.toChooseWeeklyStartDate
 import com.kiwicorp.dumbdue.util.*
 import dagger.hilt.android.AndroidEntryPoint
 import org.threeten.bp.*

@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat
+package com.kiwicorp.dumbdue.ui.choosecustomrepeat
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData

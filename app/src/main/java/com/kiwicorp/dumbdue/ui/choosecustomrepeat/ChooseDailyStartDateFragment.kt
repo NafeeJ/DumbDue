@@ -1,13 +1,11 @@
-package com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat
+package com.kiwicorp.dumbdue.ui.choosecustomrepeat
 
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentChooseDailyStartDateBinding
 import com.kiwicorp.dumbdue.util.RoundedBottomSheetDialogFragment

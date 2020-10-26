@@ -14,7 +14,6 @@ import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
 import com.kiwicorp.dumbdue.ui.REQUEST_COMPLETE
 import com.kiwicorp.dumbdue.ui.REQUEST_DELETE
-import com.kiwicorp.dumbdue.ui.addeditreminder.customrepeat.ChooseCustomRepeatViewModel
 import kotlinx.coroutines.launch
 import org.threeten.bp.ZonedDateTime
 

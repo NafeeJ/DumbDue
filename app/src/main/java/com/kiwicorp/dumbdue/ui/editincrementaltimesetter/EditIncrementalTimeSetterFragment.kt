@@ -1,4 +1,4 @@
-package com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editincrementaltimesetter
+package com.kiwicorp.dumbdue.ui.editincrementaltimesetter
 
 import android.content.DialogInterface
 import android.os.Bundle
@@ -12,7 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditIncrementalTimeSetterBinding
-import com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.EditTimeSettersViewModel
+import com.kiwicorp.dumbdue.ui.edittimesetbuttons.EditTimeSettersViewModel
 import com.kiwicorp.dumbdue.util.RoundedBottomSheetDialogFragment
 import com.shawnlin.numberpicker.NumberPicker
 import dagger.hilt.android.AndroidEntryPoint

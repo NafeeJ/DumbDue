@@ -6,13 +6,13 @@
     <data>
         <variable
             name="viewmodel"
-            type="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editincrementaltimesetter.EditIncrementalTimeSetterViewModel" />
+            type="com.kiwicorp.dumbdue.ui.editincrementaltimesetter.EditIncrementalTimeSetterViewModel" />
     </data>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ui.settings.edittimesetbuttons.editincrementaltimesetter.EditIncrementalTimeSetterFragment">
+        tools:context=".ui.editincrementaltimesetter.EditIncrementalTimeSetterFragment">
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/picker_plus_minus"

@@ -6,13 +6,13 @@
     <data>
         <variable
             name="viewmodel"
-            type="com.kiwicorp.dumbdue.ui.settings.edittimesetbuttons.editquickaccesstimesetter.EditQuickAccessTimeSetterViewModel" />
+            type="com.kiwicorp.dumbdue.ui.editquickaccesstimesetter.EditQuickAccessTimeSetterViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ui.settings.edittimesetbuttons.editquickaccesstimesetter.EditQuickAccessTimeSetterFragment">
+        tools:context=".ui.editquickaccesstimesetter.EditQuickAccessTimeSetterFragment">
 
         <com.shawnlin.numberpicker.NumberPicker
             android:id="@+id/picker_hours"
