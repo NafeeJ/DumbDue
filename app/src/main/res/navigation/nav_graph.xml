@@ -15,7 +15,11 @@
             app:destination="@id/nav_graph_add" />
         <action
             android:id="@+id/to_nav_graph_edit"
-            app:destination="@id/nav_graph_edit" />
+            app:destination="@id/nav_graph_edit"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
         <argument
             android:name="request"
             app:argType="integer"
@@ -26,7 +30,11 @@
             android:defaultValue="" />
         <action
             android:id="@+id/to_settings"
-            app:destination="@id/navigation_settings" />
+            app:destination="@id/navigation_settings"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"
@@ -35,7 +43,11 @@
         tools:layout="@layout/fragment_settings">
         <action
             android:id="@+id/to_edit_time_setters"
-            app:destination="@id/navigation_edit_time_setters" />
+            app:destination="@id/navigation_edit_time_setters"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
     <navigation
         android:id="@+id/nav_graph_add"
@@ -208,7 +220,11 @@
         </dialog>
         <action
             android:id="@+id/to_reminders"
-            app:destination="@id/navigation_reminders" />
+            app:destination="@id/navigation_reminders"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:popEnterAnim="@anim/fragment_open_enter"
+            app:popExitAnim="@anim/fragment_open_exit" />
     </navigation>
     <fragment
         android:id="@+id/navigation_edit_time_setters"

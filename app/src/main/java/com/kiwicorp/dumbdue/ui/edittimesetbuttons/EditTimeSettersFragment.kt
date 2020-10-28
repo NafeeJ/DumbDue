@@ -13,7 +13,6 @@ import com.kiwicorp.dumbdue.databinding.FragmentEditTimeSettersBinding
 import com.kiwicorp.dumbdue.ui.edittimesetbuttons.EditTimeSettersFragmentDirections.Companion.toEditIncrementalTimeSetter
 import com.kiwicorp.dumbdue.ui.edittimesetbuttons.EditTimeSettersFragmentDirections.Companion.toEditQuickAccessTimeSetter
 import com.kiwicorp.dumbdue.util.DialogNavigator
-import com.kiwicorp.dumbdue.util.createMaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -35,16 +34,6 @@ class EditTimeSettersFragment : Fragment(), DialogNavigator {
             viewmodel = viewModel
         }
         return root
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        exitTransition = createMaterialElevationScale(false).apply {
-            duration = resources.getInteger(R.integer.dumbdue_motion_duration_large).toLong()
-        }
-        enterTransition = createMaterialElevationScale(true).apply {
-            duration = resources.getInteger(R.integer.dumbdue_motion_duration_large).toLong()
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
