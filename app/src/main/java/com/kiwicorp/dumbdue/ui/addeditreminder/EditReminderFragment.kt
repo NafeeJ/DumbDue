@@ -62,7 +62,7 @@ class EditReminderFragment : Fragment(), DialogNavigator {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             viewModel.updateReminder()
         }
-        binding.toolbar.toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
         (requireActivity() as MainActivity).bottomAppBar.setOnMenuItemClickListener {
             when(it.itemId) {
                 R.id.menu_complete -> {

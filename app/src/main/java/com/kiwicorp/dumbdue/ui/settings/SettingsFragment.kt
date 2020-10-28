@@ -49,7 +49,7 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.includeBackToolbar.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
+        binding.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
         setupNavigation()
         binding.repeatIntervalUsesDueDateSwitch.setOnCheckedChangeListener { _, isChecked ->
             viewModel.setRepeatIntervalUsesReminderDueDate(isChecked)

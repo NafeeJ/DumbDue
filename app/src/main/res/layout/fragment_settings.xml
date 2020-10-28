@@ -14,15 +14,26 @@
         android:layout_height="match_parent"
         app:paddingTopSystemWindowInsets="@{true}">
 
-       <include
-           android:id="@+id/include_back_toolbar"
-           layout="@layout/include_back_toolbar"/>
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navigationIcon="@drawable/ic_back_arrow"
+                app:title="Settings"
+                style="@style/Widget.MaterialComponents.Toolbar.Surface"/>
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <TextView
             android:id="@+id/edit_time_set_button_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/settings_edit_time_set_buttons"
+            android:text="@string/settings_edit_time_setters"
             style="@style/Widget.DumbDue.Settings.Text"
             android:onClick="@{() -> viewmodel.openEditTimeSetButtons()}"/>
 
