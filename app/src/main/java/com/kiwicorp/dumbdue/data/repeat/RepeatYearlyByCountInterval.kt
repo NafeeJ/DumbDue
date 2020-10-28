@@ -16,7 +16,14 @@ import org.threeten.bp.temporal.TemporalAdjusters
  * most 5 times, 5 represent the last occurrence of the day of the week in the month.
  *
  */
-class RepeatYearlyByCountInterval(frequency: Int, startingYear: Year, val month: Month, var dayOfWeek: DayOfWeek, var dayOfWeekInMonth: Int, time: LocalTime): RepeatYearlyInterval(frequency,time,startingYear) {
+data class RepeatYearlyByCountInterval(
+    override val frequency: Int,
+    override var startingYear: Year,
+    val month: Month,
+    var dayOfWeek: DayOfWeek,
+    var dayOfWeekInMonth: Int,
+    override var time: LocalTime
+): RepeatYearlyInterval(frequency,time,startingYear) {
 
     override fun getNextOccurrence(): ZonedDateTime {
         return if (prevOccurrence == null) {

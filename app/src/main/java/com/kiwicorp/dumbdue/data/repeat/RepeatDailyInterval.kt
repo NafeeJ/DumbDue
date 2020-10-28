@@ -8,7 +8,11 @@ import org.threeten.bp.format.DateTimeFormatter
  *
  * [frequency] will be the days users receive a reminder on
  */
-class RepeatDailyInterval(frequency: Int, time: LocalTime, var startingDate: LocalDate) : RepeatInterval(frequency, time) {
+data class RepeatDailyInterval(
+    override val frequency: Int,
+    override var time: LocalTime,
+    var startingDate: LocalDate
+): RepeatInterval(frequency, time) {
 
     override fun getNextOccurrence(): ZonedDateTime {
         return if (prevOccurrence == null) {

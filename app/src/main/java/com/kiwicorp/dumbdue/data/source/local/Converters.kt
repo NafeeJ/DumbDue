@@ -27,7 +27,10 @@ class Converters {
         .registerSubtype(RepeatYearlyByCountInterval::class.java, RepeatYearlyByCountInterval::class.java.name)
         .registerSubtype(RepeatYearlyByNumberInterval::class.java, RepeatYearlyByNumberInterval::class.java.name)
     //todo migrate to moshi
-    private val gson = GsonBuilder().registerTypeAdapterFactory(repeatIntervalTypeAdapterFactory).registerTypeAdapter(ZoneId::class.java,InstanceCreator<ZoneId> { ZoneId.systemDefault() }).create()
+    private val gson = GsonBuilder()
+        .registerTypeAdapterFactory(repeatIntervalTypeAdapterFactory)
+        .registerTypeAdapter(ZoneId::class.java,InstanceCreator<ZoneId> { ZoneId.systemDefault() })
+        .create()
 
     @TypeConverter
     fun repeatIntervalToJsonString(repeatInterval: RepeatInterval?): String? {

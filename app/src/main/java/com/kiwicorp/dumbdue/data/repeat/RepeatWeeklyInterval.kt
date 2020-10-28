@@ -13,7 +13,12 @@ import org.threeten.bp.temporal.TemporalAdjusters
  * [daysOfWeek] is a sorted list of the days the user wishes to receive reminders on. The list
  * should never have a size of more than 7. Sunday is considered to be the first day.
  */
-class RepeatWeeklyInterval(frequency: Int, time: LocalTime, var dateOfFirstDayOfStartingWeek: LocalDate, val daysOfWeek: List<DayOfWeek>): RepeatInterval(frequency, time) {
+data class RepeatWeeklyInterval(
+    override val frequency: Int,
+    override var time: LocalTime,
+    var dateOfFirstDayOfStartingWeek: LocalDate,
+    val daysOfWeek: List<DayOfWeek>
+): RepeatInterval(frequency, time) {
 
     override fun getNextOccurrence(): ZonedDateTime {
         return if (prevOccurrence == null) {

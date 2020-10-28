@@ -20,7 +20,12 @@ import java.util.*
  * that the user wishes to repeat the reminder on.
  */
 
-class RepeatMonthlyByCountInterval(frequency: Int, startingYearMonth: YearMonth, time: LocalTime, val days: List<Day>): RepeatMonthlyInterval(frequency, time, startingYearMonth) {
+data class RepeatMonthlyByCountInterval(
+    override val frequency: Int,
+    override val startingYearMonth: YearMonth,
+    override var time: LocalTime,
+    val days: List<Day>
+): RepeatMonthlyInterval(frequency, time, startingYearMonth) {
 
     override fun getNextOccurrence(): ZonedDateTime {
         return if (prevOccurrence == null) {

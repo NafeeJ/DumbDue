@@ -14,7 +14,12 @@ import org.threeten.bp.temporal.TemporalAdjusters
  * [days] will be a list of the days in a month that the reminder will repeat on. Range is 1-32. 32
  * indicates the last day of the month.
  */
-class RepeatMonthlyByNumberInterval(frequency: Int, startingYearMonth: YearMonth, time: LocalTime, val days: List<Int>): RepeatMonthlyInterval(frequency, time, startingYearMonth) {
+data class RepeatMonthlyByNumberInterval(
+    override val frequency: Int,
+    override var startingYearMonth: YearMonth,
+    override var time: LocalTime,
+    val days: List<Int>
+): RepeatMonthlyInterval(frequency, time, startingYearMonth) {
 
     override fun getNextOccurrence(): ZonedDateTime {
         return if (prevOccurrence == null) {

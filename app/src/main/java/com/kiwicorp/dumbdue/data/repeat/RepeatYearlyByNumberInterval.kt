@@ -9,7 +9,11 @@ import org.threeten.bp.format.DateTimeFormatter
  *
  * [frequency] will be the years users receive a reminder on
  */
-class RepeatYearlyByNumberInterval(frequency: Int, time: LocalTime, val startingDate: LocalDate) : RepeatYearlyInterval(frequency, time, Year.of(startingDate.year)) {
+data class RepeatYearlyByNumberInterval(
+    override val frequency: Int,
+    override var time: LocalTime,
+    val startingDate: LocalDate
+): RepeatYearlyInterval(frequency, time, Year.of(startingDate.year)) {
 
     override fun getNextOccurrence(): ZonedDateTime {
         return if (prevOccurrence == null) {

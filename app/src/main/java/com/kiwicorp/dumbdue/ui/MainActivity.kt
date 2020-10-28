@@ -12,7 +12,10 @@ import androidx.navigation.findNavController
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kiwicorp.dumbdue.R
+import com.kiwicorp.dumbdue.data.repeat.RepeatDailyInterval
 import dagger.hilt.android.AndroidEntryPoint
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
 
 @AndroidEntryPoint
 class MainActivity: AppCompatActivity() {
@@ -26,6 +29,7 @@ class MainActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         delegate.localNightMode = viewModel.theme
         fab = findViewById(R.id.fab)
         bottomAppBar = findViewById(R.id.bottom_app_bar)

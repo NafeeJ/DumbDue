@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.Reminder
+import com.kiwicorp.dumbdue.data.repeat.RepeatDailyInterval
+import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
 import com.kiwicorp.dumbdue.databinding.ItemHeaderBinding
 import com.kiwicorp.dumbdue.databinding.ItemReminderBinding
 import com.kiwicorp.dumbdue.util.getColorFromAttr
@@ -27,7 +29,7 @@ private const val ITEM_VIEW_TYPE_ITEM = 1
 
 class ReminderAdapter(private val viewModel: RemindersViewModel):
     ListAdapter<Item, RecyclerView.ViewHolder>(
-        ReminderDiffCallback()
+        ItemDiffCallback()
     ) {
 
     private val adapterScope = CoroutineScope(Dispatchers.Default)
@@ -315,13 +317,13 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
  * Used by ListAdapter to calculate the minimum number of changes between an old list and a new list
  * that's been passed to 'submitList'
  */
-class ReminderDiffCallback: DiffUtil.ItemCallback<Item>() {
+class ItemDiffCallback: DiffUtil.ItemCallback<Item>() {
     override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem == newItem
     }
 
     override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
-        return oldItem == newItem
+        return oldItem.id == newItem.id
     }
 }
 
