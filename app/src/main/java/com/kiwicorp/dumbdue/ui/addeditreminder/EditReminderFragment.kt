@@ -52,19 +52,7 @@ class EditReminderFragment : Fragment(), DialogNavigator {
             viewModel.updateReminder()
         }
         binding.toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
-        (requireActivity() as MainActivity).bottomAppBar.setOnMenuItemClickListener {
-            when(it.itemId) {
-                R.id.menu_complete -> {
-                    viewModel.completeReminder()
-                    true
-                }
-                R.id.menu_delete -> {
-                    viewModel.deleteReminder()
-                    true
-                }
-                else -> false
-            }
-        }
+        setupBottomAppBar()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -102,7 +90,24 @@ class EditReminderFragment : Fragment(), DialogNavigator {
         navigate(toReminders(request,reminderId), findNavController())
     }
 
-
+    private fun setupBottomAppBar() {
+        with((requireActivity() as MainActivity).bottomAppBar) {
+            performShow() // because Bottom App Bar may be hidden after user scrolls down
+            setOnMenuItemClickListener {
+                when(it.itemId) {
+                    R.id.menu_complete -> {
+                        viewModel.completeReminder()
+                        true
+                    }
+                    R.id.menu_delete -> {
+                        viewModel.deleteReminder()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }
+    }
 
     private fun setupSnackbar() {
         viewModel.eventSnackbar.observe(viewLifecycleOwner, EventObserver { snackbar ->
