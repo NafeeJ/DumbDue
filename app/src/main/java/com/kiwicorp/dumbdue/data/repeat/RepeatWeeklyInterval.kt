@@ -3,7 +3,9 @@ package com.kiwicorp.dumbdue.data.repeat
 import com.kiwicorp.dumbdue.util.getFullName
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.TextStyle
 import org.threeten.bp.temporal.TemporalAdjusters
+import java.util.*
 
 /**
  * A class that represents a repeat interval that's scoped in a week
@@ -62,13 +64,14 @@ data class RepeatWeeklyInterval(
 
             var string = ""
             when (daysOfWeek.size) {
-                1 -> string = "${daysOfWeek[0].getFullName()}s"
-                2 -> string = "${daysOfWeek[0].getFullName()}s and ${daysOfWeek[1].getFullName()}s"
+                1 -> string = daysOfWeek[0].getDisplayName(TextStyle.SHORT, Locale.US)
+                2 -> string = "${daysOfWeek[0].getDisplayName(TextStyle.SHORT, Locale.US)} and " +
+                        daysOfWeek[1].getDisplayName(TextStyle.SHORT, Locale.US)
                 else -> {
                     for (i in 0..daysOfWeek.size - 2) {
-                        string += "${daysOfWeek[i].getFullName()}s, "
+                        string += "${daysOfWeek[i].getDisplayName(TextStyle.SHORT, Locale.US)}, "
                     }
-                    string += "and ${daysOfWeek.last().getFullName()}s"
+                    string += "and ${daysOfWeek.last().getDisplayName(TextStyle.SHORT, Locale.US)}"
                 }
             }
             string += " at $time"
