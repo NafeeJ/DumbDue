@@ -17,9 +17,7 @@
             android:id="@+id/to_nav_graph_edit"
             app:destination="@id/nav_graph_edit"
             app:enterAnim="@anim/fragment_open_enter"
-            app:exitAnim="@anim/fragment_open_exit"
-            app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
+            app:exitAnim="@anim/fragment_open_exit" />
         <argument
             android:name="request"
             app:argType="integer"
@@ -221,10 +219,11 @@
         <action
             android:id="@+id/to_reminders"
             app:destination="@id/navigation_reminders"
-            app:enterAnim="@anim/fragment_open_enter"
-            app:exitAnim="@anim/fragment_open_exit"
-            app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
+            app:enterAnim="@anim/fragment_close_enter"
+            app:exitAnim="@anim/fragment_close_exit"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
     </navigation>
     <fragment
         android:id="@+id/navigation_edit_time_setters"
