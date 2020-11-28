@@ -48,15 +48,15 @@ class EditReminderFragment : Fragment(), DialogNavigator {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            viewModel.updateReminder()
-        }
-        binding.toolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener { viewModel.updateReminderAndClose() }
         setupBottomAppBar()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback {
+            viewModel.updateReminderAndClose()
+        }
         viewModel.loadReminder(args.reminderId)
         setupNavigation()
         setupSnackbar()

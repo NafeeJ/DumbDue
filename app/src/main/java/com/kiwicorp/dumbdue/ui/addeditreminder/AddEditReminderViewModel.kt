@@ -16,6 +16,7 @@ import com.kiwicorp.dumbdue.ui.REQUEST_COMPLETE
 import com.kiwicorp.dumbdue.ui.REQUEST_DELETE
 import kotlinx.coroutines.launch
 import org.threeten.bp.ZonedDateTime
+import timber.log.Timber
 
 class AddEditReminderViewModel @ViewModelInject constructor(
     private val repository: ReminderRepository,
@@ -146,23 +147,23 @@ class AddEditReminderViewModel @ViewModelInject constructor(
             repository.insertReminder(reminder)
 
             _eventClose.value = Event(Unit)
-
-
         }
     }
 
-    /**
-     * Updates reminder, returns true if update successful, returns false if update unsuccessful
-     */
-    fun updateReminder() {
+    fun updateReminderAndClose() {
         viewModelScope.launch {
-            val originalReminder = reminderId?.let { repository.getReminder(it) }
-            val reminder = Reminder(title.value!!,dueDate.value!!,repeatInterval.value,autoSnoozeVal.value!!,reminderId!!)
-            if (originalReminder != reminder) {
-                repository.updateReminder(reminder)
-            }
+
+            val reminder = Reminder(
+                title.value!!,
+                dueDate.value!!,
+                repeatInterval.value,
+                autoSnoozeVal.value!!,
+                reminderId!!)
+
+            repository.updateReminder(reminder)
+
+            _eventClose.value = Event(Unit)
         }
-        _eventClose.value = Event(Unit)
     }
 
     /**
