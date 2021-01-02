@@ -8,14 +8,16 @@ import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
+import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
 import com.kiwicorp.dumbdue.ui.REQUEST_COMPLETE
-import com.kiwicorp.dumbdue.ui.REQUEST_DELETE
+import com.kiwicorp.dumbdue.ui.REQUEST_ARCHIVE
 import kotlinx.coroutines.launch
 
 class RemindersViewModel @ViewModelInject constructor(
-    private val repository: ReminderRepository
+    private val repository: ReminderRepository,
+    private val reminderAlarmManager: ReminderAlarmManager
 ) : ViewModel() {
-    val reminders: LiveData<List<Reminder>> = repository.reminders
+    val reminders: LiveData<List<Reminder>> = repository.unarchivedReminders
 
     val isEmpty: LiveData<Boolean> = Transformations.map(reminders) {
         it.isEmpty()
@@ -45,11 +47,14 @@ class RemindersViewModel @ViewModelInject constructor(
         _eventEditReminder.value = Event(reminderId)
     }
 
-    fun delete(reminder: Reminder) {
+    fun archive(reminder: Reminder) {
         viewModelScope.launch {
-            repository.deleteReminder(reminder)
+            reminder.isArchived = true
+            repository.updateReminder(reminder)
+            reminderAlarmManager.cancelAlarm(reminder)
+
             _snackbarMessage.value = Event(SnackbarMessage("Bye-Bye ${reminder.title}", Snackbar.LENGTH_LONG, "Undo") {
-                undoDelete(reminder)
+                undoArchive(reminder)
             })
         }
     }
@@ -57,32 +62,41 @@ class RemindersViewModel @ViewModelInject constructor(
     /**
      * Only used to delete reminder in [handleRequest]
      */
-    private fun delete(reminderId: String) {
+    private fun archive(reminderId: String) {
         viewModelScope.launch {
             val reminder = repository.getReminder(reminderId)
             if (reminder != null) {
-                delete(reminder)
+                archive(reminder)
             }
         }
     }
 
     fun complete(reminder: Reminder) {
         viewModelScope.launch {
-            repository.deleteReminder(reminder)
+            val reminderFromRepeatInterval: Reminder?
 
-            val reminderFromRepeatInterval = if (reminder.repeatInterval != null) {
-                // creates a repeat interval clone because if the new reminder shares the same
-                // instance of RepeatInterval as the old reminder, when complete is undone, the
-                // old reminder will have the wrong prevOccurrence.
+            if (reminder.repeatInterval != null) {
+                repository.deleteReminder(reminder)
+                reminderAlarmManager.cancelAlarm(reminder)
+
                 val repeatIntervalClone = reminder.repeatInterval!!.clone() as RepeatInterval
                 val nextDueDate = repeatIntervalClone.getNextDueDate(reminder.dueDate)
-                Reminder(reminder.title, nextDueDate,repeatIntervalClone,reminder.autoSnoozeVal)
-            } else {
-                null
-            }
 
-            if (reminderFromRepeatInterval != null) {
+                reminderFromRepeatInterval = Reminder(
+                    reminder.title,
+                    nextDueDate,
+                    repeatIntervalClone,
+                    reminder.autoSnoozeVal,
+                    false
+                )
+
                 repository.insertReminder(reminderFromRepeatInterval)
+                reminderAlarmManager.setAlarm(reminder)
+            } else {
+                reminder.isArchived = true
+                repository.updateReminder(reminder)
+                reminderAlarmManager.cancelAlarm(reminder)
+                reminderFromRepeatInterval = null
             }
 
             _snackbarMessage.value = Event(SnackbarMessage("Completed ${reminder.title} :)", Snackbar.LENGTH_LONG,"Undo") {
@@ -103,9 +117,11 @@ class RemindersViewModel @ViewModelInject constructor(
         }
     }
 
-    private fun undoDelete(reminder: Reminder) {
+    private fun undoArchive(reminder: Reminder) {
         viewModelScope.launch {
-            repository.insertReminder(reminder)
+            reminder.isArchived = false
+            repository.updateReminder(reminder)
+            reminderAlarmManager.setAlarm(reminder)
         }
     }
 
@@ -119,8 +135,15 @@ class RemindersViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             if (reminderFromRepeatInterval != null) {
                 repository.deleteReminder(reminderFromRepeatInterval)
+                reminderAlarmManager.cancelAlarm(reminder)
+
+                repository.insertReminder(reminder)
+                reminderAlarmManager.setAlarm(reminder)
+            } else {
+                reminder.isArchived = false
+                repository.updateReminder(reminder)
+                reminderAlarmManager.setAlarm(reminder)
             }
-            repository.insertReminder(reminder)
         }
     }
 
@@ -131,7 +154,7 @@ class RemindersViewModel @ViewModelInject constructor(
         if (argsRequestHandled) return
         when (request) {
             REQUEST_COMPLETE -> complete(reminderId)
-            REQUEST_DELETE -> delete(reminderId)
+            REQUEST_ARCHIVE -> archive(reminderId)
         }
         argsRequestHandled = true
     }

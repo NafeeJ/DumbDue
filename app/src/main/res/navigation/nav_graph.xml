@@ -33,6 +33,9 @@
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
+        <action
+            android:id="@+id/toArchiveFragment"
+            app:destination="@id/navigation_archive" />
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"
@@ -254,5 +257,9 @@
             android:name="key"
             app:argType="string" />
     </dialog>
+    <fragment
+        android:id="@+id/navigation_archive"
+        android:name="com.kiwicorp.dumbdue.ui.archive.ArchiveFragment"
+        android:label="ArchiveFragment" />
 
 </navigation>

@@ -80,7 +80,7 @@ class EditReminderFragment : Fragment(), DialogNavigator {
         viewModel.eventClose.observe(viewLifecycleOwner, EventObserver {
             close()
         })
-        viewModel.eventCompleteDelete.observe(viewLifecycleOwner, EventObserver {request ->
+        viewModel.eventCompleteArchive.observe(viewLifecycleOwner, EventObserver { request ->
             close(request, viewModel.reminderId!!)
         })
     }
@@ -99,8 +99,8 @@ class EditReminderFragment : Fragment(), DialogNavigator {
                         viewModel.completeReminder()
                         true
                     }
-                    R.id.menu_delete -> {
-                        viewModel.deleteReminder()
+                    R.id.menu_archive -> {
+                        viewModel.archiveReminder()
                         true
                     }
                     else -> false

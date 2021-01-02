@@ -21,6 +21,9 @@ data class Reminder (
     @ColumnInfo(name = "auto_snooze_val")
     var autoSnoozeVal: Long = AUTO_SNOOZE_MINUTE,
 
+    @ColumnInfo(name = "is_archived")
+    var isArchived: Boolean = false,
+
     @PrimaryKey @ColumnInfo(name = "id")
     var id: String = UUID.randomUUID().toString()) {
 

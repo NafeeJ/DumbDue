@@ -30,13 +30,10 @@ class AppUpdateReceiver : HiltBroadcastReceiver() {
             Timber.d("Correct action received")
             GlobalScope.launch {
                 val reminders = reminderRepository.getReminders()
-                if (reminders != null) {
-                    Timber.d("Reminders are not null, settings alarms")
-                    for (reminder in reminders) {
+                for (reminder in reminders) {
+                    if (!reminder.isArchived) {
                         alarmManager.setAlarm(reminder)
                     }
-                } else {
-                    Timber.d("Reminders are null, fuck")
                 }
             }
         }

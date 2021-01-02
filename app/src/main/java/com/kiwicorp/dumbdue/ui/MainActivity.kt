@@ -49,6 +49,7 @@ class MainActivity: AppCompatActivity() {
                 R.id.navigation_reminders -> setupBottomAppBarForReminders()
                 R.id.navigation_edit_reminder -> setupBottomAppBarForEditReminder()
                 R.id.navigation_settings -> setupBottomAppBarForSettings()
+                R.id.navigation_archive -> setupBottomAppBarForArchive()
             }
         }
     }
@@ -75,6 +76,11 @@ class MainActivity: AppCompatActivity() {
         hideBottomAppBar()
     }
 
+    private fun setupBottomAppBarForArchive() {
+        fab.hide()
+        hideBottomAppBar()
+    }
+
     private fun hideBottomAppBar() {
         bottomAppBar.performHide()
         // Get a handle on the animator that hides the bottom app bar so we can wait to hide
@@ -97,5 +103,5 @@ class MainActivity: AppCompatActivity() {
 }
 
 // Keys for navigation
-const val REQUEST_DELETE = Activity.RESULT_FIRST_USER + 1
+const val REQUEST_ARCHIVE = Activity.RESULT_FIRST_USER + 1
 const val REQUEST_COMPLETE = Activity.RESULT_FIRST_USER + 2

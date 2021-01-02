@@ -10,16 +10,17 @@ import com.kiwicorp.dumbdue.SnackbarMessage
 import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
+import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
 import com.kiwicorp.dumbdue.ui.REQUEST_COMPLETE
-import com.kiwicorp.dumbdue.ui.REQUEST_DELETE
+import com.kiwicorp.dumbdue.ui.REQUEST_ARCHIVE
 import kotlinx.coroutines.launch
 import org.threeten.bp.ZonedDateTime
-import timber.log.Timber
 
 class AddEditReminderViewModel @ViewModelInject constructor(
     private val repository: ReminderRepository,
+    private val reminderAlarmManager: ReminderAlarmManager,
     private val preferencesStorage: PreferencesStorage
 ) : ViewModel(), OnTimeSetterClick {
     //Public mutable for two-way data binding
@@ -61,8 +62,8 @@ class AddEditReminderViewModel @ViewModelInject constructor(
     private val _eventOpenChooseCustomRepeat = MutableLiveData<Event<Unit>>()
     val eventOpenChooseCustomRepeat: LiveData<Event<Unit>> = _eventOpenChooseCustomRepeat
 
-    private val _eventCompleteDelete = MutableLiveData<Event<Int>>()
-    val eventCompleteDelete: LiveData<Event<Int>> = _eventCompleteDelete
+    private val _eventCompleteArchive = MutableLiveData<Event<Int>>()
+    val eventCompleteArchive: LiveData<Event<Int>> = _eventCompleteArchive
 
     private val _eventSnackbar = MutableLiveData<Event<SnackbarMessage>>()
     val eventSnackbar: LiveData<Event<SnackbarMessage>> = _eventSnackbar
@@ -123,15 +124,15 @@ class AddEditReminderViewModel @ViewModelInject constructor(
     /**
      * Called by TextView in EditReminderFragment vis listener binding.
      */
-    fun deleteReminder() {
-        _eventCompleteDelete.value = Event(REQUEST_DELETE)
+    fun archiveReminder() {
+        _eventCompleteArchive.value = Event(REQUEST_ARCHIVE)
     }
 
     /**
      * Called by TextView in EditReminderFragment vis listener binding.
      */
     fun completeReminder() {
-        _eventCompleteDelete.value = Event(REQUEST_COMPLETE)
+        _eventCompleteArchive.value = Event(REQUEST_COMPLETE)
     }
 
     /**
@@ -142,9 +143,11 @@ class AddEditReminderViewModel @ViewModelInject constructor(
             val reminder = Reminder(title.value!!,
                 dueDate.value!!,
                 repeatInterval.value,
-                autoSnoozeVal.value!!)
+                autoSnoozeVal.value!!,
+                false)
 
             repository.insertReminder(reminder)
+            reminderAlarmManager.setAlarm(reminder)
 
             _eventClose.value = Event(Unit)
         }
@@ -158,9 +161,11 @@ class AddEditReminderViewModel @ViewModelInject constructor(
                 dueDate.value!!,
                 repeatInterval.value,
                 autoSnoozeVal.value!!,
+                false,
                 reminderId!!)
 
             repository.updateReminder(reminder)
+            reminderAlarmManager.updateAlarm(reminder)
 
             _eventClose.value = Event(Unit)
         }

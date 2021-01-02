@@ -9,7 +9,7 @@ import com.kiwicorp.dumbdue.data.Reminder
 interface ReminderDao  {
 
     /**
-     * Observers list of reminders ordered by their due date.
+     * Observes list of reminders ordered by their due date.
      *
      * @return all reminders
      */
@@ -23,6 +23,38 @@ interface ReminderDao  {
      */
     @Query("SELECT * FROM reminders ORDER BY dueDate")
     suspend fun getReminders(): List<Reminder>
+
+    /**
+     * Observes list of unarchived reminders ordered by their due date.
+     *
+     * @return unarchived reminders
+     */
+    @Query("SELECT * FROM reminders WHERE is_archived = 0 ORDER BY dueDate")
+    fun observeUnarchivedReminders(): LiveData<List<Reminder>>
+
+    /**
+     * get unarchived reminders ordered by their due date
+     *
+     * @return unarchived reminders
+     */
+    @Query("SELECT * FROM reminders WHERE is_archived = 0 ORDER BY dueDate")
+    suspend fun getUnarchivedReminders(): List<Reminder>
+
+    /**
+     * Observes a list of archived reminders ordered by their due date descending.
+     *
+     * @return archived reminders
+     */
+    @Query("SELECT * FROM reminders WHERE is_archived = 1 ORDER BY dueDate DESC")
+    fun observeArchivedReminders(): LiveData<List<Reminder>>
+
+    /**
+     * get archived reminders ordered by their due date descending.
+     *
+     * @return archived reminders
+     */
+    @Query("SELECT * FROM reminders WHERE is_archived = 0 ORDER BY dueDate DESC")
+    suspend fun getArchivedReminders(): List<Reminder>
 
     /**
      * Observe a single task.

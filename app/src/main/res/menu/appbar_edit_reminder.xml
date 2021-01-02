@@ -6,12 +6,12 @@
         android:id="@+id/menu_complete"
         android:title="@string/complete"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_check"/>
+        android:icon="@drawable/ic_check_white"/>
 
     <item
-        android:id="@+id/menu_delete"
-        android:title="@string/delete"
+        android:id="@+id/menu_archive"
+        android:title="@string/archive"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_delete"/>
+        android:icon="@drawable/ic_archive_white"/>
 
 </menu>

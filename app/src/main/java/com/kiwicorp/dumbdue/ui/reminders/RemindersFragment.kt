@@ -22,6 +22,7 @@ import com.kiwicorp.dumbdue.ui.MainActivity
 import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toNavGraphAdd
 import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toNavGraphEdit
 import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toSettings
+import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toArchiveFragment
 import com.kiwicorp.dumbdue.util.DialogNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -58,11 +59,16 @@ class RemindersFragment : Fragment(), DialogNavigator {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (requireActivity() as MainActivity).bottomAppBar.setOnMenuItemClickListener {
-            if (it.itemId == R.id.menu_settings) {
-                navigate(toSettings(), findNavController())
-                true
-            } else {
-                false
+            return@setOnMenuItemClickListener when(it.itemId) {
+                R.id.menu_settings -> {
+                    navigate(toSettings(), findNavController())
+                    true
+                }
+                R.id.menu_archive -> {
+                    navigate(toArchiveFragment(), findNavController())
+                    true
+                }
+                else -> false
             }
         }
         (requireActivity() as MainActivity).fab.setOnClickListener {
@@ -140,8 +146,8 @@ class RemindersFragment : Fragment(), DialogNavigator {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 if (viewHolder is ReminderAdapter.HeaderViewHolder) return
 
-                if (direction == ItemTouchHelper.RIGHT) { //if user swipes right, delete reminder
-                    viewModel.delete((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
+                if (direction == ItemTouchHelper.RIGHT) { //if user swipes right, archive reminder
+                    viewModel.archive((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
                 } else if ( direction == ItemTouchHelper.LEFT) {//if user swipes left, complete reminder
                     viewModel.complete((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
                 }
@@ -152,31 +158,30 @@ class RemindersFragment : Fragment(), DialogNavigator {
                 dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
                 //do nothing if
                 if (viewHolder is ReminderAdapter.HeaderViewHolder) return
-
-                val deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete) as Drawable
-                val checkIcon = ContextCompat.getDrawable(requireContext(),R.drawable.ic_check) as Drawable
+                val archiveIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_archive_white) as Drawable
+                val checkIcon = ContextCompat.getDrawable(requireContext(),R.drawable.ic_check_white) as Drawable
                 lateinit var swipeBackground: ColorDrawable
 
                 val itemView = viewHolder.itemView
-                val iconMarginVertical = (viewHolder.itemView.height - deleteIcon.intrinsicHeight) / 2
+                val iconMarginVertical = (viewHolder.itemView.height - archiveIcon.intrinsicHeight) / 2
 
                 if (dX > 0) {//if user swiped right
-                    swipeBackground = ColorDrawable(Color.parseColor("#ff6961"))//sets swipe background to red
+                    swipeBackground = ColorDrawable(Color.parseColor("#ffaa00"))//sets swipe background to orange
                     swipeBackground.setBounds(itemView.left, itemView.top, dX.toInt(), itemView.bottom)
-                    deleteIcon.setBounds(itemView.left + iconMarginVertical, itemView.top + iconMarginVertical,
-                        itemView.left + iconMarginVertical + deleteIcon.intrinsicWidth, itemView.bottom - iconMarginVertical)
+                    archiveIcon.setBounds(itemView.left + iconMarginVertical, itemView.top + iconMarginVertical,
+                        itemView.left + iconMarginVertical + archiveIcon.intrinsicWidth, itemView.bottom - iconMarginVertical)
                     //draw background and delete icon
                     swipeBackground.draw(c)
                     //stops icon from being shown outside of the background
                     c.save()
                     c.clipRect(itemView.left, itemView.top, dX.toInt(), itemView.bottom)
-                    deleteIcon.draw(c)
+                    archiveIcon.draw(c)
                     c.restore()
 
                 } else {//if user swiped left
                     swipeBackground = ColorDrawable(Color.parseColor("#77dd77"))//sets swipe background to green
                     swipeBackground.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
-                    checkIcon.setBounds(itemView.right - iconMarginVertical - deleteIcon.intrinsicWidth, itemView.top + iconMarginVertical,
+                    checkIcon.setBounds(itemView.right - iconMarginVertical - checkIcon.intrinsicWidth, itemView.top + iconMarginVertical,
                         itemView.right - iconMarginVertical, itemView.bottom - iconMarginVertical)
                     checkIcon.level = 0
                     //draw background and check mark icon
