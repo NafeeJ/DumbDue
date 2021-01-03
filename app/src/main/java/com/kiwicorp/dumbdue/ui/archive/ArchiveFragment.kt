@@ -15,8 +15,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentArchiveBinding
+import com.kiwicorp.dumbdue.ui.MainActivity
 import com.kiwicorp.dumbdue.ui.reminders.ReminderAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,6 +46,7 @@ class ArchiveFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar()
         setupRecyclerView()
+        setupSnackbar()
     }
 
     private fun setupToolbar() {
@@ -57,6 +60,14 @@ class ArchiveFragment : Fragment() {
         setupRecyclerViewSwiping()
         viewModel.reminders.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
+        })
+    }
+
+    private fun setupSnackbar() {
+        viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { snackbar ->
+            with (requireActivity() as MainActivity) {
+                snackbar.show(coordinatorLayout, fab)
+            }
         })
     }
 
