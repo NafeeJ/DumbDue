@@ -45,7 +45,6 @@ class ArchiveViewModel @ViewModelInject constructor(
     fun delete(reminder: Reminder) {
         viewModelScope.launch {
             reminderRepository.deleteReminder(reminder)
-            reminderAlarmManager.cancelAlarm(reminder)
 
             _snackbarMessage.value = Event(SnackbarMessage("Bye-Bye forever ${reminder.title}", Snackbar.LENGTH_LONG, "Undo") {
                 undoDelete(reminder)
@@ -56,7 +55,6 @@ class ArchiveViewModel @ViewModelInject constructor(
     private fun undoDelete(reminder: Reminder) {
         viewModelScope.launch {
             reminderRepository.insertReminder(reminder)
-            reminderAlarmManager.setAlarm(reminder)
         }
     }
 }
