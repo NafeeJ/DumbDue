@@ -91,7 +91,7 @@ class RemindersViewModel @ViewModelInject constructor(
                 )
 
                 repository.insertReminder(reminderFromRepeatInterval)
-                reminderAlarmManager.setAlarm(reminder)
+                reminderAlarmManager.setAlarm(reminderFromRepeatInterval)
             } else {
                 reminder.isArchived = true
                 repository.updateReminder(reminder)
