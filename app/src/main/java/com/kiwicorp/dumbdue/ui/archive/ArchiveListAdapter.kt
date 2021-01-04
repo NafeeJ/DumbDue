@@ -14,20 +14,24 @@ import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 
-class ArchiveListAdapter : ListAdapter<Reminder, ArchiveListAdapter.ReminderViewHolder>(ReminderCallback()) {
+class ArchiveListAdapter(private val viewModel: ArchiveViewModel) : ListAdapter<Reminder, ArchiveListAdapter.ReminderViewHolder>(ReminderCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReminderViewHolder {
         return ReminderViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: ReminderViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), viewModel)
     }
 
     class ReminderViewHolder private constructor(val binding: ItemArchivedReminderBinding):
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(reminder: Reminder) {
+        fun bind(reminder: Reminder, viewModel: ArchiveViewModel) {
+            binding.constraintLayout.setOnClickListener {
+                viewModel.navigateToEditReminderFragment(reminder)
+            }
+
             binding.reminder = reminder
 
             val dueDate = reminder.dueDate

@@ -105,5 +105,6 @@
     <string name="cancel">CANCEL</string>
 
     <string name="archive">Archive</string>
+    <string name="unarchive">Unarchive</string>
 
 </resources>

@@ -8,17 +8,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentArchiveBinding
 import com.kiwicorp.dumbdue.ui.MainActivity
+import com.kiwicorp.dumbdue.ui.archive.ArchiveFragmentDirections.Companion.toNavGraphEdit
+import com.kiwicorp.dumbdue.ui.archive.ArchiveFragmentDirections.Companion.toReminders
 import com.kiwicorp.dumbdue.ui.reminders.ReminderAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,7 +33,9 @@ class ArchiveFragment : Fragment() {
 
     private val viewModel: ArchiveViewModel by viewModels()
 
-    private val adapter = ArchiveListAdapter()
+    private val args: ArchiveFragmentArgs by navArgs()
+
+    private lateinit var adapter: ArchiveListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,18 +55,31 @@ class ArchiveFragment : Fragment() {
         setupSnackbar()
     }
 
-    private fun setupToolbar() {
-        binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        handleRequest()
+        requireActivity().onBackPressedDispatcher.addCallback {
+            findNavController().navigate(toReminders())
+        }
+        viewModel.navigateToEditReminderFragment.observe(viewLifecycleOwner, EventObserver {
+            findNavController().navigate(toNavGraphEdit(it))
+        })
+    }
+
+    private fun handleRequest() {
+        arguments?.let {
+            with(args) {
+                if (request != 0 && reminderId != "") {
+                    viewModel.handleRequest(request,reminderId)
+                }
+            }
         }
     }
 
-    private fun setupRecyclerView() {
-        binding.remindersRecyclerView.adapter = adapter
-        setupRecyclerViewSwiping()
-        viewModel.reminders.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
-        })
+    private fun setupToolbar() {
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigate(toReminders())
+        }
     }
 
     private fun setupSnackbar() {
@@ -68,6 +87,15 @@ class ArchiveFragment : Fragment() {
             with (requireActivity() as MainActivity) {
                 snackbar.show(coordinatorLayout, fab)
             }
+        })
+    }
+
+    private fun setupRecyclerView() {
+        adapter = ArchiveListAdapter(viewModel)
+        binding.remindersRecyclerView.adapter = adapter
+        setupRecyclerViewSwiping()
+        viewModel.reminders.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it)
         })
     }
 

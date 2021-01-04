@@ -6,13 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditReminderBinding
-import com.kiwicorp.dumbdue.ui.MainActivity
+import com.kiwicorp.dumbdue.ui.*
+import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toArchive
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toChooseAutoSnooze
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toChooseRepeat
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toReminders
@@ -80,27 +82,47 @@ class EditReminderFragment : Fragment(), DialogNavigator {
         viewModel.eventClose.observe(viewLifecycleOwner, EventObserver {
             close()
         })
-        viewModel.eventCompleteArchive.observe(viewLifecycleOwner, EventObserver { request ->
+        viewModel.eventActionRequest.observe(viewLifecycleOwner, EventObserver { request ->
             close(request, viewModel.reminderId!!)
         })
     }
 
     private fun close(request: Int = 0, reminderId: String = "") {
         closeKeyboard()
-        navigate(toReminders(request,reminderId), findNavController())
+        if (viewModel.isArchived.value == false) {
+            navigate(toReminders(request,reminderId), findNavController())
+        } else {
+            navigate(toArchive(request,reminderId), findNavController())
+        }
+
     }
 
     private fun setupBottomAppBar() {
         with((requireActivity() as MainActivity).bottomAppBar) {
-            performShow() // because Bottom App Bar may be hidden after user scrolls down
+            viewModel.isArchived.observe(viewLifecycleOwner, Observer { isArchived ->
+                if (isArchived) {
+                    replaceMenu(R.menu.appbar_edit_reminder_archived)
+                } else {
+                    replaceMenu(R.menu.appbar_edit_reminder_unarchived)
+                }
+            })
+
             setOnMenuItemClickListener {
                 when(it.itemId) {
                     R.id.menu_complete -> {
-                        viewModel.completeReminder()
+                        viewModel.requestAction(REQUEST_COMPLETE)
                         true
                     }
                     R.id.menu_archive -> {
-                        viewModel.archiveReminder()
+                        viewModel.requestAction(REQUEST_ARCHIVE)
+                        true
+                    }
+                    R.id.menu_unarchive -> {
+                        viewModel.requestAction(REQUEST_UNARCHIVE)
+                        true
+                    }
+                    R.id.menu_delete -> {
+                        viewModel.requestAction(REQUEST_DELETE)
                         true
                     }
                     else -> false

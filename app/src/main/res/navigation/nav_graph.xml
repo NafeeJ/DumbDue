@@ -35,7 +35,12 @@
             app:popExitAnim="@anim/fragment_close_exit" />
         <action
             android:id="@+id/toArchiveFragment"
-            app:destination="@id/navigation_archive" />
+            app:destination="@id/navigation_archive"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_open_exit"
+            app:launchSingleTop="false"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"
@@ -224,7 +229,15 @@
             app:destination="@id/navigation_reminders"
             app:enterAnim="@anim/fragment_close_enter"
             app:exitAnim="@anim/fragment_close_exit"
-            app:launchSingleTop="true"
+            app:launchSingleTop="false"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/to_archive"
+            app:destination="@id/navigation_archive"
+            app:enterAnim="@anim/fragment_close_enter"
+            app:exitAnim="@anim/fragment_close_exit"
+            app:launchSingleTop="false"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true" />
     </navigation>
@@ -260,6 +273,29 @@
     <fragment
         android:id="@+id/navigation_archive"
         android:name="com.kiwicorp.dumbdue.ui.archive.ArchiveFragment"
-        android:label="ArchiveFragment" />
+        android:label="ArchiveFragment" >
+        <argument
+            android:name="request"
+            app:argType="integer"
+            android:defaultValue="0"/>
+        <argument
+            android:name="reminderId"
+            app:argType="string"
+            android:defaultValue="" />
+        <action
+            android:id="@+id/to_nav_graph_edit"
+            app:destination="@id/nav_graph_edit"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popUpTo="@id/navigation_archive"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/to_reminders"
+            app:destination="@id/navigation_reminders"
+            app:enterAnim="@anim/fragment_close_enter"
+            app:exitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/navigation_archive"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 </navigation>

@@ -35,6 +35,9 @@ class AddEditReminderViewModel @ViewModelInject constructor(
     private val _autoSnoozeVal = MutableLiveData(preferencesStorage.defaultAutoSnooze)
     val autoSnoozeVal: LiveData<Long> = _autoSnoozeVal
 
+    private val _isArchived = MutableLiveData(false)
+    val isArchived: LiveData<Boolean> = _isArchived
+
     var reminderId: String? = null
         private set //makes value read only externally
 
@@ -62,8 +65,8 @@ class AddEditReminderViewModel @ViewModelInject constructor(
     private val _eventOpenChooseCustomRepeat = MutableLiveData<Event<Unit>>()
     val eventOpenChooseCustomRepeat: LiveData<Event<Unit>> = _eventOpenChooseCustomRepeat
 
-    private val _eventCompleteArchive = MutableLiveData<Event<Int>>()
-    val eventCompleteArchive: LiveData<Event<Int>> = _eventCompleteArchive
+    private val _eventActionRequest = MutableLiveData<Event<Int>>()
+    val eventActionRequest: LiveData<Event<Int>> = _eventActionRequest
 
     private val _eventSnackbar = MutableLiveData<Event<SnackbarMessage>>()
     val eventSnackbar: LiveData<Event<SnackbarMessage>> = _eventSnackbar
@@ -121,18 +124,8 @@ class AddEditReminderViewModel @ViewModelInject constructor(
         _eventClose.value = Event(Unit)
     }
 
-    /**
-     * Called by TextView in EditReminderFragment vis listener binding.
-     */
-    fun archiveReminder() {
-        _eventCompleteArchive.value = Event(REQUEST_ARCHIVE)
-    }
-
-    /**
-     * Called by TextView in EditReminderFragment vis listener binding.
-     */
-    fun completeReminder() {
-        _eventCompleteArchive.value = Event(REQUEST_COMPLETE)
+    fun requestAction(navigationKey: Int) {
+        _eventActionRequest.value = Event(navigationKey)
     }
 
     /**
@@ -161,12 +154,14 @@ class AddEditReminderViewModel @ViewModelInject constructor(
                 dueDate.value!!,
                 repeatInterval.value,
                 autoSnoozeVal.value!!,
-                false,
+                isArchived.value!!,
                 reminderId!!)
 
             repository.updateReminder(reminder)
-            reminderAlarmManager.updateAlarm(reminder)
 
+            if (isArchived.value != null && isArchived.value == false) {
+                reminderAlarmManager.updateAlarm(reminder)
+            }
             _eventClose.value = Event(Unit)
         }
     }
@@ -186,13 +181,14 @@ class AddEditReminderViewModel @ViewModelInject constructor(
     }
 
     /**
-     * sets  this ViewModel's properties to the reminder's properties
+     * sets this ViewModel's properties to the reminder's properties
      */
     private fun onReminderLoaded(reminder: Reminder) {
         title.value = reminder.title
         _dueDate.value = reminder.dueDate
         _repeatInterval.value = reminder.repeatInterval
         _autoSnoozeVal.value = reminder.autoSnoozeVal
+        _isArchived.value = reminder.isArchived
         reminderId = reminder.id
     }
 

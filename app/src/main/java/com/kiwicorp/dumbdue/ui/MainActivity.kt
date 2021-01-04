@@ -12,10 +12,7 @@ import androidx.navigation.findNavController
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.kiwicorp.dumbdue.R
-import com.kiwicorp.dumbdue.data.repeat.RepeatDailyInterval
 import dagger.hilt.android.AndroidEntryPoint
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalTime
 
 @AndroidEntryPoint
 class MainActivity: AppCompatActivity() {
@@ -67,8 +64,9 @@ class MainActivity: AppCompatActivity() {
     }
 
     private fun setupBottomAppBarForEditReminder() {
+        bottomAppBar.visibility = View.VISIBLE
+        bottomAppBar.performShow()
         fab.hide()
-        bottomAppBar.replaceMenu(R.menu.appbar_edit_reminder)
     }
 
     private fun setupBottomAppBarForSettings() {
@@ -105,3 +103,5 @@ class MainActivity: AppCompatActivity() {
 // Keys for navigation
 const val REQUEST_ARCHIVE = Activity.RESULT_FIRST_USER + 1
 const val REQUEST_COMPLETE = Activity.RESULT_FIRST_USER + 2
+const val REQUEST_UNARCHIVE = Activity.RESULT_FIRST_USER + 3
+const val REQUEST_DELETE = Activity.RESULT_FIRST_USER + 4
