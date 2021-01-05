@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -36,6 +37,20 @@ class ArchiveFragment : Fragment() {
     private val args: ArchiveFragmentArgs by navArgs()
 
     private lateinit var adapter: ArchiveListAdapter
+    // for keeping track of whether viewModel.isInSelectionMode has actually changed
+    private var isInSelectionMode = false
+
+    private val clearSelectedRemindersCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            viewModel.clearSelectedReminders()
+        }
+    }
+
+    private val navigateBackCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            findNavController().navigate(toReminders())
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,14 +68,37 @@ class ArchiveFragment : Fragment() {
         setupToolbar()
         setupRecyclerView()
         setupSnackbar()
+        requireActivity().onBackPressedDispatcher.apply {
+            addCallback(clearSelectedRemindersCallback)
+            addCallback(navigateBackCallback)
+        }
+        viewModel.isInSelectionMode.observe(viewLifecycleOwner, Observer { isInSelectionMode ->
+            if (this.isInSelectionMode != isInSelectionMode) { // only execute when isInSelectionMode has actually changed
+                this.isInSelectionMode = isInSelectionMode
+                
+                adapter.notifyDataSetChanged() // so all checkboxes are shown
+                
+                if (isInSelectionMode && this.isInSelectionMode) {
+                    binding.toolbar.setNavigationIcon(R.drawable.ic_cancel)
+                    binding.toolbar.inflateMenu(R.menu.appbar_archive_selection_mode)
+
+                    navigateBackCallback.isEnabled = false
+                    clearSelectedRemindersCallback.isEnabled = true
+                } else {
+                    binding.toolbar.setNavigationIcon(R.drawable.ic_back_arrow)
+                    binding.toolbar.menu.clear()
+
+                    navigateBackCallback.isEnabled = true
+                    clearSelectedRemindersCallback.isEnabled = false
+                }
+            }
+
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         handleRequest()
-        requireActivity().onBackPressedDispatcher.addCallback {
-            findNavController().navigate(toReminders())
-        }
         viewModel.navigateToEditReminderFragment.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(toNavGraphEdit(it))
         })
@@ -78,7 +116,20 @@ class ArchiveFragment : Fragment() {
 
     private fun setupToolbar() {
         binding.toolbar.setNavigationOnClickListener {
-            findNavController().navigate(toReminders())
+            requireActivity().onBackPressed()
+        }
+        binding.toolbar.setOnMenuItemClickListener {
+            when(it.itemId)  {
+                R.id.menu_delete -> {
+                    viewModel.deleteSelectedReminders()
+                    true
+                }
+                R.id.menu_unarchive -> {
+                    viewModel.unarchiveSelectedReminders()
+                    true
+                }
+                else -> false
+            }
         }
     }
 
@@ -94,7 +145,7 @@ class ArchiveFragment : Fragment() {
         adapter = ArchiveListAdapter(viewModel)
         binding.remindersRecyclerView.adapter = adapter
         setupRecyclerViewSwiping()
-        viewModel.reminders.observe(viewLifecycleOwner, Observer {
+        viewModel.checkableReminders.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
     }

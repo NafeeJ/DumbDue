@@ -1,6 +1,7 @@
 package com.kiwicorp.dumbdue.ui.archive
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -14,7 +15,7 @@ import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 
-class ArchiveListAdapter(private val viewModel: ArchiveViewModel) : ListAdapter<Reminder, ArchiveListAdapter.ReminderViewHolder>(ReminderCallback()) {
+class ArchiveListAdapter(private val viewModel: ArchiveViewModel) : ListAdapter<CheckableReminder,ArchiveListAdapter.ReminderViewHolder>(CheckableReminderCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReminderViewHolder {
         return ReminderViewHolder.from(parent)
@@ -27,10 +28,34 @@ class ArchiveListAdapter(private val viewModel: ArchiveViewModel) : ListAdapter<
     class ReminderViewHolder private constructor(val binding: ItemArchivedReminderBinding):
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(reminder: Reminder, viewModel: ArchiveViewModel) {
+        fun bind(checkableReminder: CheckableReminder, viewModel: ArchiveViewModel) {
+            val reminder = checkableReminder.reminder
+            val isChecked = checkableReminder.isChecked
+
             binding.constraintLayout.setOnClickListener {
-                viewModel.navigateToEditReminderFragment(reminder)
+                if (viewModel.isInSelectionMode.value == true) {
+                    if (isChecked) {
+                        viewModel.unselect(reminder)
+                    } else {
+                        viewModel.select(reminder)
+                    }
+                } else {
+                    viewModel.navigateToEditReminderFragment(reminder)
+                }
             }
+
+            binding.constraintLayout.setOnLongClickListener {
+                if (isChecked) {
+                    viewModel.unselect(reminder)
+                } else {
+                    viewModel.select(reminder)
+                }
+                true
+            }
+
+            binding.checkbox.visibility = if (viewModel.isInSelectionMode.value == true) View.VISIBLE else View.GONE
+
+            binding.checkbox.isChecked = isChecked
 
             binding.reminder = reminder
 
@@ -104,13 +129,21 @@ class ArchiveListAdapter(private val viewModel: ArchiveViewModel) : ListAdapter<
         }
     }
 
-    class ReminderCallback: DiffUtil.ItemCallback<Reminder>() {
-        override fun areItemsTheSame(oldItem: Reminder, newItem: Reminder): Boolean {
-            return oldItem.id == newItem.id
+    class CheckableReminderCallBack: DiffUtil.ItemCallback<CheckableReminder>() {
+        override fun areItemsTheSame(
+            oldItem: CheckableReminder,
+            newItem: CheckableReminder
+        ): Boolean {
+            return oldItem.reminder.id == newItem.reminder.id
         }
 
-        override fun areContentsTheSame(oldItem: Reminder, newItem: Reminder): Boolean {
+        override fun areContentsTheSame(
+            oldItem: CheckableReminder,
+            newItem: CheckableReminder
+        ): Boolean {
             return oldItem == newItem
         }
+
     }
+
 }
