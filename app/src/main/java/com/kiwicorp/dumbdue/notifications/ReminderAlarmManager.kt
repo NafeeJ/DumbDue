@@ -35,7 +35,7 @@ class ReminderAlarmManager @Inject constructor(@ApplicationContext private val c
      * device is idle. Instead, a new alarm is set in [NotificationBroadcastReceiver].
      */
     fun setAlarm(title: String, id: String, timeInMillis: Long, autoSnooze: Long) {
-        val notificationIntent = makePendingIntent(title,id,timeInMillis, autoSnooze)
+        val notificationIntent = makePendingIntent(title,id, autoSnooze)
 
         notificationIntent?.let {
             Timber.d("Setting alarm for $id")
@@ -58,7 +58,7 @@ class ReminderAlarmManager @Inject constructor(@ApplicationContext private val c
         val notificationManager: NotificationManager = context.getSystemService()
             ?: throw Exception("Notification Manager not found.")
 
-        val notificationIntent = makePendingIntent(reminder.title,reminder.id,reminder.dueDate.toInstant().toEpochMilli(),reminder.autoSnoozeVal)
+        val notificationIntent = makePendingIntent(reminder.title,reminder.id,reminder.autoSnoozeVal)
 
         notificationIntent?.let {
             systemAlarmManager?.cancel(notificationIntent)
@@ -75,14 +75,13 @@ class ReminderAlarmManager @Inject constructor(@ApplicationContext private val c
         setAlarm(reminder)
     }
 
-    private fun makePendingIntent(title: String, id: String, timeInMillis: Long, autoSnooze: Long): PendingIntent? {
+    private fun makePendingIntent(title: String, id: String, autoSnooze: Long): PendingIntent? {
         return PendingIntent.getBroadcast(
             context,
             id.hashCode(),
             Intent(context,NotificationBroadcastReceiver::class.java)
                 .putExtra(NotificationBroadcastReceiver.REMINDER_TITLE,title)
                 .putExtra(NotificationBroadcastReceiver.REMINDER_ID, id)
-                .putExtra(NotificationBroadcastReceiver.REMINDER_TIME_IN_MILLIS, timeInMillis)
                 .putExtra(NotificationBroadcastReceiver.REMINDER_AUTO_SNOOZE, autoSnooze),
             FLAG_UPDATE_CURRENT
         )

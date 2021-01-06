@@ -17,6 +17,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -40,7 +41,6 @@ class NotificationBroadcastReceiver : HiltBroadcastReceiver() {
 
             if (reminder != null && !reminder.isArchived) {
                 val title = intent.getStringExtra(REMINDER_TITLE)!!
-                val timeInMillis = intent.getLongExtra(REMINDER_TIME_IN_MILLIS,0)
                 val autoSnooze = intent.getLongExtra(REMINDER_AUTO_SNOOZE, 0)
 
                 // Intent that opens app
@@ -65,7 +65,12 @@ class NotificationBroadcastReceiver : HiltBroadcastReceiver() {
                 // sets a new alarm (we manually set alarms because AlarmManager's setRepeating() will not
                 // fire when device is idle)
                 if (autoSnooze != Reminder.AUTO_SNOOZE_NONE) {
-                    reminderAlarmManager.setAlarm(title,reminderId, timeInMillis + autoSnooze, autoSnooze)
+                    reminderAlarmManager.setAlarm(
+                        title,
+                        reminderId,
+                        Instant.now().truncatedTo(ChronoUnit.MINUTES).toEpochMilli() + autoSnooze,
+                        autoSnooze
+                    )
                 }
             }
         }
@@ -74,7 +79,6 @@ class NotificationBroadcastReceiver : HiltBroadcastReceiver() {
     companion object {
         const val REMINDER_TITLE: String = "reminder_title"
         const val REMINDER_ID: String = "reminder_id"
-        const val REMINDER_TIME_IN_MILLIS: String = "reminder_time_in_millis"
         const val REMINDER_AUTO_SNOOZE: String = "reminder_auto_snooze"
     }
 }
