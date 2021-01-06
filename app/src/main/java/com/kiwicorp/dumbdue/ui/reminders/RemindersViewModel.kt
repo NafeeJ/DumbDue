@@ -78,7 +78,8 @@ class RemindersViewModel @ViewModelInject constructor(
             if (reminder.repeatInterval != null) {
                 repository.deleteReminder(reminder)
                 reminderAlarmManager.cancelAlarm(reminder)
-
+                // must create a copy because if this complete is undone, the reminder restored
+                // will have the wrong prevOccurrence
                 val repeatIntervalClone = reminder.repeatInterval!!.clone() as RepeatInterval
                 val nextDueDate = repeatIntervalClone.getNextDueDate(reminder.dueDate)
 
