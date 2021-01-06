@@ -9,10 +9,14 @@ import androidx.core.content.getSystemService
 import com.kiwicorp.dumbdue.CHANNEL_ID_REMINDER
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.data.Reminder
+import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.ui.MainActivity
 import com.kiwicorp.dumbdue.util.HiltBroadcastReceiver
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.Instant
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -21,39 +25,49 @@ class NotificationBroadcastReceiver : HiltBroadcastReceiver() {
     @Inject
     lateinit var reminderAlarmManager: ReminderAlarmManager
 
+    @Inject
+    lateinit var reminderRepository: ReminderRepository
+
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
         val notificationManager: NotificationManager = context.getSystemService()
             ?: throw Exception("Notification Manager not found.")
 
-        val title = intent.getStringExtra(REMINDER_TITLE) ?: return
         val reminderId = intent.getStringExtra(REMINDER_ID) ?: return
-        val timeInMillis = intent.getLongExtra(REMINDER_TIME_IN_MILLIS,0)
-        val autoSnooze = intent.getLongExtra(REMINDER_AUTO_SNOOZE, 0)
 
-        // Intent that opens app
-        val openAppIntent = PendingIntent.getActivity(
-            context,
-            0,
-            Intent(context, MainActivity::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT)
+        GlobalScope.launch {
+            val reminder = reminderRepository.getReminder(reminderId)
 
-        val notification = Notification.Builder(context, CHANNEL_ID_REMINDER)
-            .setContentTitle(title)
-            .setSmallIcon(R.drawable.ic_dumbdue_logo)
-            .setContentIntent(openAppIntent)
-            .setShowWhen(true)
-            .setAutoCancel(true).build()
+            if (reminder != null && !reminder.isArchived) {
+                val title = intent.getStringExtra(REMINDER_TITLE)!!
+                val timeInMillis = intent.getLongExtra(REMINDER_TIME_IN_MILLIS,0)
+                val autoSnooze = intent.getLongExtra(REMINDER_AUTO_SNOOZE, 0)
 
-        val notificationId = reminderId.hashCode()
+                // Intent that opens app
+                val openAppIntent = PendingIntent.getActivity(
+                    context,
+                    0,
+                    Intent(context, MainActivity::class.java),
+                    PendingIntent.FLAG_UPDATE_CURRENT)
 
-        Timber.d("Sending notification id: $notificationId title: $title")
+                val notification = Notification.Builder(context, CHANNEL_ID_REMINDER)
+                    .setContentTitle(title)
+                    .setSmallIcon(R.drawable.ic_dumbdue_logo)
+                    .setContentIntent(openAppIntent)
+                    .setShowWhen(true)
+                    .setAutoCancel(true).build()
 
-        notificationManager.notify(notificationId,notification)
-        // sets a new alarm (we manually set alarms because AlarmManager's setRepeating() will not
-        // fire when device is idle)
-        if (autoSnooze != Reminder.AUTO_SNOOZE_NONE) {
-            reminderAlarmManager.setAlarm(title,reminderId,timeInMillis + autoSnooze, autoSnooze)
+                val notificationId = reminderId.hashCode()
+
+                Timber.d("Sending notification id: $notificationId title: $title")
+
+                notificationManager.notify(notificationId,notification)
+                // sets a new alarm (we manually set alarms because AlarmManager's setRepeating() will not
+                // fire when device is idle)
+                if (autoSnooze != Reminder.AUTO_SNOOZE_NONE) {
+                    reminderAlarmManager.setAlarm(title,reminderId, timeInMillis + autoSnooze, autoSnooze)
+                }
+            }
         }
     }
 
