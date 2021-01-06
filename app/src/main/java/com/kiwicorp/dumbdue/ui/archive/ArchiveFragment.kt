@@ -136,7 +136,7 @@ class ArchiveFragment : Fragment() {
     private fun setupSnackbar() {
         viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { snackbar ->
             with (requireActivity() as MainActivity) {
-                snackbar.show(coordinatorLayout, fab)
+                snackbar.show(coordinatorLayout)
             }
         })
     }
