@@ -13,4 +13,9 @@
 
     <dimen name="bottom_sheet_dialog_vertical_margin">20dp</dimen>
     <dimen name="bottom_sheet_dialog_horizontal_margin">10dp</dimen>
+
+    <dimen name="margin_normal">16dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_large">32dp</dimen>
+
 </resources>

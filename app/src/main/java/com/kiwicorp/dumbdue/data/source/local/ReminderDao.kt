@@ -56,6 +56,16 @@ interface ReminderDao  {
     @Query("SELECT * FROM reminders WHERE is_archived = 0 ORDER BY dueDate DESC")
     suspend fun getArchivedReminders(): List<Reminder>
 
+
+    /**
+     * get unarchived reminders with titles that contain the query ordered by their date.
+     *
+     * @param query the search query.
+     * @return unarchived reminders with titles that contain the query.
+     */
+    @Query("SELECT * FROM reminders WHERE is_archived = 0 AND title LIKE '%' || :query || '%' ORDER BY dueDate")
+    suspend fun getSearchedUnarchivedReminders(query: String?): List<Reminder>
+
     /**
      * Observe a single task.
      *

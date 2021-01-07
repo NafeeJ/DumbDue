@@ -79,7 +79,7 @@ class MainActivity: AppCompatActivity() {
         hideBottomAppBar()
     }
 
-    private fun hideBottomAppBar() {
+    fun hideBottomAppBar() {
         bottomAppBar.performHide()
         // Get a handle on the animator that hides the bottom app bar so we can wait to hide
         // the fab and bottom app bar until after it's exit animation finishes.
@@ -89,7 +89,6 @@ class MainActivity: AppCompatActivity() {
                 if (isCanceled) return
 
                 // Hide the BottomAppBar to avoid it showing above the keyboard
-                // when composing a new email.
                 bottomAppBar.visibility = View.GONE
             }
             override fun onAnimationCancel(animation: Animator?) {

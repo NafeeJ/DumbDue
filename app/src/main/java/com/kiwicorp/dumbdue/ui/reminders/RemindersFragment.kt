@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -80,6 +81,7 @@ class RemindersFragment : Fragment(), DialogNavigator {
         super.onActivityCreated(savedInstanceState)
         handleRequest()
         setupSnackbar()
+        setupSearchView()
         setupListAdapter()
         setupNavigation()
         setupRecyclerViewSwiping()
@@ -116,6 +118,21 @@ class RemindersFragment : Fragment(), DialogNavigator {
                     viewModel.handleRequest(request,reminderId)
                 }
             }
+        }
+    }
+
+    private fun setupSearchView() {
+        with(binding.searchView) {
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    viewModel.onSearchQueryChanged(newText)
+                    return true
+                }
+            })
         }
     }
 

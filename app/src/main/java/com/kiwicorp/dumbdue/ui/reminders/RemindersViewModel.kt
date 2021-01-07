@@ -11,17 +11,29 @@ import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
 import com.kiwicorp.dumbdue.ui.REQUEST_COMPLETE
 import com.kiwicorp.dumbdue.ui.REQUEST_ARCHIVE
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class RemindersViewModel @ViewModelInject constructor(
     private val repository: ReminderRepository,
     private val reminderAlarmManager: ReminderAlarmManager
 ) : ViewModel() {
-    val reminders: LiveData<List<Reminder>> = repository.unarchivedReminders
+    private var searchQuery = ""
+
+    val reminders = MediatorLiveData<List<Reminder>>().apply {
+        addSource(repository.unarchivedReminders) {
+            viewModelScope.launch {
+                value = repository.getSearchedUnarchivedReminders(searchQuery)
+            }
+        }
+    }
 
     val isEmpty: LiveData<Boolean> = Transformations.map(reminders) {
         it.isEmpty()
     }
+
+    private var searchJob: Job? = null
 
     private val _eventAddReminder = MutableLiveData<Event<Unit>>()
     val eventAddReminder: LiveData<Event<Unit>> = _eventAddReminder
@@ -33,6 +45,24 @@ class RemindersViewModel @ViewModelInject constructor(
     val snackbarMessage: LiveData<Event<SnackbarMessage>> = _snackbarMessage
 
     private var argsRequestHandled = false
+
+    fun onSearchQueryChanged(query: String?) {
+        val newQuery = query ?: ""
+        if (newQuery != searchQuery) {
+            searchQuery = newQuery
+            executeSearch()
+        }
+    }
+
+    private fun executeSearch() {
+        searchJob?.cancel()
+
+        searchJob = viewModelScope.launch {
+            delay(100)
+            reminders.value = repository.getSearchedUnarchivedReminders(searchQuery)
+        }
+    }
+
     /**
      * Called via listener binding.
      */

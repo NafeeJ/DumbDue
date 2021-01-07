@@ -37,6 +37,12 @@ class ReminderRepository @Inject constructor(
         }
     }
 
+    suspend fun getSearchedUnarchivedReminders(query: String?): List<Reminder> {
+        return withContext(Dispatchers.IO) {
+            reminderDao.getSearchedUnarchivedReminders(query)
+        }
+    }
+
     suspend fun getReminder(reminderId: String): Reminder? {
         return withContext(Dispatchers.IO ) {
             reminderDao.getReminder(reminderId)
