@@ -15,50 +15,57 @@
         app:paddingTopSystemWindowInsets="@{true}"
         app:paddingBottomSystemWindowInsets="@{true}">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/app_bar_layout"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:elevation="0dp">
+            android:layout_height="match_parent">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/app_bar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.Toolbar.Surface"
-                app:contentInsetStart="0dp">
+                android:background="@android:color/transparent"
+                app:elevation="0dp">
 
-                <com.google.android.material.card.MaterialCardView
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_small"
-                    app:cardCornerRadius="8dp">
+                    app:layout_scrollFlags="scroll|enterAlways|snap"
+                    style="@style/Widget.MaterialComponents.Toolbar.Surface"
+                    android:elevation="0dp"
+                    android:background="@android:color/transparent"
+                    app:contentInsetStart="0dp">
 
-                    <androidx.appcompat.widget.SearchView
-                        android:id="@+id/search_view"
+                    <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:iconifiedByDefault="false"
-                        app:searchHintIcon="@null"
-                        app:queryBackground="@android:color/transparent"
-                        app:queryHint="Search Reminders"/>
+                        android:layout_margin="@dimen/margin_small"
+                        app:cardCornerRadius="8dp">
 
-                </com.google.android.material.card.MaterialCardView>
+                        <androidx.appcompat.widget.SearchView
+                            android:id="@+id/search_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:iconifiedByDefault="false"
+                            app:searchHintIcon="@null"
+                            app:queryBackground="@android:color/transparent"
+                            app:queryHint="Search Reminders"/>
 
-            </com.google.android.material.appbar.MaterialToolbar>
+                    </com.google.android.material.card.MaterialCardView>
 
-        </com.google.android.material.appbar.AppBarLayout>
+                </com.google.android.material.appbar.MaterialToolbar>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/reminders_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:items="@{viewmodel.reminders}"
-            app:layout_constraintTop_toBottomOf="@id/app_bar_layout"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reminders_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:items="@{viewmodel.reminders}" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <LinearLayout
             android:orientation="vertical"
@@ -89,7 +96,5 @@
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
 </layout>

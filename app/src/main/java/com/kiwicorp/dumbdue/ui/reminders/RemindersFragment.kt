@@ -59,22 +59,9 @@ class RemindersFragment : Fragment(), DialogNavigator {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (requireActivity() as MainActivity).bottomAppBar.setOnMenuItemClickListener {
-            return@setOnMenuItemClickListener when(it.itemId) {
-                R.id.menu_settings -> {
-                    navigate(toSettings(), findNavController())
-                    true
-                }
-                R.id.menu_archive -> {
-                    navigate(toArchiveFragment(), findNavController())
-                    true
-                }
-                else -> false
-            }
-        }
-        (requireActivity() as MainActivity).fab.setOnClickListener {
-            viewModel.addReminder()
-        }
+        setupRecyclerView()
+        setupBottomAppbar()
+        setupFAB()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -82,9 +69,7 @@ class RemindersFragment : Fragment(), DialogNavigator {
         handleRequest()
         setupSnackbar()
         setupSearchView()
-        setupListAdapter()
         setupNavigation()
-        setupRecyclerViewSwiping()
     }
 
     override fun onResume() {
@@ -100,6 +85,48 @@ class RemindersFragment : Fragment(), DialogNavigator {
         // RemindersFragment will be attached the activity while the old one will be detached with
         // the timer still running and thus calling requireActivity() will crash the app.
         cancelRefreshTimer()
+    }
+
+    private fun setupRecyclerView() {
+        listAdapter = ReminderAdapter(viewModel)
+        binding.remindersRecyclerView.adapter = listAdapter
+
+        setupRecyclerViewSwiping()
+
+        // manage scrolling here because activity coordinator layout won't handle scrolls, because
+        // of the search bar, so the fragment coordinator layout will which causes the bottom app
+        // bar not to hide
+        binding.remindersRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (dy > 0) {
+                    (requireActivity() as MainActivity).bottomAppBar.performHide()
+                } else {
+                    (requireActivity() as MainActivity).bottomAppBar.performShow()
+                }
+            }
+        })
+    }
+
+    private fun setupBottomAppbar() {
+        (requireActivity() as MainActivity).bottomAppBar.setOnMenuItemClickListener {
+            return@setOnMenuItemClickListener when(it.itemId) {
+                R.id.menu_settings -> {
+                    navigate(toSettings(), findNavController())
+                    true
+                }
+                R.id.menu_archive -> {
+                    navigate(toArchiveFragment(), findNavController())
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun setupFAB() {
+        (requireActivity() as MainActivity).fab.setOnClickListener {
+            viewModel.addReminder()
+        }
     }
 
     private fun setupNavigation() {
@@ -133,16 +160,6 @@ class RemindersFragment : Fragment(), DialogNavigator {
                     return true
                 }
             })
-        }
-    }
-
-    private fun setupListAdapter() {
-        val viewModel = binding.viewmodel
-        if (viewModel != null)  {
-            listAdapter = ReminderAdapter(viewModel)
-            binding.remindersRecyclerView.adapter = listAdapter
-        } else {
-            Timber.d("ViewModel not initialized when attempting to set up adapter.")
         }
     }
 
