@@ -15,9 +15,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentArchiveBinding
@@ -140,6 +140,7 @@ class ArchiveFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = ArchiveListAdapter(viewModel)
+        adapter.stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
         binding.remindersRecyclerView.adapter = adapter
         setupRecyclerViewSwiping()
         viewModel.checkableReminders.observe(viewLifecycleOwner, Observer {

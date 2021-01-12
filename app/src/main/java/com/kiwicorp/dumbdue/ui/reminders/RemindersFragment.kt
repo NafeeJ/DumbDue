@@ -16,6 +16,7 @@ import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentRemindersBinding
@@ -95,6 +96,7 @@ class RemindersFragment : Fragment(), DialogNavigator {
 
     private fun setupRecyclerView() {
         listAdapter = ReminderAdapter(viewModel)
+        listAdapter.stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
         binding.remindersRecyclerView.adapter = listAdapter
 
         setupRecyclerViewSwiping()
