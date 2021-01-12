@@ -9,8 +9,6 @@ import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
-import com.kiwicorp.dumbdue.ui.REQUEST_COMPLETE
-import com.kiwicorp.dumbdue.ui.REQUEST_ARCHIVE
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -43,8 +41,6 @@ class RemindersViewModel @ViewModelInject constructor(
 
     private val _snackbarMessage = MutableLiveData<Event<SnackbarMessage>>()
     val snackbarMessage: LiveData<Event<SnackbarMessage>> = _snackbarMessage
-
-    private var argsRequestHandled = false
 
     fun onSearchQueryChanged(query: String?) {
         val newQuery = query ?: ""
@@ -179,15 +175,15 @@ class RemindersViewModel @ViewModelInject constructor(
     }
 
     /**
-     * Handles the request provided by [RemindersFragmentArgs]
+     * Handles the reminderRequest
      */
-    fun handleRequest(request: Int, reminderId: String) {
-        if (argsRequestHandled) return
-        when (request) {
-            REQUEST_COMPLETE -> complete(reminderId)
-            REQUEST_ARCHIVE -> archive(reminderId)
+    fun handleRequest(reminderRequest: ReminderRequest) {
+        val reminderId = reminderRequest.reminderId
+
+        when (reminderRequest.request) {
+            ReminderRequest.REQUEST_COMPLETE -> complete(reminderId)
+            ReminderRequest.REQUEST_ARCHIVE-> archive(reminderId)
         }
-        argsRequestHandled = true
     }
     
 }

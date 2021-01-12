@@ -14,11 +14,14 @@ import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentEditReminderBinding
 import com.kiwicorp.dumbdue.ui.*
-import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toArchive
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toChooseAutoSnooze
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toChooseRepeat
-import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toReminders
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toTimePicker
+import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest
+import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest.Companion.REQUEST_ARCHIVE
+import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest.Companion.REQUEST_COMPLETE
+import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest.Companion.REQUEST_DELETE
+import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest.Companion.REQUEST_UNARCHIVE
 import com.kiwicorp.dumbdue.util.DialogNavigator
 import com.kiwicorp.dumbdue.util.closeKeyboard
 import dagger.hilt.android.AndroidEntryPoint
@@ -82,19 +85,19 @@ class EditReminderFragment : Fragment(), DialogNavigator {
         viewModel.eventClose.observe(viewLifecycleOwner, EventObserver {
             close()
         })
-        viewModel.eventActionRequest.observe(viewLifecycleOwner, EventObserver { request ->
-            close(request, viewModel.reminderId!!)
+        viewModel.eventRequest.observe(viewLifecycleOwner, EventObserver { reminderRequest ->
+            close(reminderRequest)
         })
     }
 
-    private fun close(request: Int = 0, reminderId: String = "") {
+    private fun close(reminderRequest: ReminderRequest? = null) {
         closeKeyboard()
-        if (viewModel.isArchived.value == false) {
-            navigate(toReminders(request,reminderId), findNavController())
-        } else {
-            navigate(toArchive(request,reminderId), findNavController())
+
+        reminderRequest?.let {
+            findNavController().previousBackStackEntry?.savedStateHandle?.set("request", it)
         }
 
+        findNavController().navigateUp()
     }
 
     private fun setupBottomAppBar() {

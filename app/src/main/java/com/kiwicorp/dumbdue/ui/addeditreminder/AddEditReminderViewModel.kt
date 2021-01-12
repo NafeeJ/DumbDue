@@ -13,8 +13,7 @@ import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
 import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
-import com.kiwicorp.dumbdue.ui.REQUEST_COMPLETE
-import com.kiwicorp.dumbdue.ui.REQUEST_ARCHIVE
+import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest
 import kotlinx.coroutines.launch
 import org.threeten.bp.ZonedDateTime
 
@@ -65,8 +64,8 @@ class AddEditReminderViewModel @ViewModelInject constructor(
     private val _eventOpenChooseCustomRepeat = MutableLiveData<Event<Unit>>()
     val eventOpenChooseCustomRepeat: LiveData<Event<Unit>> = _eventOpenChooseCustomRepeat
 
-    private val _eventActionRequest = MutableLiveData<Event<Int>>()
-    val eventActionRequest: LiveData<Event<Int>> = _eventActionRequest
+    private val _eventRequest = MutableLiveData<Event<ReminderRequest>>()
+    val eventRequest: LiveData<Event<ReminderRequest>> = _eventRequest
 
     private val _eventSnackbar = MutableLiveData<Event<SnackbarMessage>>()
     val eventSnackbar: LiveData<Event<SnackbarMessage>> = _eventSnackbar
@@ -124,8 +123,12 @@ class AddEditReminderViewModel @ViewModelInject constructor(
         _eventClose.value = Event(Unit)
     }
 
-    fun requestAction(navigationKey: Int) {
-        _eventActionRequest.value = Event(navigationKey)
+    /**
+     * Request an action (complete, delete, archive, unarchive) to the parent fragment so snackbar
+     * can be shown.
+     */
+    fun requestAction(request: Int) {
+        _eventRequest.value = Event(ReminderRequest(request, reminderId!!))
     }
 
     /**

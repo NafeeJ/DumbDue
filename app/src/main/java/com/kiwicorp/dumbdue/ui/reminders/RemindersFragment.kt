@@ -12,8 +12,8 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.EventObserver
@@ -36,8 +36,6 @@ class RemindersFragment : Fragment(), DialogNavigator {
     override val destId: Int = R.id.navigation_reminders
 
     private lateinit var binding: FragmentRemindersBinding
-
-    private val args : RemindersFragmentArgs by navArgs()
 
     private val viewModel: RemindersViewModel by viewModels()
 
@@ -87,6 +85,14 @@ class RemindersFragment : Fragment(), DialogNavigator {
         cancelRefreshTimer()
     }
 
+    private fun handleRequest() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ReminderRequest>("request")
+            ?.observe(viewLifecycleOwner) { reminderRequest ->
+                Timber.d("Handling Request: ${reminderRequest.request} ${reminderRequest.reminderId}")
+                viewModel.handleRequest(reminderRequest)
+            }
+    }
+
     private fun setupRecyclerView() {
         listAdapter = ReminderAdapter(viewModel)
         binding.remindersRecyclerView.adapter = listAdapter
@@ -123,16 +129,6 @@ class RemindersFragment : Fragment(), DialogNavigator {
         viewModel.eventEditReminder.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(toNavGraphEdit(it))
         })
-    }
-
-    private fun handleRequest() {
-        arguments?.let {
-            with(args) {
-                if (request != 0 && reminderId != "") {
-                    viewModel.handleRequest(request,reminderId)
-                }
-            }
-        }
     }
 
     private fun setupSearchView() {

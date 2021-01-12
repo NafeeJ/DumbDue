@@ -98,9 +98,3 @@ class MainActivity: AppCompatActivity() {
     }
 
 }
-
-// Keys for navigation
-const val REQUEST_ARCHIVE = Activity.RESULT_FIRST_USER + 1
-const val REQUEST_COMPLETE = Activity.RESULT_FIRST_USER + 2
-const val REQUEST_UNARCHIVE = Activity.RESULT_FIRST_USER + 3
-const val REQUEST_DELETE = Activity.RESULT_FIRST_USER + 4

@@ -9,11 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -23,9 +23,10 @@ import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentArchiveBinding
 import com.kiwicorp.dumbdue.ui.MainActivity
 import com.kiwicorp.dumbdue.ui.archive.ArchiveFragmentDirections.Companion.toNavGraphEdit
-import com.kiwicorp.dumbdue.ui.archive.ArchiveFragmentDirections.Companion.toReminders
 import com.kiwicorp.dumbdue.ui.reminders.ReminderAdapter
+import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ArchiveFragment : Fragment() {
@@ -33,8 +34,6 @@ class ArchiveFragment : Fragment() {
     private lateinit var binding: FragmentArchiveBinding
 
     private val viewModel: ArchiveViewModel by viewModels()
-
-    private val args: ArchiveFragmentArgs by navArgs()
 
     private lateinit var adapter: ArchiveListAdapter
     // for keeping track of whether viewModel.isInSelectionMode has actually changed
@@ -48,7 +47,7 @@ class ArchiveFragment : Fragment() {
 
     private val navigateBackCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            findNavController().navigate(toReminders())
+            findNavController().navigateUp()
         }
     }
 
@@ -105,13 +104,11 @@ class ArchiveFragment : Fragment() {
     }
 
     private fun handleRequest() {
-        arguments?.let {
-            with(args) {
-                if (request != 0 && reminderId != "") {
-                    viewModel.handleRequest(request,reminderId)
-                }
+        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ReminderRequest>("request")
+            ?.observe(viewLifecycleOwner) { reminderRequest ->
+                Timber.d("Handling Request: ${reminderRequest.request} ${reminderRequest.reminderId}")
+                viewModel.handleRequest(reminderRequest)
             }
-        }
     }
 
     private fun setupToolbar() {
