@@ -92,19 +92,6 @@ class RemindersFragment : Fragment(), DialogNavigator {
         binding.remindersRecyclerView.adapter = listAdapter
 
         setupRecyclerViewSwiping()
-
-        // manage scrolling here because activity coordinator layout won't handle scrolls, because
-        // of the search bar, so the fragment coordinator layout will which causes the bottom app
-        // bar not to hide
-        binding.remindersRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy > 0) {
-                    (requireActivity() as MainActivity).bottomAppBar.performHide()
-                } else {
-                    (requireActivity() as MainActivity).bottomAppBar.performShow()
-                }
-            }
-        })
     }
 
     private fun setupBottomAppbar() {
