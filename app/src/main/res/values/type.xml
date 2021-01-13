@@ -24,12 +24,10 @@
 
     <style name="TextAppearance.DumbDue.Headline1" parent="TextAppearance.MaterialComponents.Headline1">
         <item name="fontFamily">@font/rubik_bold</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TextAppearance.DumbDue.Headline2" parent="TextAppearance.MaterialComponents.Headline2">
         <item name="fontFamily">@font/rubik_bold</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TextAppearance.DumbDue.Headline3" parent="TextAppearance.MaterialComponents.Headline3">

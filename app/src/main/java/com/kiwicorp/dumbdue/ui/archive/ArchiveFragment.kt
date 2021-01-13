@@ -117,13 +117,13 @@ class ArchiveFragment : Fragment() {
             when(it.itemId)  {
                 R.id.menu_delete_all -> {
                     MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Delete ALL archived reminders?")
-                        .setMessage("${viewModel.reminders.value!!.size} reminders will be gone forever")
+                        .setTitle("Empty Archive?")
+                        .setMessage("${viewModel.reminders.value!!.size} reminders will be destroyed.")
                         .setPositiveButton("Yea") { dialogInterface, _ ->
                             viewModel.deleteArchivedReminders()
                             dialogInterface.dismiss()
                         }
-                        .setNegativeButton("No") { dialogInterface, _ ->
+                        .setNegativeButton("Cancel") { dialogInterface, _ ->
                             dialogInterface.cancel()
                         }
                         .show()

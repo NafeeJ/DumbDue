@@ -15,9 +15,12 @@
     </style>
     
     <style name="ThemeOverlay.DumbDue.AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
-        <item name="buttonBarPositiveButtonStyle">@style/Widget.DumbDue.Button.TextButton</item>
-        <item name="buttonBarNegativeButtonStyle">@style/Widget.DumbDue.Button.TextButton</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.DumbDue.Button.DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.DumbDue.Button.DialogButton</item>
         <item name="buttonBarNeutralButtonStyle">@style/Widget.DumbDue.Button.TextButton</item>
+        <item name="android:windowTitleStyle">?textAppearanceHeadline5</item>
+        <item name="android:textAppearanceMedium">?textAppearanceSubtitle1</item>
+        <item name="android:textAppearanceSmall">?textAppearanceSubtitle1</item>
     </style>
 
     <style name="ThemeOverlay.DumbDue.MaterialTimePicker" parent="">
@@ -31,6 +34,10 @@
 
     <style name="Widget.DumbDue.Button.ImageButton" parent="@style/Widget.AppCompat.ImageButton">
         <item name="backgroundTint">@android:color/transparent</item>
+    </style>
+
+    <style name="Widget.DumbDue.Button.DialogButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">?attr/colorSecondary</item>
     </style>
 
     <style name="Widget.DumbDue.Button.TextButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
