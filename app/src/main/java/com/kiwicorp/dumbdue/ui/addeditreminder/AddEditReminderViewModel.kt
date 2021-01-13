@@ -64,9 +64,6 @@ class AddEditReminderViewModel @ViewModelInject constructor(
     private val _eventOpenChooseCustomRepeat = MutableLiveData<Event<Unit>>()
     val eventOpenChooseCustomRepeat: LiveData<Event<Unit>> = _eventOpenChooseCustomRepeat
 
-    private val _eventRequest = MutableLiveData<Event<ReminderRequest>>()
-    val eventRequest: LiveData<Event<ReminderRequest>> = _eventRequest
-
     private val _eventSnackbar = MutableLiveData<Event<SnackbarMessage>>()
     val eventSnackbar: LiveData<Event<SnackbarMessage>> = _eventSnackbar
 
@@ -119,16 +116,8 @@ class AddEditReminderViewModel @ViewModelInject constructor(
     /**
      * Called by ImageButton in AddReminderFragment/EditReminderFragment
      */
-    fun cancel() {
+    fun close() {
         _eventClose.value = Event(Unit)
-    }
-
-    /**
-     * Request an action (complete, delete, archive, unarchive) to the parent fragment so snackbar
-     * can be shown.
-     */
-    fun requestAction(request: Int) {
-        _eventRequest.value = Event(ReminderRequest(request, reminderId!!))
     }
 
     /**

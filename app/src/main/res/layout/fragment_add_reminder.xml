@@ -27,7 +27,7 @@
                     android:id="@+id/cancel"
                     android:layout_height="50dp"
                     android:layout_width="0dp"
-                    android:onClick="@{()->viewmodel.cancel()}"
+                    android:onClick="@{()->viewmodel.close()}"
                     android:src="@drawable/ic_cancel"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

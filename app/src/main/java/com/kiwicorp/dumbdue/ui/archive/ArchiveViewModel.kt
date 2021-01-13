@@ -87,15 +87,6 @@ class ArchiveViewModel @ViewModelInject constructor(
         }
     }
 
-    fun handleRequest(reminderRequest: ReminderRequest) {
-        val reminderId = reminderRequest.reminderId
-
-        when (reminderRequest.request) {
-            REQUEST_UNARCHIVE -> unarchive(reminderId)
-            REQUEST_DELETE -> delete(reminderId)
-        }
-    }
-
     fun navigateToEditReminderFragment(reminder: Reminder) {
         _navigateToEditReminderFragment.value = Event(reminder.id)
     }

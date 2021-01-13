@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -17,11 +18,13 @@ import com.kiwicorp.dumbdue.ui.*
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toChooseAutoSnooze
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toChooseRepeat
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toTimePicker
+import com.kiwicorp.dumbdue.ui.archive.ArchiveViewModel
 import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest
 import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest.Companion.REQUEST_ARCHIVE
 import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest.Companion.REQUEST_COMPLETE
 import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest.Companion.REQUEST_DELETE
 import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest.Companion.REQUEST_UNARCHIVE
+import com.kiwicorp.dumbdue.ui.reminders.RemindersViewModel
 import com.kiwicorp.dumbdue.util.DialogNavigator
 import com.kiwicorp.dumbdue.util.closeKeyboard
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,8 +37,16 @@ class EditReminderFragment : Fragment(), DialogNavigator {
     lateinit var binding: FragmentEditReminderBinding
 
     private val args: EditReminderFragmentArgs by navArgs()
+
     //must past default defaultViewModelProviderFactory https://github.com/google/dagger/issues/1935
-    private val viewModel: AddEditReminderViewModel by navGraphViewModels(R.id.nav_graph_edit) { defaultViewModelProviderFactory }
+    private val addEditReminderViewModel: AddEditReminderViewModel by navGraphViewModels(
+        R.id.nav_graph_edit) { defaultViewModelProviderFactory }
+
+    // share remindersViewModel for showing snackbars when completing and archiving
+    private val remindersViewModel: RemindersViewModel by activityViewModels()
+
+    // share archiveViewModel for showing snackbars when unarchiving and deleting reminders
+    private val archiveViewModel: ArchiveViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,8 +55,8 @@ class EditReminderFragment : Fragment(), DialogNavigator {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_edit_reminder,container,false)
         binding = FragmentEditReminderBinding.bind(root).apply {
-            viewmodel = viewModel
-            timeSetters.onTimeSetterClickImpl = viewModel
+            viewmodel = addEditReminderViewModel
+            timeSetters.onTimeSetterClickImpl = addEditReminderViewModel
             lifecycleOwner = viewLifecycleOwner
         }
         return root
@@ -53,16 +64,16 @@ class EditReminderFragment : Fragment(), DialogNavigator {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.toolbar.setNavigationOnClickListener { viewModel.updateReminderAndClose() }
+        binding.toolbar.setNavigationOnClickListener { addEditReminderViewModel.updateReminderAndClose() }
         setupBottomAppBar()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         requireActivity().onBackPressedDispatcher.addCallback {
-            viewModel.updateReminderAndClose()
+            addEditReminderViewModel.updateReminderAndClose()
         }
-        viewModel.loadReminder(args.reminderId)
+        addEditReminderViewModel.loadReminder(args.reminderId)
         setupNavigation()
         setupSnackbar()
     }
@@ -73,36 +84,24 @@ class EditReminderFragment : Fragment(), DialogNavigator {
     }
 
     private fun setupNavigation() {
-        viewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, EventObserver {
+        addEditReminderViewModel.eventOpenRepeatMenu.observe(viewLifecycleOwner, EventObserver {
             navigate(toChooseRepeat(R.id.nav_graph_edit), findNavController())
         })
-        viewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, EventObserver {
+        addEditReminderViewModel.eventOpenAutoSnoozeMenu.observe(viewLifecycleOwner, EventObserver {
             navigate(toChooseAutoSnooze(R.id.nav_graph_edit),findNavController())
         })
-        viewModel.eventOpenTimePicker.observe(viewLifecycleOwner, EventObserver {
+        addEditReminderViewModel.eventOpenTimePicker.observe(viewLifecycleOwner, EventObserver {
             navigate(toTimePicker(R.id.nav_graph_edit),findNavController())
         })
-        viewModel.eventClose.observe(viewLifecycleOwner, EventObserver {
-            close()
+        addEditReminderViewModel.eventClose.observe(viewLifecycleOwner, EventObserver {
+            closeKeyboard()
+            findNavController().navigateUp()
         })
-        viewModel.eventRequest.observe(viewLifecycleOwner, EventObserver { reminderRequest ->
-            close(reminderRequest)
-        })
-    }
-
-    private fun close(reminderRequest: ReminderRequest? = null) {
-        closeKeyboard()
-
-        reminderRequest?.let {
-            findNavController().previousBackStackEntry?.savedStateHandle?.set("request", it)
-        }
-
-        findNavController().navigateUp()
     }
 
     private fun setupBottomAppBar() {
         with((requireActivity() as MainActivity).bottomAppBar) {
-            viewModel.isArchived.observe(viewLifecycleOwner, Observer { isArchived ->
+            addEditReminderViewModel.isArchived.observe(viewLifecycleOwner, Observer { isArchived ->
                 if (isArchived) {
                     replaceMenu(R.menu.appbar_edit_reminder_archived)
                 } else {
@@ -111,31 +110,24 @@ class EditReminderFragment : Fragment(), DialogNavigator {
             })
 
             setOnMenuItemClickListener {
+                val reminderId = addEditReminderViewModel.reminderId!!
+
+                addEditReminderViewModel.close()
+
                 when(it.itemId) {
-                    R.id.menu_complete -> {
-                        viewModel.requestAction(REQUEST_COMPLETE)
-                        true
-                    }
-                    R.id.menu_archive -> {
-                        viewModel.requestAction(REQUEST_ARCHIVE)
-                        true
-                    }
-                    R.id.menu_unarchive -> {
-                        viewModel.requestAction(REQUEST_UNARCHIVE)
-                        true
-                    }
-                    R.id.menu_delete -> {
-                        viewModel.requestAction(REQUEST_DELETE)
-                        true
-                    }
-                    else -> false
+                    R.id.menu_complete -> remindersViewModel.complete(reminderId)
+                    R.id.menu_archive -> remindersViewModel.archive(reminderId)
+                    R.id.menu_unarchive -> archiveViewModel.unarchive(reminderId)
+                    R.id.menu_delete -> archiveViewModel.delete(reminderId)
                 }
+
+                true
             }
         }
     }
 
     private fun setupSnackbar() {
-        viewModel.eventSnackbar.observe(viewLifecycleOwner, EventObserver { snackbar ->
+        addEditReminderViewModel.eventSnackbar.observe(viewLifecycleOwner, EventObserver { snackbar ->
             with (requireActivity() as MainActivity) {
                 snackbar.show(coordinatorLayout, bottomAppBar)
             }

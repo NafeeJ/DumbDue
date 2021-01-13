@@ -88,7 +88,7 @@ class RemindersViewModel @ViewModelInject constructor(
     /**
      * Only used to delete reminder in [handleRequest]
      */
-    private fun archive(reminderId: String) {
+    fun archive(reminderId: String) {
         viewModelScope.launch {
             val reminder = repository.getReminder(reminderId)
             if (reminder != null) {
@@ -135,7 +135,7 @@ class RemindersViewModel @ViewModelInject constructor(
     /**
      * Only used to complete reminder in [handleRequest]
      */
-    private fun complete(reminderId: String) {
+    fun complete(reminderId: String) {
         viewModelScope.launch {
             val reminder = repository.getReminder(reminderId)
             if (reminder != null) {
@@ -171,18 +171,6 @@ class RemindersViewModel @ViewModelInject constructor(
                 repository.updateReminder(reminder)
                 reminderAlarmManager.setAlarm(reminder)
             }
-        }
-    }
-
-    /**
-     * Handles the reminderRequest
-     */
-    fun handleRequest(reminderRequest: ReminderRequest) {
-        val reminderId = reminderRequest.reminderId
-
-        when (reminderRequest.request) {
-            ReminderRequest.REQUEST_COMPLETE -> complete(reminderId)
-            ReminderRequest.REQUEST_ARCHIVE-> archive(reminderId)
         }
     }
     

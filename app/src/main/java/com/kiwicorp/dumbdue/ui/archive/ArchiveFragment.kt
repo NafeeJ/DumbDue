@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.observe
@@ -33,7 +34,7 @@ class ArchiveFragment : Fragment() {
 
     private lateinit var binding: FragmentArchiveBinding
 
-    private val viewModel: ArchiveViewModel by viewModels()
+    private val viewModel: ArchiveViewModel by activityViewModels()
 
     private lateinit var adapter: ArchiveListAdapter
     // for keeping track of whether viewModel.isInSelectionMode has actually changed
@@ -97,18 +98,9 @@ class ArchiveFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        handleRequest()
         viewModel.navigateToEditReminderFragment.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(toNavGraphEdit(it))
         })
-    }
-
-    private fun handleRequest() {
-        findNavController().currentBackStackEntry?.savedStateHandle?.getLiveData<ReminderRequest>("request")
-            ?.observe(viewLifecycleOwner) { reminderRequest ->
-                Timber.d("Handling Request: ${reminderRequest.request} ${reminderRequest.reminderId}")
-                viewModel.handleRequest(reminderRequest)
-            }
     }
 
     private fun setupToolbar() {
