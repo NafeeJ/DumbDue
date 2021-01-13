@@ -87,6 +87,12 @@ class ArchiveViewModel @ViewModelInject constructor(
         }
     }
 
+    fun deleteArchivedReminders() {
+        viewModelScope.launch {
+            reminderRepository.deleteArchivedReminders()
+        }
+    }
+
     fun navigateToEditReminderFragment(reminder: Reminder) {
         _navigateToEditReminderFragment.value = Event(reminder.id)
     }

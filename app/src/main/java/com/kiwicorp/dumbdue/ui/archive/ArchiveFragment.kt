@@ -1,5 +1,6 @@
 package com.kiwicorp.dumbdue.ui.archive
 
+import android.content.DialogInterface
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -19,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kiwicorp.dumbdue.EventObserver
 import com.kiwicorp.dumbdue.R
 import com.kiwicorp.dumbdue.databinding.FragmentArchiveBinding
@@ -77,16 +79,20 @@ class ArchiveFragment : Fragment() {
                 this.isInSelectionMode = isInSelectionMode
                 
                 adapter.notifyDataSetChanged() // so all checkboxes are shown
+
+                val toolbar = binding.toolbar
                 
                 if (isInSelectionMode && this.isInSelectionMode) {
-                    binding.toolbar.setNavigationIcon(R.drawable.ic_cancel)
-                    binding.toolbar.inflateMenu(R.menu.appbar_archive_selection_mode)
+                    toolbar.setNavigationIcon(R.drawable.ic_cancel)
+                    toolbar.menu.clear()
+                    toolbar.inflateMenu(R.menu.appbar_archive_selection_mode)
 
                     navigateBackCallback.isEnabled = false
                     clearSelectedRemindersCallback.isEnabled = true
                 } else {
-                    binding.toolbar.setNavigationIcon(R.drawable.ic_back_arrow)
-                    binding.toolbar.menu.clear()
+                    toolbar.setNavigationIcon(R.drawable.ic_back_arrow)
+                    toolbar.menu.clear()
+                    toolbar.inflateMenu(R.menu.appbar_archive)
 
                     navigateBackCallback.isEnabled = true
                     clearSelectedRemindersCallback.isEnabled = false
@@ -109,6 +115,20 @@ class ArchiveFragment : Fragment() {
         }
         binding.toolbar.setOnMenuItemClickListener {
             when(it.itemId)  {
+                R.id.menu_delete_all -> {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle("Delete ALL archived reminders?")
+                        .setMessage("${viewModel.reminders.value!!.size} reminders will be gone forever")
+                        .setPositiveButton("Yea") { dialogInterface, _ ->
+                            viewModel.deleteArchivedReminders()
+                            dialogInterface.dismiss()
+                        }
+                        .setNegativeButton("No") { dialogInterface, _ ->
+                            dialogInterface.cancel()
+                        }
+                        .show()
+                    true
+                }
                 R.id.menu_delete -> {
                     viewModel.deleteSelectedReminders()
                     true

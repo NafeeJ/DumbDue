@@ -107,4 +107,6 @@
     <string name="archive">Archive</string>
     <string name="unarchive">Unarchive</string>
 
+    <string name="delete_all">Delete All</string>
+
 </resources>

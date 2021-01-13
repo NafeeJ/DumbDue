@@ -120,6 +120,12 @@ interface ReminderDao  {
     suspend fun deleteReminderById(reminderId: String): Int
 
     /**
+     * Delete all archived reminders.
+     */
+    @Query("DELETE FROM reminders WHERE is_archived = 1")
+    suspend fun deleteArchivedReminders()
+
+    /**
      * Delete all reminders.
      */
     @Query("DELETE FROM reminders")
