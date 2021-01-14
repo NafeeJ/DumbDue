@@ -37,6 +37,13 @@ class ArchiveViewModel @ViewModelInject constructor(
         }
     }
 
+    private fun getCheckableReminders(selectedReminders: Set<Reminder>, reminders: List<Reminder>): List<CheckableReminder> {
+        return MutableList(reminders.size) {
+            val reminder = reminders[it]
+            CheckableReminder(reminder, selectedReminders.contains(reminder))
+        }
+    }
+
     val isInSelectionMode: LiveData<Boolean> = Transformations.map(selectedReminders) { it.isNotEmpty() }
 
     fun unarchive(reminder: Reminder) {
@@ -81,26 +88,33 @@ class ArchiveViewModel @ViewModelInject constructor(
         }
     }
 
+    fun deleteArchivedReminders() {
+        delete(reminders.value!!)
+    }
+
+    private fun delete(reminders: Collection<Reminder>) {
+        for (reminder in reminders) {
+            viewModelScope.launch {
+                reminderRepository.deleteReminder(reminder)
+            }
+        }
+
+        _snackbarMessage.value = Event(SnackbarMessage("Gone. Reduced to atoms.", Snackbar.LENGTH_LONG,"Undo") {
+            undoDelete(reminders)
+        })
+    }
+
     private fun undoDelete(reminder: Reminder) {
         viewModelScope.launch {
             reminderRepository.insertReminder(reminder)
         }
     }
 
-    fun deleteArchivedReminders() {
-        viewModelScope.launch {
-            reminderRepository.deleteArchivedReminders()
-        }
-    }
-
-    fun navigateToEditReminderFragment(reminder: Reminder) {
-        _navigateToEditReminderFragment.value = Event(reminder.id)
-    }
-
-    private fun getCheckableReminders(selectedReminders: Set<Reminder>, reminders: List<Reminder>): List<CheckableReminder> {
-        return MutableList(reminders.size) {
-            val reminder = reminders[it]
-            CheckableReminder(reminder, selectedReminders.contains(reminder))
+    private fun undoDelete(reminders: Collection<Reminder>) {
+        for (reminder in reminders) {
+            viewModelScope.launch {
+                reminderRepository.insertReminder(reminder)
+            }
         }
     }
 
@@ -117,27 +131,9 @@ class ArchiveViewModel @ViewModelInject constructor(
     }
 
     fun deleteSelectedReminders() {
-        viewModelScope.launch {
-            val currSelectedReminders = selectedReminders.value!!
+        delete(selectedReminders.value!!)
 
-            for (reminder in currSelectedReminders) {
-                reminderRepository.deleteReminder(reminder)
-            }
-
-            clearSelectedReminders()
-
-            _snackbarMessage.value = Event(SnackbarMessage("They're gone.", Snackbar.LENGTH_LONG,"Undo") {
-                undoDeleteSelectedReminders(currSelectedReminders)
-            })
-        }
-    }
-
-    private fun undoDeleteSelectedReminders(selectedReminders: Set<Reminder>) {
-        viewModelScope.launch {
-            for (reminder in selectedReminders) {
-                reminderRepository.insertReminder(reminder)
-            }
-        }
+        clearSelectedReminders()
     }
 
     fun unarchiveSelectedReminders() {
@@ -165,5 +161,9 @@ class ArchiveViewModel @ViewModelInject constructor(
                 reminderAlarmManager.cancelAlarm(reminder)
             }
         }
+    }
+
+    fun navigateToEditReminderFragment(reminder: Reminder) {
+        _navigateToEditReminderFragment.value = Event(reminder.id)
     }
 }

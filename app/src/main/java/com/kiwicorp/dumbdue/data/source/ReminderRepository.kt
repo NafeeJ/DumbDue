@@ -67,10 +67,4 @@ class ReminderRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteArchivedReminders() {
-        return withContext(Dispatchers.IO) {
-            reminderDao.deleteArchivedReminders()
-        }
-    }
-
 }
