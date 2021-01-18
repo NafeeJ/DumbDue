@@ -8,11 +8,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -45,6 +45,15 @@ class RemindersFragment : Fragment(), DialogNavigator {
 
     private var refreshTimer: Timer? = null
 
+    // for keeping track of whether viewModel.isInSelectionMode has actually changed
+    private var isInSelectionMode = false
+
+    private val clearSelectedRemindersCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            viewModel.clearSelectedReminders()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -62,6 +71,7 @@ class RemindersFragment : Fragment(), DialogNavigator {
         setupRecyclerView()
         setupBottomAppbar()
         setupFAB()
+        setupSelectableReminders()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -90,6 +100,10 @@ class RemindersFragment : Fragment(), DialogNavigator {
         listAdapter = ReminderAdapter(viewModel)
         listAdapter.stateRestorationPolicy = StateRestorationPolicy.PREVENT_WHEN_EMPTY
         binding.remindersRecyclerView.adapter = listAdapter
+
+        viewModel.checkableReminders.observe(viewLifecycleOwner) {
+            listAdapter.addHeadersAndSubmitList(it)
+        }
 
         setupRecyclerViewSwiping()
     }
@@ -140,6 +154,54 @@ class RemindersFragment : Fragment(), DialogNavigator {
         }
     }
 
+    private fun setupSelectableReminders() {
+        requireActivity().onBackPressedDispatcher.apply {
+            addCallback(clearSelectedRemindersCallback)
+        }
+
+        binding.toolbar.setNavigationOnClickListener { viewModel.clearSelectedReminders() }
+
+        binding.toolbar.setOnMenuItemClickListener {
+            when(it.itemId) {
+                R.id.menu_archive -> {
+                    viewModel.archiveSelectedRemindersAndShowSnackbar()
+                    true
+                }
+                R.id.menu_complete -> {
+                    viewModel.completeSelectedRemindersAndShowSnackBar()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        viewModel.isInSelectionMode.observe(viewLifecycleOwner) { isInSelectionMode ->
+            if (this.isInSelectionMode != isInSelectionMode) { // only execute when isInSelectionMode has actually changed
+                this.isInSelectionMode = isInSelectionMode
+
+                listAdapter.notifyDataSetChanged() // so all checkboxes are shown
+
+                val toolbar = binding.toolbar
+
+                if (isInSelectionMode && this.isInSelectionMode) { // is in selection mode
+                    binding.materialCardView.visibility = View.GONE
+                    toolbar.setNavigationIcon(R.drawable.ic_cancel)
+                    toolbar.menu.clear()
+                    toolbar.inflateMenu(R.menu.appbar_reminders_selection_mode)
+
+                    clearSelectedRemindersCallback.isEnabled = true
+                } else {
+                    toolbar.navigationIcon = null
+                    toolbar.menu.clear()
+                    binding.materialCardView.visibility  = View.VISIBLE
+
+                    clearSelectedRemindersCallback.isEnabled = false
+                }
+            }
+
+        }
+    }
+
     private fun setupSnackbar() {
         viewModel.snackbarMessage.observe(viewLifecycleOwner, EventObserver { snackbar ->
             with (requireActivity() as MainActivity) {
@@ -158,9 +220,9 @@ class RemindersFragment : Fragment(), DialogNavigator {
                 if (viewHolder is ReminderAdapter.HeaderViewHolder) return
 
                 if (direction == ItemTouchHelper.RIGHT) { //if user swipes right, archive reminder
-                    viewModel.archive((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
+                    viewModel.archiveAndShowSnackbar((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
                 } else if ( direction == ItemTouchHelper.LEFT) {//if user swipes left, complete reminder
-                    viewModel.complete((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
+                    viewModel.completeAndShowSnackbar((viewHolder as ReminderAdapter.ReminderViewHolder).binding.reminder!!)
                 }
             }
             //allows for color and icons in the background when reminders are swiped
@@ -222,7 +284,7 @@ class RemindersFragment : Fragment(), DialogNavigator {
             refreshTimer = fixedRateTimer("RefreshTimer", false, thisMinuteCalendar.time, 60000) {
                 requireActivity().runOnUiThread {
                     Timber.d("Recycler View Updated id: ${this.hashCode()}")
-                    listAdapter.addHeadersAndSubmitList(viewModel.reminders.value)
+                    listAdapter.addHeadersAndSubmitList(viewModel.checkableReminders.value)
                     listAdapter.notifyDataSetChanged()
                 }
             }

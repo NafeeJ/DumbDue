@@ -19,11 +19,6 @@ import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Co
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toChooseRepeat
 import com.kiwicorp.dumbdue.ui.addeditreminder.EditReminderFragmentDirections.Companion.toTimePicker
 import com.kiwicorp.dumbdue.ui.archive.ArchiveViewModel
-import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest
-import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest.Companion.REQUEST_ARCHIVE
-import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest.Companion.REQUEST_COMPLETE
-import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest.Companion.REQUEST_DELETE
-import com.kiwicorp.dumbdue.ui.reminders.ReminderRequest.Companion.REQUEST_UNARCHIVE
 import com.kiwicorp.dumbdue.ui.reminders.RemindersViewModel
 import com.kiwicorp.dumbdue.util.DialogNavigator
 import com.kiwicorp.dumbdue.util.closeKeyboard
@@ -115,8 +110,8 @@ class EditReminderFragment : Fragment(), DialogNavigator {
                 addEditReminderViewModel.close()
 
                 when(it.itemId) {
-                    R.id.menu_complete -> remindersViewModel.complete(reminderId)
-                    R.id.menu_archive -> remindersViewModel.archive(reminderId)
+                    R.id.menu_complete -> remindersViewModel.completeAndShowSnackbar(reminderId)
+                    R.id.menu_archive -> remindersViewModel.archiveAndShowSnackbar(reminderId)
                     R.id.menu_unarchive -> archiveViewModel.unarchive(reminderId)
                     R.id.menu_delete -> archiveViewModel.delete(reminderId)
                 }

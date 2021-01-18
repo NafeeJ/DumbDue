@@ -9,6 +9,7 @@ import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
 import com.kiwicorp.dumbdue.data.source.ReminderRepository
 import com.kiwicorp.dumbdue.notifications.ReminderAlarmManager
+import com.kiwicorp.dumbdue.ui.archive.CheckableReminder
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -29,6 +30,20 @@ class RemindersViewModel @ViewModelInject constructor(
 
     val isEmpty: LiveData<Boolean> = Transformations.map(reminders) {
         it.isEmpty()
+    }
+
+    private val _selectedReminders = MutableLiveData<Set<Reminder>>(setOf())
+    val selectedReminders: LiveData<Set<Reminder>> = _selectedReminders
+
+    val isInSelectionMode: LiveData<Boolean> = Transformations.map(selectedReminders) { it.isNotEmpty() }
+
+    val checkableReminders: LiveData<List<CheckableReminder>> = MediatorLiveData<List<CheckableReminder>>().apply {
+        addSource(selectedReminders) {
+            value = getCheckableReminders(it,reminders.value ?: listOf())
+        }
+        addSource(reminders) {
+            value = getCheckableReminders(selectedReminders.value ?: setOf(), it)
+        }
     }
 
     private var searchJob: Job? = null
@@ -74,81 +89,144 @@ class RemindersViewModel @ViewModelInject constructor(
     }
 
     fun archive(reminder: Reminder) {
+        reminder.isArchived = true
         viewModelScope.launch {
-            reminder.isArchived = true
             repository.updateReminder(reminder)
-            reminderAlarmManager.cancelAlarm(reminder)
-
-            _snackbarMessage.value = Event(SnackbarMessage("Bye-Bye ${reminder.title}", Snackbar.LENGTH_LONG, "Undo") {
-                undoArchive(reminder)
-            })
         }
+        reminderAlarmManager.cancelAlarm(reminder)
     }
 
-    /**
-     * Only used to delete reminder in [handleRequest]
-     */
-    fun archive(reminderId: String) {
+    fun archiveAndShowSnackbar(reminder: Reminder) {
+        archive(reminder)
+
+        _snackbarMessage.value = Event(SnackbarMessage("Bye-Bye ${reminder.title}", Snackbar.LENGTH_LONG, "Undo") {
+            undoArchive(reminder)
+        })
+    }
+
+    fun archiveAndShowSnackbar(reminderId: String) {
         viewModelScope.launch {
             val reminder = repository.getReminder(reminderId)
             if (reminder != null) {
-                archive(reminder)
+                archiveAndShowSnackbar(reminder)
             }
         }
     }
 
-    fun complete(reminder: Reminder) {
-        viewModelScope.launch {
-            val reminderFromRepeatInterval: Reminder?
+    fun archiveSelectedRemindersAndShowSnackbar() {
+        val selectedReminders = selectedReminders.value!!
 
-            if (reminder.repeatInterval != null) {
-                repository.deleteReminder(reminder)
-                reminderAlarmManager.cancelAlarm(reminder)
-                // must create a copy because if this complete is undone, the reminder restored
-                // will have the wrong prevOccurrence
-                val repeatIntervalClone = reminder.repeatInterval!!.clone() as RepeatInterval
-                val nextDueDate = repeatIntervalClone.getNextDueDate(reminder.dueDate)
-
-                reminderFromRepeatInterval = Reminder(
-                    reminder.title,
-                    nextDueDate,
-                    repeatIntervalClone,
-                    reminder.autoSnoozeVal,
-                    false
-                )
-
-                repository.insertReminder(reminderFromRepeatInterval)
-                reminderAlarmManager.setAlarm(reminderFromRepeatInterval)
-            } else {
-                reminder.isArchived = true
-                repository.updateReminder(reminder)
-                reminderAlarmManager.cancelAlarm(reminder)
-                reminderFromRepeatInterval = null
-            }
-
-            _snackbarMessage.value = Event(SnackbarMessage("Completed ${reminder.title} :)", Snackbar.LENGTH_LONG,"Undo") {
-                undoComplete(reminder, reminderFromRepeatInterval)
-            })
+        for (reminder in selectedReminders) {
+            archive(reminder)
         }
+
+        _snackbarMessage.value = Event(SnackbarMessage(
+            "Archived ${selectedReminders.size} reminder${if (selectedReminders.size > 1) "s" else ""}",
+            Snackbar.LENGTH_LONG,
+            "Undo") {
+            undoArchiveSelectedReminders(selectedReminders)
+        })
+
+        clearSelectedReminders()
     }
 
-    /**
-     * Only used to complete reminder in [handleRequest]
-     */
-    fun complete(reminderId: String) {
-        viewModelScope.launch {
-            val reminder = repository.getReminder(reminderId)
-            if (reminder != null) {
-                complete(reminder)
-            }
+    private fun undoArchiveSelectedReminders(reminders: Set<Reminder>) {
+        for(reminder in reminders) {
+            undoArchive(reminder)
         }
     }
 
     private fun undoArchive(reminder: Reminder) {
+        reminder.isArchived = false
         viewModelScope.launch {
-            reminder.isArchived = false
             repository.updateReminder(reminder)
-            reminderAlarmManager.setAlarm(reminder)
+        }
+        reminderAlarmManager.setAlarm(reminder)
+    }
+
+    fun completeAndShowSnackbar(reminder: Reminder) {
+        val reminderFromRepeatInterval = completeReminderAndShowSnackbar(reminder)
+
+        _snackbarMessage.value = Event(SnackbarMessage("Completed ${reminder.title} :)", Snackbar.LENGTH_LONG,"Undo") {
+            undoComplete(reminder, reminderFromRepeatInterval)
+        })
+    }
+
+    fun completeAndShowSnackbar(reminderId: String) {
+        viewModelScope.launch {
+            val reminder = repository.getReminder(reminderId)
+            if (reminder != null) {
+                completeReminderAndShowSnackbar(reminder)
+            }
+        }
+    }
+
+    /**
+     * Completes the reminder
+     *
+     * Returns the reminder from the repeat interval, returns null if there is no repeat interval
+     */
+    private fun completeReminderAndShowSnackbar(reminder: Reminder): Reminder? {
+        val reminderFromRepeatInterval: Reminder?
+
+        if (reminder.repeatInterval != null) {
+            viewModelScope.launch {
+                repository.deleteReminder(reminder)
+            }
+            reminderAlarmManager.cancelAlarm(reminder)
+            // must create a copy because if this complete is undone, the reminder restored
+            // will have the wrong prevOccurrence
+            val repeatIntervalClone = reminder.repeatInterval!!.clone() as RepeatInterval
+            val nextDueDate = repeatIntervalClone.getNextDueDate(reminder.dueDate)
+
+            reminderFromRepeatInterval = Reminder(
+                reminder.title,
+                nextDueDate,
+                repeatIntervalClone,
+                reminder.autoSnoozeVal,
+                false
+            )
+
+            viewModelScope.launch {
+                repository.insertReminder(reminderFromRepeatInterval)
+            }
+            reminderAlarmManager.setAlarm(reminderFromRepeatInterval)
+        } else {
+            reminder.isArchived = true
+            viewModelScope.launch {
+                repository.updateReminder(reminder)
+            }
+            reminderAlarmManager.cancelAlarm(reminder)
+            reminderFromRepeatInterval = null
+        }
+
+        return reminderFromRepeatInterval
+    }
+
+    fun completeSelectedRemindersAndShowSnackBar() {
+        // For undoing this. First is reminder, second is reminder from repeat interval.
+        val remindersWithRemindersFromRepeatInterval = mutableListOf<Pair<Reminder, Reminder?>>()
+
+        val selectedReminders = selectedReminders.value!!
+
+        for (reminder in selectedReminders) {
+            val reminderFromRepeatInterval = completeReminderAndShowSnackbar(reminder)
+            remindersWithRemindersFromRepeatInterval.add(Pair(reminder, reminderFromRepeatInterval))
+        }
+
+        _snackbarMessage.value = Event(SnackbarMessage(
+            "Completed ${selectedReminders.size} reminder${if (selectedReminders.size > 1) "s" else ""} :D",
+            Snackbar.LENGTH_LONG,
+            "Undo") {
+            undoCompleteSelectedReminders(remindersWithRemindersFromRepeatInterval)
+        })
+
+        clearSelectedReminders()
+    }
+
+    private fun undoCompleteSelectedReminders(remindersWithRemindersFromRepeatInterval : List<Pair<Reminder, Reminder?>>) {
+        for (pair in remindersWithRemindersFromRepeatInterval) {
+            undoComplete(pair.first, pair.second)
         }
     }
 
@@ -172,6 +250,25 @@ class RemindersViewModel @ViewModelInject constructor(
                 reminderAlarmManager.setAlarm(reminder)
             }
         }
+    }
+
+    private fun getCheckableReminders(selectedReminders: Set<Reminder>, reminders: List<Reminder>): List<CheckableReminder> {
+        return MutableList(reminders.size) {
+            val reminder = reminders[it]
+            CheckableReminder(reminder, selectedReminders.contains(reminder))
+        }
+    }
+
+    fun select(reminder: Reminder) {
+        _selectedReminders.value = selectedReminders.value?.plus(reminder) ?: setOf(reminder)
+    }
+
+    fun deselect(reminder: Reminder) {
+        _selectedReminders.value = selectedReminders.value?.minus(reminder) ?: setOf()
+    }
+
+    fun clearSelectedReminders() {
+        _selectedReminders.value = setOf()
     }
     
 }

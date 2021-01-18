@@ -2,16 +2,17 @@ package com.kiwicorp.dumbdue.ui.reminders
 
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kiwicorp.dumbdue.R
-import com.kiwicorp.dumbdue.data.Reminder
 import com.kiwicorp.dumbdue.data.repeat.RepeatDailyInterval
 import com.kiwicorp.dumbdue.data.repeat.RepeatInterval
 import com.kiwicorp.dumbdue.databinding.ItemHeaderBinding
 import com.kiwicorp.dumbdue.databinding.ItemReminderBinding
+import com.kiwicorp.dumbdue.ui.archive.CheckableReminder
 import com.kiwicorp.dumbdue.util.getColorFromAttr
 import com.kiwicorp.dumbdue.util.timeFromNowString
 import kotlinx.coroutines.CoroutineScope
@@ -38,7 +39,7 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
         when (holder) {
             is ReminderViewHolder -> {
                 val reminderItem = getItem(position) as Item.ReminderItem
-                holder.bind(viewModel,reminderItem.reminder)
+                holder.bind(viewModel,reminderItem.checkableReminder)
             }
             is HeaderViewHolder -> {
                 val headerItem = getItem(position) as Item.Header
@@ -59,7 +60,7 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
         }
     }
 
-    fun addHeadersAndSubmitList(list: List<Reminder>?) {
+    fun addHeadersAndSubmitList(list: List<CheckableReminder>?) {
         adapterScope.launch {
             val items = when(list) {
                 null -> listOf()
@@ -71,7 +72,7 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
         }
     }
 
-    private fun addHeaders(list: List<Reminder>): List<Item> {
+    private fun addHeaders(list: List<CheckableReminder>): List<Item> {
         if (list.isEmpty()) return listOf()
         //todo refactor to make more readable?
         val now = ZonedDateTime.now()
@@ -100,11 +101,12 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
         val result = mutableListOf<Item>()
         var currPair = iter.next()
         //check if overdue header needs to be added
-        if (list[0].dueDate < ZonedDateTime.now()) {
+        if (list[0].reminder.dueDate < ZonedDateTime.now()) {
             result.add(Item.Header("overdue"))
         }
         //for rest, add header and switch calendar if current reminder.calendar > currCalendar
-        for (reminder in list) {
+        for (checkableReminder in list) {
+            val reminder = checkableReminder.reminder
            if (reminder.dueDate > currPair.first) {
                //check if this calendar is greater than any of the next calendars
                 while(iter.hasNext()) {
@@ -115,10 +117,10 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
                     }
                 }
                result.add(Item.Header(currPair.second))
-               result.add(Item.ReminderItem(reminder))
+               result.add(Item.ReminderItem(checkableReminder))
                currPair = iter.next()
            } else {
-               result.add(Item.ReminderItem(reminder))
+               result.add(Item.ReminderItem(checkableReminder))
            }
         }
         return result
@@ -133,13 +135,42 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
 
     class ReminderViewHolder private constructor(val binding: ItemReminderBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(viewModel: RemindersViewModel, reminder: Reminder) {
+        fun bind(viewModel: RemindersViewModel, checkableReminder: CheckableReminder) {
+            val reminder = checkableReminder.reminder
+            val isChecked = checkableReminder.isChecked
+
             binding.viewmodel = viewModel
             binding.reminder = reminder
 
             val context = binding.root.context
 
             val dueDate = reminder.dueDate
+
+            binding.constraintLayout.setOnClickListener {
+                if (viewModel.isInSelectionMode.value == true) {
+                    if (isChecked) {
+                        viewModel.deselect(reminder)
+                    } else {
+                        viewModel.select(reminder)
+                    }
+                } else {
+                    viewModel.editReminder(reminder.id)
+                }
+            }
+
+            binding.constraintLayout.setOnLongClickListener {
+                if (isChecked) {
+                    viewModel.deselect(reminder)
+                } else {
+                    viewModel.select(reminder)
+                }
+                true
+            }
+
+            binding.checkBox.visibility = if (viewModel.isInSelectionMode.value == true) View.VISIBLE else View.GONE
+            binding.radioButton.visibility = if (viewModel.isInSelectionMode.value == true) View.GONE else View.VISIBLE
+
+            binding.checkBox.isChecked = isChecked
 
             binding.timeText.text = findTimeString(dueDate)
 
@@ -163,11 +194,11 @@ class ReminderAdapter(private val viewModel: RemindersViewModel):
             )
 
             // in case recycler view resuses view holder
-            binding.checkbox.isChecked = false
+            binding.radioButton.isChecked = false
 
-            binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
+            binding.radioButton.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
-                    viewModel.complete(reminder)
+                    viewModel.completeAndShowSnackbar(reminder)
                 }
             }
             binding.executePendingBindings()
@@ -330,8 +361,8 @@ class ItemDiffCallback: DiffUtil.ItemCallback<Item>() {
 sealed class Item {
     abstract val id: String
 
-    data class ReminderItem(val reminder: Reminder): Item() {
-        override val id: String = reminder.id
+    data class ReminderItem(val checkableReminder: CheckableReminder): Item() {
+        override val id: String = checkableReminder.reminder.id
     }
 
     data class Header(val title: String): Item() {
