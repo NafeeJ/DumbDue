@@ -9,7 +9,7 @@ import com.kiwicorp.dumbdue.preferences.PreferencesStorage
 import com.kiwicorp.dumbdue.timesetters.OnTimeSetterClick
 
 class EditTimeSettersViewModel @ViewModelInject constructor(
-    private val preferencesStorage: PreferencesStorage
+    override val preferencesStorage: PreferencesStorage
 ) : ViewModel(), OnTimeSetterClick {
 
     private val _eventEditQuickAccessTimeSetter = MutableLiveData<Event<String>>()

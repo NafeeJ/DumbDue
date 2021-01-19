@@ -20,7 +20,7 @@ import org.threeten.bp.ZonedDateTime
 class AddEditReminderViewModel @ViewModelInject constructor(
     private val repository: ReminderRepository,
     private val reminderAlarmManager: ReminderAlarmManager,
-    private val preferencesStorage: PreferencesStorage
+    override val preferencesStorage: PreferencesStorage
 ) : ViewModel(), OnTimeSetterClick {
     //Public mutable for two-way data binding
     val title = MutableLiveData("")
