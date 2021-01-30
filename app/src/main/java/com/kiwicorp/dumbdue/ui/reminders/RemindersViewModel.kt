@@ -54,6 +54,9 @@ class RemindersViewModel @ViewModelInject constructor(
     private val _eventEditReminder = MutableLiveData<Event<String>>()
     val eventEditReminder: LiveData<Event<String>> = _eventEditReminder
 
+    private val _navigateToEditDueDateFragment = MutableLiveData<Event<Unit>>()
+    val navigateToEditDueDateFragment: LiveData<Event<Unit>> = _navigateToEditDueDateFragment
+
     private val _snackbarMessage = MutableLiveData<Event<SnackbarMessage>>()
     val snackbarMessage: LiveData<Event<SnackbarMessage>> = _snackbarMessage
 
@@ -86,6 +89,10 @@ class RemindersViewModel @ViewModelInject constructor(
      */
     fun editReminder(reminderId: String) {
         _eventEditReminder.value = Event(reminderId)
+    }
+
+    fun navigateToEditDueDateFragment() {
+        _navigateToEditDueDateFragment.value = Event(Unit)
     }
 
     fun archive(reminder: Reminder) {

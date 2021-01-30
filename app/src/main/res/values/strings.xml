@@ -108,5 +108,6 @@
     <string name="unarchive">Unarchive</string>
 
     <string name="delete_all">Delete All</string>
+    <string name="edit_due_date">Edit Due Date</string>
 
 </resources>

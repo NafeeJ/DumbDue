@@ -26,6 +26,7 @@ import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.t
 import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toNavGraphEdit
 import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toSettings
 import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toArchiveFragment
+import com.kiwicorp.dumbdue.ui.reminders.RemindersFragmentDirections.Companion.toEditDueDateFragment
 import com.kiwicorp.dumbdue.util.DialogNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -137,6 +138,9 @@ class RemindersFragment : Fragment(), DialogNavigator {
         viewModel.eventEditReminder.observe(viewLifecycleOwner, EventObserver {
             findNavController().navigate(toNavGraphEdit(it))
         })
+        viewModel.navigateToEditDueDateFragment.observe(viewLifecycleOwner, EventObserver {
+            navigate(toEditDueDateFragment(), findNavController())
+        })
     }
 
     private fun setupSearchView() {
@@ -169,6 +173,10 @@ class RemindersFragment : Fragment(), DialogNavigator {
                 }
                 R.id.menu_complete -> {
                     viewModel.completeSelectedRemindersAndShowSnackBar()
+                    true
+                }
+                R.id.menu_edit_due_date -> {
+                    viewModel.navigateToEditDueDateFragment()
                     true
                 }
                 else -> false
