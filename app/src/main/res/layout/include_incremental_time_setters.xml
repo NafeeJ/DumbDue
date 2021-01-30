@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout>
+    <data>
+        <import type="com.kiwicorp.dumbdue.preferences.PreferencesStorage"/>
+
+        <variable
+            name="onTimeSetterClickImpl"
+            type="com.kiwicorp.dumbdue.timesetters.OnIncrementalTimeSetterClick" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+        <Button
+            android:id="@+id/time_setter_1"
+            style="@style/Widget.DumbDue.Button.TimeButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/time_setter_2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_1}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_1)}"
+            tools:text="+10 min"/>
+
+        <Button
+            android:id="@+id/time_setter_2"
+            style="@style/Widget.DumbDue.Button.TimeButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/time_setter_3"
+            app:layout_constraintStart_toEndOf="@+id/time_setter_1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_2}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_2)}"
+            tools:text="+1 hr"/>
+
+        <Button
+            android:id="@+id/time_setter_3"
+            style="@style/Widget.DumbDue.Button.TimeButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/time_setter_4"
+            app:layout_constraintStart_toEndOf="@+id/time_setter_2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_3}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_3)}"
+            tools:text="+3 hr"/>
+
+        <Button
+            android:id="@+id/time_setter_4"
+            style="@style/Widget.DumbDue.Button.TimeButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/time_setter_3"
+            app:layout_constraintTop_toTopOf="parent"
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_4}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_4)}"
+            tools:text="+1 day"/>
+
+        <Button
+            android:id="@+id/time_setter_5"
+            style="@style/Widget.DumbDue.Button.TimeButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/time_setter_6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/time_setter_1"
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_5}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_5)}"
+            tools:text="-10 min"/>
+
+        <Button
+            android:id="@+id/time_setter_6"
+            style="@style/Widget.DumbDue.Button.TimeButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/time_setter_7"
+            app:layout_constraintStart_toEndOf="@+id/time_setter_5"
+            app:layout_constraintTop_toBottomOf="@id/time_setter_1"
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_6}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_6)}"
+            tools:text="-1 hr"/>
+
+        <Button
+            android:id="@+id/time_setter_7"
+            style="@style/Widget.DumbDue.Button.TimeButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toStartOf="@+id/time_setter_8"
+            app:layout_constraintStart_toEndOf="@+id/time_setter_6"
+            app:layout_constraintTop_toBottomOf="@id/time_setter_1"
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_7}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_7)}"
+            tools:text="-3 hr"/>
+
+        <Button
+            android:id="@+id/time_setter_8"
+            style="@style/Widget.DumbDue.Button.TimeButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/time_setter_7"
+            app:layout_constraintTop_toBottomOf="@id/time_setter_1"
+            app:key="@{PreferencesStorage.PREFS_TIME_SETTER_8}"
+            android:onClick="@{() -> onTimeSetterClickImpl.onIncrementalTimeSetterClick(PreferencesStorage.PREFS_TIME_SETTER_8)}"
+            tools:text="-1 day"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

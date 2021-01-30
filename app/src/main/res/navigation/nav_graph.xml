@@ -34,6 +34,9 @@
             app:exitAnim="@anim/fragment_open_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
+        <action
+            android:id="@+id/toEditDueDateFragment"
+            app:destination="@id/editDueDateFragment" />
     </fragment>
     <fragment
         android:id="@+id/navigation_settings"
@@ -259,5 +262,9 @@
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
+    <dialog
+        android:id="@+id/editDueDateFragment"
+        android:name="com.kiwicorp.dumbdue.ui.editduedate.EditDueDateFragment"
+        android:label="EditDueDateFragment" />
 
 </navigation>
