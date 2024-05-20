@@ -2,7 +2,7 @@
 
 # DumbDue
 
-A dumber version of Due for iOS, for Android.
+A dumber version of [Due](https://dueapp.com) for iOS, for Android.
 
 Built with Kotlin using ViewModels, Navigation, Room, LiveData, and Databinding from Architecture Components and Hilt for very basic Dependency Injection.
 
